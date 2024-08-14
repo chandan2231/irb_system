@@ -1,0 +1,61 @@
+html, body, #root{
+  height: 100%;
+}
+.error_msg{
+  color: red;
+}
+
+.success_msg{
+  color: green;
+}
+
+.center-card{
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.mt-mb-20{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.mt-mb-10{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.fullwidth{
+  width: 100%;
+}
+.ul-list ul {
+  list-style-type: decimal;
+  margin-top: 20px;
+  margin-left: 50px;
+  justify-content: center;
+}
+.ul-list ul li {
+  padding-top: 10px;
+  justify-content: center;
+}
+.error {
+  color: red;
+}
+.astric{
+  color: red;
+}
+.mt-mb-ml-mr-25{
+  margin-top: 25px;
+  margin-bottom: 25px;
+  margin-left: 25px;
+  margin-right: 25px;
+}
+.link-tag{
+  cursor: pointer;
+  color: #0000EE;
+}
+.link-tag:hover{ color: #551A8B; }
+.ml-20{
+  margin-left: 20px;
+}
