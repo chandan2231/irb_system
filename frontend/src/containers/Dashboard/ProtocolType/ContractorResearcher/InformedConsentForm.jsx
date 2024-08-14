@@ -250,7 +250,7 @@ function InformedConsentForm({protocolTypeDetails}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent documents, including translated consents, if applicable</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent documents, including translated consents, if applicable <br /> (if applying for waiver of consent, document explaining reasoning must be uploaded) *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}

@@ -319,7 +319,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable)</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -332,7 +332,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     </Button>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable)</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -345,7 +345,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     </Button>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable)</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here</InputLabel>
                     <Button
                         component="label"
                         role={undefined}

@@ -650,7 +650,7 @@ function InvestigatorInformationForm() {
                 }
                
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here </InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}

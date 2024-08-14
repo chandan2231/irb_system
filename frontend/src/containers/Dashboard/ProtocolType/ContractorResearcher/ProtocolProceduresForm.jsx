@@ -359,7 +359,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment and subject-facing materials</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment and subject-facing materials *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}

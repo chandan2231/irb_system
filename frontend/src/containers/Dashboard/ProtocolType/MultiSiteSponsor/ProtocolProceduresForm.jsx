@@ -257,9 +257,9 @@ function ProtocolProceduresForm() {
                     )
                 }
                 
-                <Form.Group as={Col} controlId="validationFormik01">
+                <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                     <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Which race and ethnic groups will be enrolled in the study?</FormLabel>
+                        <FormLabel id="demo-row-radio-buttons-group-label" >Which race and ethnic groups will be enrolled in the study?</FormLabel>
                         <FormGroup onChange={(event) => handleRaceAndEthnicChecked(event)} name="enrolled_group"  >
                             <FormControlLabel control={<Checkbox />} value="1" label="White, not of Hispanic origin" />
                             <FormControlLabel control={<Checkbox />} value="2" label="White, of Hispanic origin" />
@@ -374,7 +374,7 @@ function ProtocolProceduresForm() {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment templates and subject-facing materials here:</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment templates and subject-facing materials here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
