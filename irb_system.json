@@ -1,0 +1,77 @@
+[
+{"type":"header","version":"4.8.3","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"irb_system"},
+{"type":"table","name":"contact_information","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB568918","name":"sadsd","title":"sadsds","company_name":"asdsds","address":"asdsads","city":"sadsadsa","state":"asdasdsad","zip_code":"sadsadsad","country":"sadsadsd","phone_number":"sadsadsadsad","email":"asdsadsadsa","secondary_contact_name":"sadsadsadsa","secondary_contact_title":"sadsadsad","secondary_contact_phone_number":"sadsadsad","secondary_contact_email":"sadsadsa","created_at":"2024-08-09 08:40:42","updated_at":"2024-08-09 08:40:42","created_by":"1"}
+]
+}
+,{"type":"table","name":"informed_consent","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","consent_type":"1,2,3,4","include_icf":"","no_consent_explain":"hgfhgfh","other_language_selection":"Yes","participation_compensated":"Yes","professional_translator":"No","professional_translator_explain":"jhgfhgfhj","created_date":"2024-08-08 22:43:25","updated_date":"2024-08-08 22:43:25","created_by":"1"},
+{"id":"2","protocol_id":"IRB578940","consent_type":"","include_icf":"","no_consent_explain":"","other_language_selection":"","participation_compensated":"","professional_translator":"","professional_translator_explain":"","created_date":"2024-08-08 22:48:09","updated_date":"2024-08-08 22:48:09","created_by":"1"},
+{"id":"3","protocol_id":"IRB578940","consent_type":"1,2,3,4,5,6,7,8","include_icf":"No","no_consent_explain":"Test 2","other_language_selection":"Yes","participation_compensated":"Yes","professional_translator":"No","professional_translator_explain":"sfsdfdsfdsfds","created_date":"2024-08-08 22:50:46","updated_date":"2024-08-08 22:50:46","created_by":"1"},
+{"id":"4","protocol_id":"IRB568918","consent_type":"1,2,3,4,5,6,7,8","include_icf":"No","no_consent_explain":"fsdfdsfdsfdsfsd","other_language_selection":"Yes","participation_compensated":"Yes","professional_translator":"No","professional_translator_explain":"sdfdsfdsfdsfdsfsd","created_date":"2024-08-09 09:03:04","updated_date":"2024-08-09 09:03:04","created_by":"1"}
+]
+}
+,{"type":"table","name":"informed_consent_process","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","challenges_faced":"Yes","challenges_faced_explain":"asdsada","changes_consent":"Yes","changes_consent_explain":"asdsadsadsa","ensuring_list":"Yes","ensuring_list_explain":"asdsadsadsa","icf_version":"1","performing_consent":"1","created_at":"2024-08-04 00:00:00","updated_at":"2024-08-04 00:00:00","created_by":"1"}
+]
+}
+,{"type":"table","name":"investigator_information","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"","fda_audit":"Yes","fda_audit_explain":"Test","fwa_number":"Test","investigator_email":"Test","investigator_name":"Test","investigator_research_number":"Test","investigators_npi":"Test","involved_years":"New to research-1 year","pending_or_active_research":"Yes","pending_or_active_research_explain":"Test","primary_contact":"Test","primary_contact_email":"Test","site_fwp":"Yes","sub_investigator_email":"Test","sub_investigator_name":"Test","training_completed":"1,2,3,4,8","training_completed_explain":"Test","created_date":"2024-07-03 20:42:36","updated_date":"2024-07-03 20:42:36","created_by":""},
+{"id":"2","protocol_id":"IRB578940","fda_audit":"Yes","fda_audit_explain":"sdfdsfdfds","fwa_number":"sdfdsfdsfdsfsd","investigator_email":"sdfdfds@gmail.com","investigator_name":"sdfdsfd","investigator_research_number":"sdfdsfdsfds","investigators_npi":"sdfdfdsfd","involved_years":"New to research-1 year","pending_or_active_research":"Yes","pending_or_active_research_explain":"sdfdsfdsfdsfsd","primary_contact":"sfdfdsfsd","primary_contact_email":"sdfdfdfd@gmail.com","site_fwp":"Yes","sub_investigator_email":"sdfdsfds@gmail.com","sub_investigator_name":"sdfdfdsf","training_completed":"1,2,3,4,8","training_completed_explain":"sdfdsfdsfdsfds","created_date":"2024-08-08 23:33:56","updated_date":"2024-08-08 23:33:56","created_by":"1"}
+]
+}
+,{"type":"table","name":"investigator_instuation_info","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","changes_explain":"sfsdfdsfdsfdsf","changes_law":"Yes","changes_law_explain":"sdfdsfdsfdsf","changes_reported":"No","changes_reported_explain":"sdfdsfdsfdsfds","facility_any_changes":"Yes","facility_any_changes_explain":"sdfsdfdsfds","facility_change_item":"1,2,3,4,5","facility_changes":"Yes","inv_or_comp":"Yes","inv_or_comp_explain":"sdfdsfdsfdsfsd","inv_sit_quali":"Yes","investigator_changes":"1,2,3,4","created_at":"2024-08-04 00:00:00","updated_at":"2024-08-04 00:00:00","created_by":"1"}
+]
+}
+,{"type":"table","name":"protocol_information","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"","protocol_title":"Test","protocol_number":"Test","study_duration":"Test","sponsor":"Test","disapproved_or_withdrawn":"Yes","disapproved_or_withdrawn_explain":"Test","first_time_protocol":"No","funding_source":"Self\/Investigator-Sponsor\/Internally Funded","oversite":"Yes","oversite_explain":"Test","created_date":"2024-07-03 20:41:20","updated_date":"2024-07-03 20:41:20","created_by":""},
+{"id":"2","protocol_id":"IRB578940","protocol_title":"sdsdsds","protocol_number":"sdsdsdsds","study_duration":"sdsdsds","sponsor":"sdsdsdsd","disapproved_or_withdrawn":"Yes","disapproved_or_withdrawn_explain":"Test","first_time_protocol":"No","funding_source":"Non-profit organization","oversite":"Yes","oversite_explain":"Test","created_date":"2024-08-08 23:24:07","updated_date":"2024-08-08 23:24:07","created_by":"1"},
+{"id":"3","protocol_id":"IRB568918","protocol_title":"test2","protocol_number":"test2","study_duration":"test2","sponsor":"test2","disapproved_or_withdrawn":"","disapproved_or_withdrawn_explain":"","first_time_protocol":"Yes","funding_source":"Non-profit organization","oversite":"","oversite_explain":"","created_date":"2024-08-09 07:50:49","updated_date":"2024-08-09 07:50:49","created_by":"1"},
+{"id":"4","protocol_id":"IRB568918","protocol_title":"qqqqq","protocol_number":"qqqqq","study_duration":"qqqqq","sponsor":"qqqqq","disapproved_or_withdrawn":"Yes","disapproved_or_withdrawn_explain":"qqqqq","first_time_protocol":"No","funding_source":"Non-profit organization","oversite":"Yes","oversite_explain":"qqqqqq","created_date":"2024-08-09 07:54:37","updated_date":"2024-08-09 07:54:37","created_by":"1"}
+]
+}
+,{"type":"table","name":"protocol_procedure","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"","enrolled_group":"","enrolled_group_explain":"","enrolled_study_type":"11,10","enrolled_subject":"3","enrolled_type_explain":"","future_research":"","future_research_explain":"","recurement_method":"8,9,10","recurement_method_explain":"sdasdasd","research_place_name_address":"ddddd","study_excluded":"","study_excluded_explain":"","created_date":"2024-07-21 12:44:35","updated_date":"2024-07-21 12:44:35","created_by":""},
+{"id":"2","protocol_id":"IRB578940","enrolled_group":"1,2,6,7,8,9","enrolled_group_explain":"dsadsadsadsadsad","enrolled_study_type":"1,2,3,4,5,6,7,20","enrolled_subject":"dsfdfdsfsd","enrolled_type_explain":"xzcxzcxzcxzcxzcxzc","future_research":"Yes","future_research_explain":"dfdsfdsfdsfsdfs","recurement_method":"1,2,3,4,5,10","recurement_method_explain":"fdgfdgfdgfdgfdg","research_place_name_address":"dfgdgfdgfdgfd","study_excluded":"Yes","study_excluded_explain":"dsfdsfdsfdsfds","created_date":"2024-08-08 23:55:54","updated_date":"2024-08-08 23:55:54","created_by":"1"}
+]
+}
+,{"type":"table","name":"research_process_info","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","adverse_event_explain":"sdfdsfdsfsd","adverse_event_not_reported_explain":"sdfdsfdsfdsfds","adverse_event_submission":"No","changes_not_reported_to_irb":"sdfdsfdsfdsf","discontinued_subjects":"sdfdsfds","last_approval_change":"Yes","last_approval_change_report":"No","occured_adverse_event":"sdfdsfds","sub_terminated_before_completion":"sdfdsfdsf","sub_withdrew":"sdfdsfds","subjecte_completed":"sdfdsfdsfds","subjects_enrolled":"sfdsfd","termination_reason_explain":"sdfdsfdsfds","withdrawal_reason_explain":"sdfdsfdssadasdsadsadsadsadas","created_at":"2024-08-04 00:00:00","updated_at":"2024-08-04 00:00:00","created_by":"1"},
+{"id":"2","protocol_id":"IRB578940","adverse_event_explain":"qwewqewqewq","adverse_event_not_reported_explain":"qwewqewqewq","adverse_event_submission":"No","changes_not_reported_to_irb":"qweqweqwewqewqe","discontinued_subjects":"wqewqewq","last_approval_change":"Yes","last_approval_change_report":"No","occured_adverse_event":"qweqwewq","sub_terminated_before_completion":"qwewqewq","sub_withdrew":"wqewqewq","subjecte_completed":"qwewqewqewq","subjects_enrolled":"weqwewqe","termination_reason_explain":"qwewqewqe","withdrawal_reason_explain":"wqewqewq","created_at":"2024-08-04 00:00:00","updated_at":"2024-08-04 00:00:00","created_by":"1"}
+]
+}
+,{"type":"table","name":"risk_assessment","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","criteria_report":"Yes","criteria_report_explain":"Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria:\n1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:\n2. is related or possibly related to a subject’s participation in the research; and\n3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.","irb_report":"Yes","irb_report_explain":"Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?","created_at":"2024-08-04 00:00:00","updated_at":"2024-08-04 00:00:00","created_by":"1"}
+]
+}
+,{"type":"table","name":"study_information","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","research_type":"Drug\/biologic","research_type_explain":"","created_date":"2024-08-08 23:41:26","updated_date":"2024-08-08 23:41:26","created_by":"1"},
+{"id":"2","protocol_id":"IRB578940","research_type":"Other","research_type_explain":"Text","created_date":"2024-08-08 23:43:35","updated_date":"2024-08-08 23:43:35","created_by":"1"},
+{"id":"3","protocol_id":"IRB568918","research_type":"Other","research_type_explain":"sfdsfdsfdsfds","created_date":"2024-08-09 08:45:08","updated_date":"2024-08-09 08:45:08","created_by":"1"}
+]
+}
+,{"type":"table","name":"users","database":"irb_system","data":
+[
+{"id":"1","name":"Chandan Prakash","mobile":"8553611554","email":"chandanprakash2231@gmail.com","password":"$2a$10$JpG73pwO.oaIudL4zPbD5.PF7CviClFGbCSTcazfqrAjQ872zZUEW","researcher_type":"contractor_researcher","city":"Bangalore","created_date":"2024-07-28 21:03:07"}
+]
+}
+,{"type":"table","name":"user_research","database":"irb_system","data":
+[
+{"id":"1","protocol_id":"IRB578940","research_type":"contractor_researcher","added_by":"1","created_date":"2024-07-28 21:03:07","updated_date":"2024-07-28 21:03:07","added_timestamp":"1722180787963","updated_timestamp":"1722180787963"},
+{"id":"2","protocol_id":"IRB568918","research_type":"multi_site_sponsor","added_by":"1","created_date":"2024-07-28 21:04:25","updated_date":"2024-07-28 21:04:25","added_timestamp":"1722180865548","updated_timestamp":"1722180865548"},
+{"id":"3","protocol_id":"IRB756179","research_type":"clinical_researcher","added_by":"1","created_date":"2024-07-28 21:07:26","updated_date":"2024-07-28 21:07:26","added_timestamp":"1722181046497","updated_timestamp":"1722181046497"}
+]
+}
+]
