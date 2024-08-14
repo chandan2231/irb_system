@@ -146,7 +146,7 @@ function InformedConsentProcess({continuinReviewDetails}) {
                     {errors.icf_version && <div className="error">{errors.icf_version}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload the most recent ICF</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload the most recent ICF *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -209,7 +209,7 @@ function InformedConsentProcess({continuinReviewDetails}) {
                 }
                 <h4>Question 5</h4>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload new informed consent form</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload new informed consent form here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}

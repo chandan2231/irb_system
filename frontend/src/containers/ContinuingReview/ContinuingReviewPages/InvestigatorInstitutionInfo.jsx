@@ -234,7 +234,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -267,7 +267,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -316,7 +316,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                     {errors.changes_explain && <div className="error">{errors.changes_explain}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here if applicable <br /> (ie: new informed consent with facility address change, updated protocol to reflect facility changes, updated delegation of authority log, etc.)</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -370,7 +370,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 }
                 
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}

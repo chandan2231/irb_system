@@ -133,6 +133,19 @@ function RiskAssessment({continuinReviewDetails}) {
                         </Form.Group>
                     )
                 }
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents *</InputLabel>
+                    <Button
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        tabIndex={-1}
+                        startIcon={<CloudUploadIcon />}
+                    >
+                        Upload file
+                        <VisuallyHiddenInput type="file" />
+                    </Button>
+                </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
@@ -157,19 +170,7 @@ function RiskAssessment({continuinReviewDetails}) {
                         </Form.Group>
                     )
                 }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
-                </Form.Group>
+                
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button
                         variant="contained"
