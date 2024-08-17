@@ -45,10 +45,15 @@ CREATE TABLE `contact_information` (
   `secondary_contact_title` varchar(500) NOT NULL,
   `secondary_contact_phone_number` varchar(500) NOT NULL,
   `secondary_contact_email` varchar(500) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL,
   `created_by` int(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_contact_information
+BEFORE UPDATE ON contact_information
+FOR EACH ROW
+SET NEW.updated_at = NOW();
 
 --
 -- Dumping data for table `contact_information`
@@ -73,10 +78,15 @@ CREATE TABLE `informed_consent` (
   `participation_compensated` varchar(500) NOT NULL,
   `professional_translator` varchar(500) NOT NULL,
   `professional_translator_explain` text NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL,
   `created_by` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_informed_consent
+BEFORE UPDATE ON informed_consent
+FOR EACH ROW
+SET NEW.updated_date = NOW();
 
 --
 -- Dumping data for table `informed_consent`
@@ -105,10 +115,15 @@ CREATE TABLE `informed_consent_process` (
   `ensuring_list_explain` text NOT NULL,
   `icf_version` varchar(500) NOT NULL,
   `performing_consent` varchar(500) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL,
   `created_by` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_informed_consent_process
+BEFORE UPDATE ON informed_consent_process
+FOR EACH ROW
+SET NEW.updated_at = NOW();
 
 --
 -- Dumping data for table `informed_consent_process`
@@ -143,10 +158,15 @@ CREATE TABLE `investigator_information` (
   `sub_investigator_name` varchar(100) NOT NULL,
   `training_completed` varchar(100) NOT NULL,
   `training_completed_explain` text NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL,
   `created_by` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_investigator_information
+BEFORE UPDATE ON investigator_information
+FOR EACH ROW
+SET NEW.updated_date = NOW();
 
 --
 -- Dumping data for table `investigator_information`
@@ -178,8 +198,8 @@ CREATE TABLE `investigator_instuation_info` (
   `inv_or_comp_explain` text NOT NULL,
   `inv_sit_quali` varchar(500) NOT NULL,
   `investigator_changes` varchar(500) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `created_at` TIMESTAMP NOT NULL,
+  `updated_at` TIMESTAMP NOT NULL,
   `created_by` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -209,10 +229,16 @@ CREATE TABLE `protocol_information` (
   `funding_source` varchar(500) NOT NULL,
   `oversite` varchar(500) NOT NULL,
   `oversite_explain` text NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL,
   `created_by` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TRIGGER before_update_protocol_information
+BEFORE UPDATE ON protocol_information
+FOR EACH ROW
+SET NEW.updated_date = NOW();
 
 --
 -- Dumping data for table `protocol_information`
@@ -245,10 +271,15 @@ CREATE TABLE `protocol_procedure` (
   `research_place_name_address` varchar(500) NOT NULL,
   `study_excluded` varchar(500) NOT NULL,
   `study_excluded_explain` text NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL,
   `created_by` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_protocol_procedure
+BEFORE UPDATE ON protocol_procedure
+FOR EACH ROW
+SET NEW.updated_date = NOW();
 
 --
 -- Dumping data for table `protocol_procedure`
@@ -281,10 +312,15 @@ CREATE TABLE `research_process_info` (
   `subjects_enrolled` varchar(500) NOT NULL,
   `termination_reason_explain` text NOT NULL,
   `withdrawal_reason_explain` text NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL,
   `created_by` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_research_process_info
+BEFORE UPDATE ON research_process_info
+FOR EACH ROW
+SET NEW.updated_at = NOW();
 
 --
 -- Dumping data for table `research_process_info`
@@ -307,17 +343,22 @@ CREATE TABLE `risk_assessment` (
   `criteria_report_explain` text NOT NULL,
   `irb_report` varchar(100) NOT NULL,
   `irb_report_explain` text NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL,
   `created_by` int(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_risk_assessment
+BEFORE UPDATE ON risk_assessment
+FOR EACH ROW
+SET NEW.updated_at = NOW();
 
 --
 -- Dumping data for table `risk_assessment`
 --
 
 INSERT INTO `risk_assessment` (`id`, `protocol_id`, `criteria_report`, `criteria_report_explain`, `irb_report`, `irb_report_explain`, `created_at`, `updated_at`, `created_by`) VALUES
-(1, 'IRB578940', 'Yes', 'Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria:\n1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:\n2. is related or possibly related to a subject’s participation in the research; and\n3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.', 'Yes', 'Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?', '2024-08-04 00:00:00', '2024-08-04 00:00:00', 1);
+(1, 'IRB578940', 'Yes', 'Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria:1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:2. is related or possibly related to a subject participation in the research; and 3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.', 'Yes', 'Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?', '2024-08-04 00:00:00', '2024-08-04 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -330,10 +371,15 @@ CREATE TABLE `study_information` (
   `protocol_id` varchar(500) NOT NULL,
   `research_type` varchar(500) NOT NULL,
   `research_type_explain` text NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL,
   `created_by` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TRIGGER before_update_study_information
+BEFORE UPDATE ON study_information
+FOR EACH ROW
+SET NEW.updated_date = NOW();
 
 --
 -- Dumping data for table `study_information`
@@ -358,7 +404,7 @@ CREATE TABLE `users` (
   `password` varchar(200) NOT NULL,
   `researcher_type` varchar(200) NOT NULL,
   `city` varchar(45) DEFAULT NULL,
-  `created_date` datetime DEFAULT CURRENT_TIMESTAMP
+  `created_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -379,8 +425,8 @@ CREATE TABLE `user_research` (
   `protocol_id` varchar(100) NOT NULL,
   `research_type` varchar(100) NOT NULL,
   `added_by` int(100) NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` DATETIME NOT NULL,
   `added_timestamp` varchar(100) NOT NULL,
   `updated_timestamp` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
