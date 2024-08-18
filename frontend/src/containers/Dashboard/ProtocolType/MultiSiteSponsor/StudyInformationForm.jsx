@@ -157,7 +157,7 @@ function StudyInformationForm({ protocolTypeDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.ingredient_list && <div>{formData.ingredient_list?.name}</div>}
+                    {formData?.ingredient_list?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.ingredient_list && <div className="error">{errors.ingredient_list}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>

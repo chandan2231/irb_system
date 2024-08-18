@@ -188,7 +188,7 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.icf_file && <div>{formData.icf_file?.name}</div>}
+                    {formData?.icf_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.icf_file && <div className="error">{errors.icf_file}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
@@ -262,7 +262,7 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.consent_form && <div>{formData.consent_form?.name}</div>}
+                    {formData?.consent_form?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.consent_form && <div className="error">{errors.consent_form}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">

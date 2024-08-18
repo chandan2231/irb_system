@@ -364,7 +364,7 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.cv_files && <div>{formData.cv_files?.name}</div>}
+                    {formData?.cv_files?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.cv_files && <div className="error">{errors.cv_files}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -387,7 +387,7 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.medical_license && <div>{formData.medical_license?.name}</div>}
+                    {formData?.medical_license?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.medical_license && <div className="error">{errors.medical_license}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -402,7 +402,7 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                         Upload file
                         <VisuallyHiddenInput
                             type="file"
-                            name='training_certificate'
+                            name='training_certificates'
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });
@@ -410,8 +410,8 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.training_certificate && <div>{formData.training_certificate?.name}</div>}
-                    {errors.training_certificate && <div className="error">{errors.training_certificate}</div>}
+                    {formData?.training_certificates?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                    {errors.training_certificates && <div className="error">{errors.training_certificates}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button

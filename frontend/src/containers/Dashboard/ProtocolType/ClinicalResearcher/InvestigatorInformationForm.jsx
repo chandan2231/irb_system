@@ -686,7 +686,7 @@ function InvestigatorInformationForm() {
                             }}
                         />
                     </Button>
-                    {formData.cv_files && <div>{formData.cv_files?.name}</div>}
+                    {formData?.cv_files?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.cv_files && <div className="error">{errors.cv_files}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -709,7 +709,7 @@ function InvestigatorInformationForm() {
                             }}
                         />
                     </Button>
-                    {formData.medical_license && <div>{formData.medical_license?.name}</div>}
+                    {formData?.medical_license?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.medical_license && <div className="error">{errors.medical_license}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -732,7 +732,7 @@ function InvestigatorInformationForm() {
                             }}
                         />
                     </Button>
-                    {formData.training_certificates && <div>{formData.training_certificates?.name}</div>}
+                    {formData?.training_certificates?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.training_certificates && <div className="error">{errors.training_certificates}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>

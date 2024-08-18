@@ -257,7 +257,7 @@ function ResearchProgress({ continuinReviewDetails }) {
                                         }}
                                     />
                                 </Button>
-                                {formData.q3_supporting_documents && <div>{formData.q3_supporting_documents?.name}</div>}
+                                {formData?.q3_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                                 {errors.q3_supporting_documents && <div className="error">{errors.q3_supporting_documents}</div>}
                             </Form.Group>
                         </>

@@ -390,7 +390,7 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.facing_materials && <div>{formData.facing_materials?.name}</div>}
+                    {formData?.facing_materials?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.facing_materials && <div className="error">{errors.facing_materials}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">

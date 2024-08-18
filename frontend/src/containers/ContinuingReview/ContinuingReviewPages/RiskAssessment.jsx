@@ -165,7 +165,7 @@ function RiskAssessment({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.q1_supporting_documents && <div>{formData.q1_supporting_documents?.name}</div>}
+                    {formData?.q1_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>

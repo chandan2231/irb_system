@@ -288,7 +288,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.q1_supporting_documents && <div>{formData.q1_supporting_documents?.name}</div>}
+                    {formData?.q1_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
@@ -332,7 +332,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.q2_supporting_documents && <div>{formData.q2_supporting_documents?.name}</div>}
+                    {formData?.q2_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q2_supporting_documents && <div className="error">{errors.q2_supporting_documents}</div>}
 
                 </Form.Group>
@@ -392,7 +392,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.q3_supporting_documents && <div>{formData.q3_supporting_documents?.name}</div>}
+                    {formData?.q3_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q3_supporting_documents && <div className="error">{errors.q3_supporting_documents}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -457,7 +457,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.q4_supporting_documents && <div>{formData.q4_supporting_documents?.name}</div>}
+                    {formData?.q4_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q4_supporting_documents && <div className="error">{errors.q4_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 5</h4>

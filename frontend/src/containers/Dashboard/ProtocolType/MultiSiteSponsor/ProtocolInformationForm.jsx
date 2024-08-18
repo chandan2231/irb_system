@@ -297,7 +297,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                         }}
                                     />
                                 </Button>
-                                {formData.protocol_file && <div>{formData.protocol_file.name}</div>}
+                                {formData?.protocol_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
                                 {errors.protocol_file && <div className="error">{errors.protocol_file}</div>}
                             </Grid>
                         </Grid>

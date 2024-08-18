@@ -279,7 +279,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
                             }}
                         />
                     </Button>
-                    {formData.consent_file && <div>{formData.consent_file?.name}</div>}
+                    {formData?.consent_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.consent_file && <div className="error">{errors.consent_file}</div>}
                 </Form.Group>
                 <Form.Group as={Col} className="ul-list">
