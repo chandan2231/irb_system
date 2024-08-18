@@ -148,9 +148,12 @@ function InformedConsentForm({ protocolTypeDetails }) {
             console.log('formData', formData)
             let isValid = true
             if (isValid === true) {
-                let consent_file = ''
+                let consent_file = []
                 if (formData.consent_file) {
-                    consent_file = await uploadFile(formData.consent_file)
+                    for (let file of formData.consent_file) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        consent_file.push(id)
+                    }
                 }
                 else {
                     return setErrors({ ...errors, consent_file: "This is required" })
@@ -273,7 +276,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />

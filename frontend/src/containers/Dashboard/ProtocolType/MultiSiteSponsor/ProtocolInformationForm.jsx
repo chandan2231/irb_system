@@ -118,9 +118,12 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
             //         })
             // }
             if (isValid === true) {
-                let protocol_file = ''
+                let protocol_file = []
                 if (formData.protocol_file) {
-                    protocol_file = await uploadFile(formData.protocol_file)
+                    for (let file of formData.protocol_file) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        protocol_file.push(id)
+                    }
                 }
                 else {
                     return setErrors({ ...errors, protocol_file: "This is required" })
@@ -289,7 +292,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                         required
                                         onChange={e => {
                                             if (e.target.files && e.target.files.length) {
-                                                setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                                setFormData({ ...formData, [e.target.name]: e.target.files });
                                             }
                                         }}
                                     />

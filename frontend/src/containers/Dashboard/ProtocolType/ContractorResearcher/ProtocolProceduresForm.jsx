@@ -115,9 +115,12 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
             const getValidatedform = await protocolProcedureInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocolProcedureInfoSchema.isValid(getValidatedform)
             if (isValid === true) {
-                let facing_materials = ''
+                let facing_materials = []
                 if (formData.facing_materials) {
-                    facing_materials = await uploadFile(formData.facing_materials)
+                    for (let file of formData.facing_materials) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        facing_materials.push(id)
+                    }
                 }
                 else {
                     return setErrors({ ...errors, facing_materials: "This is required" })
@@ -382,7 +385,7 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
