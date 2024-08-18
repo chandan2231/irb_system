@@ -19,7 +19,8 @@ import Grid from '@mui/material/Grid';
 import { createProtocolInformation } from '../../../../services/ProtocolType/ClinicalResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../../services/UserManagement/UserService';
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -43,7 +44,7 @@ const protocoalInfoSchema = yup.object().shape({
     funding_source: yup.string().required("This is required"),
 })
 
-function ProtocolInformationForm({protocolTypeDetails}) {
+function ProtocolInformationForm({ protocolTypeDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -67,7 +68,7 @@ function ProtocolInformationForm({protocolTypeDetails}) {
     });
     const [errors, setErrors] = useState({});
 
-	// const handleSubmitData = async (e) => {
+    // const handleSubmitData = async (e) => {
     //     e.preventDefault();
     //     let form = new FormData(e.target);
     //     let formObj = Object.fromEntries(form.entries());
@@ -89,69 +90,76 @@ function ProtocolInformationForm({protocolTypeDetails}) {
     // 		        }
     // 	        }, 1000)
     //      }
-	// }
+    // }
 
     const handleRadioButtonSelectFirstTime = (event, radio_name) => {
         if (radio_name === 'first_time_protocol' && event.target.value === 'No') {
-			setShowAdditionalQuestion(true)
-		} else if (radio_name === 'first_time_protocol' && event.target.value === 'Yes') {
-			setShowAdditionalQuestion(false)
+            setShowAdditionalQuestion(true)
+        } else if (radio_name === 'first_time_protocol' && event.target.value === 'Yes') {
+            setShowAdditionalQuestion(false)
             setShowDisapproveAdditionTextArea(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonSelectDisapproved = (event, radio_name) => {
         if (radio_name === 'disapproved_or_withdrawn' && event.target.value === 'Yes') {
-			setShowDisapproveAdditionTextArea(true)
-		} else if (radio_name === 'disapproved_or_withdrawn' && event.target.value === 'No') {
-			setShowDisapproveAdditionTextArea(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowDisapproveAdditionTextArea(true)
+        } else if (radio_name === 'disapproved_or_withdrawn' && event.target.value === 'No') {
+            setShowDisapproveAdditionTextArea(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonSelectOversite = (event, radio_name) => {
         if (radio_name === 'oversite' && event.target.value === 'Yes') {
-			setShowOversiteAdditionTextArea(true)
-		} else if (radio_name === 'oversite' && event.target.value === 'No') {
-			setShowOversiteAdditionTextArea(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowOversiteAdditionTextArea(true)
+        } else if (radio_name === 'oversite' && event.target.value === 'No') {
+            setShowOversiteAdditionTextArea(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await protocoalInfoSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocoalInfoSchema.isValid(getValidatedform)
-            console.log('formData', formData)
-            if(isValid === true){
-                dispatch(createProtocolInformation(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+
+            if (isValid === true) {
+                let protocol_file = ''
+                if (!formData.protocol_file) {
+                    return setErrors({ ...errors, ['protocol_file']: 'This is required' });
+                }
+                else {
+                    protocol_file = await uploadFile(formData.protocol_file)
+                }
+                dispatch(createProtocolInformation({ ...formData, protocol_file }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
             error.inner.forEach((err) => {
                 newErrors[err.path] = err.message;
             });
-            if(formData.disapproved_or_withdrawn !== '' && formData.disapproved_or_withdrawn === 'Yes' && formData.disapproved_or_withdrawn_explain === ""){
+            if (formData.disapproved_or_withdrawn !== '' && formData.disapproved_or_withdrawn === 'Yes' && formData.disapproved_or_withdrawn_explain === "") {
                 newErrors['disapproved_or_withdrawn_explain_error'] = 'This is required';
             } else {
                 newErrors['disapproved_or_withdrawn_explain_error'] = '';
             }
-            if(formData.oversite !== '' && formData.oversite === 'Yes' && formData.oversite_explain === ""){
+            if (formData.oversite !== '' && formData.oversite === 'Yes' && formData.oversite_explain === "") {
                 newErrors['oversite_explain_error'] = 'This is required';
             } else {
                 newErrors['oversite_explain_error'] = '';
@@ -204,9 +212,9 @@ function ProtocolInformationForm({protocolTypeDetails}) {
     //     setFormData({...formData, interests: updatedInterests});
     // };
 
-    
 
-	return (
+
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -221,7 +229,7 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                 </Form.Group>
                 {
                     showAdditionalQuestion === true && (
-                        <>                                    
+                        <>
                             <Form.Group as={Col} controlId="validationFormik02">
                                 <FormControl>
                                     <FormLabel id="demo-row-radio-buttons-group-label"> Has this study been disapproved or withdrawn from another IRB?</FormLabel>
@@ -234,8 +242,8 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                             {
                                 showDisapproveAdditionTextArea === true && (
                                     <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                                        <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                            <TextField  variant="outlined" placeholder="Explain" name="disapproved_or_withdrawn_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
+                                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                            <TextField variant="outlined" placeholder="Explain" name="disapproved_or_withdrawn_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
                                         </Box>
                                         {errors.disapproved_or_withdrawn_explain_error && <div className="error">{errors.disapproved_or_withdrawn_explain_error}</div>}
                                     </Form.Group>
@@ -253,8 +261,8 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                             {
                                 showOversiteAdditionTextArea === true && (
                                     <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
-                                        <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                            <TextField  variant="outlined" placeholder="Explain" name="oversite_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.oversite_explain} />
+                                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                            <TextField variant="outlined" placeholder="Explain" name="oversite_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.oversite_explain} />
                                         </Box>
                                         {errors.oversite_explain_error && <div className="error">{errors.oversite_explain_error}</div>}
                                     </Form.Group>
@@ -265,25 +273,25 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Title of Protocol *" id="protocol_title" name="protocol_title" onChange={handleChange} value={formData.protocol_title} />
                     </Box>
                     {errors.protocol_title && <div className="error">{errors.protocol_title}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Protocol number *" id="protocol_number" name="protocol_number" onChange={handleChange} value={formData.protocol_number} />
                     </Box>
                     {errors.protocol_number && <div className="error">{errors.protocol_number}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Sponsor *" id="sponsor" name="sponsor"  onChange={handleChange} value={formData.sponsor} />
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                        <TextField fullWidth label="Sponsor *" id="sponsor" name="sponsor" onChange={handleChange} value={formData.sponsor} />
                     </Box>
                     {errors.sponsor && <div className="error">{errors.sponsor}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik09" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Approximate duration of study *" id="study_duration" name="study_duration" onChange={handleChange} value={formData.study_duration} />
                     </Box>
                     {errors.study_duration && <div className="error">{errors.study_duration}</div>}
@@ -296,7 +304,7 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                         autoWidth
                         label="Funding source"
                         name="funding_source"
-                        value={formData.funding_source} 
+                        value={formData.funding_source}
                         onChange={handleChange}
                     >
                         <MenuItem value=""><em>None</em></MenuItem>
@@ -324,13 +332,24 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                                     startIcon={<CloudUploadIcon />}
                                 >
                                     Upload file
-                                    <VisuallyHiddenInput type="file" />
-                                </Button> 
+                                    <VisuallyHiddenInput
+                                        type="file"
+                                        name='protocol_file'
+                                        required
+                                        onChange={e => {
+                                            if (e.target.files && e.target.files.length) {
+                                                setFormData({ ...formData, protocol_file: e.target.files[0] });
+                                            }
+                                        }}
+                                    />
+                                </Button>
+                                {formData.protocol_file && <div>{formData.protocol_file?.name}</div>}
+                                {errors.protocol_file && <div className="error">{errors.protocol_file}</div>}
                             </Grid>
                         </Grid>
                     </Form.Group>
                 </Box>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         // disabled={!dirty || !isValid}
                         variant="contained"
@@ -342,7 +361,7 @@ function ProtocolInformationForm({protocolTypeDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default ProtocolInformationForm

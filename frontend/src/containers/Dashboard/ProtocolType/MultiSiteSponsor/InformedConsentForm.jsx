@@ -18,7 +18,8 @@ import * as yup from 'yup'
 import { createInformedConsent } from '../../../../services/ProtocolType/MultiSiteSponsorService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -30,9 +31,9 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
-function InformedConsentForm({protocolTypeDetails}) {
+function InformedConsentForm({ protocolTypeDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -54,29 +55,29 @@ function InformedConsentForm({protocolTypeDetails}) {
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-    
+
     const [explainNoConsentErrors, setExplainNoConsentErrors] = useState();
     const [explainTranslatorErrors, setExplainTranslatorErrors] = useState();
 
     const handleTermsChecked = (event) => {
-        const {checked} = event.target
-        if(checked === true){
+        const { checked } = event.target
+        if (checked === true) {
             setTermsSelected(true)
-        } else if (checked === false){
+        } else if (checked === false) {
             setTermsSelected(false)
         }
     }
 
     const handleConsentTypeChecked = (event) => {
-        const {value, checked} = event.target
-        if(checked === true && value === '1'){
+        const { value, checked } = event.target
+        if (checked === true && value === '1') {
             setShowOtherQuestion(true)
-        } else if (checked === false && value === '1'){
+        } else if (checked === false && value === '1') {
             setShowOtherQuestion(false)
         }
-        if(checked === true && value === '6'){
+        if (checked === true && value === '6') {
             setShowICF(true)
-        } else if (checked === false && value === '6'){
+        } else if (checked === false && value === '6') {
             setShowICF(false)
         }
         let updatedConsentTypeCHecked = [...formData.consent_type];
@@ -84,59 +85,59 @@ function InformedConsentForm({protocolTypeDetails}) {
             updatedConsentTypeCHecked.push(value);
         } else {
             updatedConsentTypeCHecked = updatedConsentTypeCHecked.filter(
-            (training) => training !== value
-          );
+                (training) => training !== value
+            );
         }
-        setFormData({...formData, consent_type: updatedConsentTypeCHecked});
-        
+        setFormData({ ...formData, consent_type: updatedConsentTypeCHecked });
+
     }
 
     const handleRadioButtonIncludedIcf = (event, radio_name) => {
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonCompensated = (event, radio_name) => {
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-    
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
+
     const handleRadioButtonOtherLanguageSelection = (event, radio_name) => {
         if (radio_name === 'other_language_selection' && event.target.value === 'Yes') {
-			setShowOtherLangauageAdditionalQuestion(true)
-		} else if (radio_name === 'other_language_selection' && event.target.value === 'No') {
-			setShowOtherLangauageAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowOtherLangauageAdditionalQuestion(true)
+        } else if (radio_name === 'other_language_selection' && event.target.value === 'No') {
+            setShowOtherLangauageAdditionalQuestion(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonProfessionalTranslator = (event, radio_name) => {
         if (radio_name === 'professional_translator' && event.target.value === 'No') {
-			setShowOtherLangauageAdditionalTextbox(true)
-		} else if (radio_name === 'professional_translator' && event.target.value === 'Yes') {
-			setShowOtherLangauageAdditionalTextbox(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowOtherLangauageAdditionalTextbox(true)
+        } else if (radio_name === 'professional_translator' && event.target.value === 'Yes') {
+            setShowOtherLangauageAdditionalTextbox(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
-    
+
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(formData.consent_type.includes('1') && formData.no_consent_explain === ""){
+            if (formData.consent_type.includes('1') && formData.no_consent_explain === "") {
                 setExplainNoConsentErrors('This is required')
                 return
             } else {
                 setExplainNoConsentErrors('')
             }
-            if(formData.professional_translator !== '' && formData.professional_translator === 'No' && formData.professional_translator_explain === ""){
+            if (formData.professional_translator !== '' && formData.professional_translator === 'No' && formData.professional_translator_explain === "") {
                 setExplainTranslatorErrors('This is required')
                 return
             } else {
@@ -146,13 +147,20 @@ function InformedConsentForm({protocolTypeDetails}) {
             // const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             let isValid = true
-            if(isValid === true){
-                dispatch(createInformedConsent(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+            if (isValid === true) {
+                let consent_file = ''
+                if (formData.consent_file) {
+                    consent_file = await uploadFile(formData.consent_file)
+                }
+                else {
+                    return setErrors({ ...errors, consent_file: "This is required" })
+                }
+                dispatch(createInformedConsent({ ...formData, consent_file }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             console.log('error', error)
@@ -164,7 +172,7 @@ function InformedConsentForm({protocolTypeDetails}) {
         }
     }
 
-	return (
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -185,14 +193,14 @@ function InformedConsentForm({protocolTypeDetails}) {
                 {
                     showOtherQuestion === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain why no consent*" name="no_consent_explain" id="no_consent_explain" fullWidth rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain why no consent*" name="no_consent_explain" id="no_consent_explain" fullWidth rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>}
                         </Form.Group>
                     )
                 }
-                
+
                 {
                     showICF === true && (
                         <Form.Group as={Col} controlId="validationFormik01">
@@ -236,12 +244,12 @@ function InformedConsentForm({protocolTypeDetails}) {
                             </FormControl>
                         </Form.Group>
                     )
-                }  
+                }
                 {
                     showOtherLangauageAdditionalTextbox === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain" name="professional_translator_explain" id="professional_translator_explain" fullWidth rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain" name="professional_translator_explain" id="professional_translator_explain" fullWidth rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>}
                         </Form.Group>
@@ -257,8 +265,19 @@ function InformedConsentForm({protocolTypeDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='consent_file'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.consent_file && <div>{formData.consent_file?.name}</div>}
+                    {errors.consent_file && <div className="error">{errors.consent_file}</div>}
                 </Form.Group>
                 <Form.Group as={Col} className="ul-list">
                     <p>The informed consent process is a continuous process and the IRB expects that
@@ -273,7 +292,7 @@ function InformedConsentForm({protocolTypeDetails}) {
                         <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
                         <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
                         <li>All efforts must be taken to ensure participant anonymity including:
-                            <ul style={{marginTop: 0}}>
+                            <ul style={{ marginTop: 0 }}>
                                 <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                                 <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
                                 <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
@@ -290,7 +309,7 @@ function InformedConsentForm({protocolTypeDetails}) {
                         </FormGroup>
                     </FormControl>
                 </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -302,7 +321,7 @@ function InformedConsentForm({protocolTypeDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default InformedConsentForm

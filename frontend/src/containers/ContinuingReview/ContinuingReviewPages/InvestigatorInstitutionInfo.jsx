@@ -18,7 +18,8 @@ import * as yup from 'yup'
 import { investigatorAndinstuationSave } from '../../../services/ContinuinReview/ContinuinReviewService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -57,7 +58,7 @@ const investigatorInfoSchema = yup.object().shape({
     }),
 })
 
-function InvestigatorInstitutionInfo({continuinReviewDetails}) {
+function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -90,110 +91,131 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
 
     const handleRadioButtonInvSitQuali = (event, radio_name) => {
         if (radio_name === 'inv_sit_quali' && event.target.value === 'Yes') {
-			setShowAdditionalSelectionList(true)
-		} else if (radio_name === 'inv_sit_quali' && event.target.value === 'No') {
-			setShowAdditionalSelectionList(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowAdditionalSelectionList(true)
+        } else if (radio_name === 'inv_sit_quali' && event.target.value === 'No') {
+            setShowAdditionalSelectionList(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonInvOrComplain = (event, radio_name) => {
-		if (radio_name === 'inv_or_comp' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionInvOrComp(true)
-		} else if (radio_name === 'inv_or_comp' && event.target.value === 'No') {
-			setShowAdditionalQuestionInvOrComp(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'inv_or_comp' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionInvOrComp(true)
+        } else if (radio_name === 'inv_or_comp' && event.target.value === 'No') {
+            setShowAdditionalQuestionInvOrComp(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonFacilityChanges = (event, radio_name) => {
-		if (radio_name === 'facility_changes' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionFacilityChanges (true)
-		} else if (radio_name === 'facility_changes' && event.target.value === 'No') {
-			setShowAdditionalQuestionFacilityChanges(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'facility_changes' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionFacilityChanges(true)
+        } else if (radio_name === 'facility_changes' && event.target.value === 'No') {
+            setShowAdditionalQuestionFacilityChanges(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonFacilityAnyChanges = (event, radio_name) => {
-		if (radio_name === 'facility_any_changes' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionFacilityAnyChanges (true)
-		} else if (radio_name === 'facility_any_changes' && event.target.value === 'No') {
-			setShowAdditionalQuestionFacilityAnyChanges(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'facility_any_changes' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionFacilityAnyChanges(true)
+        } else if (radio_name === 'facility_any_changes' && event.target.value === 'No') {
+            setShowAdditionalQuestionFacilityAnyChanges(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonChangesLaw = (event, radio_name) => {
-		if (radio_name === 'changes_law' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionChangesLaw (true)
-		} else if (radio_name === 'changes_law' && event.target.value === 'No') {
-			setShowAdditionalQuestionChangesLaw(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'changes_law' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionChangesLaw(true)
+        } else if (radio_name === 'changes_law' && event.target.value === 'No') {
+            setShowAdditionalQuestionChangesLaw(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRadioButtonChangesReported = (event, radio_name) => {
-		if (radio_name === 'changes_reported' && event.target.value === 'No') {
-			setShowAdditionalQuestionChangesReported(true)
-		} else if (radio_name === 'changes_reported' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionChangesReported(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'changes_reported' && event.target.value === 'No') {
+            setShowAdditionalQuestionChangesReported(true)
+        } else if (radio_name === 'changes_reported' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionChangesReported(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleCheckedInvestigatorChanges = (event) => {
-        const {value, checked} = event.target
+        const { value, checked } = event.target
         let updatedCheckedItem = [...formData.investigator_changes];
         if (checked) {
             updatedCheckedItem.push(value);
         } else {
             updatedCheckedItem = updatedCheckedItem.filter(
-            (item) => item !== value
-          );
+                (item) => item !== value
+            );
         }
-        setFormData({...formData, investigator_changes: updatedCheckedItem});
+        setFormData({ ...formData, investigator_changes: updatedCheckedItem });
     };
 
 
     const handleCheckedFailityChanges = (event) => {
-        const {value, checked} = event.target
+        const { value, checked } = event.target
         let updatedCheckedItem = [...formData.facility_change_item];
         if (checked) {
             updatedCheckedItem.push(value);
         } else {
             updatedCheckedItem = updatedCheckedItem.filter(
-            (item) => item !== value
-          );
+                (item) => item !== value
+            );
         }
-        setFormData({...formData, facility_change_item: updatedCheckedItem});
+        setFormData({ ...formData, facility_change_item: updatedCheckedItem });
     };
 
-   
+
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await investigatorInfoSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await investigatorInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
-            if(isValid === true){
-                dispatch(investigatorAndinstuationSave(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
+            if (isValid === true) {
+                let q1_supporting_documents = ''
+                let q2_supporting_documents = ''
+                let q3_supporting_documents = ''
+                let q4_supporting_documents = ''
+                if (!formData.q1_supporting_documents) {
+                    return setErrors({ ...errors, ['q1_supporting_documents']: 'This is required' });
+                }
+                if (!formData.q2_supporting_documents) {
+                    return setErrors({ ...errors, ['q2_supporting_documents']: 'This is required' });
+                }
+                if (!formData.q4_supporting_documents) {
+                    return setErrors({ ...errors, ['q4_supporting_documents']: 'This is required' });
+                }
+                else {
+                    q1_supporting_documents = await uploadFile(formData.q1_supporting_documents)
+                    q2_supporting_documents = await uploadFile(formData.q2_supporting_documents)
+                    q4_supporting_documents = await uploadFile(formData.q4_supporting_documents)
+                    if (formData.q3_supporting_documents) {
+                        q3_supporting_documents = await uploadFile(formData.q3_supporting_documents)
                     }
-                })
+                }
+                dispatch(investigatorAndinstuationSave({ ...formData, q1_supporting_documents, q2_supporting_documents, q3_supporting_documents, q4_supporting_documents }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -203,8 +225,8 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
             setErrors(newErrors);
         }
     }
-    
-	return (
+
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <h4>Question 1</h4>
@@ -243,8 +265,19 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='q1_supporting_documents'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.q1_supporting_documents && <div>{formData.q1_supporting_documents?.name}</div>}
+                    {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -259,8 +292,8 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 {
                     showAdditionalQuestionInvOrComp === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="inv_or_comp_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="inv_or_comp_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.inv_or_comp_explain && <div className="error">{errors.inv_or_comp_explain}</div>}
                         </Form.Group>
@@ -276,8 +309,20 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='q2_supporting_documents'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.q2_supporting_documents && <div>{formData.q2_supporting_documents?.name}</div>}
+                    {errors.q2_supporting_documents && <div className="error">{errors.q2_supporting_documents}</div>}
+
                 </Form.Group>
                 <h4>Question 3</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -305,12 +350,12 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                         </Form.Group>
                     )
                 }
-                
+
                 <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Please describe the changes and explain in as much detail as possible. Please provide any solutions, whether temporary or permanent, work-arounds, and/or protocol adjustments *</FormLabel>
-                            <TextField  variant="outlined" placeholder="" fullWidth name="changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <TextField variant="outlined" placeholder="" fullWidth name="changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
                         </FormControl>
                     </Box>
                     {errors.changes_explain && <div className="error">{errors.changes_explain}</div>}
@@ -325,8 +370,18 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='q3_supporting_documents'
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.q3_supporting_documents && <div>{formData.q3_supporting_documents?.name}</div>}
+                    {errors.q3_supporting_documents && <div className="error">{errors.q3_supporting_documents}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
@@ -340,8 +395,8 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 {
                     showAdditionalQuestionChangesReported === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="changes_reported_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="changes_reported_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.changes_reported_explain && <div className="error">{errors.changes_reported_explain}</div>}
                         </Form.Group>
@@ -361,14 +416,14 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 {
                     showAdditionalQuestionFacilityAnyChanges === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="facility_any_changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="facility_any_changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.facility_any_changes_explain && <div className="error">{errors.facility_any_changes_explain}</div>}
                         </Form.Group>
                     )
                 }
-                
+
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
                     <Button
@@ -379,8 +434,19 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='q4_supporting_documents'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.q4_supporting_documents && <div>{formData.q4_supporting_documents?.name}</div>}
+                    {errors.q4_supporting_documents && <div className="error">{errors.q4_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 5</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -395,14 +461,14 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 {
                     showAdditionalQuestionChangesLaw === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="changes_law_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="changes_law_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.changes_law_explain && <div className="error">{errors.changes_law_explain}</div>}
                         </Form.Group>
                     )
                 }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -413,7 +479,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default InvestigatorInstitutionInfo

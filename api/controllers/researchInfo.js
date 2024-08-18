@@ -8,7 +8,7 @@ export const saveProtocolInfo = (req, res) => {
     // console.log('req', req)
     // console.log('res', res)
     // return;
-    const que = 'insert into protocol_information (`protocol_id`,`protocol_title`, `protocol_number`, `study_duration`,  `sponsor`, `disapproved_or_withdrawn`, `disapproved_or_withdrawn_explain`, `first_time_protocol`,`funding_source`,`oversite`,`oversite_explain`, `created_by`) value (?)';
+    const que = 'insert into protocol_information (`protocol_id`,`protocol_title`, `protocol_number`, `study_duration`,  `sponsor`, `disapproved_or_withdrawn`, `disapproved_or_withdrawn_explain`, `first_time_protocol`,`funding_source`,`oversite`,`oversite_explain`, `created_by`, `protocol_file`) value (?)';
     const values = [
         req.body.protocol_id,
         req.body.protocol_title, 
@@ -22,6 +22,7 @@ export const saveProtocolInfo = (req, res) => {
         req.body.oversite,
         req.body.oversite_explain,
         req.body.created_by,
+        req.body.protocol_file
     ];
     db.query(que, [values], (err, data) =>{
         if (err) return res.status(500).json(err)

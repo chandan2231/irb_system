@@ -16,7 +16,8 @@ import Button from '@mui/material/Button';
 import { riskAssessmentSave } from '../../../services/ContinuinReview/ContinuinReviewService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -45,7 +46,7 @@ const riskAssessmentSchema = yup.object().shape({
     }),
 })
 
-function RiskAssessment({continuinReviewDetails}) {
+function RiskAssessment({ continuinReviewDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -64,41 +65,48 @@ function RiskAssessment({continuinReviewDetails}) {
 
     const handleRadioButtonIRBReport = (event, radio_name) => {
         if (radio_name === 'irb_report' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionIrbReport(true)
-		} else if (radio_name === 'irb_report' && event.target.value === 'No') {
-			setShowAdditionalQuestionIrbReport(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowAdditionalQuestionIrbReport(true)
+        } else if (radio_name === 'irb_report' && event.target.value === 'No') {
+            setShowAdditionalQuestionIrbReport(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
     const handleRadioButtonCriteriaReport = (event, radio_name) => {
         if (radio_name === 'criteria_report' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionCriteriaReport(true)
-		} else if (radio_name === 'criteria_report' && event.target.value === 'No') {
-			setShowAdditionalQuestionCriteriaReport(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowAdditionalQuestionCriteriaReport(true)
+        } else if (radio_name === 'criteria_report' && event.target.value === 'No') {
+            setShowAdditionalQuestionCriteriaReport(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await riskAssessmentSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await riskAssessmentSchema.validate(formData, { abortEarly: false });
             const isValid = await riskAssessmentSchema.isValid(getValidatedform)
             console.log('formData', formData)
-            if(isValid === true){
-                dispatch(riskAssessmentSave(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+            if (isValid === true) {
+                let q1_supporting_documents = ''
+                if (formData.q1_supporting_documents) {
+                    q1_supporting_documents = await uploadFile(formData.q1_supporting_documents)
+                }
+                else {
+                    return setErrors({ ...errors, q1_supporting_documents: "This is required" })
+                }
+                dispatch(riskAssessmentSave({ ...formData, q1_supporting_documents }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -109,7 +117,7 @@ function RiskAssessment({continuinReviewDetails}) {
         }
     }
 
-	return (
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <h4>Question 1</h4>
@@ -126,8 +134,8 @@ function RiskAssessment({continuinReviewDetails}) {
                 {
                     showAdditionalQuestionIrbReport === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="irb_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="irb_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.irb_report_explain && <div className="error">{errors.irb_report_explain}</div>}
                         </Form.Group>
@@ -143,16 +151,27 @@ function RiskAssessment({continuinReviewDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='q1_supporting_documents'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.q1_supporting_documents && <div>{formData.q1_supporting_documents?.name}</div>}
+                    {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria: </FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{marginTop: '15px'}}>1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{marginTop: '15px'}}>2. is related or possibly related to a subject’s participation in the research; and</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{marginTop: '15px'}}>3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.</FormLabel>
+                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:</FormLabel>
+                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>2. is related or possibly related to a subject’s participation in the research; and</FormLabel>
+                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.</FormLabel>
                         <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="criteria_report" onChange={(event) => handleRadioButtonCriteriaReport(event, 'criteria_report')}>
                             <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                             <FormControlLabel value="No" control={<Radio />} label="No" />
@@ -163,15 +182,15 @@ function RiskAssessment({continuinReviewDetails}) {
                 {
                     showAdditionalQuestionCriteriaReport === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="criteria_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="criteria_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.criteria_report_explain && <div className="error">{errors.criteria_report_explain}</div>}
                         </Form.Group>
                     )
                 }
-                
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -182,7 +201,7 @@ function RiskAssessment({continuinReviewDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default RiskAssessment

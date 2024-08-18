@@ -18,7 +18,8 @@ import * as yup from 'yup'
 import { createInvestigatorInformation } from '../../../../services/ProtocolType/ClinicalResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -38,7 +39,7 @@ const investigatorInfoSchema = yup.object().shape({
     sub_investigator_name: yup.string().required("This is required")
 })
 
-function InvestigatorInformationForm({protocolTypeDetails}) {
+function InvestigatorInformationForm({ protocolTypeDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -73,45 +74,45 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
 
     const handleRadioButtonFdaAudit = (event, radio_name) => {
         if (radio_name === 'fda_audit' && event.target.value === 'Yes') {
-			setShowAdditionalQuestion(true)
-		} else if (radio_name === 'fda_audit' && event.target.value === 'No') {
-			setShowAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowAdditionalQuestion(true)
+        } else if (radio_name === 'fda_audit' && event.target.value === 'No') {
+            setShowAdditionalQuestion(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handlePendingOrInactiveresearch = (event, radio_name) => {
-		if (radio_name === 'pending_or_active_research' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionPendingOrActive(true)
-		} else if (radio_name === 'pending_or_active_research' && event.target.value === 'No') {
-			setShowAdditionalQuestionPendingOrActive(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'pending_or_active_research' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionPendingOrActive(true)
+        } else if (radio_name === 'pending_or_active_research' && event.target.value === 'No') {
+            setShowAdditionalQuestionPendingOrActive(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleSiteFWP = (event, radio_name) => {
-		if (radio_name === 'site_fwp' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionSiteFWP (true)
-		} else if (radio_name === 'site_fwp' && event.target.value === 'No') {
-			setShowAdditionalQuestionSiteFWP(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        if (radio_name === 'site_fwp' && event.target.value === 'Yes') {
+            setShowAdditionalQuestionSiteFWP(true)
+        } else if (radio_name === 'site_fwp' && event.target.value === 'No') {
+            setShowAdditionalQuestionSiteFWP(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleInvestigatorsInvolvedYears = (event, radio_name) => {
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleTrainingCompletedChecked = (event) => {
-        const {value, checked} = event.target
-        if(checked === true && value === '8'){
+        const { value, checked } = event.target
+        if (checked === true && value === '8') {
             setShowOtherQuestion(true)
             setOtherQuestionSelection(8)
-        } else if (checked === false && value === '8'){
+        } else if (checked === false && value === '8') {
             setShowOtherQuestion(false)
             setOtherQuestionSelection('')
         }
@@ -120,55 +121,70 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
             updatedTrainingCompleted.push(value);
         } else {
             updatedTrainingCompleted = updatedTrainingCompleted.filter(
-            (training) => training !== value
-          );
+                (training) => training !== value
+            );
         }
-        setFormData({...formData, training_completed: updatedTrainingCompleted});
+        setFormData({ ...formData, training_completed: updatedTrainingCompleted });
     };
 
-   
+
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await investigatorInfoSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await investigatorInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             console.log('isValid', isValid)
-            if(isValid === true){
-                dispatch(createInvestigatorInformation(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
+            if (isValid === true) {
+                let cv_files = ''
+                let medical_license = ''
+                let training_certificates = ''
+                if (!formData.cv_files) {
+                    return setErrors({ ...errors, ['cv_files']: 'This is required' });
+                }
+                else {
+                    cv_files = await uploadFile(formData.cv_files)
+                    if (formData.medical_license) {
+                        medical_license = await uploadFile(formData.medical_license)
                     }
-                })
+                    if (formData.training_certificates) {
+                        training_certificates = await uploadFile(formData.training_certificates)
+                    }
+                }
+                dispatch(createInvestigatorInformation({ ...formData, cv_files, medical_license, training_certificates }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
-            
+
         } catch (error) {
             const newErrors = {};
             error.inner.forEach((err) => {
                 newErrors[err.path] = err.message;
             });
-            if(formData.fda_audit !== '' && formData.fda_audit === 'Yes' && formData.fda_audit_explain === ""){
+            if (formData.fda_audit !== '' && formData.fda_audit === 'Yes' && formData.fda_audit_explain === "") {
                 newErrors['fda_audit_explain_error'] = 'This is required';
             } else {
                 newErrors['fda_audit_explain_error'] = '';
             }
-            if(formData.pending_or_active_research !== '' && formData.pending_or_active_research === 'Yes' && formData.pending_or_active_research_explain === ""){
+            if (formData.pending_or_active_research !== '' && formData.pending_or_active_research === 'Yes' && formData.pending_or_active_research_explain === "") {
                 newErrors['pending_or_active_research_explain_error'] = 'This is required';
             } else {
                 newErrors['pending_or_active_research_explain_error'] = '';
             }
-            if(formData.site_fwp !== '' && formData.site_fwp === 'Yes' && formData.fwa_number === ""){
+            if (formData.site_fwp !== '' && formData.site_fwp === 'Yes' && formData.fwa_number === "") {
                 newErrors['fwa_number_error'] = 'This is required';
             } else {
                 newErrors['fwa_number_error'] = '';
             }
-            if(otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === ""){
+            if (otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === "") {
                 newErrors['training_completed_explain_error'] = 'This is required';
             } else {
                 newErrors['training_completed_explain_error'] = '';
@@ -176,40 +192,40 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
             setErrors(newErrors);
         }
     };
-	return (
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name" onChange={handleChange} />
                     </Box>
                     {errors.investigator_name && <div className="error">{errors.investigator_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email" onChange={handleChange} />
                     </Box>
                     {errors.investigator_email && <div className="error">{errors.investigator_email}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Sub-Investigator Name *" id="sub_investigator_name" name="sub_investigator_name" onChange={handleChange} />
                     </Box>
                     {errors.sub_investigator_name && <div className="error">{errors.sub_investigator_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" onChange={handleChange} />
                     </Box>
                 </Form.Group>
-                
+
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Primary point of contact if different from above" id="primary_contact" name="primary_contact"  onChange={handleChange}/>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                        <TextField fullWidth label="Primary point of contact if different from above" id="primary_contact" name="primary_contact" onChange={handleChange} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Primary point of contact email address" id="primary_contact_email" name="primary_contact_email" onChange={handleChange} />
                     </Box>
                 </Form.Group>
@@ -225,8 +241,8 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 {
                     showAdditionalQuestion === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="fda_audit_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="fda_audit_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.fda_audit_explain_error && <div className="error">{errors.fda_audit_explain_error}</div>}
                         </Form.Group>
@@ -243,9 +259,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
-                
+
                 <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi" onChange={handleChange} />
                     </Box>
                 </Form.Group>
@@ -267,8 +283,8 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 {
                     showOtherQuestion === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.training_completed_explain_error && <div className="error">{errors.training_completed_explain_error}</div>}
                         </Form.Group>
@@ -276,7 +292,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 }
 
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number" onChange={handleChange} />
                     </Box>
                 </Form.Group>
@@ -292,8 +308,8 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 {
                     showAdditionalQuestionPendingOrActive === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {errors.pending_or_active_research_explain_error && <div className="error">{errors.pending_or_active_research_explain_error}</div>}
                         </Form.Group>
@@ -311,7 +327,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 {
                     showAdditionalQuestionSiteFWP === true && (
                         <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <TextField fullWidth label="Please provide FWA number *" id="fwa_number" name="fwa_number" onChange={handleChange} />
                             </Box>
                             {errors.fwa_number_error && <div className="error">{errors.fwa_number_error}</div>}
@@ -328,8 +344,19 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='cv_files'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.cv_files && <div>{formData.cv_files?.name}</div>}
+                    {errors.cv_files && <div className="error">{errors.cv_files}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here</InputLabel>
@@ -341,8 +368,18 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='medical_license'
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.medical_license && <div>{formData.medical_license?.name}</div>}
+                    {errors.medical_license && <div className="error">{errors.medical_license}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here</InputLabel>
@@ -354,10 +391,20 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='training_certificate'
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.training_certificate && <div>{formData.training_certificate?.name}</div>}
+                    {errors.training_certificate && <div className="error">{errors.training_certificate}</div>}
                 </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -368,7 +415,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default InvestigatorInformationForm
