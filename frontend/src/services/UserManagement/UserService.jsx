@@ -72,7 +72,7 @@ export const fetchActiveUsersList = createAsyncThunk("User/fetchActiveUsersList"
 );
 
 
-export const uploadFile = async (file, fileData) => {
+export const uploadFile = async (file, fileData={}) => {
   let data = new FormData();
   data.append("file", file);
   if (fileData) {
@@ -83,7 +83,7 @@ export const uploadFile = async (file, fileData) => {
   try {
     let response = await ApiCall({
       method: "POST",
-      url: `http://localhost:8800/api/users/upload/file`,
+      url: `http://localhost:8800/api/protocol/upload/file`,
       data,
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
