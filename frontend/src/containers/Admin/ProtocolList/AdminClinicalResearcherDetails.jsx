@@ -5,9 +5,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import InvestigatorInformationForm from '../Dashboard/ProtocolType/ClinicalResearcher/InvestigatorInformationForm';
-import InformedConsentForm from '../Dashboard/ProtocolType/ClinicalResearcher/InformedConsentForm';
-import SubmissionForm from '../Dashboard/ProtocolType/ClinicalResearcher/SubmissionForm';
+import InvestigatorInformationForm from '../ProtocolList/AdminProtocolType/ClinicalResearcher/InvestigatorInformationForm'
+import InformedConsentForm from '../ProtocolList/AdminProtocolType/ClinicalResearcher/InformedConsentForm'
+import SubmissionForm from '../ProtocolList/AdminProtocolType/ClinicalResearcher/SubmissionForm'
 import { useLocation } from "react-router-dom";
 
 
@@ -51,7 +51,7 @@ const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
     };
     return (
         <Box sx={{ width: '100%' }}>
-        <h2 className='ml-20'>{protocolTypeDetails.researchType}</h2>
+        <h2 className='ml-20'>{protocolTypeDetails.researchType} Details({protocolTypeDetails.protocolId})</h2>
         <Box className='ml-20' sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
                 <Tab label="Investigator and Protocol Information" {...a11yProps(0)} />

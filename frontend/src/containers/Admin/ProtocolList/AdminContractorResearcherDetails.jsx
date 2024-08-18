@@ -5,13 +5,16 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import InvestigatorInformationForm from '../Dashboard/ProtocolType/ClinicalResearcher/InvestigatorInformationForm';
-import InformedConsentForm from '../Dashboard/ProtocolType/ClinicalResearcher/InformedConsentForm';
-import SubmissionForm from '../Dashboard/ProtocolType/ClinicalResearcher/SubmissionForm';
+import ProtocolInformationForm from '../ProtocolList/AdminProtocolType/ContractorResearcher/ProtocolInformationForm'
+import InvestigatorInformationForm from '../ProtocolList/AdminProtocolType/ContractorResearcher/InvestigatorInformationForm'
+import StudyInformationForm from '../ProtocolList/AdminProtocolType/ContractorResearcher/StudyInformationForm'
+import InformedConsentForm from '../ProtocolList/AdminProtocolType/ContractorResearcher/InformedConsentForm'
+import ProtocolProceduresForm from '../ProtocolList/AdminProtocolType/ContractorResearcher/ProtocolProceduresForm'
+import SubmissionForm from '../ProtocolList/AdminProtocolType/ContractorResearcher/SubmissionForm'
 import { useLocation } from "react-router-dom";
 
 
-const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
+const ContractorResearcherDetails = ({protocolTypeDetails}) => {
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -51,25 +54,37 @@ const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
     };
     return (
         <Box sx={{ width: '100%' }}>
-        <h2 className='ml-20'>{protocolTypeDetails.researchType}</h2>
+        <h2 className='ml-20'>{protocolTypeDetails.researchType} Details({protocolTypeDetails.protocolId})</h2>
         <Box className='ml-20' sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
-                <Tab label="Investigator and Protocol Information" {...a11yProps(0)} />
-                <Tab label="Informed Consent Document Information" {...a11yProps(1)} />
-                <Tab label="Submission" {...a11yProps(5)} />
+            <Tab label="Protocol Information" {...a11yProps(0)} />
+            <Tab label="Investigator Information" {...a11yProps(1)} />
+            <Tab label="Study Type" {...a11yProps(2)} />
+            <Tab label="Informed Consent" {...a11yProps(3)} />
+            <Tab label="Protocol Procedures" {...a11yProps(4)} />
+            <Tab label="Submission" {...a11yProps(5)} />
             </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
+            <StudyInformationForm protocolTypeDetails={protocolTypeDetails} />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={3}>
+            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={4}>
+            <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails} />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={5}>
             <SubmissionForm protocolTypeDetails={protocolTypeDetails} />
         </CustomTabPanel>
         </Box>
     )
 }
 
-export default ClinicalResearcherDetails
+export default ContractorResearcherDetails

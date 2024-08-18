@@ -24,6 +24,11 @@ import Dashboard from "./containers/Dashboard/Dashboard";
 import ProtocolDetails from "./containers/Dashboard/ProtocolDetails";
 import ContinuingReview from "./containers/ContinuingReview/ContinuingReview";
 import ContinuingReviewDetails from "./containers/ContinuingReview/ContinuingReviewDetails";
+import ProtocolList from "./containers/Admin/ProtocolList/ProtocolList";
+import ContinuinReviewList from "./containers/Admin/ContinuinReviewList/ContinuinReviewList";
+import UsersList from "./containers/Admin/UsersList/UsersList";
+import AdminProtocolDetails from "./containers/Admin/ProtocolList/AdminProtocolDetails";
+import AdminContinuingReviewDetails from "./containers/Admin/ContinuinReviewList/AdminContinuingReviewDetails.jsx";
 
 function App() {
   const [loader, setLoader] = useState(true)
@@ -95,6 +100,11 @@ function App() {
                         <Route path='/protocol-details' element={<ProtocolDetails/>} />
                         <Route path='/continuin-review' element={<ContinuingReview/>} />
                         <Route path='/continuin-review-details' element={<ContinuingReviewDetails/>} />
+                        <Route path='/admin/protocol-list' element={<ProtocolList/>} />
+                        <Route path='/admin/protocol-details' element={<AdminProtocolDetails/>} />
+                        <Route path='/admin/continuin-review-list' element={<ContinuinReviewList/>} />
+                        <Route path='/admin/continuin-review-details' element={<AdminContinuingReviewDetails/>} />
+                        <Route path='/admin/users-list' element={<UsersList/>} />
                       {/* </Route> */}
                       <Route path="/signin" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />

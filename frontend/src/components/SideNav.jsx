@@ -15,7 +15,7 @@ import {Link, useLocation} from 'react-router-dom';
 function SideNav (){
     const theme = useTheme();
     const loaction = useLocation();
-    console.log("loaction", loaction)
+    const userDetails = JSON.parse(localStorage.getItem('user'));
     return (
         (loaction.pathname === "/reset-password" || loaction.pathname === "/forget-password" || loaction.pathname === "/signin" || loaction.pathname === "/signup" ) ? (
             <></>
@@ -40,40 +40,39 @@ function SideNav (){
                         }
                     }}
                 >
-                    <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Dashboard</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/continuin-review' || location.pathname === '/continuin-review-details' ? true : false} component={<Link to ='/continuin-review' />} icon={<GroupAddOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/application' ? true : false} component={<Link to ='/#/' />} icon={<LayersOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/privilege' ? true : false} component={<Link to ='/#/' />} icon={<LockOpenOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/resource' ? true : false} component={<Link to ='/#/' />} icon={<SourceOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event </Typography>
-                    </MenuItem>
-                    
-                    {/*<MenuItem active={location.pathname === '/user' ? true : false} component={<Link to ='/user' />} icon={<PersonAddAltOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>User</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/role' ? true : false} component={<Link to ='/role' />} icon={<GroupOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Role</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/user-application-role' ? true : false} component={<Link to ='/user-application-role' />} icon={<PermIdentityOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>User Application Role</Typography>
-                    </MenuItem>
-                    <MenuItem active={location.pathname === '/hierarchy' ? true : false} component={<Link to ='/hierarchy' />} icon={<GroupAddOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Hierarchy</Typography>
-                    </MenuItem>  
-                    <MenuItem active={location.pathname === '/team' ? true : false} component={<Link to ='/team' />} icon={<GroupAddOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Team</Typography>
-                    </MenuItem> */}
-                    {/* <SubMenu label={<Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Hierarchy</Typography>} icon={<ManageAccountsOutlinedIcon />}>
-                            
-                    </SubMenu> */}
+                    { 
+                        userDetails.researcher_type === 'admin' ? (
+                            <>
+                                <MenuItem active={location.pathname === '/admin/protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/protocol-list' />} icon={<AddBusinessOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol List</Typography>
+                                </MenuItem>
+                                <MenuItem active={location.pathname === '/admin/continuin-review-list' || location.pathname === '/admin/continuin-review-details' ? true : false} component={<Link to ='/admin/continuin-review-list' />} icon={<GroupAddOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review List</Typography>
+                                </MenuItem>
+                                <MenuItem active={location.pathname === '/admin/users-list' ? true : false} component={<Link to ='/admin/users-list' />} icon={<SourceOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
+                                </MenuItem>
+                            </>
+                        ) : (
+                            <>
+                                <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Dashboard</Typography>
+                                </MenuItem>
+                                <MenuItem active={location.pathname === '/continuin-review' || location.pathname === '/continuin-review-details' ? true : false} component={<Link to ='/continuin-review' />} icon={<GroupAddOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review</Typography>
+                                </MenuItem>
+                                <MenuItem component={<Link to ='/#/' />} icon={<LayersOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
+                                </MenuItem>
+                                <MenuItem component={<Link to ='/#/' />} icon={<LockOpenOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
+                                </MenuItem>
+                                <MenuItem component={<Link to ='/#/' />} icon={<SourceOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event </Typography>
+                                </MenuItem>
+                            </>
+                        )
+                    }
                 </Menu>
             </Sidebar>
         )
