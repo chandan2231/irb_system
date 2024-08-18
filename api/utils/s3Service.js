@@ -1,6 +1,6 @@
 
-const AWS = require('aws-sdk');
-const fs = require('fs');
+import AWS from 'aws-sdk'
+import fs from 'fs'
 const { STORAGE_ACCESS_SECRET, STORAGE_ACCESS_KEY, STORAGE_REGION, STORAGE_SPACE_NAME, STORAGE_HOST } = process.env;
 
 // Configure AWS SDK with your DigitalOcean Spaces credentials
@@ -14,7 +14,7 @@ const s3 = new AWS.S3({
 
 const spaceName = STORAGE_SPACE_NAME;
 
-function uploadFile(filePath) {
+export function uploadFile(filePath) {
     // Read the file as a buffer
     const fileContent = fs.readFileSync(filePath);
 
@@ -37,8 +37,20 @@ function uploadFile(filePath) {
                 const cdnUrl = `https://${spaceName}.${region}.cdn.${STORAGE_HOST}/${encodedFilePath}`;
                 const responseData = {
                     ...data,
+                    filename: data.Key,
                     cdnUrl,
                 };
+
+                // Example response 
+                // {
+                //     ETag: '"0ece9e7b286ef9e4979400372c9a312c"',
+                //     Location: 'https://sample.blr1.digitaloceanspaces.com/1723881366910-7525-logo.jpg',
+                //     key: '1723881366910-7525-logo.jpg',
+                //     Key: '1723881366910-7525-logo.jpg',
+                //     filename: '1723881366910-7525-logo.jpg',
+                //     Bucket: 'sample',
+                //     cdnUrl: 'https://sample.blr1.cdn.digitaloceanspaces.com/1723881366910-7525-logo.jpg'
+                //   }
 
                 resolve(responseData);
             }
@@ -46,7 +58,7 @@ function uploadFile(filePath) {
     });
 }
 
-function deleteFile(filePath) {
+export function deleteFile(filePath) {
     let path = filePath.split(STORAGE_HOST + '/')[1];
     const params = {
         Bucket: spaceName,
@@ -66,8 +78,3 @@ function deleteFile(filePath) {
         });
     });
 }
-
-module.exports = {
-    uploadFile,
-    deleteFile,
-};

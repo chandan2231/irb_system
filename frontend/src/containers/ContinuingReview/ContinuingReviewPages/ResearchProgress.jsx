@@ -18,7 +18,8 @@ import * as yup from 'yup'
 import { researchProcessSave } from '../../../services/ContinuinReview/ContinuinReviewService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -41,7 +42,7 @@ const researchProcessSchema = yup.object().shape({
     subjecte_completed: yup.string().required("This is required"),
 })
 
-function ResearchProgress({continuinReviewDetails}) {
+function ResearchProgress({ continuinReviewDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -73,54 +74,58 @@ function ResearchProgress({continuinReviewDetails}) {
 
     const handleAdverseEventSubmission = (event, radio_name) => {
         if (radio_name === 'adverse_event_submission' && event.target.value === 'No') {
-			setShowAdverseEventAdditionalQuestion(true)
-		} else if (radio_name === 'adverse_event_submission' && event.target.value === 'Yes') {
-			setShowAdverseEventAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowAdverseEventAdditionalQuestion(true)
+        } else if (radio_name === 'adverse_event_submission' && event.target.value === 'Yes') {
+            setShowAdverseEventAdditionalQuestion(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleLastApprovalChange = (event, radio_name) => {
         if (radio_name === 'last_approval_change' && event.target.value === 'Yes') {
-			setShowLastApprovalChangeAdditionalQuestion(true)
-		} else if (radio_name === 'last_approval_change' && event.target.value === 'No') {
-			setShowLastApprovalChangeAdditionalQuestion(false)
-			setShowLastApprovalChangeReportAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowLastApprovalChangeAdditionalQuestion(true)
+        } else if (radio_name === 'last_approval_change' && event.target.value === 'No') {
+            setShowLastApprovalChangeAdditionalQuestion(false)
+            setShowLastApprovalChangeReportAdditionalQuestion(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleLastApprovalChangeReport = (event, radio_name) => {
         if (radio_name === 'last_approval_change_report' && event.target.value === 'No') {
-			setShowLastApprovalChangeReportAdditionalQuestion(true)
-		} else if (radio_name === 'last_approval_change_report' && event.target.value === 'Yes') {
-			setShowLastApprovalChangeReportAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-    
-    
+            setShowLastApprovalChangeReportAdditionalQuestion(true)
+        } else if (radio_name === 'last_approval_change_report' && event.target.value === 'Yes') {
+            setShowLastApprovalChangeReportAdditionalQuestion(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
+
+
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await researchProcessSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await researchProcessSchema.validate(formData, { abortEarly: false });
             const isValid = await researchProcessSchema.isValid(getValidatedform)
             console.log('formData', formData)
-            if(isValid === true){
-                dispatch(researchProcessSave(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+            if (isValid === true) {
+                let q3_supporting_documents = ''
+                if (formData.q3_supporting_documents) {
+                    q3_supporting_documents = await uploadFile(formData.q3_supporting_documents)
+                }
+                dispatch(researchProcessSave({ ...formData, q3_supporting_documents }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -131,27 +136,27 @@ function ResearchProgress({continuinReviewDetails}) {
         }
     }
 
-    
-	return (
+
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <h4>Question 1</h4>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Total Subjects Enrolled *" id="subjects_enrolled" name="subjects_enrolled" onChange={handleChange} />
                     </Box>
                     {errors.subjects_enrolled && <div className="error">{errors.subjects_enrolled}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="How many subjects have discontinued their participation? *" id="discontinued_subjects" name="discontinued_subjects" onChange={handleChange} />
                     </Box>
                     {errors.discontinued_subjects && <div className="error">{errors.discontinued_subjects}</div>}
                 </Form.Group>
-                <div style={{marginLeft: '0px'}}>
+                <div style={{ marginLeft: '0px' }}>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                        <Box sx={{width: '100%', maxWidth: '100%'}}>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
                             <TextField fullWidth label="Out of that number, how many subjects withdrew of their own accord *" id="sub_withdrew" name="sub_withdrew" onChange={handleChange} />
                         </Box>
                         {errors.sub_withdrew && <div className="error">{errors.sub_withdrew}</div>}
@@ -161,7 +166,7 @@ function ResearchProgress({continuinReviewDetails}) {
                             <div>
                                 <FormLabel>Describe the reasons for withdrawal *</FormLabel>
                                 <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                         <TextField variant="outlined" placeholder="Explain" fullWidth name="withdrawal_reason_explain" id='withdrawal_reason_explain' rows={3} multiline onChange={handleChange} />
                                     </Box>
                                     {errors.withdrawal_reason_explain_error && <div className="error">{errors.withdrawal_reason_explain_error}</div>}
@@ -170,7 +175,7 @@ function ResearchProgress({continuinReviewDetails}) {
                         )
                     }
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                        <Box sx={{width: '100%', maxWidth: '100%'}}>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
                             <TextField fullWidth label="how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel *" id="sub_terminated_before_completion" name="sub_terminated_before_completion" onChange={handleChange} />
                         </Box>
                         {errors.sub_terminated_before_completion && <div className="error">{errors.sub_terminated_before_completion}</div>}
@@ -180,11 +185,11 @@ function ResearchProgress({continuinReviewDetails}) {
                             <div>
                                 <FormLabel>Describe the reasons for termination *</FormLabel>
                                 <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                         <TextField variant="outlined" placeholder="Explain" fullWidth name="termination_reason_explain" id='termination_reason_explain' rows={3} multiline onChange={handleChange} />
                                     </Box>
                                     {errors.termination_reason_explain_error && <div className="error">{errors.termination_reason_explain_error}</div>}
-                                    
+
                                 </Form.Group>
                             </div>
                         )
@@ -192,7 +197,7 @@ function ResearchProgress({continuinReviewDetails}) {
                 </div>
                 <h4>Question 3</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="How many adverse events have occurred since the last approval?*" id="occured_adverse_event" name="occured_adverse_event" onChange={handleChange} />
                     </Box>
                     {errors.occured_adverse_event && <div className="error">{errors.occured_adverse_event}</div>}
@@ -207,28 +212,28 @@ function ResearchProgress({continuinReviewDetails}) {
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdverseEventAdditionalQuestion === true  && (
+                    showAdverseEventAdditionalQuestion === true && (
                         <>
                             <div className='mt-mb-20'>
                                 <FormLabel>What was the reason the adverse events were not reported to the IRB?*</FormLabel>
                                 <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                         <TextField variant="outlined" placeholder="Explain" fullWidth name="adverse_event_not_reported_explain" id='adverse_event_not_reported_explain' rows={3} multiline onChange={handleChange} />
                                     </Box>
                                     {errors.adverse_event_not_reported_explain_error && <div className="error">{errors.adverse_event_not_reported_explain_error}</div>}
-                                    
+
                                 </Form.Group>
                             </div>
                             <div className='mt-mb-20'>
                                 <FormLabel>Please describe the adverse events including what occurred, the timeline in which it occurred, and the time at which the study personnel became aware of the adverse event*</FormLabel>
                                 <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                         <TextField variant="outlined" placeholder="Explain" fullWidth name="adverse_event_explain" id='adverse_event_explain' rows={3} multiline onChange={handleChange} />
                                     </Box>
                                     {errors.adverse_event_explain_error && <div className="error">{errors.adverse_event_explain_error}</div>}
                                 </Form.Group>
                             </div>
-                            
+
                             <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                                 <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload any supporting documents</InputLabel>
                                 <Button
@@ -239,16 +244,26 @@ function ResearchProgress({continuinReviewDetails}) {
                                     startIcon={<CloudUploadIcon />}
                                 >
                                     Upload file
-                                    <VisuallyHiddenInput type="file" />
+                                    <VisuallyHiddenInput
+                                        type="file"
+                                        name='q3_supporting_documents'
+                                        onChange={e => {
+                                            if (e.target.files && e.target.files.length) {
+                                                setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                            }
+                                        }}
+                                    />
                                 </Button>
+                                {formData.q3_supporting_documents && <div>{formData.q3_supporting_documents?.name}</div>}
+                                {errors.q3_supporting_documents && <div className="error">{errors.q3_supporting_documents}</div>}
                             </Form.Group>
                         </>
                     )
                 }
                 <h4>Question 4</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many subject have completed the study per protocol?*" id="subjecte_completed" name="subjecte_completed"  onChange={handleChange}/>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                        <TextField fullWidth label="How many subject have completed the study per protocol?*" id="subjecte_completed" name="subjecte_completed" onChange={handleChange} />
                     </Box>
                     {errors.subjecte_completed && <div className="error">{errors.subjecte_completed}</div>}
                 </Form.Group>
@@ -280,7 +295,7 @@ function ResearchProgress({continuinReviewDetails}) {
                         <div className='mt-mb-20'>
                             <FormLabel>What is the reason the changes have not reported to the IRB?*</FormLabel>
                             <Form.Group as={Col} controlId="validationFormik03">
-                                <Box sx={{width: '100%', maxWidth: '100%'}}>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <TextField variant="outlined" placeholder="Explain" fullWidth name="changes_not_reported_to_irb" id='changes_not_reported_to_irb' rows={3} multiline onChange={handleChange} />
                                 </Box>
                                 {errors.changes_not_reported_to_irb_error && <div className="error">{errors.changes_not_reported_to_irb_error}</div>}
@@ -288,7 +303,7 @@ function ResearchProgress({continuinReviewDetails}) {
                         </div>
                     )
                 }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -299,7 +314,7 @@ function ResearchProgress({continuinReviewDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default ResearchProgress

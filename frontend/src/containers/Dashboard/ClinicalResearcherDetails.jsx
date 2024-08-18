@@ -5,11 +5,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import ProtocolInformationForm from '../Dashboard/ProtocolType/ClinicalResearcher/ProtocolInformationForm'
 import InvestigatorInformationForm from '../Dashboard/ProtocolType/ClinicalResearcher/InvestigatorInformationForm';
-import StudyInformationForm from '../Dashboard/ProtocolType/ClinicalResearcher/StudyInformationForm';
 import InformedConsentForm from '../Dashboard/ProtocolType/ClinicalResearcher/InformedConsentForm';
-import ProtocolProceduresForm from '../Dashboard/ProtocolType/ClinicalResearcher/ProtocolProceduresForm';
 import SubmissionForm from '../Dashboard/ProtocolType/ClinicalResearcher/SubmissionForm';
 import { useLocation } from "react-router-dom";
 

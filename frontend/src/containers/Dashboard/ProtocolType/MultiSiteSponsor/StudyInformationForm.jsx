@@ -15,7 +15,8 @@ import Grid from '@mui/material/Grid';
 import { createStudyInformation } from '../../../../services/ProtocolType/MultiSiteSponsorService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -27,21 +28,21 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
 const studyInfoSchema = yup.object().shape({
     research_type: yup.string().required("This is required"),
 })
 
-function StudyInformationForm({protocolTypeDetails}) {
+function StudyInformationForm({ protocolTypeDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = JSON.parse(localStorage.getItem('user'));
     const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
-	const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
     const [explainErrors, setExplainErrors] = useState();
-    
+
     const [formData, setFormData] = useState({
         research_type: '',
         research_type_explain: '',
@@ -49,40 +50,44 @@ function StudyInformationForm({protocolTypeDetails}) {
         created_by: userDetails.id,
     });
 
-    
+
     const handleSelectResearchType = (event, select_name) => {
-        if(event.target.value === 'Other' && select_name === 'research_type'){
+        if (event.target.value === 'Other' && select_name === 'research_type') {
             setShowOtherQuestion(true)
         } else {
             setShowOtherQuestion(false)
         }
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
-	
-	const handleSubmitData = async (e) => {
+
+    const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(formData.research_type !== '' && formData.research_type === 'Other' && formData.research_type_explain === ""){
+            if (formData.research_type !== '' && formData.research_type === 'Other' && formData.research_type_explain === "") {
                 setExplainErrors('This is required')
                 return
             } else {
                 setExplainErrors('')
             }
-            const getValidatedform = await studyInfoSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await studyInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await studyInfoSchema.isValid(getValidatedform)
-            if(isValid === true){
-                dispatch(createStudyInformation(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+            if (isValid === true) {
+                let ingredient_list = ''
+                if (formData.ingredient_list) {
+                    ingredient_list = await uploadFile(formData.ingredient_list)
+                }
+                dispatch(createStudyInformation({ ...formData, ingredient_list }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -92,17 +97,17 @@ function StudyInformationForm({protocolTypeDetails}) {
             setErrors(newErrors);
         }
     };
-    
-	return (
+
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">What type of research study are you submitting *</InputLabel>
-                    <Select 
-                        autoWidth 
-                        labelId="demo-simple-select-autowidth-label" 
-                        id="demo-simple-select-autowidth" 
-                        value={formData.research_type} 
+                    <Select
+                        autoWidth
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={formData.research_type}
                         onChange={(event) => handleSelectResearchType(event, 'research_type')}
                         label="What type of research study are you submitting"
                         name="research_type"
@@ -122,8 +127,8 @@ function StudyInformationForm({protocolTypeDetails}) {
                 {
                     showOtherQuestion === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainErrors && <div className="error">{explainErrors}</div>}
                         </Form.Group>
@@ -139,10 +144,20 @@ function StudyInformationForm({protocolTypeDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='ingredient_list'
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.ingredient_list && <div>{formData.ingredient_list?.name}</div>}
+                    {errors.ingredient_list && <div className="error">{errors.ingredient_list}</div>}
                 </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -153,7 +168,7 @@ function StudyInformationForm({protocolTypeDetails}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default StudyInformationForm

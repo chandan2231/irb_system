@@ -18,7 +18,8 @@ import * as yup from 'yup'
 import { createProtocolProcedures } from '../../../../services/ProtocolType/ClinicalResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { uploadFile } from '../../../../services/UserManagement/UserService';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -30,16 +31,16 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
 const protocolProcedureInfoSchema = yup.object().shape({
     enrolled_subject: yup.string().required("This is required"),
     research_place_name_address: yup.string().required("This is required"),
 })
 
-  
 
-function ProtocolProceduresForm({protocolTypeDetails}) {
+
+function ProtocolProceduresForm({ protocolTypeDetails }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
     const [showStudyExcludedAdditionTextArea, setShowStudyExcludedAdditionTextArea] = React.useState(false);
     const [showAdditionalQuestionRecuritmentMethod, setShowAdditionalQuestionRecuritmentMethod] = React.useState(false);
     const [showFutureResearchAdditionTextArea, setShowFutureResearchAdditionTextArea] = React.useState(false);
-	const [termsSelected, setTermsSelected] = React.useState(false);
+    const [termsSelected, setTermsSelected] = React.useState(false);
     const [explainEnrolledTypeErrors, setExplainEnrolledTypeErrors] = React.useState();
     const [explainEnrolledGroupErrors, setExplainEnrolledGroupErrors] = React.useState();
     const [explainRecurementMethodErrors, setExplainRecurementMethodErrors] = React.useState();
@@ -74,52 +75,59 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
     });
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
-	
-	const handleSubmitData = async (e) => {
+
+    const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === ""){
+            if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
                 setExplainEnrolledTypeErrors('This is required')
                 return
             } else {
                 setExplainEnrolledTypeErrors('')
             }
-            if(formData.enrolled_group.includes('9') && formData.enrolled_group_explain === ""){
+            if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
                 setExplainEnrolledGroupErrors('This is required')
                 return
             } else {
                 setExplainEnrolledGroupErrors('')
             }
-            if(formData.study_excluded !== '' && formData.study_excluded === 'Yes' && formData.study_excluded_explain === ""){
+            if (formData.study_excluded !== '' && formData.study_excluded === 'Yes' && formData.study_excluded_explain === "") {
                 setExplainStudyExcludeErrors('This is required')
                 return
             } else {
                 setExplainStudyExcludeErrors('')
             }
-            if(formData.recurement_method.includes('10') && formData.recurement_method_explain === ""){
+            if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
                 setExplainRecurementMethodErrors('This is required')
                 return
             } else {
                 setExplainRecurementMethodErrors('')
             }
-            if(formData.future_research !== '' && formData.future_research === 'Yes' && formData.future_research_explain === ""){
+            if (formData.future_research !== '' && formData.future_research === 'Yes' && formData.future_research_explain === "") {
                 setExplainFutureResearchErrors('This is required')
                 return
             } else {
                 setExplainFutureResearchErrors('')
             }
-            const getValidatedform = await protocolProcedureInfoSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await protocolProcedureInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocolProcedureInfoSchema.isValid(getValidatedform)
-            if(isValid === true){
-                dispatch(createProtocolProcedures(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+            if (isValid === true) {
+                let facing_materials = ''
+                if (formData.facing_materials) {
+                    facing_materials = await uploadFile(formData.facing_materials)
+                }
+                else {
+                    return setErrors({ ...errors, facing_materials: "This is required" })
+                }
+                dispatch(createProtocolProcedures({ ...formData, facing_materials }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -131,10 +139,10 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
     };
 
     const handleSbujectStudyChecked = (event) => {
-        const {value, checked} = event.target
-        if(checked === true && value === '20'){
+        const { value, checked } = event.target
+        if (checked === true && value === '20') {
             setShowAdditionalQuestionStudyType(true)
-        } else if (checked === false && value === '20'){
+        } else if (checked === false && value === '20') {
             setShowAdditionalQuestionStudyType(false)
         }
         let updatedStudyTypeChecked = [...formData.enrolled_study_type];
@@ -142,17 +150,17 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
             updatedStudyTypeChecked.push(value);
         } else {
             updatedStudyTypeChecked = updatedStudyTypeChecked.filter(
-            (item) => item !== value
-          );
+                (item) => item !== value
+            );
         }
-        setFormData({...formData, enrolled_study_type: updatedStudyTypeChecked});
+        setFormData({ ...formData, enrolled_study_type: updatedStudyTypeChecked });
     }
 
     const handleRaceAndEthnicChecked = (event) => {
-        const {value, checked} = event.target
-        if(checked === true && value === '9'){
+        const { value, checked } = event.target
+        if (checked === true && value === '9') {
             setShowAdditionalQuestionRaceAndEthnic(true)
-        } else if (checked === false && value === '9'){
+        } else if (checked === false && value === '9') {
             setShowAdditionalQuestionRaceAndEthnic(false)
         }
         let updatedGroupsChecked = [...formData.enrolled_group];
@@ -160,27 +168,27 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
             updatedGroupsChecked.push(value);
         } else {
             updatedGroupsChecked = updatedGroupsChecked.filter(
-            (item) => item !== value
-          );
+                (item) => item !== value
+            );
         }
-        setFormData({...formData, enrolled_group: updatedGroupsChecked});
+        setFormData({ ...formData, enrolled_group: updatedGroupsChecked });
     }
 
     const handleRadioButtonStudyExcluded = (event, radio_name) => {
         if (radio_name === 'study_excluded' && event.target.value === 'Yes') {
-			setShowStudyExcludedAdditionTextArea(true)
-		} else if (radio_name === 'study_excluded' && event.target.value === 'No') {
-			setShowStudyExcludedAdditionTextArea(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+            setShowStudyExcludedAdditionTextArea(true)
+        } else if (radio_name === 'study_excluded' && event.target.value === 'No') {
+            setShowStudyExcludedAdditionTextArea(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
     const handleRecuritmentMethodChecked = (event) => {
-        const {value, checked} = event.target
-        if(checked === true && value === '10'){
+        const { value, checked } = event.target
+        if (checked === true && value === '10') {
             setShowAdditionalQuestionRecuritmentMethod(true)
-        } else if (checked === false && value === '10'){
+        } else if (checked === false && value === '10') {
             setShowAdditionalQuestionRecuritmentMethod(false)
         }
         let updatedCheckedItem = [...formData.recurement_method];
@@ -188,33 +196,33 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
             updatedCheckedItem.push(value);
         } else {
             updatedCheckedItem = updatedCheckedItem.filter(
-            (item) => item !== value
-          );
+                (item) => item !== value
+            );
         }
-        setFormData({...formData, recurement_method: updatedCheckedItem});
+        setFormData({ ...formData, recurement_method: updatedCheckedItem });
     }
 
     const handleRadioButtonSelectFutureResearch = (event, radio_name) => {
         if (radio_name === 'future_research' && event.target.value === 'Yes') {
-			setShowFutureResearchAdditionTextArea(true)
-		} else if (radio_name === 'future_research' && event.target.value === 'No') {
-			setShowFutureResearchAdditionTextArea(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-    
+            setShowFutureResearchAdditionTextArea(true)
+        } else if (radio_name === 'future_research' && event.target.value === 'No') {
+            setShowFutureResearchAdditionTextArea(false)
+        }
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
+
     const handleTearmChecked = (event) => {
-        const {checked} = event.target
-        if(checked === true){
+        const { checked } = event.target
+        if (checked === true) {
             setTermsSelected(true)
-        } else if (checked === false){
+        } else if (checked === false) {
             setTermsSelected(false)
         }
     }
 
-	return (
-		<Row>
+    return (
+        <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
@@ -246,14 +254,14 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                 {
                     showAdditionalQuestionStudyType === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='enrolled_type_explain' name="enrolled_type_explain" rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='enrolled_type_explain' name="enrolled_type_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainEnrolledTypeErrors && <div className="error">{explainEnrolledTypeErrors}</div>}
                         </Form.Group>
                     )
                 }
-                
+
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Which race and ethnic groups will be enrolled in the study?</FormLabel>
@@ -273,8 +281,8 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                 {
                     showAdditionalQuestionRaceAndEthnic === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='enrolled_group_explain' name="enrolled_group_explain" rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='enrolled_group_explain' name="enrolled_group_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainEnrolledGroupErrors && <div className="error">{explainEnrolledGroupErrors}</div>}
                         </Form.Group>
@@ -292,15 +300,15 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                 {
                     showStudyExcludedAdditionTextArea === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='study_excluded_explain' name="study_excluded_explain" rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='study_excluded_explain' name="study_excluded_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainStudyExcludeErrors && <div className="error">{explainStudyExcludeErrors}</div>}
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="How many subjects will be enrolled in the study? *" id="enrolled_subject" name="enrolled_subject" onChange={handleChange} />
                     </Box>
                     {errors.enrolled_subject && <div className="error">{errors.enrolled_subject}</div>}
@@ -325,16 +333,16 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                 {
                     showAdditionalQuestionRecuritmentMethod === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='recurement_method_explain' name="recurement_method_explain" rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='recurement_method_explain' name="recurement_method_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainRecurementMethodErrors && <div className="error">{explainRecurementMethodErrors}</div>}
                         </Form.Group>
                     )
                 }
-                
+
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label=" What is the location(s) name and address where the research procedures will take place? *" id="research_place_name_address" name="research_place_name_address" onChange={handleChange} />
                     </Box>
                     {errors.research_place_name_address && <div className="error">{errors.research_place_name_address}</div>}
@@ -351,15 +359,15 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                 {
                     showFutureResearchAdditionTextArea === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *" fullWidth id='future_research_explain' name="future_research_explain" rows={3} multiline onChange={handleChange} />
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *" fullWidth id='future_research_explain' name="future_research_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
                             {explainFutureResearchErrors && <div className="error">{explainFutureResearchErrors}</div>}
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment and subject-facing materials</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment and subject-facing materials *</InputLabel>
                     <Button
                         component="label"
                         role={undefined}
@@ -368,8 +376,19 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                         startIcon={<CloudUploadIcon />}
                     >
                         Upload file
-                        <VisuallyHiddenInput type="file" />
+                        <VisuallyHiddenInput
+                            type="file"
+                            name='facing_materials'
+                            required
+                            onChange={e => {
+                                if (e.target.files && e.target.files.length) {
+                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                }
+                            }}
+                        />
                     </Button>
+                    {formData.facing_materials && <div>{formData.facing_materials?.name}</div>}
+                    {errors.facing_materials && <div className="error">{errors.facing_materials}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
@@ -379,7 +398,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                         </FormGroup>
                     </FormControl>
                 </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -390,8 +409,8 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                     </Button>
                 </Form.Group>
             </form>
-		</Row>
-	)
+        </Row>
+    )
 }
 
 export default ProtocolProceduresForm
