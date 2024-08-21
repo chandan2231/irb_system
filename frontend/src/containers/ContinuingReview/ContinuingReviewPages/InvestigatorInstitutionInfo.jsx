@@ -189,10 +189,10 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             if (isValid === true) {
-                let q1_supporting_documents = ''
-                let q2_supporting_documents = ''
-                let q3_supporting_documents = ''
-                let q4_supporting_documents = ''
+                let q1_supporting_documents = []
+                let q2_supporting_documents = []
+                let q3_supporting_documents = []
+                let q4_supporting_documents = []
                 if (!formData.q1_supporting_documents) {
                     return setErrors({ ...errors, ['q1_supporting_documents']: 'This is required' });
                 }
@@ -203,11 +203,23 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                     return setErrors({ ...errors, ['q4_supporting_documents']: 'This is required' });
                 }
                 else {
-                    q1_supporting_documents = await uploadFile(formData.q1_supporting_documents)
-                    q2_supporting_documents = await uploadFile(formData.q2_supporting_documents)
-                    q4_supporting_documents = await uploadFile(formData.q4_supporting_documents)
+                    for (let file of formData.q1_supporting_documents) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        q1_supporting_documents.push(id)
+                    }
+                    for (let file of formData.q2_supporting_documents) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        q2_supporting_documents.push(id)
+                    }
+                    for (let file of formData.q4_supporting_documents) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        q4_supporting_documents.push(id)
+                    }
                     if (formData.q3_supporting_documents) {
-                        q3_supporting_documents = await uploadFile(formData.q3_supporting_documents)
+                        for (let file of formData.q3_supporting_documents) {
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                            q3_supporting_documents.push(id)
+                        }
                     }
                 }
                 dispatch(investigatorAndinstuationSave({ ...formData, q1_supporting_documents, q2_supporting_documents, q3_supporting_documents, q4_supporting_documents }))
@@ -271,12 +283,12 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.q1_supporting_documents && <div>{formData.q1_supporting_documents?.name}</div>}
+                    {formData?.q1_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
@@ -315,12 +327,12 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.q2_supporting_documents && <div>{formData.q2_supporting_documents?.name}</div>}
+                    {formData?.q2_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q2_supporting_documents && <div className="error">{errors.q2_supporting_documents}</div>}
 
                 </Form.Group>
@@ -375,12 +387,12 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             name='q3_supporting_documents'
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.q3_supporting_documents && <div>{formData.q3_supporting_documents?.name}</div>}
+                    {formData?.q3_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q3_supporting_documents && <div className="error">{errors.q3_supporting_documents}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -440,12 +452,12 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.q4_supporting_documents && <div>{formData.q4_supporting_documents?.name}</div>}
+                    {formData?.q4_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q4_supporting_documents && <div className="error">{errors.q4_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 5</h4>

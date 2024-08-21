@@ -116,9 +116,12 @@ function ResearchProgress({ continuinReviewDetails }) {
             const isValid = await researchProcessSchema.isValid(getValidatedform)
             console.log('formData', formData)
             if (isValid === true) {
-                let q3_supporting_documents = ''
+                let q3_supporting_documents = []
                 if (formData.q3_supporting_documents) {
-                    q3_supporting_documents = await uploadFile(formData.q3_supporting_documents)
+                    for (let file of formData.q3_supporting_documents) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        q3_supporting_documents.push(id)
+                    }
                 }
                 dispatch(researchProcessSave({ ...formData, q3_supporting_documents }))
                     .then(data => {
@@ -249,12 +252,12 @@ function ResearchProgress({ continuinReviewDetails }) {
                                         name='q3_supporting_documents'
                                         onChange={e => {
                                             if (e.target.files && e.target.files.length) {
-                                                setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                                setFormData({ ...formData, [e.target.name]: e.target.files });
                                             }
                                         }}
                                     />
                                 </Button>
-                                {formData.q3_supporting_documents && <div>{formData.q3_supporting_documents?.name}</div>}
+                                {formData?.q3_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                                 {errors.q3_supporting_documents && <div className="error">{errors.q3_supporting_documents}</div>}
                             </Form.Group>
                         </>

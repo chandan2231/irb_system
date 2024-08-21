@@ -124,8 +124,8 @@ function InformedConsentProcess({ continuinReviewDetails }) {
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             if (isValid === true) {
-                let icf_file = ''
-                let consent_form = ''
+                let icf_file = []
+                let consent_form = []
                 if (!formData.icf_file) {
                     return setErrors({ ...errors, ['icf_file']: 'This is required' });
                 }
@@ -133,8 +133,14 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                     return setErrors({ ...errors, ['consent_form']: 'This is required' });
                 }
                 else {
-                    icf_file = await uploadFile(formData.protocol_file)
-                    consent_form = await uploadFile(formData.consent_form)
+                    for (let file of formData.icf_file) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        icf_file.push(id)
+                    }
+                    for (let file of formData.consent_form) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        consent_form.push(id)
+                    }
                 }
                 dispatch(informedConsentSave({ ...formData, icf_file, consent_form }))
                     .then(data => {
@@ -177,12 +183,12 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.icf_file && <div>{formData.icf_file?.name}</div>}
+                    {formData?.icf_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.icf_file && <div className="error">{errors.icf_file}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
@@ -251,12 +257,12 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.consent_form && <div>{formData.consent_form?.name}</div>}
+                    {formData?.consent_form?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.consent_form && <div className="error">{errors.consent_form}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">

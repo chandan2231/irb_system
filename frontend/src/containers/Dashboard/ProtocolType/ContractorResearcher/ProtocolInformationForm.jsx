@@ -135,12 +135,15 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
             const isValid = await protocoalInfoSchema.isValid(getValidatedform)
 
             if (isValid === true) {
-                let protocol_file = ''
+                let protocol_file = []
                 if (!formData.protocol_file) {
                     return setErrors({ ...errors, ['protocol_file']: 'This is required' });
                 }
                 else {
-                    protocol_file = await uploadFile(formData.protocol_file)
+                    for (let file of formData.protocol_file) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        protocol_file.push(id)
+                    }
                 }
                 dispatch(createProtocolInformation({ ...formData, protocol_file }))
                     .then(data => {
@@ -338,12 +341,12 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                         required
                                         onChange={e => {
                                             if (e.target.files && e.target.files.length) {
-                                                setFormData({ ...formData, protocol_file: e.target.files[0] });
+                                                setFormData({ ...formData, protocol_file: e.target.files });
                                             }
                                         }}
                                     />
                                 </Button>
-                                {formData.protocol_file && <div>{formData.protocol_file?.name}</div>}
+                                {formData?.protocol_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
                                 {errors.protocol_file && <div className="error">{errors.protocol_file}</div>}
                             </Grid>
                         </Grid>

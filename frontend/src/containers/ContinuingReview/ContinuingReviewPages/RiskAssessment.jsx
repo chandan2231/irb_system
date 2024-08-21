@@ -94,9 +94,12 @@ function RiskAssessment({ continuinReviewDetails }) {
             const isValid = await riskAssessmentSchema.isValid(getValidatedform)
             console.log('formData', formData)
             if (isValid === true) {
-                let q1_supporting_documents = ''
+                let q1_supporting_documents = []
                 if (formData.q1_supporting_documents) {
-                    q1_supporting_documents = await uploadFile(formData.q1_supporting_documents)
+                    for (let file of formData.q1_supporting_documents) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        q1_supporting_documents.push(id)
+                    }
                 }
                 else {
                     return setErrors({ ...errors, q1_supporting_documents: "This is required" })
@@ -157,12 +160,12 @@ function RiskAssessment({ continuinReviewDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.q1_supporting_documents && <div>{formData.q1_supporting_documents?.name}</div>}
+                    {formData?.q1_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>

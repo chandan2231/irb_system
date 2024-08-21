@@ -113,9 +113,12 @@ function ProtocolProceduresForm() {
                 setExplainFutureResearchErrors('')
             }
             if (isValid === true) {
-                let material_file = ''
+                let material_file = []
                 if (formData.material_file) {
-                    material_file = await uploadFile(formData.material_file)
+                    for (let file of formData.material_file) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        material_file.push(id)
+                    }
                 }
                 else {
                     return setErrors({ ...errors, material_file: "This is required" })
@@ -397,12 +400,12 @@ function ProtocolProceduresForm() {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.material_file && <div>{formData.material_file?.name}</div>}
+                    {formData?.material_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.material_file && <div className="error">{errors.material_file}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">

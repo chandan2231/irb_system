@@ -141,19 +141,28 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
             console.log('formData', formData)
             console.log('isValid', isValid)
             if (isValid === true) {
-                let cv_files = ''
-                let medical_license = ''
-                let training_certificates = ''
+                let cv_files = []
+                let medical_license = []
+                let training_certificates = []
                 if (!formData.cv_files) {
                     return setErrors({ ...errors, ['cv_files']: 'This is required' });
                 }
                 else {
-                    cv_files = await uploadFile(formData.cv_files)
+                    for (let file of formData.cv_files) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        cv_files.push(id)
+                    }
                     if (formData.medical_license) {
-                        medical_license = await uploadFile(formData.medical_license)
+                        for (let file of formData.medical_license) {
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                            medical_license.push(id)
+                        }
                     }
                     if (formData.training_certificates) {
-                        training_certificates = await uploadFile(formData.training_certificates)
+                        for (let file of formData.training_certificates) {
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                            training_certificates.push(id)
+                        }
                     }
                 }
                 dispatch(createInvestigatorInformation({ ...formData, cv_files, medical_license, training_certificates }))
@@ -350,12 +359,12 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                             required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.cv_files && <div>{formData.cv_files?.name}</div>}
+                    {formData?.cv_files?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.cv_files && <div className="error">{errors.cv_files}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -373,12 +382,12 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                             name='medical_license'
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.medical_license && <div>{formData.medical_license?.name}</div>}
+                    {formData?.medical_license?.map((file, i) => <div key={i}>{file?.name}</div>)}
                     {errors.medical_license && <div className="error">{errors.medical_license}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -393,16 +402,16 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                         Upload file
                         <VisuallyHiddenInput
                             type="file"
-                            name='training_certificate'
+                            name='training_certificates'
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+                                    setFormData({ ...formData, [e.target.name]: e.target.files });
                                 }
                             }}
                         />
                     </Button>
-                    {formData.training_certificate && <div>{formData.training_certificate?.name}</div>}
-                    {errors.training_certificate && <div className="error">{errors.training_certificate}</div>}
+                    {formData?.training_certificates?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                    {errors.training_certificates && <div className="error">{errors.training_certificates}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
