@@ -12,9 +12,6 @@ import InputLabel from '@mui/material/InputLabel';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
-import * as yup from 'yup'
 import { researchProcessSave } from '../../../../services/ContinuinReview/ContinuinReviewService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,25 +29,11 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const researchProcessSchema = yup.object().shape({
-    subjects_enrolled: yup.string().required("This is required"),
-    discontinued_subjects: yup.string().required("This is required"),
-    sub_withdrew: yup.string().required("This is required"),
-    sub_terminated_before_completion: yup.string().required("This is required"),
-    occured_adverse_event: yup.string().required("This is required"),
-    subjecte_completed: yup.string().required("This is required"),
-})
-
-function ResearchProgress({continuinReviewDetails}) {
+function ResearchProgress({continuinReviewDetails, researchProgressDetails}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = JSON.parse(localStorage.getItem('user'));
-    const [showAdditionalQuestionWithdrew, setShowAdditionalQuestionWithdrew] = React.useState(1);
-    const [showAdditionalQuestionTerminated, setShowAdditionalQuestionTerminated] = React.useState(1);
-    const [showAdverseEventAdditionalQuestion, setShowAdverseEventAdditionalQuestion] = React.useState(false);
-    const [showLastApprovalChangeAdditionalQuestion, setShowLastApprovalChangeAdditionalQuestion] = React.useState(false);
-    const [showLastApprovalChangeReportAdditionalQuestion, setShowLastApprovalChangeReportAdditionalQuestion] = React.useState(false);
     const [formData, setFormData] = useState({
         subjects_enrolled: '',
         discontinued_subjects: '',
@@ -70,38 +53,6 @@ function ResearchProgress({continuinReviewDetails}) {
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-
-    const handleAdverseEventSubmission = (event, radio_name) => {
-        if (radio_name === 'adverse_event_submission' && event.target.value === 'No') {
-			setShowAdverseEventAdditionalQuestion(true)
-		} else if (radio_name === 'adverse_event_submission' && event.target.value === 'Yes') {
-			setShowAdverseEventAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleLastApprovalChange = (event, radio_name) => {
-        if (radio_name === 'last_approval_change' && event.target.value === 'Yes') {
-			setShowLastApprovalChangeAdditionalQuestion(true)
-		} else if (radio_name === 'last_approval_change' && event.target.value === 'No') {
-			setShowLastApprovalChangeAdditionalQuestion(false)
-			setShowLastApprovalChangeReportAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleLastApprovalChangeReport = (event, radio_name) => {
-        if (radio_name === 'last_approval_change_report' && event.target.value === 'No') {
-			setShowLastApprovalChangeReportAdditionalQuestion(true)
-		} else if (radio_name === 'last_approval_change_report' && event.target.value === 'Yes') {
-			setShowLastApprovalChangeReportAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-    
     
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -131,61 +82,46 @@ function ResearchProgress({continuinReviewDetails}) {
         }
     }
 
-    
+    console.log('researchProgressDetails', researchProgressDetails)
 	return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <h4>Question 1</h4>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Total Subjects Enrolled *" id="subjects_enrolled" name="subjects_enrolled" onChange={handleChange} />
+                        <TextField fullWidth label="Total Subjects Enrolled *" id="subjects_enrolled" name="subjects_enrolled" value={researchProgressDetails?.subjects_enrolled} />
                     </Box>
-                    {errors.subjects_enrolled && <div className="error">{errors.subjects_enrolled}</div>}
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many subjects have discontinued their participation? *" id="discontinued_subjects" name="discontinued_subjects" onChange={handleChange} />
+                        <TextField fullWidth label="How many subjects have discontinued their participation? *" id="discontinued_subjects" name="discontinued_subjects" value={researchProgressDetails?.discontinued_subjects} />
                     </Box>
-                    {errors.discontinued_subjects && <div className="error">{errors.discontinued_subjects}</div>}
                 </Form.Group>
                 <div style={{marginLeft: '0px'}}>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{width: '100%', maxWidth: '100%'}}>
-                            <TextField fullWidth label="Out of that number, how many subjects withdrew of their own accord *" id="sub_withdrew" name="sub_withdrew" onChange={handleChange} />
+                            <TextField fullWidth label="Out of that number, how many subjects withdrew of their own accord *" id="sub_withdrew" name="sub_withdrew" value={researchProgressDetails?.sub_withdrew} />
                         </Box>
-                        {errors.sub_withdrew && <div className="error">{errors.sub_withdrew}</div>}
                     </Form.Group>
                     {
-                        showAdditionalQuestionWithdrew >= 1 && (
-                            <div>
+                        researchProgressDetails?.sub_withdrew >= 1 && (
+                            <div className='mt-mb-20'>
                                 <FormLabel>Describe the reasons for withdrawal *</FormLabel>
-                                <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                        <TextField variant="outlined" placeholder="Explain" fullWidth name="withdrawal_reason_explain" id='withdrawal_reason_explain' rows={3} multiline onChange={handleChange} />
-                                    </Box>
-                                    {errors.withdrawal_reason_explain_error && <div className="error">{errors.withdrawal_reason_explain_error}</div>}
-                                </Form.Group>
+                                <h4>{researchProgressDetails?.withdrawal_reason_explain}</h4>
                             </div>
                         )
                     }
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{width: '100%', maxWidth: '100%'}}>
-                            <TextField fullWidth label="how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel *" id="sub_terminated_before_completion" name="sub_terminated_before_completion" onChange={handleChange} />
+                            <TextField fullWidth label="how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel *" id="sub_terminated_before_completion" name="sub_terminated_before_completion" value={researchProgressDetails?.sub_terminated_before_completion} />
                         </Box>
-                        {errors.sub_terminated_before_completion && <div className="error">{errors.sub_terminated_before_completion}</div>}
                     </Form.Group>
                     {
-                        showAdditionalQuestionTerminated >= 1 && (
-                            <div>
+                        researchProgressDetails?.sub_terminated_before_completion >= 1 && (
+                            <div className='mt-mb-20'>
                                 <FormLabel>Describe the reasons for termination *</FormLabel>
-                                <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                        <TextField variant="outlined" placeholder="Explain" fullWidth name="termination_reason_explain" id='termination_reason_explain' rows={3} multiline onChange={handleChange} />
-                                    </Box>
-                                    {errors.termination_reason_explain_error && <div className="error">{errors.termination_reason_explain_error}</div>}
-                                    
-                                </Form.Group>
+                                <h4>{researchProgressDetails?.termination_reason_explain}</h4>
                             </div>
                         )
                     }
@@ -193,40 +129,28 @@ function ResearchProgress({continuinReviewDetails}) {
                 <h4>Question 3</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many adverse events have occurred since the last approval?*" id="occured_adverse_event" name="occured_adverse_event" onChange={handleChange} />
+                        <TextField fullWidth label="How many adverse events have occurred since the last approval?*" id="occured_adverse_event" name="occured_adverse_event" value={researchProgressDetails?.occured_adverse_event} />
                     </Box>
-                    {errors.occured_adverse_event && <div className="error">{errors.occured_adverse_event}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have these adverse events been submitted to the IRB?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="adverse_event_submission" onChange={(event) => handleAdverseEventSubmission(event, 'adverse_event_submission')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="adverse_event_submission">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={researchProgressDetails?.adverse_event_submission === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={researchProgressDetails?.adverse_event_submission === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdverseEventAdditionalQuestion === true  && (
+                    researchProgressDetails?.adverse_event_submission === 'No'  && (
                         <>
                             <div className='mt-mb-20'>
                                 <FormLabel>What was the reason the adverse events were not reported to the IRB?*</FormLabel>
-                                <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                        <TextField variant="outlined" placeholder="Explain" fullWidth name="adverse_event_not_reported_explain" id='adverse_event_not_reported_explain' rows={3} multiline onChange={handleChange} />
-                                    </Box>
-                                    {errors.adverse_event_not_reported_explain_error && <div className="error">{errors.adverse_event_not_reported_explain_error}</div>}
-                                    
-                                </Form.Group>
+                                <h4>{researchProgressDetails?.adverse_event_not_reported_explain}</h4>
                             </div>
                             <div className='mt-mb-20'>
                                 <FormLabel>Please describe the adverse events including what occurred, the timeline in which it occurred, and the time at which the study personnel became aware of the adverse event*</FormLabel>
-                                <Form.Group as={Col} controlId="validationFormik03">
-                                    <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                        <TextField variant="outlined" placeholder="Explain" fullWidth name="adverse_event_explain" id='adverse_event_explain' rows={3} multiline onChange={handleChange} />
-                                    </Box>
-                                    {errors.adverse_event_explain_error && <div className="error">{errors.adverse_event_explain_error}</div>}
-                                </Form.Group>
+                                <h4>{researchProgressDetails?.adverse_event_explain}</h4>
                             </div>
                             
                             <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
@@ -248,43 +172,37 @@ function ResearchProgress({continuinReviewDetails}) {
                 <h4>Question 4</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many subject have completed the study per protocol?*" id="subjecte_completed" name="subjecte_completed"  onChange={handleChange}/>
+                        <TextField fullWidth label="How many subject have completed the study per protocol?*" id="subjecte_completed" name="subjecte_completed" value={researchProgressDetails?.subjecte_completed} />
                     </Box>
-                    {errors.subjecte_completed && <div className="error">{errors.subjecte_completed}</div>}
                 </Form.Group>
                 <h4>Question 5</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have there been any updates/changes to the protocol since the last approval?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="last_approval_change" onChange={(event) => handleLastApprovalChange(event, 'last_approval_change')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="last_approval_change">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={researchProgressDetails?.last_approval_change === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={researchProgressDetails?.last_approval_change === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showLastApprovalChangeAdditionalQuestion === true && (
+                    researchProgressDetails?.last_approval_change === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik01">
                             <FormControl>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Have these changes been reported to the IRB?</FormLabel>
-                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="last_approval_change_report" onChange={(event) => handleLastApprovalChangeReport(event, 'last_approval_change_report')}>
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
+                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="last_approval_change_report">
+                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={researchProgressDetails?.last_approval_change_report === 'Yes'} />
+                                    <FormControlLabel value="No" control={<Radio />} label="No" checked={researchProgressDetails?.last_approval_change_report === 'No'} />
                                 </RadioGroup>
                             </FormControl>
                         </Form.Group>
                     )
                 }
                 {
-                    showLastApprovalChangeReportAdditionalQuestion === true && (
+                    researchProgressDetails?.last_approval_change_report === 'No' && (
                         <div className='mt-mb-20'>
                             <FormLabel>What is the reason the changes have not reported to the IRB?*</FormLabel>
-                            <Form.Group as={Col} controlId="validationFormik03">
-                                <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                    <TextField variant="outlined" placeholder="Explain" fullWidth name="changes_not_reported_to_irb" id='changes_not_reported_to_irb' rows={3} multiline onChange={handleChange} />
-                                </Box>
-                                {errors.changes_not_reported_to_irb_error && <div className="error">{errors.changes_not_reported_to_irb_error}</div>}
-                            </Form.Group>
+                            <h4>{researchProgressDetails?.changes_not_reported_to_irb}</h4>
                         </div>
                     )
                 }
@@ -293,6 +211,7 @@ function ResearchProgress({continuinReviewDetails}) {
                         variant="contained"
                         color="primary"
                         type="Submit"
+                        disabled
                     >
                         SAVE AND CONTINUE
                     </Button>

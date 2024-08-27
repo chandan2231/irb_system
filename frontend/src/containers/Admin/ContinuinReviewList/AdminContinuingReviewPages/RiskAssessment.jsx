@@ -30,28 +30,11 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const riskAssessmentSchema = yup.object().shape({
-    irb_report: yup.string().required("This is required"),
-    irb_report_explain: yup.string().when('irb_report', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    criteria_report: yup.string().required("This is required"),
-    criteria_report_explain: yup.string().when('criteria_report', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-})
-
-function RiskAssessment({continuinReviewDetails}) {
+function RiskAssessment({continuinReviewDetails, riskAssessmentDetails}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = JSON.parse(localStorage.getItem('user'));
-    const [showAdditionalQuestionIrbReport, setShowAdditionalQuestionIrbReport] = React.useState(false);
-    const [showAdditionalQuestionCriteriaReport, setShowAdditionalQuestionCriteriaReport] = React.useState(false);
     const [formData, setFormData] = useState({
         irb_report: '',
         criteria_report: '',
@@ -62,24 +45,7 @@ function RiskAssessment({continuinReviewDetails}) {
     });
     const [errors, setErrors] = useState({});
 
-    const handleRadioButtonIRBReport = (event, radio_name) => {
-        if (radio_name === 'irb_report' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionIrbReport(true)
-		} else if (radio_name === 'irb_report' && event.target.value === 'No') {
-			setShowAdditionalQuestionIrbReport(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-    const handleRadioButtonCriteriaReport = (event, radio_name) => {
-        if (radio_name === 'criteria_report' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionCriteriaReport(true)
-		} else if (radio_name === 'criteria_report' && event.target.value === 'No') {
-			setShowAdditionalQuestionCriteriaReport(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
+    
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -108,7 +74,7 @@ function RiskAssessment({continuinReviewDetails}) {
             setErrors(newErrors);
         }
     }
-
+    console.log('riskAssessmentDetails', riskAssessmentDetails)
 	return (
         <Row>
             <form onSubmit={handleSubmitData}>
@@ -116,20 +82,19 @@ function RiskAssessment({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="irb_report" onChange={(event) => handleRadioButtonIRBReport(event, 'irb_report')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="irb_report">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked = {riskAssessmentDetails?.irb_report === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked = {riskAssessmentDetails?.irb_report === 'No'} />
                         </RadioGroup>
-                        {errors.irb_report && <div className="error">{errors.irb_report}</div>}
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionIrbReport === true && (
+                    riskAssessmentDetails?.irb_report === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="irb_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.irb_report_explain && <div className="error">{errors.irb_report_explain}</div>}
+                            <FormControl>
+                                <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                                <h4>{riskAssessmentDetails?.irb_report_explain}</h4>
+                            </FormControl>
                         </Form.Group>
                     )
                 }
@@ -153,20 +118,17 @@ function RiskAssessment({continuinReviewDetails}) {
                         <FormLabel id="demo-row-radio-buttons-group-label" style={{marginTop: '15px'}}>1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:</FormLabel>
                         <FormLabel id="demo-row-radio-buttons-group-label" style={{marginTop: '15px'}}>2. is related or possibly related to a subject’s participation in the research; and</FormLabel>
                         <FormLabel id="demo-row-radio-buttons-group-label" style={{marginTop: '15px'}}>3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="criteria_report" onChange={(event) => handleRadioButtonCriteriaReport(event, 'criteria_report')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="criteria_report">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={riskAssessmentDetails?.criteria_report === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={riskAssessmentDetails?.criteria_report === 'No'} />
                         </RadioGroup>
-                        {errors.criteria_report && <div className="error">{errors.criteria_report}</div>}
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionCriteriaReport === true && (
+                    riskAssessmentDetails?.criteria_report === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="criteria_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.criteria_report_explain && <div className="error">{errors.criteria_report_explain}</div>}
+                            <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                            <h4>{riskAssessmentDetails?.criteria_report_explain}</h4>
                         </Form.Group>
                     )
                 }
@@ -176,6 +138,7 @@ function RiskAssessment({continuinReviewDetails}) {
                         variant="contained"
                         color="primary"
                         type="Submit"
+                        disabled
                     >
                         SAVE AND CONTINUE
                     </Button>

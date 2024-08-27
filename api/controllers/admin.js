@@ -32,7 +32,7 @@ export const getContinuinDetailsById = (req, res) => {
             const que2 = "select * from informed_consent_process where protocol_id = ?"
             db.query(que2, [req.body.protocolId], (err, data) =>{
                 if (data.length >= 0 ) {
-                    continuinReviewDetailObj.informed_consent_process = data[0]
+                    continuinReviewDetailObj.informed_consent_process = data[0] || {}
                     const que3 = "select * from investigator_instuation_info where protocol_id = ?"
                     db.query(que3, [req.body.protocolId], (err, data) =>{
                         if (data.length >= 0 ) {

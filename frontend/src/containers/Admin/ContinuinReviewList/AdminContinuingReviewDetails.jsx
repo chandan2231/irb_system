@@ -18,7 +18,7 @@
         const dispatch = useDispatch();
         const location = useLocation();
         const continuinReviewDetails = location.state.details
-        const [value, setValue] = useState(0);
+        const [value, setValue] = useState(3);
         const [user, setUser] = useState([]);
         useEffect(() => {
             const userDetails = JSON.parse(localStorage.getItem('user'));
@@ -75,7 +75,7 @@
             dispatch(fetchContinuinReviewDetailsById(data));
         }, [dispatch, user.id]);
 
-
+        //console.log('continuinReviewDetailsById', continuinReviewDetailsById)
 
         return (
             <Box sx={{ width: '100%' }}>
@@ -89,16 +89,16 @@
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-                <RiskAssessment continuinReviewDetails={continuinReviewDetails} />
+                <RiskAssessment continuinReviewDetails={continuinReviewDetails} riskAssessmentDetails = {continuinReviewDetailsById?.risk_assessment} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <InformedConsentProcess continuinReviewDetails={continuinReviewDetails} />
+                <InformedConsentProcess continuinReviewDetails={continuinReviewDetails} informedConsentProcessDetails = {continuinReviewDetailsById?.informed_consent_process} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <InvestigatorInstitutionInfo  continuinReviewDetails={continuinReviewDetails} />
+                <InvestigatorInstitutionInfo  continuinReviewDetails={continuinReviewDetails} investigatorInstitutionInfoDetails = {continuinReviewDetailsById?.investigator_instuation_info} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-                <ResearchProgress continuinReviewDetails={continuinReviewDetails} />
+                <ResearchProgress continuinReviewDetails={continuinReviewDetails} researchProgressDetails = {continuinReviewDetailsById?.research_process_info} />
             </CustomTabPanel>
             </Box>
         )

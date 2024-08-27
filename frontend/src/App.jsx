@@ -52,7 +52,6 @@ function App() {
                     'token': getCookie
                 }
             })
-            console.log('res', res)
             if(res.status === 200){
                 setLoader(false);
                 if(['/signin', '/signup', '/'].includes(window.location.pathname)){

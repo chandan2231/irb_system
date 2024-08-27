@@ -56,7 +56,12 @@ function SignIn() {
                 setCurrentUser(data.payload.data);
                 localStorage.setItem("user", JSON.stringify(data.payload.data));
                 setTimeout(() => {
-                    navigate('/dashboard')
+                    if(data.payload.data.researcher_type === 'admin'){
+                        navigate('/admin/protocol-list')
+                    } else {
+                        navigate('/dashboard')
+                    }
+                    
                 }, 2000);
                 
             } else {

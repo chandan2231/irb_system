@@ -32,43 +32,25 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const investigatorInfoSchema = yup.object().shape({
-    inv_sit_quali: yup.string().required("This is required"),
-    inv_or_comp_explain: yup.string().when('inv_or_comp', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    changes_explain: yup.string().required("This is required"),
-    changes_reported_explain: yup.string().when('changes_reported', {
-        is: 'No',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    facility_any_changes_explain: yup.string().when('facility_any_changes', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    changes_law_explain: yup.string().when('changes_law', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-})
+const allAppliedChanges = [
+    {label : 'suspension of hospital privileges', value : '1'},
+    {label : 'change in medical license status', value : '2'},
+    {label : 'increase in number of research studies conducted by the investigator', value : '3'},
+    {label : 'expired or updated human research protections training', value : '4'},
+]
+const allAppliedChangesFacilityChanges = [
+    {label : 'Personnel changes', value : '1'},
+    {label : 'Financial resource changes', value : '2'},
+    {label : 'Change in facility address', value : '3'},
+    {label : 'Change in facility resources (ie: loss of laboratory space or licensure, loss of adequate storage space, structural damage or changes to the physical facility)', value : '4'},
+    {label : 'Other', value : '5'},
+]
 
-function InvestigatorInstitutionInfo({continuinReviewDetails}) {
+function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstitutionInfoDetails}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = JSON.parse(localStorage.getItem('user'));
-    const [showAdditionalSelectionList, setShowAdditionalSelectionList] = React.useState(false);
-    const [showAdditionalQuestionInvOrComp, setShowAdditionalQuestionInvOrComp] = React.useState(false);
-    const [showAdditionalQuestionFacilityChanges, setShowAdditionalQuestionFacilityChanges] = React.useState(false);
-    const [showAdditionalQuestionChangesReported, setShowAdditionalQuestionChangesReported] = React.useState(false);
-    const [showAdditionalQuestionFacilityAnyChanges, setShowAdditionalQuestionFacilityAnyChanges] = React.useState(false);
-    const [showAdditionalQuestionChangesLaw, setShowAdditionalQuestionChangesLaw] = React.useState(false);
-    const [otherQuestionSelection, setOtherQuestionSelection] = React.useState('');
     const [formData, setFormData] = useState({
         inv_sit_quali: '',
         investigator_changes: '',
@@ -87,99 +69,6 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-
-    const handleRadioButtonInvSitQuali = (event, radio_name) => {
-        if (radio_name === 'inv_sit_quali' && event.target.value === 'Yes') {
-			setShowAdditionalSelectionList(true)
-		} else if (radio_name === 'inv_sit_quali' && event.target.value === 'No') {
-			setShowAdditionalSelectionList(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonInvOrComplain = (event, radio_name) => {
-		if (radio_name === 'inv_or_comp' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionInvOrComp(true)
-		} else if (radio_name === 'inv_or_comp' && event.target.value === 'No') {
-			setShowAdditionalQuestionInvOrComp(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonFacilityChanges = (event, radio_name) => {
-		if (radio_name === 'facility_changes' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionFacilityChanges (true)
-		} else if (radio_name === 'facility_changes' && event.target.value === 'No') {
-			setShowAdditionalQuestionFacilityChanges(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonFacilityAnyChanges = (event, radio_name) => {
-		if (radio_name === 'facility_any_changes' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionFacilityAnyChanges (true)
-		} else if (radio_name === 'facility_any_changes' && event.target.value === 'No') {
-			setShowAdditionalQuestionFacilityAnyChanges(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonChangesLaw = (event, radio_name) => {
-		if (radio_name === 'changes_law' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionChangesLaw (true)
-		} else if (radio_name === 'changes_law' && event.target.value === 'No') {
-			setShowAdditionalQuestionChangesLaw(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonChangesReported = (event, radio_name) => {
-		if (radio_name === 'changes_reported' && event.target.value === 'No') {
-			setShowAdditionalQuestionChangesReported(true)
-		} else if (radio_name === 'changes_reported' && event.target.value === 'Yes') {
-			setShowAdditionalQuestionChangesReported(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleCheckedInvestigatorChanges = (event) => {
-        const {value, checked} = event.target
-        let updatedCheckedItem = [...formData.investigator_changes];
-        if (checked) {
-            updatedCheckedItem.push(value);
-        } else {
-            updatedCheckedItem = updatedCheckedItem.filter(
-            (item) => item !== value
-          );
-        }
-        setFormData({...formData, investigator_changes: updatedCheckedItem});
-    };
-
-
-    const handleCheckedFailityChanges = (event) => {
-        const {value, checked} = event.target
-        let updatedCheckedItem = [...formData.facility_change_item];
-        if (checked) {
-            updatedCheckedItem.push(value);
-        } else {
-            updatedCheckedItem = updatedCheckedItem.filter(
-            (item) => item !== value
-          );
-        }
-        setFormData({...formData, facility_change_item: updatedCheckedItem});
-    };
-
-   
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
-    };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
@@ -203,7 +92,9 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
             setErrors(newErrors);
         }
     }
-    
+    //console.log('investigatorInstitutionInfoDetails', investigatorInstitutionInfoDetails)
+    const investigatorChangesArr = investigatorInstitutionInfoDetails?.investigator_changes?.split(",");
+    const facilitiesChangesArr = investigatorInstitutionInfoDetails?.facility_change_item?.split(",");
 	return (
         <Row>
             <form onSubmit={handleSubmitData}>
@@ -211,23 +102,24 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes in the investigator’s situation or qualifications?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="inv_sit_quali" onChange={(event) => handleRadioButtonInvSitQuali(event, 'inv_sit_quali')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="inv_sit_quali">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInstitutionInfoDetails?.inv_sit_quali === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInstitutionInfoDetails?.inv_sit_quali === 'No'} />
                         </RadioGroup>
-                        {errors.inv_sit_quali && <div className="error">{errors.inv_sit_quali}</div>}
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalSelectionList === true && (
-                        <Form.Group as={Col} controlId="validationFormik01">
+                    investigatorInstitutionInfoDetails?.inv_sit_quali === 'Yes' && (
+                        <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                             <FormControl>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Mark all that apply</FormLabel>
-                                <FormGroup onChange={(event) => handleCheckedInvestigatorChanges(event)} name="investigator_changes">
-                                    <FormControlLabel control={<Checkbox />} label="suspension of hospital privileges" value='1' />
-                                    <FormControlLabel control={<Checkbox />} label="change in medical license status" value='2' />
-                                    <FormControlLabel control={<Checkbox />} label="increase in number of research studies conducted by the investigator" value='3' />
-                                    <FormControlLabel control={<Checkbox />} label="expired or updated human research protections training" value='4' />
+                                <FormGroup name="investigator_changes">
+                                    {
+                                        allAppliedChanges.map((appliedChanges, index) => {
+                                            return(<FormControlLabel key={index} control={<Checkbox />} label={appliedChanges.label} value={appliedChanges.value} checked={investigatorChangesArr?.find(id => Number(id) === Number(appliedChanges.value))} />)
+                                        })
+                                    }
+                                    
                                 </FormGroup>
                             </FormControl>
                         </Form.Group>
@@ -250,19 +142,19 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have there been any investigation of or complaints related to the investigator’s conduct of research?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="inv_or_comp" onChange={(event) => handleRadioButtonInvOrComplain(event, 'inv_or_comp')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="inv_or_comp">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInstitutionInfoDetails?.inv_or_comp === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInstitutionInfoDetails?.inv_or_comp === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionInvOrComp === true && (
+                    investigatorInstitutionInfoDetails?.inv_or_comp === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="inv_or_comp_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                                <h4>{investigatorInstitutionInfoDetails?.inv_or_comp_explain}</h4>
                             </Box>
-                            {errors.inv_or_comp_explain && <div className="error">{errors.inv_or_comp_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -283,23 +175,23 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes in the facility’s ability to adequately support the research protocol?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="facility_changes" onChange={(event) => handleRadioButtonFacilityChanges(event, 'facility_changes')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="facility_changes">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInstitutionInfoDetails?.facility_changes === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInstitutionInfoDetails?.facility_changes === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionFacilityChanges === true && (
-                        <Form.Group as={Col} controlId="validationFormik01">
+                    investigatorInstitutionInfoDetails?.facility_changes === 'Yes' && (
+                        <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                             <FormControl>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Mark all that apply</FormLabel>
-                                <FormGroup onChange={(event) => handleCheckedFailityChanges(event)} name="facility_change_item">
-                                    <FormControlLabel control={<Checkbox />} label="Personnel changes" value='1' />
-                                    <FormControlLabel control={<Checkbox />} label="Financial resource changes" value='2' />
-                                    <FormControlLabel control={<Checkbox />} label="Change in facility address" value='3' />
-                                    <FormControlLabel control={<Checkbox />} label="Change in facility resources (ie: loss of laboratory space or licensure, loss of adequate storage space, structural damage or changes to the physical facility)" value='4' />
-                                    <FormControlLabel control={<Checkbox />} label="Other" value='5' />
+                                <FormGroup name="investigator_changes">
+                                    {
+                                        allAppliedChangesFacilityChanges.map((appliedChanges, index) => {
+                                            return(<FormControlLabel key={index} control={<Checkbox />} label={appliedChanges.label} value={appliedChanges.value} checked={facilitiesChangesArr?.find(id => Number(id) === Number(appliedChanges.value))} />)
+                                        })
+                                    }
                                 </FormGroup>
                             </FormControl>
                         </Form.Group>
@@ -310,10 +202,9 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Please describe the changes and explain in as much detail as possible. Please provide any solutions, whether temporary or permanent, work-arounds, and/or protocol adjustments *</FormLabel>
-                            <TextField  variant="outlined" placeholder="" fullWidth name="changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                            <h4>{investigatorInstitutionInfoDetails?.changes_explain}</h4>
                         </FormControl>
                     </Box>
-                    {errors.changes_explain && <div className="error">{errors.changes_explain}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here if applicable <br /> (ie: new informed consent with facility address change, updated protocol to reflect facility changes, updated delegation of authority log, etc.)</InputLabel>
@@ -331,19 +222,19 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have these changes been reported to the IRB?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_reported" onChange={(event) => handleRadioButtonChangesReported(event, 'changes_reported')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_reported">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInstitutionInfoDetails?.changes_reported === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInstitutionInfoDetails?.changes_reported === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionChangesReported === true && (
+                    investigatorInstitutionInfoDetails?.changes_reported === 'No' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="changes_reported_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                                <h4>{investigatorInstitutionInfoDetails?.changes_reported_explain}</h4>
                             </Box>
-                            {errors.changes_reported_explain && <div className="error">{errors.changes_reported_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -352,19 +243,19 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes in facility regulations, standard operating procedures, or standards of professional conduct?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="facility_any_changes" onChange={(event) => handleRadioButtonFacilityAnyChanges(event, 'facility_any_changes')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="facility_any_changes">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInstitutionInfoDetails?.facility_any_changes === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInstitutionInfoDetails?.facility_any_changes === 'No'}/>
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionFacilityAnyChanges === true && (
+                    investigatorInstitutionInfoDetails?.facility_any_changes === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="facility_any_changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                                <h4>{investigatorInstitutionInfoDetails?.facility_any_changes_explain}</h4>
                             </Box>
-                            {errors.facility_any_changes_explain && <div className="error">{errors.facility_any_changes_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -386,19 +277,19 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes to state or local law regarding research that affects the conduct of research?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_law" onChange={(event) => handleRadioButtonChangesLaw(event, 'changes_law')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_law">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInstitutionInfoDetails?.changes_law === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInstitutionInfoDetails?.changes_law === 'Yes'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionChangesLaw === true && (
+                    investigatorInstitutionInfoDetails?.changes_law === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="changes_law_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                                <h4>{investigatorInstitutionInfoDetails?.changes_law_explain}</h4>
                             </Box>
-                            {errors.changes_law_explain && <div className="error">{errors.changes_law_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -407,6 +298,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails}) {
                         variant="contained"
                         color="primary"
                         type="Submit"
+                        disabled
                     >
                         SAVE AND CONTINUE
                     </Button>

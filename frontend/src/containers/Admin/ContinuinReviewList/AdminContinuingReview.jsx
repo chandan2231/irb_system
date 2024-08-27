@@ -5,15 +5,11 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import CommonButton from "../../components/CommonButton";
 import moment from "moment";
-import ToggleStatus from "../../components/ToggleStatus";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 
@@ -31,7 +27,6 @@ function ContinuingReview() {
         }
     }, []);
     const navigateReviewDetails = (params) => {
-        console.log('params', params)
         navigate("/continuin-review-details", {state:{details: params.row}});
     };
     const columns = [
