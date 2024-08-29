@@ -2,13 +2,27 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
+export const createInvestigatorAndProtocolInformation = createAsyncThunk("ProtocolType/createInvestigatorAndProtocolInformation",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/saveInvestigatorAndProtocolInformation`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 export const createInformedConsent = createAsyncThunk("ProtocolType/createInformedConsent",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/researchInfo/saveInformedInfo`,
+        url: `${baseURL}/researchInfo/saveClinicalInformedConsent`,
         data,
       });
       return response;
@@ -18,62 +32,6 @@ export const createInformedConsent = createAsyncThunk("ProtocolType/createInform
   }
 );
 
-export const createProtocolInformation = createAsyncThunk("ProtocolType/createProtocolInformation",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await ApiCall({
-        method: "POST",
-        url: `${baseURL}/researchInfo/saveProtocolInfo`,
-        data,
-      });
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
 
-export const createInvestigatorInformation = createAsyncThunk("ProtocolType/createInvestigatorInformation",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await ApiCall({
-        method: "POST",
-        url: `${baseURL}/researchInfo/saveInvestigatorInfo`,
-        data,
-      });
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-export const createStudyInformation = createAsyncThunk("ProtocolType/createStudyInformation",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await ApiCall({
-        method: "POST",
-        url: `${baseURL}/researchInfo/saveStydyInfo`,
-        data,
-      });
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-export const createProtocolProcedures = createAsyncThunk("ProtocolType/createProtocolProcedures",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await ApiCall({
-        method: "POST",
-        url: `${baseURL}/researchInfo/saveProtocolProceduresInfo`,
-        data,
-      });
-      return response;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
 
 

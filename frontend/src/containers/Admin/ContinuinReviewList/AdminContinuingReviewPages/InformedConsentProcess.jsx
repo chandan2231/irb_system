@@ -18,17 +18,6 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {useSearchParams, useNavigate, Link} from 'react-router-dom';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
 function InformedConsentProcess({continuinReviewDetails, informedConsentProcessDetails}) {
     const theme = useTheme();
@@ -71,16 +60,7 @@ function InformedConsentProcess({continuinReviewDetails, informedConsentProcessD
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload the most recent ICF *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
@@ -128,16 +108,7 @@ function InformedConsentProcess({continuinReviewDetails, informedConsentProcessD
                 <h4>Question 5</h4>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload new informed consent form here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>

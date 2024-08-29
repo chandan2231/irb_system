@@ -3,6 +3,7 @@ import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import Form from 'react-bootstrap/Form';
 import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -33,7 +34,7 @@ const studyInfoSchema = yup.object().shape({
     research_type: yup.string().required("This is required"),
 })
 
-function StudyInformationForm({protocolTypeDetails}) {
+function StudyInformationForm({protocolTypeDetails, studyInformation}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -92,7 +93,7 @@ function StudyInformationForm({protocolTypeDetails}) {
             setErrors(newErrors);
         }
     };
-    
+    console.log('studyInformation', studyInformation)
 	return (
         <Row>
             <form onSubmit={handleSubmitData}>
@@ -102,7 +103,7 @@ function StudyInformationForm({protocolTypeDetails}) {
                         autoWidth 
                         labelId="demo-simple-select-autowidth-label" 
                         id="demo-simple-select-autowidth" 
-                        value={formData.research_type} 
+                        value={studyInformation?.research_type} 
                         onChange={(event) => handleSelectResearchType(event, 'research_type')}
                         label="What type of research study are you submitting"
                         name="research_type"
@@ -117,30 +118,18 @@ function StudyInformationForm({protocolTypeDetails}) {
                         <MenuItem value='Retrospective/chart review'>Retrospective/chart review</MenuItem>
                         <MenuItem value='Other'>Other</MenuItem>
                     </Select>
-                    {errors.research_type && <div className="error">{errors.research_type}</div>}
                 </FormControl>
                 {
-                    showOtherQuestion === true && (
+                    studyInformation?.research_type === 'Other' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {explainErrors && <div className="error">{explainErrors}</div>}
+                            <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                            <h4>{studyInformation?.research_type_explain}</h4>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button

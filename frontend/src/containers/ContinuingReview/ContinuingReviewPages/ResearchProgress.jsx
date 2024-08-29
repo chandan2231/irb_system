@@ -117,18 +117,19 @@ function ResearchProgress({ continuinReviewDetails }) {
             console.log('formData', formData)
             if (isValid === true) {
                 let q3_supporting_documents = []
-                if (formData.q3_supporting_documents) {
-                    for (let file of formData.q3_supporting_documents) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        q3_supporting_documents.push(id)
-                    }
-                }
+                // if (formData.q3_supporting_documents) {
+                //     for (let file of formData.q3_supporting_documents) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         q3_supporting_documents.push(id)
+                //     }
+                // }
                 dispatch(researchProcessSave({ ...formData, q3_supporting_documents }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};

@@ -16,7 +16,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
 import Grid from '@mui/material/Grid';
-import { createProtocolInformation } from '../../../../services/ProtocolType/ClinicalResearcherService';
+import { createProtocolInformation } from '../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
@@ -37,14 +37,26 @@ const VisuallyHiddenInput = styled('input')({
 
 const protocoalInfoSchema = yup.object().shape({
     first_time_protocol: yup.string().required("This is required"),
+    disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    oversite_explain: yup.string().when('oversite', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
     protocol_title: yup.string().required("This is required"),
     protocol_number: yup.string().required("This is required"),
     sponsor: yup.string().required("This is required"),
     study_duration: yup.string().required("This is required"),
     funding_source: yup.string().required("This is required"),
+    
 })
 
 function ProtocolInformationForm({ protocolTypeDetails }) {
+    console.log('protocolTypeDetails', protocolTypeDetails)
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -67,30 +79,6 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-
-    // const handleSubmitData = async (e) => {
-    //     e.preventDefault();
-    //     let form = new FormData(e.target);
-    //     let formObj = Object.fromEntries(form.entries());
-    //     console.log('formObj', formObj)
-    //     const isValid = await protocoalInfoSchema.isValid(formObj)
-    //     console.log('isValid', isValid)
-    //     console.log('formObj', formObj)
-    //     return;
-    //      let stopCall = false
-    //      console.log('stopCall', stopCall)
-    //      return;
-    //      if (!stopCall) {
-    // 	        setTimeout(() => {
-    // 		        let isConfirmed = window.confirm(
-    // 			        'Are you sure you want to submit the notification?'
-    // 		        )
-    // 		        if (isConfirmed && !stopCall) {
-    // 			        dispatch(submitNotificationDetails(formData))
-    // 		        }
-    // 	        }, 1000)
-    //      }
-    // }
 
     const handleRadioButtonSelectFirstTime = (event, radio_name) => {
         if (radio_name === 'first_time_protocol' && event.target.value === 'No') {
@@ -131,9 +119,9 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
-            const isValid = await protocoalInfoSchema.isValid(getValidatedform)
-
+            // const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
+            // const isValid = await protocoalInfoSchema.isValid(getValidatedform)
+            const isValid = true
             if (isValid === true) {
                 let protocol_file = []
                 if (!formData.protocol_file) {
@@ -141,82 +129,29 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                 }
                 else {
                     for (let file of formData.protocol_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'Protocol Information', documentName: 'protocol'  })
                         protocol_file.push(id)
                     }
                 }
-                dispatch(createProtocolInformation({ ...formData, protocol_file }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                // dispatch(createProtocolInformation({ ...formData, protocol_file }))
+                // .then(data => {
+                //     console.log("data", data)
+                //     if (data.payload.status === 200) {
+                //         alert(data.payload.data.msg)
+                //     } else {
+                //     }
+                // })
             }
         } catch (error) {
             const newErrors = {};
             error.inner.forEach((err) => {
                 newErrors[err.path] = err.message;
             });
-            if (formData.disapproved_or_withdrawn !== '' && formData.disapproved_or_withdrawn === 'Yes' && formData.disapproved_or_withdrawn_explain === "") {
-                newErrors['disapproved_or_withdrawn_explain_error'] = 'This is required';
-            } else {
-                newErrors['disapproved_or_withdrawn_explain_error'] = '';
-            }
-            if (formData.oversite !== '' && formData.oversite === 'Yes' && formData.oversite_explain === "") {
-                newErrors['oversite_explain_error'] = 'This is required';
-            } else {
-                newErrors['oversite_explain_error'] = '';
-            }
             setErrors(newErrors);
         }
     }
 
-    // const handleSubmitData = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const getValidatedform = await protocoalInfoSchema.validate(formData, {abortEarly: false});
-    //         const isValid = await protocoalInfoSchema.isValid(getValidatedform)
-    //         if(isValid === true){
-    //             const res = await axios.post('http://localhost:8800/api/researchInfo/saveProtocolInfo', formData)
-    //             console.log('res', res)
-    //             if(res.status===200){
-    //                 //navigate('/login')
-    //             }
-    //         }
-    //     } catch (error) {
-    //         const newErrors = {};
-    //         error.inner.forEach((err) => {
-    //             newErrors[err.path] = err.message;
-    //         });
-    //         if(formData.disapproved_or_withdrawn !== '' && formData.disapproved_or_withdrawn === 'Yes' && formData.disapproved_or_withdrawn_explain === ""){
-    //             newErrors['disapproved_or_withdrawn_explain_error'] = 'This is required';
-    //         } else {
-    //             newErrors['disapproved_or_withdrawn_explain_error'] = '';
-    //         }
-    //         if(formData.oversite !== '' && formData.oversite === 'Yes' && formData.oversite_explain === ""){
-    //             newErrors['oversite_explain_error'] = 'This is required';
-    //         } else {
-    //             newErrors['oversite_explain_error'] = '';
-    //         }
-    //         setErrors(newErrors);
-    //     }
-    // };
-
-    // const handleCheckboxChange = (e) => {
-    //     const {name, checked} = e.target;
-    //     let updatedInterests = [...formData.interests];
-    //     if (checked) {
-    //       updatedInterests.push(name);
-    //     } else {
-    //       updatedInterests = updatedInterests.filter(
-    //         (interest) => interest !== name
-    //       );
-    //     }
-    //     setFormData({...formData, interests: updatedInterests});
-    // };
-
-
-
+    
     return (
         <Row>
             <form onSubmit={handleSubmitData}>
@@ -246,9 +181,9 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                 showDisapproveAdditionTextArea === true && (
                                     <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                            <TextField variant="outlined" placeholder="Explain" name="disapproved_or_withdrawn_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
+                                            <TextField variant="outlined" placeholder="Explain *" name="disapproved_or_withdrawn_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
                                         </Box>
-                                        {errors.disapproved_or_withdrawn_explain_error && <div className="error">{errors.disapproved_or_withdrawn_explain_error}</div>}
+                                        {errors.disapproved_or_withdrawn_explain && <div className="error">{errors.disapproved_or_withdrawn_explain}</div>}
                                     </Form.Group>
                                 )
                             }
@@ -265,9 +200,9 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                 showOversiteAdditionTextArea === true && (
                                     <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                            <TextField variant="outlined" placeholder="Explain" name="oversite_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.oversite_explain} />
+                                            <TextField variant="outlined" placeholder="Explain *" name="oversite_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.oversite_explain} />
                                         </Box>
-                                        {errors.oversite_explain_error && <div className="error">{errors.oversite_explain_error}</div>}
+                                        {errors.oversite_explain && <div className="error">{errors.oversite_explain}</div>}
                                     </Form.Group>
                                 )
                             }
@@ -338,7 +273,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                     <VisuallyHiddenInput
                                         type="file"
                                         name='protocol_file'
-                                        required
+                                        // required
                                         onChange={e => {
                                             if (e.target.files && e.target.files.length) {
                                                 setFormData({ ...formData, protocol_file: e.target.files });
@@ -346,7 +281,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                         }}
                                     />
                                 </Button>
-                                {formData?.protocol_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                                {formData?.protocol_file !== undefined && Array.from(formData?.protocol_file).map((file, i) => <div key={i}>{file?.name}</div>)}
                                 {errors.protocol_file && <div className="error">{errors.protocol_file}</div>}
                             </Grid>
                         </Grid>

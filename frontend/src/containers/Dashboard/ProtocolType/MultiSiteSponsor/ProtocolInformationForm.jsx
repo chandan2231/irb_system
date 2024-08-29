@@ -109,31 +109,32 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
         try {
             const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocoalInfoSchema.isValid(getValidatedform)
-            // if (isValid === true) {
-            //     dispatch(createProtocolInformation(formData))
-            //         .then(data => {
-            //             if (data.payload.status === 200) {
-            //             } else {
-            //             }
-            //         })
-            // }
             if (isValid === true) {
-                let protocol_file = []
-                if (formData.protocol_file) {
-                    for (let file of formData.protocol_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        protocol_file.push(id)
+                dispatch(createProtocolInformation(formData))
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
                     }
-                }
-                else {
-                    return setErrors({ ...errors, protocol_file: "This is required" })
-                }
-                const res = await axios.post('http://localhost:8800/api/researchInfo/saveProtocolInfo', { ...formData, protocol_file })
-                console.log('res', res)
-                if (res.status === 200) {
-                    //navigate('/login')
-                }
+                })
             }
+            // if (isValid === true) {
+            //     let protocol_file = []
+            //     if (formData.protocol_file) {
+            //         for (let file of formData.protocol_file) {
+            //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
+            //             protocol_file.push(id)
+            //         }
+            //     }
+            //     else {
+            //         return setErrors({ ...errors, protocol_file: "This is required" })
+            //     }
+            //     const res = await axios.post('http://localhost:8800/api/researchInfo/saveProtocolInfo', { ...formData, protocol_file })
+            //     console.log('res', res)
+            //     if (res.status === 200) {
+            //         //navigate('/login')
+            //     }
+            // }
         } catch (error) {
             const newErrors = {};
             error.inner.forEach((err) => {
@@ -289,7 +290,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                     <VisuallyHiddenInput
                                         type="file"
                                         name='protocol_file'
-                                        required
+                                        // required
                                         onChange={e => {
                                             if (e.target.files && e.target.files.length) {
                                                 setFormData({ ...formData, [e.target.name]: e.target.files });

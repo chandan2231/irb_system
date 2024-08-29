@@ -1,8 +1,6 @@
 import { db } from "../connect.js"
 
 export const saveRiskAssessment = (req, res) => {
-    // console.log('req', req)
-    // return;
     var datetime = new Date();
     const que = 'insert into risk_assessment (`protocol_id`, `criteria_report`, `criteria_report_explain`,  `irb_report`, `irb_report_explain`, `created_at`, `updated_at`,`created_by`) value (?)';
     const values = [
@@ -16,14 +14,19 @@ export const saveRiskAssessment = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Risk Assessment has been saved successfully.')
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Risk Assessment has been saved successfully'
+            return res.json(result)
+        }
     }) 
+    
 }
 
 export const saveInformedConsent = (req, res) => {
-    // console.log('req', req)
-    // return;
     var datetime = new Date();
     const que = 'insert into informed_consent_process (`protocol_id`, `challenges_faced`, `challenges_faced_explain`, `changes_consent`, `changes_consent_explain`, `ensuring_list`, `ensuring_list_explain`, `icf_version`,`performing_consent`, `created_at`, `updated_at`,`created_by`) value (?)';
     const values = [
@@ -41,14 +44,19 @@ export const saveInformedConsent = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Informed Consent Process has been saved successfully.')
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Informed Consent Process has been saved successfully'
+            return res.json(result)
+        }
     }) 
+    
 }
 
 export const saveInvestigatorAndinstuation = (req, res) => {
-    // console.log('req', req)
-    // return;
     var datetime = new Date();
     const que = 'insert into investigator_instuation_info (`protocol_id`, `changes_explain`, `changes_law`, `changes_law_explain`, `changes_reported`, `changes_reported_explain`, `facility_any_changes`, `facility_any_changes_explain`,`facility_change_item`, `facility_changes`, `inv_or_comp`, `inv_or_comp_explain`, `inv_sit_quali`, `investigator_changes`, `created_at`, `updated_at`,`created_by`) value (?)';
     const values = [
@@ -71,13 +79,17 @@ export const saveInvestigatorAndinstuation = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Investigator and Instuation Information has been saved successfully.')
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Investigator and Instuation Information has been saved successfully'
+            return res.json(result)
+        }
     }) 
 }
 export const saveResearchProcess = (req, res) => {
-    // console.log('req', req)
-    // return;
     var datetime = new Date();
     const que = 'insert into research_process_info (`protocol_id`, `adverse_event_explain`, `adverse_event_not_reported_explain`, `adverse_event_submission`, `changes_not_reported_to_irb`, `discontinued_subjects`, `last_approval_change`, `last_approval_change_report`,`occured_adverse_event`, `sub_terminated_before_completion`, `sub_withdrew`, `subjecte_completed`, `subjects_enrolled`, `termination_reason_explain`, `withdrawal_reason_explain`, `created_at`, `updated_at`,`created_by`) value (?)';
     const values = [
@@ -101,8 +113,14 @@ export const saveResearchProcess = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Research Process has been saved successfully.')
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Research Process has been saved successfully'
+            return res.json(result)
+        }
     }) 
 }
 

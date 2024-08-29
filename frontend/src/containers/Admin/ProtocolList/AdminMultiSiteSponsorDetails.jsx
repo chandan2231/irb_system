@@ -13,7 +13,7 @@ import SubmissionForm from '../ProtocolList/AdminProtocolType/MultiSiteSponsor/S
 import ProtocolProceduresForm from '../ProtocolList/AdminProtocolType/MultiSiteSponsor/ProtocolProceduresForm'
 import { useLocation } from "react-router-dom";
 
-const MultiSiteSponsorDetails = ({protocolTypeDetails}) => {
+const MultiSiteSponsorDetails = ({protocolTypeDetails, protocolDetailsById}) => {
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -65,19 +65,19 @@ const MultiSiteSponsorDetails = ({protocolTypeDetails}) => {
             </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-            <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} protocolInformation = {protocolDetailsById?.protocol_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-            <ContactInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <ContactInformationForm protocolTypeDetails={protocolTypeDetails} contactInformation = {protocolDetailsById?.contact_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-            <StudyInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <StudyInformationForm protocolTypeDetails={protocolTypeDetails} studyInformation = {protocolDetailsById?.study_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
-            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} informedConsent = {protocolDetailsById?.informed_consent} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
-            <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails} />
+            <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails} protocolProcedures = {protocolDetailsById?.protocol_procedure} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
             <SubmissionForm protocolTypeDetails={protocolTypeDetails} />

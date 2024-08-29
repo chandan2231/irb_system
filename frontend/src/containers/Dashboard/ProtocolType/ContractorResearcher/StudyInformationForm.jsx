@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
 import Grid from '@mui/material/Grid';
-import { createStudyInformation } from '../../../../services/ProtocolType/ClinicalResearcherService';
+import { createStudyInformation } from '../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
@@ -79,15 +79,16 @@ function StudyInformationForm({ protocolTypeDetails }) {
             const isValid = await studyInfoSchema.isValid(getValidatedform)
             if (isValid === true) {
                 let ingredient_list = ''
-                if (formData.ingredient_list) {
-                    for (let file of formData.ingredient_list) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        ingredient_list.push(id)
-                    }
-                }
+                // if (formData.ingredient_list) {
+                //     for (let file of formData.ingredient_list) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         ingredient_list.push(id)
+                //     }
+                // }
                 dispatch(createStudyInformation({ ...formData, ingredient_list }))
                     .then(data => {
                         if (data.payload.status === 200) {
+                            alert(data.payload.data.msg)
                         } else {
                         }
                     })

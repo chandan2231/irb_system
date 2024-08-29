@@ -41,7 +41,7 @@ const contactInfoSchema = yup.object().shape({
     secondary_contact_email: yup.string().required("This is required"),
 })
 
-function ContactInformationForm({protocolTypeDetails}) {
+function ContactInformationForm({protocolTypeDetails, contactInformation}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -98,103 +98,89 @@ function ContactInformationForm({protocolTypeDetails}) {
                 <h4>Who is the primary point of contact for this study?</h4>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Name *" id="name" name="name" onChange={handleChange} />
+                        <TextField fullWidth label="Name *" id="name" name="name" value={contactInformation?.name} />
                     </Box>
                     {errors.name && <div className="error">{errors.name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Title *" id="title" name="title" onChange={handleChange} />
+                        <TextField fullWidth label="Title *" id="title" name="title" value={contactInformation?.title} />
                     </Box>
                     {errors.title && <div className="error">{errors.title}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Company Name *" id="company_name" name="company_name" onChange={handleChange} />
+                        <TextField fullWidth label="Company Name *" id="company_name" name="company_name" value={contactInformation?.company_name} />
                     </Box>
                     {errors.company_name && <div className="error">{errors.company_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Address *" id="address" name="address" onChange={handleChange} />
+                        <TextField fullWidth label="Address *" id="address" name="address" value={contactInformation?.address} />
                     </Box>
                     {errors.address && <div className="error">{errors.address}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="City *" id="city" name="city" onChange={handleChange} />
+                        <TextField fullWidth label="City *" id="city" name="city" value={contactInformation?.city} />
                     </Box>
                     {errors.city && <div className="error">{errors.city}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="State *" id="state" name="state" onChange={handleChange} />
+                        <TextField fullWidth label="State *" id="state" name="state" value={contactInformation?.state} />
                     </Box>
                     {errors.state && <div className="error">{errors.state}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Zip code *" id="zip_code" name="zip_code" onChange={handleChange} />
+                        <TextField fullWidth label="Zip code *" id="zip_code" name="zip_code" value={contactInformation?.zip_code} />
                     </Box>
                     {errors.zip_code && <div className="error">{errors.zip_code}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Country *" id="country" name="country" onChange={handleChange} />
+                        <TextField fullWidth label="Country *" id="country" name="country" value={contactInformation?.country} />
                     </Box>
                     {errors.country && <div className="error">{errors.country}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Phone Number *" id="phone_number" name="phone_number" onChange={handleChange} />
+                        <TextField fullWidth label="Phone Number *" id="phone_number" name="phone_number" value={contactInformation?.phone_number} />
                     </Box>
                     {errors.phone_number && <div className="error">{errors.phone_number}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Email *" id="email" name="email" onChange={handleChange} />
+                        <TextField fullWidth label="Email *" id="email" name="email" value={contactInformation?.email} />
                     </Box>
                     {errors.email && <div className="error">{errors.email}</div>}
                 </Form.Group>
                 <h4>Who is the secondary point of contact for this study?</h4>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Name *" id="secondary_contact_name" name="secondary_contact_name" onChange={handleChange} />
+                        <TextField fullWidth label="Name *" id="secondary_contact_name" name="secondary_contact_name" value={contactInformation?.secondary_contact_name} />
                     </Box>
                     {errors.secondary_contact_name && <div className="error">{errors.name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Title *" id="secondary_contact_title" name="secondary_contact_title" onChange={handleChange} />
+                        <TextField fullWidth label="Title *" id="secondary_contact_title" name="secondary_contact_title" value={contactInformation?.secondary_contact_title} />
                     </Box>
                     {errors.secondary_contact_title && <div className="error">{errors.secondary_contact_title}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Phone Number *" id="secondary_contact_phone_number" name="secondary_contact_phone_number" onChange={handleChange} />
+                        <TextField fullWidth label="Phone Number *" id="secondary_contact_phone_number" name="secondary_contact_phone_number" value={contactInformation?.secondary_contact_phone_number} />
                     </Box>
                     {errors.secondary_contact_phone_number && <div className="error">{errors.secondary_contact_phone_number}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Email *" id="secondary_contact_email" name="secondary_contact_email" onChange={handleChange} />
+                        <TextField fullWidth label="Email *" id="secondary_contact_email" name="secondary_contact_email" value={contactInformation?.secondary_contact_email} />
                     </Box>
                     {errors.secondary_contact_email && <div className="error">{errors.secondary_contact_email}</div>}
                 </Form.Group>
-                
-
-                
-                
-                
-                
-                
-
-                
-                
-                
-                
-                
-                
                 
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button

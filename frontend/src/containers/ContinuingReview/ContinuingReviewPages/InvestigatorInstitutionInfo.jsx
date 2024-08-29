@@ -187,47 +187,47 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
         try {
             const getValidatedform = await investigatorInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
-            console.log('formData', formData)
             if (isValid === true) {
                 let q1_supporting_documents = []
                 let q2_supporting_documents = []
                 let q3_supporting_documents = []
                 let q4_supporting_documents = []
-                if (!formData.q1_supporting_documents) {
-                    return setErrors({ ...errors, ['q1_supporting_documents']: 'This is required' });
-                }
-                if (!formData.q2_supporting_documents) {
-                    return setErrors({ ...errors, ['q2_supporting_documents']: 'This is required' });
-                }
-                if (!formData.q4_supporting_documents) {
-                    return setErrors({ ...errors, ['q4_supporting_documents']: 'This is required' });
-                }
-                else {
-                    for (let file of formData.q1_supporting_documents) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        q1_supporting_documents.push(id)
-                    }
-                    for (let file of formData.q2_supporting_documents) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        q2_supporting_documents.push(id)
-                    }
-                    for (let file of formData.q4_supporting_documents) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        q4_supporting_documents.push(id)
-                    }
-                    if (formData.q3_supporting_documents) {
-                        for (let file of formData.q3_supporting_documents) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                            q3_supporting_documents.push(id)
-                        }
-                    }
-                }
+                // if (!formData.q1_supporting_documents) {
+                //     return setErrors({ ...errors, ['q1_supporting_documents']: 'This is required' });
+                // }
+                // if (!formData.q2_supporting_documents) {
+                //     return setErrors({ ...errors, ['q2_supporting_documents']: 'This is required' });
+                // }
+                // if (!formData.q4_supporting_documents) {
+                //     return setErrors({ ...errors, ['q4_supporting_documents']: 'This is required' });
+                // }
+                // else {
+                //     for (let file of formData.q1_supporting_documents) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         q1_supporting_documents.push(id)
+                //     }
+                //     for (let file of formData.q2_supporting_documents) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         q2_supporting_documents.push(id)
+                //     }
+                //     for (let file of formData.q4_supporting_documents) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         q4_supporting_documents.push(id)
+                //     }
+                //     if (formData.q3_supporting_documents) {
+                //         for (let file of formData.q3_supporting_documents) {
+                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //             q3_supporting_documents.push(id)
+                //         }
+                //     }
+                // }
                 dispatch(investigatorAndinstuationSave({ ...formData, q1_supporting_documents, q2_supporting_documents, q3_supporting_documents, q4_supporting_documents }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};
@@ -280,7 +280,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='q1_supporting_documents'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });
@@ -324,7 +324,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='q2_supporting_documents'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });
@@ -449,7 +449,7 @@ function InvestigatorInstitutionInfo({ continuinReviewDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='q4_supporting_documents'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

@@ -11,7 +11,9 @@ import SubmissionForm from '../ProtocolList/AdminProtocolType/ClinicalResearcher
 import { useLocation } from "react-router-dom";
 
 
-const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
+const ClinicalResearcherDetails = ({protocolTypeDetails, protocolDetailsById}) => {
+    const [value, setValue] = React.useState(0);
+    
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -38,17 +40,15 @@ const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
     };
 
     function a11yProps(index) {
-        return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-        };
+        return {id: `simple-tab-${index}`, 'aria-controls': `simple-tabpanel-${index}`};
     }
+
     const location = useLocation();
-    console.log('location', location)
-    const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    // console.log('protocolDetailsById', protocolDetailsById)
+    
     return (
         <Box sx={{ width: '100%' }}>
         <h2 className='ml-20'>{protocolTypeDetails.researchType} Details({protocolTypeDetails.protocolId})</h2>
@@ -60,10 +60,10 @@ const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
             </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} investicatorProtocolInformation={protocolDetailsById?.investigator_protocol_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} consentInformation={protocolDetailsById?.consent_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
             <SubmissionForm protocolTypeDetails={protocolTypeDetails} />

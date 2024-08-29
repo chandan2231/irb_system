@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import { createInvestigatorInformation } from '../../../../../services/ProtocolType/ClinicalResearcherService';
+import { createInvestigatorInformation } from '../../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {useSearchParams, useNavigate, Link} from 'react-router-dom';
@@ -32,13 +32,24 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
+const completedTraining = [
+    {label : 'OHRP Human Subject Assurance Training', value : '1'},
+    {label : 'CITI Program Training', value : '2'},
+    {label : 'Certified Physician Investigator Training', value : '3'},
+    {label : 'ACRP training (CCRC, CCRA)', value : '4'},
+    {label : 'SOCRA (CCRP)', value : '5'},
+    {label : 'Graduate or undergraduate research studies or degrees', value : '6'},
+    {label : 'Academy of Physicians in Clinical Research', value : '7'},
+    {label : 'Other', value : '8'},
+]
+
 const investigatorInfoSchema = yup.object().shape({
     investigator_name: yup.string().required("This is required"),
     investigator_email: yup.string().required("This is required"),
     sub_investigator_name: yup.string().required("This is required")
 })
 
-function InvestigatorInformationForm({protocolTypeDetails}) {
+function InvestigatorInformationForm({protocolTypeDetails, investigatorInformation}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -149,86 +160,58 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
             }
             
         } catch (error) {
-            const newErrors = {};
-            error.inner.forEach((err) => {
-                newErrors[err.path] = err.message;
-            });
-            if(formData.fda_audit !== '' && formData.fda_audit === 'Yes' && formData.fda_audit_explain === ""){
-                newErrors['fda_audit_explain_error'] = 'This is required';
-            } else {
-                newErrors['fda_audit_explain_error'] = '';
-            }
-            if(formData.pending_or_active_research !== '' && formData.pending_or_active_research === 'Yes' && formData.pending_or_active_research_explain === ""){
-                newErrors['pending_or_active_research_explain_error'] = 'This is required';
-            } else {
-                newErrors['pending_or_active_research_explain_error'] = '';
-            }
-            if(formData.site_fwp !== '' && formData.site_fwp === 'Yes' && formData.fwa_number === ""){
-                newErrors['fwa_number_error'] = 'This is required';
-            } else {
-                newErrors['fwa_number_error'] = '';
-            }
-            if(otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === ""){
-                newErrors['training_completed_explain_error'] = 'This is required';
-            } else {
-                newErrors['training_completed_explain_error'] = '';
-            }
-            setErrors(newErrors);
+            
         }
     };
+    const trainingCompletedArr = investigatorInformation?.training_completed?.split(",");
 	return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name" onChange={handleChange} />
+                        <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name"  value={investigatorInformation?.investigator_name} />
                     </Box>
-                    {errors.investigator_name && <div className="error">{errors.investigator_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email" onChange={handleChange} />
+                        <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email" value={investigatorInformation?.investigator_email} />
                     </Box>
-                    {errors.investigator_email && <div className="error">{errors.investigator_email}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Sub-Investigator Name *" id="sub_investigator_name" name="sub_investigator_name" onChange={handleChange} />
+                        <TextField fullWidth label="Sub-Investigator Name *" id="sub_investigator_name" name="sub_investigator_name" value={investigatorInformation?.sub_investigator_name} />
                     </Box>
-                    {errors.sub_investigator_name && <div className="error">{errors.sub_investigator_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" onChange={handleChange} />
+                        <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" value={investigatorInformation?.sub_investigator_email} />
                     </Box>
                 </Form.Group>
                 
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Primary point of contact if different from above" id="primary_contact" name="primary_contact"  onChange={handleChange}/>
+                        <TextField fullWidth label="Primary point of contact if different from above" id="primary_contact" name="primary_contact"  value={investigatorInformation?.primary_contact}/>
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Primary point of contact email address" id="primary_contact_email" name="primary_contact_email" onChange={handleChange} />
+                        <TextField fullWidth label="Primary point of contact email address" id="primary_contact_email" name="primary_contact_email" value={investigatorInformation?.primary_contact_email} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Has the investigator ever had an FDA audit?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="fda_audit" onChange={(event) => handleRadioButtonFdaAudit(event, 'fda_audit')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="fda_audit">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInformation?.fda_audit === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInformation?.fda_audit === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestion === true && (
+                    investigatorInformation?.fda_audit === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth name="fda_audit_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.fda_audit_explain_error && <div className="error">{errors.fda_audit_explain_error}</div>}
+                           <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                           <h4>{investigatorInformation?.fda_audit_explain}</h4>
                         </Form.Group>
                     )
                 }
@@ -236,126 +219,89 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">How long has the investigator been involved in research?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="involved_years" onChange={(event) => handleInvestigatorsInvolvedYears(event, 'involved_years')}>
-                            <FormControlLabel value="New to research-1 year" control={<Radio />} label="New to research-&lt;1 year" />
-                            <FormControlLabel value="1-5 years" control={<Radio />} label="1-5 years" />
-                            <FormControlLabel value="6 years or more" control={<Radio />} label="6 years or more" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="involved_years">
+                            <FormControlLabel value="New to research-1 year" control={<Radio />} label="New to research-&lt;1 year" checked={investigatorInformation?.involved_years === 'New to research-1 year'} />
+                            <FormControlLabel value="1-5 years" control={<Radio />} label="1-5 years" checked={investigatorInformation?.involved_years === '1-5 years'} />
+                            <FormControlLabel value="6 years or more" control={<Radio />} label="6 years or more" checked={investigatorInformation?.involved_years === '6 years or more'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 
                 <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi" onChange={handleChange} />
+                        <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi" value={investigatorInformation?.investigators_npi} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">What training in the field of human subjects protection has the investigator completed?</FormLabel>
-                        <FormGroup onChange={(event) => handleTrainingCompletedChecked(event)} name="training_completed">
-                            <FormControlLabel control={<Checkbox />} label="OHRP Human Subject Assurance Training" value='1' />
-                            <FormControlLabel control={<Checkbox />} label="CITI Program Training" value='2' />
-                            <FormControlLabel control={<Checkbox />} label="Certified Physician Investigator Training" value='3' />
-                            <FormControlLabel control={<Checkbox />} label="ACRP training (CCRC, CCRA)" value='4' />
-                            <FormControlLabel control={<Checkbox />} label="SOCRA (CCRP)" value='5' />
-                            <FormControlLabel control={<Checkbox />} label="Graduate or undergraduate research studies or degrees" value='6' />
-                            <FormControlLabel control={<Checkbox />} label="Academy of Physicians in Clinical Research" value='7' />
-                            <FormControlLabel control={<Checkbox />} label="Other" value='8' />
-                        </FormGroup>
+                        {
+                            completedTraining.map((trainingList, index) => {
+                                return(<FormControlLabel key={index} control={<Checkbox />} label={trainingList.label} value={trainingList.value} checked={trainingCompletedArr?.find(id => Number(id) === Number(trainingList.value))} />)
+                            })
+                        }
                     </FormControl>
                 </Form.Group>
                 {
-                    showOtherQuestion === true && (
+                    trainingCompletedArr?.includes('8') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.training_completed_explain_error && <div className="error">{errors.training_completed_explain_error}</div>}
+                            <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                            <h4>{investigatorInformation?.training_completed_explain}</h4>
                         </Form.Group>
                     )
                 }
 
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number" onChange={handleChange} />
+                        <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number" value={investigatorInformation?.investigator_research_number} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Do you have any pending or active restrictions related to research or the practice of medicine?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="pending_or_active_research" onChange={(event) => handlePendingOrInactiveresearch(event, 'pending_or_active_research')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="pending_or_active_research">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInformation?.pending_or_active_research === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInformation?.pending_or_active_research === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionPendingOrActive === true && (
+                    investigatorInformation?.pending_or_active_research === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.pending_or_active_research_explain_error && <div className="error">{errors.pending_or_active_research_explain_error}</div>}
+                            <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                            <h4>{investigatorInformation?.pending_or_active_research_explain}</h4>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Does your site have an FWA?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="site_fwp" onChange={(event) => handleSiteFWP(event, 'site_fwp')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="site_fwp">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={investigatorInformation?.site_fwp === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={investigatorInformation?.site_fwp === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showAdditionalQuestionSiteFWP === true && (
+                    investigatorInformation?.site_fwp === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField fullWidth label="Please provide FWA number *" id="fwa_number" name="fwa_number" onChange={handleChange} />
+                                <TextField fullWidth label="Please provide FWA number *" id="fwa_number" name="fwa_number" value={investigatorInformation?.fwa_number} />
                             </Box>
-                            {errors.fwa_number_error && <div className="error">{errors.fwa_number_error}</div>}
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button

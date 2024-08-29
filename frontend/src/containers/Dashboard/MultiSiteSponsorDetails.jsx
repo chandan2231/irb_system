@@ -46,14 +46,14 @@ const MultiSiteSponsorDetails = ({protocolTypeDetails}) => {
         };
     }
     const location = useLocation();
-    console.log('location', location)
+    // console.log('location', location)
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
     return (
         <Box sx={{ width: '100%' }}>
-        <h2 className='ml-20'>{protocolTypeDetails.researchType}</h2>
+        <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
         <Box className='ml-20' sx={{ borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
             <Tab label="Protocol Information" {...a11yProps(0)} />

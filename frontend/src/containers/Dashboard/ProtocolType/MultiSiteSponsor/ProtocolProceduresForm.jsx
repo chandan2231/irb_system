@@ -17,8 +17,11 @@ import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
 import Grid from '@mui/material/Grid';
-import axios from "axios";
 import { uploadFile } from '../../../../services/UserManagement/UserService';
+import { createProtocolProcedures } from '../../../../services/ProtocolType/MultiSiteSponsorService';
+import { useTheme } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -34,12 +37,16 @@ const VisuallyHiddenInput = styled('input')({
 
 const protocolProcedureInfoSchema = yup.object().shape({
     enrolled_subject: yup.string().required("This is required"),
-    research_place_name_address: yup.string().required("This is required"),
+    // research_place_name_address: yup.string().required("This is required"),
 })
 
 
 
-function ProtocolProceduresForm() {
+function ProtocolProceduresForm({protocolTypeDetails}) {
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userDetails = JSON.parse(localStorage.getItem('user'));
     const [showAdditionalQuestionStudyType, setShowAdditionalQuestionStudyType] = React.useState(false);
     const [showAdditionalQuestionRaceAndEthnic, setShowAdditionalQuestionRaceAndEthnic] = React.useState(false);
     const [showStudyExcludedAdditionTextArea, setShowStudyExcludedAdditionTextArea] = React.useState(false);
@@ -51,12 +58,7 @@ function ProtocolProceduresForm() {
     const [explainRecurementMethodErrors, setExplainRecurementMethodErrors] = React.useState();
     const [explainFutureResearchErrors, setExplainFutureResearchErrors] = React.useState();
     const [explainStudyExcludeErrors, setExplainStudyExcludeErrors] = React.useState();
-
-
-
-
     const [errors, setErrors] = useState({});
-
     const [formData, setFormData] = useState({
         enrolled_study_type: '',
         enrolled_type_explain: '',
@@ -70,6 +72,8 @@ function ProtocolProceduresForm() {
         research_place_name_address: '',
         future_research: '',
         future_research_explain: '',
+        protocol_id: protocolTypeDetails.protocolId,
+        created_by: userDetails.id,
     });
 
     const handleChange = (e) => {
@@ -80,55 +84,64 @@ function ProtocolProceduresForm() {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
+            // if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
+            //     setExplainEnrolledTypeErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainEnrolledTypeErrors('')
+            // }
+            // if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
+            //     setExplainEnrolledGroupErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainEnrolledGroupErrors('')
+            // }
+            // if (formData.study_excluded !== '' && formData.study_excluded === 'Yes' && formData.study_excluded_explain === "") {
+            //     setExplainStudyExcludeErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainStudyExcludeErrors('')
+            // }
+            // if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
+            //     setExplainRecurementMethodErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainRecurementMethodErrors('')
+            // }
+            // if (formData.future_research !== '' && formData.future_research === 'Yes' && formData.future_research_explain === "") {
+            //     setExplainFutureResearchErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainFutureResearchErrors('')
+            // }
             const getValidatedform = await protocolProcedureInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocolProcedureInfoSchema.isValid(getValidatedform)
-            if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
-                setExplainEnrolledTypeErrors('This is required')
-                return
-            } else {
-                setExplainEnrolledTypeErrors('')
-            }
-            if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
-                setExplainEnrolledGroupErrors('This is required')
-                return
-            } else {
-                setExplainEnrolledGroupErrors('')
-            }
-            if (formData.study_excluded !== '' && formData.study_excluded === 'Yes' && formData.study_excluded_explain === "") {
-                setExplainStudyExcludeErrors('This is required')
-                return
-            } else {
-                setExplainStudyExcludeErrors('')
-            }
-            if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
-                setExplainRecurementMethodErrors('This is required')
-                return
-            } else {
-                setExplainRecurementMethodErrors('')
-            }
-            if (formData.future_research !== '' && formData.future_research === 'Yes' && formData.future_research_explain === "") {
-                setExplainFutureResearchErrors('This is required')
-                return
-            } else {
-                setExplainFutureResearchErrors('')
-            }
+            console.log('isValid', isValid)
+            console.log('getValidatedform', getValidatedform)
             if (isValid === true) {
                 let material_file = []
-                if (formData.material_file) {
-                    for (let file of formData.material_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        material_file.push(id)
+                // if (formData.material_file) {
+                //     for (let file of formData.material_file) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         material_file.push(id)
+                //     }
+                // }
+                // else {
+                //     return setErrors({ ...errors, material_file: "This is required" })
+                // }
+                // console.log('formData', formData)
+                // const res = await axios.post('http://localhost:8800/api/researchInfo/saveProtocolProceduresInfo', { ...formData, material_file })
+                // console.log('res', res)
+                // if (res.status === 200) {
+                //     //navigate('/login')
+                // }
+                dispatch(createProtocolProcedures(formData))
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
                     }
-                }
-                else {
-                    return setErrors({ ...errors, material_file: "This is required" })
-                }
-                console.log('formData', formData)
-                const res = await axios.post('http://localhost:8800/api/researchInfo/saveProtocolProceduresInfo', { ...formData, material_file })
-                console.log('res', res)
-                if (res.status === 200) {
-                    //navigate('/login')
-                }
+                })
             }
         } catch (error) {
             const newErrors = {};
@@ -397,7 +410,7 @@ function ProtocolProceduresForm() {
                         <VisuallyHiddenInput
                             type="file"
                             name='material_file'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

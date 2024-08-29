@@ -14,7 +14,7 @@ import SubmissionForm from '../ProtocolList/AdminProtocolType/ContractorResearch
 import { useLocation } from "react-router-dom";
 
 
-const ContractorResearcherDetails = ({protocolTypeDetails}) => {
+const ContractorResearcherDetails = ({protocolTypeDetails, protocolDetailsById}) => {
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -42,12 +42,11 @@ const ContractorResearcherDetails = ({protocolTypeDetails}) => {
 
     function a11yProps(index) {
         return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
         };
     }
     const location = useLocation();
-    console.log('location', location)
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -66,19 +65,19 @@ const ContractorResearcherDetails = ({protocolTypeDetails}) => {
             </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-            <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} protocolInformation = {protocolDetailsById?.protocol_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} investigatorInformation = {protocolDetailsById?.investigator_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-            <StudyInformationForm protocolTypeDetails={protocolTypeDetails} />
+            <StudyInformationForm protocolTypeDetails={protocolTypeDetails} studyInformation = {protocolDetailsById?.study_information} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
-            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} informedConsent = {protocolDetailsById?.informed_consent} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
-            <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails} />
+            <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails} protocolProcedures = {protocolDetailsById?.protocol_procedure} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
             <SubmissionForm protocolTypeDetails={protocolTypeDetails} />

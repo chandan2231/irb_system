@@ -7,48 +7,40 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import Grid from '@mui/material/Grid';
-import axios from "axios";
+import { Box, useTheme } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { createInformedConsent } from '../../../../services/ProtocolType/ClinicalResearcherService';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
+const informedConsentInfoSchema = yup.object().shape({
+    principal_investigator_name: yup.string().required("This is required"),
+    site_address: yup.string().required("This is required"),
+    primary_phone: yup.string().required("This is required"),
+    always_primary_phone: yup.string().required("This is required"),
+})
 
-function InformedConsentForm() {
-    const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
-    const [showICF, setShowICF] = React.useState(false);
-    const [showOtherLangauageAdditionalTextbox, setShowOtherLangauageAdditionalTextbox] = React.useState(false);
-    const [showOtherLangauageAdditionalQuestion, setShowOtherLangauageAdditionalQuestion] = React.useState(false);
+function InformedConsentForm({protocolTypeDetails}) {
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userDetails = JSON.parse(localStorage.getItem('user'));
     const [termsSelected, setTermsSelected] = React.useState(false);
     const [formData, setFormData] = useState({
-        consent_type: '',
-        no_consent_explain: '',
-        include_icf: '',
-        participation_compensated: '',
-        other_language_selection: '',
-        professional_translator: '',
-        professional_translator_explain: '',
+        principal_investigator_name: '',
+        site_address: '',
+        additional_site_address: '',
+        primary_phone: '',
+        always_primary_phone: '',
+        site_electronic_consent: '',
+        protocol_id: protocolTypeDetails.protocolId,
+        created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-    const [explainNoConsentErrors, setExplainNoConsentErrors] = useState();
-    const [explainTranslatorErrors, setExplainTranslatorErrors] = useState();
 
     const handleTermsChecked = (event) => {
         const {checked} = event.target
@@ -71,24 +63,19 @@ function InformedConsentForm() {
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
-        console.log("sadasdsadas", formData)
         try {
-            if(formData.consent_type.includes('1') && formData.no_consent_explain === ""){
-                setExplainNoConsentErrors('This is required')
-                return
-            } else {
-                setExplainNoConsentErrors('')
-            }
-            if(formData.professional_translator !== '' && formData.professional_translator === 'No' && formData.professional_translator_explain === ""){
-                setExplainTranslatorErrors('This is required')
-                return
-            } else {
-                setExplainTranslatorErrors('')
-            }
-            const res = await axios.post('http://localhost:8800/api/researchInfo/saveInformedInfo', formData)
-            console.log('res', res)
-            if(res.status===200){
-                //navigate('/login')
+            const getValidatedform = await informedConsentInfoSchema.validate(formData, { abortEarly: false });
+            const isValid = await informedConsentInfoSchema.isValid(getValidatedform)
+            console.log('formData', formData)
+            console.log('isValid', isValid)
+            if (isValid === true) {
+                dispatch(createInformedConsent(formData))
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};
@@ -98,8 +85,6 @@ function InformedConsentForm() {
             setErrors(newErrors);
         }
     };
-
-    
 
 	return (
         <Row>
@@ -141,7 +126,7 @@ function InformedConsentForm() {
                 <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Will your site(s) use electronic consent?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="future_research" onChange={(event) => handleRadioButtonElectronicConsent(event, 'electronic_consent')}>
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="site_electronic_consent" onChange={(event) => handleRadioButtonElectronicConsent(event, 'site_electronic_consent')}>
                             <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                             <FormControlLabel value="No" control={<Radio />} label="No" />
                         </RadioGroup>

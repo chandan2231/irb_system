@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProtocolList } from "../../services/Admin/ProtocolListService";
+import { fetchProtocolList, fetchProtocolDetailsById } from "../../services/Admin/ProtocolListService";
 import { fetchContinuinReviewProtocolList, fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
 import { fetchUsersList } from "../../services/Admin/UsersListService";
 const AdminSlice = createSlice({
@@ -11,6 +11,7 @@ const AdminSlice = createSlice({
         continuinReviewProtocolList: null,
         usersList: null,
         continuinReviewDetailsById: null,
+        protocolDetailsById: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -60,6 +61,18 @@ const AdminSlice = createSlice({
             state.continuinReviewDetailsById = action.payload;
         })
         .addCase(fetchContinuinReviewDetailsById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(fetchProtocolDetailsById.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchProtocolDetailsById.fulfilled, (state, action) => {
+            state.loading = false;
+            state.protocolDetailsById = action.payload;
+        })
+        .addCase(fetchProtocolDetailsById.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
         });

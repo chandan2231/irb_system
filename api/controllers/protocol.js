@@ -45,20 +45,25 @@ export const createProtocol = (req, res) => {
 
 
 export const saveFile = async (req, res) => {
+    
+    var datetime = new Date();
     try {
         if (req.file) {
-
             let sRL = await s3Service.uploadFile(req.file.path);
             let imageUrl = sRL.cdnUrl;
             // Remove the file from the local server
             fs.unlinkSync(req.file.path);
-
-            const que2 = 'insert into upload_files (`name`, `url`, `type`, `updated_at`) value (?)';
+            const que2 = 'insert into documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)';
             const protocolValue = [
+                req.file.protocolId,
+                req.file.protocolType,
+                req.file.informationType,
+                req.file.documentName,
                 req.file.filename,
                 imageUrl,
-                req.body.type,
-                new Date(),
+                req.body.createdBy,
+                datetime.toISOString().slice(0,10),
+                datetime.toISOString().slice(0,10),
             ]
 
             db.query(que2, [protocolValue], (err, data) => {

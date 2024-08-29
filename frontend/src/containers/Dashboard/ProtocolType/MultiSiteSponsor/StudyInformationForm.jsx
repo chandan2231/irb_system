@@ -79,18 +79,19 @@ function StudyInformationForm({ protocolTypeDetails }) {
             const isValid = await studyInfoSchema.isValid(getValidatedform)
             if (isValid === true) {
                 let ingredient_list = []
-                if (formData.ingredient_list) {
-                    for (let file of formData.ingredient_list) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        ingredient_list.push(id)
-                    }
-                }
+                // if (formData.ingredient_list) {
+                //     for (let file of formData.ingredient_list) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         ingredient_list.push(id)
+                //     }
+                // }
                 dispatch(createStudyInformation({ ...formData, ingredient_list }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};

@@ -18,7 +18,7 @@
         const dispatch = useDispatch();
         const location = useLocation();
         const continuinReviewDetails = location.state.details
-        const [value, setValue] = useState(3);
+        const [value, setValue] = useState(0);
         const [user, setUser] = useState([]);
         useEffect(() => {
             const userDetails = JSON.parse(localStorage.getItem('user'));

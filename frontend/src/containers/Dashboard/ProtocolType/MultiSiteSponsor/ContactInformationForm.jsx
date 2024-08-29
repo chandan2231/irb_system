@@ -12,17 +12,6 @@ import { useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {useSearchParams, useNavigate, Link} from 'react-router-dom';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
 const contactInfoSchema = yup.object().shape({
     name: yup.string().required("This is required"),
@@ -79,8 +68,9 @@ function ContactInformationForm({protocolTypeDetails}) {
             if(isValid === true){
                 dispatch(createContactInformation(formData))
                 .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
                     }
                 })
             }

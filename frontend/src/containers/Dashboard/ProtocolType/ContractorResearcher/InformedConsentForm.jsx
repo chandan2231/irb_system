@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import { createInformedConsent } from '../../../../services/ProtocolType/ClinicalResearcherService';
+import { createInformedConsent } from '../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
@@ -149,21 +149,22 @@ function InformedConsentForm({ protocolTypeDetails }) {
             let isValid = true
             if (isValid === true) {
                 let consent_file = []
-                if (formData.consent_file) {
-                    for (let file of formData.consent_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        consent_file.push(id)
-                    }
-                }
-                else {
-                    return setErrors({ ...errors, consent_file: "This is required" })
-                }
+                // if (formData.consent_file) {
+                //     for (let file of formData.consent_file) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         consent_file.push(id)
+                //     }
+                // }
+                // else {
+                //     return setErrors({ ...errors, consent_file: "This is required" })
+                // }
                 dispatch(createInformedConsent({ ...formData, consent_file }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             console.log('error', error)
@@ -273,7 +274,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='consent_file'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

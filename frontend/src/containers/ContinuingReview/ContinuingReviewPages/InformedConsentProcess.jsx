@@ -117,37 +117,38 @@ function InformedConsentProcess({ continuinReviewDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if (!formData.icf_file) {
-                return setErrors({ icf_file: "" });
-            }
+            // if (!formData.icf_file) {
+            //     return setErrors({ icf_file: "" });
+            // }
             const getValidatedform = await investigatorInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             if (isValid === true) {
                 let icf_file = []
                 let consent_form = []
-                if (!formData.icf_file) {
-                    return setErrors({ ...errors, ['icf_file']: 'This is required' });
-                }
-                if (!formData.consent_form) {
-                    return setErrors({ ...errors, ['consent_form']: 'This is required' });
-                }
-                else {
-                    for (let file of formData.icf_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        icf_file.push(id)
-                    }
-                    for (let file of formData.consent_form) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        consent_form.push(id)
-                    }
-                }
+                // if (!formData.icf_file) {
+                //     return setErrors({ ...errors, ['icf_file']: 'This is required' });
+                // }
+                // if (!formData.consent_form) {
+                //     return setErrors({ ...errors, ['consent_form']: 'This is required' });
+                // }
+                // else {
+                //     for (let file of formData.icf_file) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         icf_file.push(id)
+                //     }
+                //     for (let file of formData.consent_form) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         consent_form.push(id)
+                //     }
+                // }
                 dispatch(informedConsentSave({ ...formData, icf_file, consent_form }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};
@@ -180,7 +181,7 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='icf_file'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });
@@ -254,7 +255,7 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='consent_form'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

@@ -7,7 +7,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -17,8 +16,12 @@ import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
 import Grid from '@mui/material/Grid';
-import axios from "axios";
+import { Box, useTheme } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { createInvestigatorAndProtocolInformation } from '../../../../services/ProtocolType/ClinicalResearcherService';
 import { uploadFile } from '../../../../services/UserManagement/UserService';
+
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -32,13 +35,83 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const investigatorInfoSchema = yup.object().shape({
+const investigatorAndProtocolInfoSchema = yup.object().shape({
     investigator_name: yup.string().required("This is required"),
     investigator_email: yup.string().required("This is required"),
-    sub_investigator_name: yup.string().required("This is required")
+    site_name: yup.string().required("This is required"),
+    site_address: yup.string().required("This is required"),
+    site_name_address: yup.string().when('more_site', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    protocol_title: yup.string().required("This is required"),
+    protocol_number: yup.string().required("This is required"),
+    study_criteria: yup.string().required("This is required"),
+    subject_number: yup.string().required("This is required"),
+    disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    oversite_explain: yup.string().when('oversite', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    immediate_family_explain: yup.string().when('immediate_family', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    stock_ownership_explain: yup.string().when('stock_ownership', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    property_interest_explain: yup.string().when('property_interest', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    financial_agreement_explain: yup.string().when('financial_agreement', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    server_position_explain: yup.string().when('server_position', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    influence_conduct_explain: yup.string().when('influence_conduct', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    interest_conflict_explain: yup.string().when('interest_conflict', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    fda_audit_explain: yup.string().when('fda_audit', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    
+    pending_or_active_research_explain: yup.string().when('pending_or_active_research', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
 })
 
-function InvestigatorInformationForm() {
+function InvestigatorInformationForm({protocolTypeDetails}) {
+    const theme = useTheme();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userDetails = JSON.parse(localStorage.getItem('user'));
     const [showAdditionalQuestion, setShowAdditionalQuestion] = React.useState(false);
     const [showDisapproveAdditionTextArea, setShowDisapproveAdditionTextArea] = React.useState(false);
     const [showOversiteAdditionTextArea, setShowOversiteAdditionTextArea] = React.useState(false);
@@ -51,16 +124,42 @@ function InvestigatorInformationForm() {
     const [showInterestConflictsAdditionTextArea, setShowInterestConflictsAdditionTextArea] = React.useState(false);
     const [showFdaAuditAdditionTextArea, setShowFdaAuditAdditionTextArea] = React.useState(false);
     const [showAdditionalQuestionPendingOrActive, setShowAdditionalQuestionPendingOrActive] = React.useState(false);
-    const [showAdditionalQuestionSiteFWP, setShowAdditionalQuestionSiteFWP] = React.useState(false);
-    const [otherQuestionSelection, setOtherQuestionSelection] = React.useState('');
     const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
+    const [otherQuestionSelection, setOtherQuestionSelection] = React.useState('');
     const [formData, setFormData] = useState({
         investigator_name: '',
         investigator_email: '',
         sub_investigator_name: '',
         sub_investigator_email: '',
-        primary_contact: '',
-        primary_contact_email: '',
+        additional_study_name: '',
+        additional_study_email: '',
+        site_name: '',
+        site_address: '',
+        more_site: '',
+        site_name_address: '',
+        protocol_title: '',
+        protocol_number: '',
+        study_criteria: '',
+        subject_number: '',
+        site_number: '',
+        disapproved_or_withdrawn: '',
+        disapproved_or_withdrawn_explain: '',
+        oversite: '',
+        oversite_explain: '',
+        immediate_family: '',
+        immediate_family_explain: '',
+        stock_ownership: '',
+        stock_ownership_explain: '',
+        property_interest: '',
+        property_interest_explain: '',
+        financial_agreement: '',
+        financial_agreement_explain: '',
+        server_position: '',
+        server_position_explain: '',
+        influence_conduct: '',
+        influence_conduct_explain: '',
+        interest_conflict: '',
+        interest_conflict_explain: '',
         fda_audit: '',
         fda_audit_explain: '',
         involved_years: '',
@@ -70,8 +169,8 @@ function InvestigatorInformationForm() {
         investigator_research_number: '',
         pending_or_active_research: '',
         pending_or_active_research_explain: '',
-        site_fwp: '',
-        fwa_number: '',
+        protocol_id: protocolTypeDetails.protocolId,
+        created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
 
@@ -234,68 +333,48 @@ function InvestigatorInformationForm() {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await investigatorInfoSchema.validate(formData, { abortEarly: false });
-            const isValid = await investigatorInfoSchema.isValid(getValidatedform)
+            const getValidatedform = await investigatorAndProtocolInfoSchema.validate(formData, { abortEarly: false });
+            const isValid = await investigatorAndProtocolInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             console.log('isValid', isValid)
             if (isValid === true) {
-                let cv_files = []
-                let medical_license = []
-                let training_certificates = []
-                if (!formData.cv_files) {
-                    return setErrors({ ...errors, ['cv_files']: 'This is required' });
-                }
-                else {
-                    for (let file of formData.cv_files) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        cv_files.push(id)
+                // let cv_files = []
+                // let medical_license = []
+                // let training_certificates = []
+                // if (!formData.cv_files) {
+                //     return setErrors({ ...errors, ['cv_files']: 'This is required' });
+                // }
+                // else {
+                //     for (let file of formData.cv_files) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         cv_files.push(id)
+                //     }
+                //     if (formData.medical_license) {
+                //         for (let file of formData.medical_license) {
+                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //             medical_license.push(id)
+                //         }
+                //     }
+                //     if (formData.training_certificates) {
+                //         for (let file of formData.training_certificates) {
+                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //             training_certificates.push(id)
+                //         }
+                //     }
+                // }
+                dispatch(createInvestigatorAndProtocolInformation(formData))
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
                     }
-                    if (formData.medical_license) {
-                        for (let file of formData.medical_license) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                            medical_license.push(id)
-                        }
-                    }
-                    if (formData.training_certificates) {
-                        for (let file of formData.training_certificates) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                            training_certificates.push(id)
-                        }
-                    }
-                }
-
-                const res = await axios.post('http://localhost:8800/api/researchInfo/saveInvestigatorInfo', { ...formData, cv_files, medical_license, training_certificates })
-                console.log('res', res)
-                if (res.status === 200) {
-                    //navigate('/login')
-                }
+                })
             }
         } catch (error) {
             const newErrors = {};
             error.inner.forEach((err) => {
                 newErrors[err.path] = err.message;
             });
-            if (formData.fda_audit !== '' && formData.fda_audit === 'Yes' && formData.fda_audit_explain === "") {
-                newErrors['fda_audit_explain_error'] = 'This is required';
-            } else {
-                newErrors['fda_audit_explain_error'] = '';
-            }
-            if (formData.pending_or_active_research !== '' && formData.pending_or_active_research === 'Yes' && formData.pending_or_active_research_explain === "") {
-                newErrors['pending_or_active_research_explain_error'] = 'This is required';
-            } else {
-                newErrors['pending_or_active_research_explain_error'] = '';
-            }
-            if (formData.site_fwp !== '' && formData.site_fwp === 'Yes' && formData.fwa_number === "") {
-                newErrors['fwa_number_error'] = 'This is required';
-            } else {
-                newErrors['fwa_number_error'] = '';
-            }
-            if (otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === "") {
-                newErrors['training_completed_explain_error'] = 'This is required';
-            } else {
-                newErrors['training_completed_explain_error'] = '';
-            }
-
             setErrors(newErrors);
         }
     };
@@ -413,7 +492,7 @@ function InvestigatorInformationForm() {
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="disapproved_or_withdrawn_explain" id='disapproved_or_withdrawn_explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
                             </Box>
-                            {errors.disapproved_or_withdrawn_explain_error && <div className="error">{errors.disapproved_or_withdrawn_explain_error}</div>}
+                            {errors.disapproved_or_withdrawn_explain && <div className="error">{errors.disapproved_or_withdrawn_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -432,7 +511,7 @@ function InvestigatorInformationForm() {
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="oversite_explain" id='oversite_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.oversite_explain_error && <div className="error">{errors.oversite_explain_error}</div>}
+                            {errors.oversite_explain && <div className="error">{errors.oversite_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -452,7 +531,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please explain the compensation in great detail including amount received, services rendered, and name and title or relationship of the individual with the conflict *</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="immediate_family_explain" id='immediate_family_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.immediate_family_explain_error && <div className="error">{errors.immediate_family_explain_error}</div>}
+                            {errors.immediate_family_explain && <div className="error">{errors.immediate_family_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -472,7 +551,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the monetary interest in detail including the estimated value, percentage of ownership, and name and role of the individual *</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="stock_ownership_explain" id='stock_ownership_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.stock_ownership_explain_error && <div className="error">{errors.stock_ownership_explain_error}</div>}
+                            {errors.stock_ownership_explain && <div className="error">{errors.stock_ownership_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -492,7 +571,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the estimated value, ownership, patent information/investigational product information (if applicable), and name and role of the individual*</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="property_interest_explain" id='property_interest_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.property_interest_explain_error && <div className="error">{errors.property_interest_explain_error}</div>}
+                            {errors.property_interest_explain && <div className="error">{errors.property_interest_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -513,7 +592,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the estimated value, ownership, patent information/investigational product information (if applicable), and name and role of the individual*</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="financial_agreement_explain" id='financial_agreement_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.financial_agreement_explain_error && <div className="error">{errors.financial_agreement_explain_error}</div>}
+                            {errors.financial_agreement_explain && <div className="error">{errors.financial_agreement_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -534,7 +613,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the position in detail including the estimated value of compensation, types of services rendered, duration that the individual has served in this capacity and name and role of the individual *</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="server_position_explain" id='server_position_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.server_position_explain_error && <div className="error">{errors.server_position_explain_error}</div>}
+                            {errors.server_position_explain && <div className="error">{errors.server_position_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -555,7 +634,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the potential conflicts and how they may interfere with the study, and name and role of the individual *</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="influence_conduct_explain" id='influence_conduct_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.influence_conduct_explain_error && <div className="error">{errors.influence_conduct_explain_error}</div>}
+                            {errors.influence_conduct_explain && <div className="error">{errors.influence_conduct_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -576,7 +655,7 @@ function InvestigatorInformationForm() {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the COI committee findings in detail including the name of the COI committee, the determinations, and describe the management plan *</FormLabel>
                                 <TextField fullWidth variant="outlined" placeholder="Explain" name="interest_conflict_explain" id='interest_conflict_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.interest_conflict_explain_error && <div className="error">{errors.interest_conflict_explain_error}</div>}
+                            {errors.interest_conflict_explain && <div className="error">{errors.interest_conflict_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -595,7 +674,7 @@ function InvestigatorInformationForm() {
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <TextField fullWidth variant="outlined" placeholder="Explain *" name="fda_audit_explain" id='fda_audit_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.fda_audit_explain_error && <div className="error">{errors.fda_audit_explain_error}</div>}
+                            {errors.fda_audit_explain && <div className="error">{errors.fda_audit_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -636,7 +715,7 @@ function InvestigatorInformationForm() {
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <TextField variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.training_completed_explain_error && <div className="error">{errors.training_completed_explain_error}</div>}
+                            {errors.training_completed_explain && <div className="error">{errors.training_completed_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -660,7 +739,7 @@ function InvestigatorInformationForm() {
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <TextField variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.pending_or_active_research_explain_error && <div className="error">{errors.pending_or_active_research_explain_error}</div>}
+                            {errors.pending_or_active_research_explain && <div className="error">{errors.pending_or_active_research_explain}</div>}
                         </Form.Group>
                     )
                 }
@@ -678,7 +757,7 @@ function InvestigatorInformationForm() {
                         <VisuallyHiddenInput
                             type="file"
                             name='cv_files'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import { createInvestigatorInformation } from '../../../../services/ProtocolType/ClinicalResearcherService';
+import { createInvestigatorInformation } from '../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
@@ -144,30 +144,31 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                 let cv_files = []
                 let medical_license = []
                 let training_certificates = []
-                if (!formData.cv_files) {
-                    return setErrors({ ...errors, ['cv_files']: 'This is required' });
-                }
-                else {
-                    for (let file of formData.cv_files) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        cv_files.push(id)
-                    }
-                    if (formData.medical_license) {
-                        for (let file of formData.medical_license) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                            medical_license.push(id)
-                        }
-                    }
-                    if (formData.training_certificates) {
-                        for (let file of formData.training_certificates) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                            training_certificates.push(id)
-                        }
-                    }
-                }
+                // if (!formData.cv_files) {
+                //     return setErrors({ ...errors, ['cv_files']: 'This is required' });
+                // }
+                // else {
+                //     for (let file of formData.cv_files) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         cv_files.push(id)
+                //     }
+                //     if (formData.medical_license) {
+                //         for (let file of formData.medical_license) {
+                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //             medical_license.push(id)
+                //         }
+                //     }
+                //     if (formData.training_certificates) {
+                //         for (let file of formData.training_certificates) {
+                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //             training_certificates.push(id)
+                //         }
+                //     }
+                // }
                 dispatch(createInvestigatorInformation({ ...formData, cv_files, medical_license, training_certificates }))
                     .then(data => {
                         if (data.payload.status === 200) {
+                            alert(data.payload.data.msg)
                         } else {
                         }
                     })
@@ -356,7 +357,7 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='cv_files'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

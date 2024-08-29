@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import { createProtocolProcedures } from '../../../../services/ProtocolType/ClinicalResearcherService';
+import { createProtocolProcedures } from '../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
@@ -116,21 +116,22 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
             const isValid = await protocolProcedureInfoSchema.isValid(getValidatedform)
             if (isValid === true) {
                 let facing_materials = []
-                if (formData.facing_materials) {
-                    for (let file of formData.facing_materials) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        facing_materials.push(id)
-                    }
-                }
-                else {
-                    return setErrors({ ...errors, facing_materials: "This is required" })
-                }
+                // if (formData.facing_materials) {
+                //     for (let file of formData.facing_materials) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         facing_materials.push(id)
+                //     }
+                // }
+                // else {
+                //     return setErrors({ ...errors, facing_materials: "This is required" })
+                // }
                 dispatch(createProtocolProcedures({ ...formData, facing_materials }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};
@@ -382,7 +383,7 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='facing_materials'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

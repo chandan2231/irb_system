@@ -31,11 +31,9 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
   });
 
-function InformedConsentForm() {
+function InformedConsentForm({consentInformation}) {
     const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
     const [showICF, setShowICF] = React.useState(false);
-    const [showOtherLangauageAdditionalTextbox, setShowOtherLangauageAdditionalTextbox] = React.useState(false);
-    const [showOtherLangauageAdditionalQuestion, setShowOtherLangauageAdditionalQuestion] = React.useState(false);
     const [termsSelected, setTermsSelected] = React.useState(false);
     const [formData, setFormData] = useState({
         consent_type: '',
@@ -73,18 +71,7 @@ function InformedConsentForm() {
         e.preventDefault();
         console.log("sadasdsadas", formData)
         try {
-            if(formData.consent_type.includes('1') && formData.no_consent_explain === ""){
-                setExplainNoConsentErrors('This is required')
-                return
-            } else {
-                setExplainNoConsentErrors('')
-            }
-            if(formData.professional_translator !== '' && formData.professional_translator === 'No' && formData.professional_translator_explain === ""){
-                setExplainTranslatorErrors('This is required')
-                return
-            } else {
-                setExplainTranslatorErrors('')
-            }
+            
             const res = await axios.post('http://localhost:8800/api/researchInfo/saveInformedInfo', formData)
             console.log('res', res)
             if(res.status===200){
@@ -99,7 +86,7 @@ function InformedConsentForm() {
         }
     };
 
-    
+    console.log('consentInformation', consentInformation)
 
 	return (
         <Row>
@@ -111,39 +98,39 @@ function InformedConsentForm() {
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Principal Investigator name *" id="principal_investigator_name" name="principal_investigator_name" onChange={handleChange} />
+                        <TextField fullWidth label="Principal Investigator name *" id="principal_investigator_name" name="principal_investigator_name" value={consentInformation?.principal_investigator_name} />
                     </Box>
                     {errors.principal_investigator_name && <div className="error">{errors.principal_investigator_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Site Address *" id="site_address" name="site_address" onChange={handleChange} />
+                        <TextField fullWidth label="Site Address *" id="site_address" name="site_address" value={consentInformation?.site_address} />
                     </Box>
                     {errors.site_address && <div className="error">{errors.site_address}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Additional Site Address" id="additional_site_address" name="additional_site_address" onChange={handleChange} />
+                        <TextField fullWidth label="Additional Site Address" id="additional_site_address" name="additional_site_address" value={consentInformation?.additional_site_address} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Primary phone number to be listed on the ICF (include the area code) *" id="primary_phone" name="primary_phone" onChange={handleChange} />
+                        <TextField fullWidth label="Primary phone number to be listed on the ICF (include the area code) *" id="primary_phone" name="primary_phone" value={consentInformation?.primary_phone} />
                     </Box>
                     {errors.primary_phone && <div className="error">{errors.primary_phone}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="24-hour phone number to be listed on the ICF (include the area code) *" id="always_primary_phone" name="always_primary_phone" onChange={handleChange} />
+                        <TextField fullWidth label="24-hour phone number to be listed on the ICF (include the area code) *" id="always_primary_phone" name="always_primary_phone" value={consentInformation?.always_primary_phone} />
                     </Box>
                     {errors.always_primary_phone && <div className="error">{errors.always_primary_phone}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Will your site(s) use electronic consent?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="future_research" onChange={(event) => handleRadioButtonElectronicConsent(event, 'electronic_consent')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="site_electronic_consent">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={consentInformation?.site_electronic_consent==='Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={consentInformation?.site_electronic_consent==='No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>

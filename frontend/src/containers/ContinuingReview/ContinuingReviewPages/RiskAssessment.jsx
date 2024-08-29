@@ -93,23 +93,25 @@ function RiskAssessment({ continuinReviewDetails }) {
             const getValidatedform = await riskAssessmentSchema.validate(formData, { abortEarly: false });
             const isValid = await riskAssessmentSchema.isValid(getValidatedform)
             console.log('formData', formData)
+            console.log('isValid', isValid)
             if (isValid === true) {
                 let q1_supporting_documents = []
-                if (formData.q1_supporting_documents) {
-                    for (let file of formData.q1_supporting_documents) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                        q1_supporting_documents.push(id)
-                    }
-                }
-                else {
-                    return setErrors({ ...errors, q1_supporting_documents: "This is required" })
-                }
+                // if (formData.q1_supporting_documents) {
+                //     for (let file of formData.q1_supporting_documents) {
+                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
+                //         q1_supporting_documents.push(id)
+                //     }
+                // }
+                // else {
+                //     return setErrors({ ...errors, q1_supporting_documents: "This is required" })
+                // }
                 dispatch(riskAssessmentSave({ ...formData, q1_supporting_documents }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                        } else {
-                        }
-                    })
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        alert(data.payload.data.msg)
+                    } else {
+                    }
+                })
             }
         } catch (error) {
             const newErrors = {};
@@ -157,7 +159,7 @@ function RiskAssessment({ continuinReviewDetails }) {
                         <VisuallyHiddenInput
                             type="file"
                             name='q1_supporting_documents'
-                            required
+                            // required
                             onChange={e => {
                                 if (e.target.files && e.target.files.length) {
                                     setFormData({ ...formData, [e.target.name]: e.target.files });

@@ -8,7 +8,7 @@ export const saveProtocolInfo = (req, res) => {
     // console.log('req', req)
     // console.log('res', res)
     // return;
-    const que = 'insert into protocol_information (`protocol_id`,`protocol_title`, `protocol_number`, `study_duration`,  `sponsor`, `disapproved_or_withdrawn`, `disapproved_or_withdrawn_explain`, `first_time_protocol`,`funding_source`,`oversite`,`oversite_explain`, `created_by`, `protocol_file`) value (?)';
+    const que = 'insert into protocol_information (`protocol_id`,`protocol_title`, `protocol_number`, `study_duration`,  `sponsor`, `disapproved_or_withdrawn`, `disapproved_or_withdrawn_explain`, `first_time_protocol`,`funding_source`,`oversite`,`oversite_explain`, `created_by`) value (?)';
     const values = [
         req.body.protocol_id,
         req.body.protocol_title, 
@@ -22,13 +22,21 @@ export const saveProtocolInfo = (req, res) => {
         req.body.oversite,
         req.body.oversite_explain,
         req.body.created_by,
-        req.body.protocol_file
+        // req.body.protocol_file
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Protocol Information has been saved successfully.')
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Protocol Information has been saved successfully'
+            return res.json(result)
+        }
     }) 
 }
+
+
 
 export const saveInvestigatorInfo = (req, res) => {
     // console.log('req', req)
@@ -57,8 +65,14 @@ export const saveInvestigatorInfo = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Investigator Information has been saved successfully.')
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Investigator Information has been saved successfully'
+            return res.json(result)
+        }
     }) 
 }
 
@@ -71,9 +85,15 @@ export const saveStydyInfo = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Study Information has been saved successfully.')
-    }) 
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Study Information has been saved successfully'
+            return res.json(result)
+        }
+    })
 }
 
 export const saveInformedInfo = (req, res) => {
@@ -90,9 +110,15 @@ export const saveInformedInfo = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Informed Consent has been saved successfully.')
-    }) 
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Informed Consent has been saved successfully'
+            return res.json(result)
+        }
+    })
 }
 
 export const saveProtocolProceduresInfo = (req, res) => {
@@ -114,9 +140,15 @@ export const saveProtocolProceduresInfo = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Protocol Procedure has been saved successfully.')
-    }) 
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Protocol Procedure has been saved successfully'
+            return res.json(result)
+        }
+    })
 }
 
 export const saveContactInfo = (req, res) => {
@@ -140,7 +172,106 @@ export const saveContactInfo = (req, res) => {
         req.body.created_by,
     ];
     db.query(que, [values], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        return res.status(200).json('Contact Information has been saved successfully.')
-    }) 
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Contact Information has been saved successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const saveInvestigatorAndProtocolInformation = (req, res) => {
+    var datetime = new Date();
+    const que = 'insert into investigator_protocol_information (`protocol_id`,`investigator_name`,`investigator_email`,`sub_investigator_name`,`sub_investigator_email`,`additional_study_name`,`additional_study_email`,`site_name`,`site_address`,`more_site`,`site_name_address`,`protocol_title`,`protocol_number`,`study_criteria`,`subject_number`,`site_number`,`disapproved_or_withdrawn`,`disapproved_or_withdrawn_explain`,`oversite`,`oversite_explain`,`immediate_family`,`immediate_family_explain`,`stock_ownership`,`stock_ownership_explain`,`property_interest`,`property_interest_explain`,`financial_agreement`,`financial_agreement_explain`,`server_position`,`server_position_explain`,`influence_conduct`,`influence_conduct_explain`,`interest_conflict`,`interest_conflict_explain`,`fda_audit`,`fda_audit_explain`,`involved_years`,`investigators_npi`,`training_completed`,`training_completed_explain`,`investigator_research_number`,`pending_or_active_research`,`pending_or_active_research_explain`,`created_by`,`created_at`,`updated_at`) value (?)';
+    const values = [
+        req.body.protocol_id, 
+        req.body.investigator_name,
+        req.body.investigator_email, 
+        req.body.sub_investigator_name, 
+        req.body.sub_investigator_email, 
+        req.body.additional_study_name, 
+        req.body.additional_study_email,
+        req.body.site_name, 
+        req.body.site_address, 
+        req.body.more_site, 
+        req.body.site_name_address, 
+        req.body.protocol_title,
+        req.body.protocol_number,
+        req.body.study_criteria,
+        req.body.subject_number,
+        req.body.site_number,
+        req.body.disapproved_or_withdrawn,
+        req.body.disapproved_or_withdrawn_explain,
+        req.body.oversite,
+        req.body.oversite_explain,
+        req.body.immediate_family,
+        req.body.immediate_family_explain,
+        req.body.stock_ownership,
+        req.body.stock_ownership_explain,
+        req.body.property_interest,
+        req.body.property_interest_explain,
+        req.body.financial_agreement,
+        req.body.financial_agreement_explain,
+        req.body.server_position,
+        req.body.server_position_explain,
+        req.body.influence_conduct,
+        req.body.influence_conduct_explain,
+        req.body.interest_conflict,
+        req.body.interest_conflict_explain,
+        req.body.fda_audit,
+        req.body.fda_audit_explain,
+        req.body.involved_years,
+        req.body.investigators_npi,
+        req.body.training_completed.toString(),
+        req.body.training_completed_explain,
+        req.body.investigator_research_number,
+        req.body.pending_or_active_research,
+        req.body.pending_or_active_research_explain,
+        req.body.created_by,
+        datetime.toISOString().slice(0,10),
+        datetime.toISOString().slice(0,10),
+    ];
+    db.query(que, [values], (err, data) =>{
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Investigator and Protocol Information has been saved successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const saveClinicalInformedConsent = (req, res) => {
+    // console.log('req', req)
+    // console.log('res', res)
+    // return;
+    var datetime = new Date();
+    const que = 'insert into clinical_consent_information (`protocol_id`,`principal_investigator_name`, `site_address`, `additional_site_address`,  `primary_phone`, `always_primary_phone`, `site_electronic_consent`, `created_by`,`created_at`,`updated_at`) value (?)';
+    const values = [
+        req.body.protocol_id,
+        req.body.principal_investigator_name, 
+        req.body.site_address, 
+        req.body.additional_site_address, 
+        req.body.primary_phone, 
+        req.body.always_primary_phone,
+        req.body.site_electronic_consent,
+        req.body.created_by,
+        datetime.toISOString().slice(0,10),
+        datetime.toISOString().slice(0,10),
+    ];
+    db.query(que, [values], (err, data) =>{
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Informed Consent Information has been saved successfully'
+            return res.json(result)
+        }
+    })
 }

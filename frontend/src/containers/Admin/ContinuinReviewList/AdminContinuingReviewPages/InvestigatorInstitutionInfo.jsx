@@ -119,7 +119,6 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                                             return(<FormControlLabel key={index} control={<Checkbox />} label={appliedChanges.label} value={appliedChanges.value} checked={investigatorChangesArr?.find(id => Number(id) === Number(appliedChanges.value))} />)
                                         })
                                     }
-                                    
                                 </FormGroup>
                             </FormControl>
                         </Form.Group>

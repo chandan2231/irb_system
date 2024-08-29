@@ -54,7 +54,7 @@ const ContractorResearcherDetails = ({protocolTypeDetails}) => {
     };
     return (
         <Box sx={{ width: '100%' }}>
-        <h2 className='ml-20'>{protocolTypeDetails.researchType}</h2>
+        <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
         <Box className='ml-20' sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
             <Tab label="Protocol Information" {...a11yProps(0)} />

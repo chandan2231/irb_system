@@ -11,6 +11,13 @@ const s3 = new AWS.S3({
     accessKeyId: STORAGE_ACCESS_KEY,
     secretAccessKey: STORAGE_ACCESS_SECRET,
 });
+console.log('STORAGE_ACCESS_SECRET', STORAGE_ACCESS_SECRET)
+console.log('STORAGE_ACCESS_KEY', STORAGE_ACCESS_KEY)
+console.log('STORAGE_REGION', STORAGE_REGION)
+console.log('STORAGE_SPACE_NAME', STORAGE_SPACE_NAME)
+console.log('STORAGE_HOST', STORAGE_HOST)
+console.log('s3', s3)
+console.log('spacesEndpoint', spacesEndpoint)
 
 const spaceName = STORAGE_SPACE_NAME;
 

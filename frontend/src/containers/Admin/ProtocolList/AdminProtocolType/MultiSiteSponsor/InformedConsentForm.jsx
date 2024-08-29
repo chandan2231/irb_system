@@ -30,17 +30,24 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
-function InformedConsentForm({protocolTypeDetails}) {
+const consentType = [
+    {label: 'No consent (requesting waiver of consent)', value: '1'},
+    {label: 'Verbal consent', value: '2'},
+    {label: 'Written, signed consent by subject', value: '3'},
+    {label: 'Written, signed consent by legally authorized representative', value: '4'},
+    {label: 'Written, signed assent by minor', value: '5'},
+    {label: 'HIPAA authorization agreement', value: '6'},
+    {label: 'Waiver of HIPAA agreement', value: '7'},
+    {label: 'Online/website/electronic signature consent', value: '8'},
+]
+
+function InformedConsentForm({protocolTypeDetails, informedConsent}) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const userDetails = JSON.parse(localStorage.getItem('user'));
-    const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
-    const [showICF, setShowICF] = React.useState(false);
-    const [showOtherLangauageAdditionalTextbox, setShowOtherLangauageAdditionalTextbox] = React.useState(false);
-    const [showOtherLangauageAdditionalQuestion, setShowOtherLangauageAdditionalQuestion] = React.useState(false);
     const [termsSelected, setTermsSelected] = React.useState(false);
     const [formData, setFormData] = useState({
         consent_type: '',
@@ -54,9 +61,6 @@ function InformedConsentForm({protocolTypeDetails}) {
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-    
-    const [explainNoConsentErrors, setExplainNoConsentErrors] = useState();
-    const [explainTranslatorErrors, setExplainTranslatorErrors] = useState();
 
     const handleTermsChecked = (event) => {
         const {checked} = event.target
@@ -66,61 +70,7 @@ function InformedConsentForm({protocolTypeDetails}) {
             setTermsSelected(false)
         }
     }
-
-    const handleConsentTypeChecked = (event) => {
-        const {value, checked} = event.target
-        if(checked === true && value === '1'){
-            setShowOtherQuestion(true)
-        } else if (checked === false && value === '1'){
-            setShowOtherQuestion(false)
-        }
-        if(checked === true && value === '6'){
-            setShowICF(true)
-        } else if (checked === false && value === '6'){
-            setShowICF(false)
-        }
-        let updatedConsentTypeCHecked = [...formData.consent_type];
-        if (checked) {
-            updatedConsentTypeCHecked.push(value);
-        } else {
-            updatedConsentTypeCHecked = updatedConsentTypeCHecked.filter(
-            (training) => training !== value
-          );
-        }
-        setFormData({...formData, consent_type: updatedConsentTypeCHecked});
-        
-    }
-
-    const handleRadioButtonIncludedIcf = (event, radio_name) => {
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonCompensated = (event, radio_name) => {
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
     
-    const handleRadioButtonOtherLanguageSelection = (event, radio_name) => {
-        if (radio_name === 'other_language_selection' && event.target.value === 'Yes') {
-			setShowOtherLangauageAdditionalQuestion(true)
-		} else if (radio_name === 'other_language_selection' && event.target.value === 'No') {
-			setShowOtherLangauageAdditionalQuestion(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
-    const handleRadioButtonProfessionalTranslator = (event, radio_name) => {
-        if (radio_name === 'professional_translator' && event.target.value === 'No') {
-			setShowOtherLangauageAdditionalTextbox(true)
-		} else if (radio_name === 'professional_translator' && event.target.value === 'Yes') {
-			setShowOtherLangauageAdditionalTextbox(false)
-		}
-        const {name, value} = event.target;
-        setFormData({...formData, [name]: value});
-	}
-
     const handleChange = (e) => {
         const {name, value} = e.target;
         setFormData({...formData, [name]: value});
@@ -130,21 +80,6 @@ function InformedConsentForm({protocolTypeDetails}) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(formData.consent_type.includes('1') && formData.no_consent_explain === ""){
-                setExplainNoConsentErrors('This is required')
-                return
-            } else {
-                setExplainNoConsentErrors('')
-            }
-            if(formData.professional_translator !== '' && formData.professional_translator === 'No' && formData.professional_translator_explain === ""){
-                setExplainTranslatorErrors('This is required')
-                return
-            } else {
-                setExplainTranslatorErrors('')
-            }
-            // const getValidatedform = await investigatorInfoSchema.validate(formData, {abortEarly: false});
-            // const isValid = await investigatorInfoSchema.isValid(getValidatedform)
-            console.log('formData', formData)
             let isValid = true
             if(isValid === true){
                 dispatch(createInformedConsent(formData))
@@ -155,52 +90,42 @@ function InformedConsentForm({protocolTypeDetails}) {
                 })
             }
         } catch (error) {
-            console.log('error', error)
-            const newErrors = {};
-            error.inner.forEach((err) => {
-                newErrors[err.path] = err.message;
-            });
-            setErrors(newErrors);
+            
         }
     }
 
+    console.log('informedConsent', informedConsent)
+    const consentTypeArr = informedConsent?.consent_type.split(",");
 	return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">What types of consent will this study use?</FormLabel>
-                        <FormGroup onChange={(event) => handleConsentTypeChecked(event)} name="consent_type_check">
-                            <FormControlLabel control={<Checkbox />} value="1" label="No consent (requesting waiver of consent)" />
-                            <FormControlLabel control={<Checkbox />} value="2" label="Verbal consent" />
-                            <FormControlLabel control={<Checkbox />} value="3" label="Written, signed consent by subject" />
-                            <FormControlLabel control={<Checkbox />} value="4" label="Written, signed consent by legally authorized representative" />
-                            <FormControlLabel control={<Checkbox />} value="5" label="Written, signed assent by minor" />
-                            <FormControlLabel control={<Checkbox />} value="6" label="HIPAA authorization agreement" />
-                            <FormControlLabel control={<Checkbox />} value="7" label="Waiver of HIPAA agreement" />
-                            <FormControlLabel control={<Checkbox />} value="8" label="Online/website/electronic signature consent" />
-                        </FormGroup>
+                        {
+                            consentType.map((consentList, index) => {
+                                return(<FormControlLabel key={index} control={<Checkbox />} label={consentList.label} value={consentList.value} checked={consentTypeArr?.find(id => Number(id) === Number(consentList.value))} />)
+                            })
+                        }
                     </FormControl>
                 </Form.Group>
                 {
-                    showOtherQuestion === true && (
+                    consentTypeArr?.includes('1') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain why no consent*" name="no_consent_explain" id="no_consent_explain" fullWidth rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>}
+                            <FormLabel id="demo-row-radio-buttons-group-label">Explain why no consent</FormLabel>
+                            <h4>{informedConsent?.no_consent_explain}</h4>
                         </Form.Group>
                     )
                 }
                 
                 {
-                    showICF === true && (
+                    consentTypeArr?.includes('6') && (
                         <Form.Group as={Col} controlId="validationFormik01">
                             <FormControl>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Will HIPAA authorization language be included in the ICF (informed consent form)?</FormLabel>
-                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="include_icf" onChange={(event) => handleRadioButtonIncludedIcf(event, 'include_icf')}>
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
+                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="include_icf">
+                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={informedConsent?.include_icf === 'Yes'} />
+                                    <FormControlLabel value="No" control={<Radio />} label="No" checked={informedConsent?.include_icf === 'No'} />
                                 </RadioGroup>
                             </FormControl>
                         </Form.Group>
@@ -209,56 +134,44 @@ function InformedConsentForm({protocolTypeDetails}) {
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label"> Will the participants be compensated for participation in the study?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="participation_compensated" onChange={(event) => handleRadioButtonCompensated(event, 'participation_compensated')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="participation_compensated">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={informedConsent?.participation_compensated === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={informedConsent?.participation_compensated === 'No'} />
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Will the consent forms be offered in languages other than English?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="other_language_selection" onChange={(event) => handleRadioButtonOtherLanguageSelection(event, 'other_language_selection')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
+                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="other_language_selection">
+                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={informedConsent?.other_language_selection === 'Yes'} />
+                            <FormControlLabel value="No" control={<Radio />} label="No" checked={informedConsent?.other_language_selection === 'No'}/>
                         </RadioGroup>
                     </FormControl>
                 </Form.Group>
                 {
-                    showOtherLangauageAdditionalQuestion === true && (
+                    informedConsent?.other_language_selection === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik01">
                             <FormControl>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Have the documents been translated by a professional translator?</FormLabel>
-                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="professional_translator" onChange={(event) => handleRadioButtonProfessionalTranslator(event, 'professional_translator')}>
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
+                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="professional_translator">
+                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={informedConsent?.professional_translator === 'Yes'} />
+                                    <FormControlLabel value="No" control={<Radio />} label="No" checked={informedConsent?.professional_translator === 'No'} />
                                 </RadioGroup>
                             </FormControl>
                         </Form.Group>
                     )
                 }  
                 {
-                    showOtherLangauageAdditionalTextbox === true && (
+                    informedConsent?.professional_translator === 'No' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{width: '100%', maxWidth: '100%'}}>
-                                <TextField  variant="outlined" placeholder="Explain" name="professional_translator_explain" id="professional_translator_explain" fullWidth rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>}
+                            <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
+                            <h4>{informedConsent?.professional_translator_explain}</h4>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent document templates, including translated consents, if applicable, <br />here (if applying for waiver of consent, document explaining reasoning must be uploaded here) *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent document templates, including translated consents, if applicable, <br />here (if applying for waiver of consent, document explaining reasoning must be uploaded here)</InputLabel>
                 </Form.Group>
                 <Form.Group as={Col} className="ul-list">
                     <p>The informed consent process is a continuous process and the IRB expects that
