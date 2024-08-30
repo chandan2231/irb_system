@@ -59,15 +59,22 @@ function InformedConsentProcess({continuinReviewDetails, informedConsentProcessD
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload the most recent ICF *</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded the most recent ICF</InputLabel>
+                    {
+                        informedConsentProcessDetails?.documents?.length > 0 && informedConsentProcessDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'icf_file'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="Who is performing the informed consent at your site? *" id="performing_consent" name="performing_consent" defaultValue={informedConsentProcessDetails?.performing_consent} />
                     </Box>
-                    {errors.performing_consent && <div className="error">{errors.performing_consent}</div>}
                 </Form.Group>
                 <h4>Question 3</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -83,7 +90,7 @@ function InformedConsentProcess({continuinReviewDetails, informedConsentProcessD
                     informedConsentProcessDetails?.challenges_faced === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{informedConsentProcessDetails?.challenges_faced_explain}</h4>
+                            <p className='explain_text'>{informedConsentProcessDetails?.challenges_faced_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -101,14 +108,22 @@ function InformedConsentProcess({continuinReviewDetails, informedConsentProcessD
                     informedConsentProcessDetails?.changes_consent === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{informedConsentProcessDetails?.changes_consent_explain}</h4>
+                            <p className='explain_text'>{informedConsentProcessDetails?.changes_consent_explain}</p>
                         </Form.Group>
                     )
                 }
                 <h4>Question 5</h4>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload new informed consent form here *</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded new informed consent form</InputLabel>
+                    {
+                        informedConsentProcessDetails?.documents?.length > 0 && informedConsentProcessDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'consent_form'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
@@ -128,7 +143,7 @@ function InformedConsentProcess({continuinReviewDetails, informedConsentProcessD
                     informedConsentProcessDetails?.ensuring_list === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{informedConsentProcessDetails?.ensuring_list_explain}</h4>
+                            <p className='explain_text'>{informedConsentProcessDetails?.ensuring_list_explain}</p>
                         </Form.Group>
                     )
                 }

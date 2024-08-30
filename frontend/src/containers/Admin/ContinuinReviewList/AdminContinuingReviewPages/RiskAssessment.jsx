@@ -93,23 +93,22 @@ function RiskAssessment({continuinReviewDetails, riskAssessmentDetails}) {
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormControl>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                <h4>{riskAssessmentDetails?.irb_report_explain}</h4>
+                                <p className='explain_text'>{riskAssessmentDetails?.irb_report_explain}</p>
                             </FormControl>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded supporting documents *</InputLabel>
+                    {
+                        riskAssessmentDetails?.documents?.length > 0 && riskAssessmentDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'supporting_document'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -128,7 +127,7 @@ function RiskAssessment({continuinReviewDetails, riskAssessmentDetails}) {
                     riskAssessmentDetails?.criteria_report === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{riskAssessmentDetails?.criteria_report_explain}</h4>
+                            <p className='explain_text'>{riskAssessmentDetails?.criteria_report_explain}</p>
                         </Form.Group>
                     )
                 }

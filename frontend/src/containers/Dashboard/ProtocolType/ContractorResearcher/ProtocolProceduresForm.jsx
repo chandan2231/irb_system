@@ -205,7 +205,7 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                     return setErrors({ ...errors, ['facing_materials']: 'This is required' });
                 } else {
                     for (let file of formData.facing_materials) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'contractor research protocol procedure', documentName: 'recruitment and subject-facing materials'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_procedure', documentName: 'subject_facing_materials'})
                         facing_materials.push(id)
                     }
                 }

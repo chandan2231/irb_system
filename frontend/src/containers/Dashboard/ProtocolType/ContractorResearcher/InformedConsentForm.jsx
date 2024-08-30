@@ -155,7 +155,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
                     return setErrors({ ...errors, ['consent_file']: 'This is required' });
                 } else {
                     for (let file of formData.consent_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'contractor research informed consent', documentName: 'consent files'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'informed_consent', documentName: 'consent_files'})
                         consent_file.push(id)
                     }
                 }

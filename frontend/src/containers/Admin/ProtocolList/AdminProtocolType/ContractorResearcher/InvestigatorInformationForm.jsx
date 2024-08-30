@@ -9,7 +9,6 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
@@ -19,18 +18,6 @@ import { createInvestigatorInformation } from '../../../../../services/ProtocolT
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {useSearchParams, useNavigate, Link} from 'react-router-dom';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
 const completedTraining = [
     {label : 'OHRP Human Subject Assurance Training', value : '1'},
@@ -211,7 +198,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investigatorInformati
                     investigatorInformation?.fda_audit === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                            <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                           <h4>{investigatorInformation?.fda_audit_explain}</h4>
+                           <p className='explain_text'>{investigatorInformation?.fda_audit_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -246,7 +233,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investigatorInformati
                     trainingCompletedArr?.includes('8') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{investigatorInformation?.training_completed_explain}</h4>
+                            <p className='explain_text'>{investigatorInformation?.training_completed_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -269,7 +256,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investigatorInformati
                     investigatorInformation?.pending_or_active_research === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{investigatorInformation?.pending_or_active_research_explain}</h4>
+                            <p className='explain_text'>{investigatorInformation?.pending_or_active_research_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -292,16 +279,40 @@ function InvestigatorInformationForm({protocolTypeDetails, investigatorInformati
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here *</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded investigator and sub-investigator CV</InputLabel>
+                    {
+                        investigatorInformation?.documents?.length > 0 && investigatorInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'investigator_cv'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded copy of medical license</InputLabel>
+                    {
+                        investigatorInformation?.documents?.length > 0 && investigatorInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'medical_license'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded copies of training certificates</InputLabel>
+                    {
+                        investigatorInformation?.documents?.length > 0 && investigatorInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'training_certificates'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button

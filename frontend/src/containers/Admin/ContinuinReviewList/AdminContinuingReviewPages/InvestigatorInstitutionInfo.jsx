@@ -125,17 +125,16 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded supporting documents here</InputLabel>
+                    {
+                        investigatorInstitutionInfoDetails?.documents?.length > 0 && investigatorInstitutionInfoDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'q1_supporting_documents'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -152,23 +151,22 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                <h4>{investigatorInstitutionInfoDetails?.inv_or_comp_explain}</h4>
+                                <p className='explain_text'>{investigatorInstitutionInfoDetails?.inv_or_comp_explain}</p>
                             </Box>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded supporting documents here *</InputLabel>
+                    {
+                        investigatorInstitutionInfoDetails?.documents?.length > 0 && investigatorInstitutionInfoDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'q2_supporting_documents'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <h4>Question 3</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -201,22 +199,21 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Please describe the changes and explain in as much detail as possible. Please provide any solutions, whether temporary or permanent, work-arounds, and/or protocol adjustments *</FormLabel>
-                            <h4>{investigatorInstitutionInfoDetails?.changes_explain}</h4>
+                            <p className='explain_text'>{investigatorInstitutionInfoDetails?.changes_explain}</p>
                         </FormControl>
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here if applicable <br /> (ie: new informed consent with facility address change, updated protocol to reflect facility changes, updated delegation of authority log, etc.)</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded supporting documents here if applicable <br /> (ie: new informed consent with facility address change, updated protocol to reflect facility changes, updated delegation of authority log, etc.)</InputLabel>
+                    {
+                        investigatorInstitutionInfoDetails?.documents?.length > 0 && investigatorInstitutionInfoDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'q3_supporting_documents'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
@@ -232,7 +229,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                <h4>{investigatorInstitutionInfoDetails?.changes_reported_explain}</h4>
+                                <p className='explain_text'>{investigatorInstitutionInfoDetails?.changes_reported_explain}</p>
                             </Box>
                         </Form.Group>
                     )
@@ -253,24 +250,23 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                <h4>{investigatorInstitutionInfoDetails?.facility_any_changes_explain}</h4>
+                                <p className='explain_text'>{investigatorInstitutionInfoDetails?.facility_any_changes_explain}</p>
                             </Box>
                         </Form.Group>
                     )
                 }
                 
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                    </Button>
+                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded supporting documents here *</InputLabel>
+                    {
+                        investigatorInstitutionInfoDetails?.documents?.length > 0 && investigatorInstitutionInfoDetails?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'q4_supporting_documents'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <h4>Question 5</h4>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -287,7 +283,7 @@ function InvestigatorInstitutionInfo({continuinReviewDetails, investigatorInstit
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <Box sx={{width: '100%', maxWidth: '100%'}}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                <h4>{investigatorInstitutionInfoDetails?.changes_law_explain}</h4>
+                                <p className='explain_text'>{investigatorInstitutionInfoDetails?.changes_law_explain}</p>
                             </Box>
                         </Form.Group>
                     )

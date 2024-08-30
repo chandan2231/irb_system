@@ -166,7 +166,7 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                     studyTypeArr?.includes('20') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{protocolProcedures?.enrolled_type_explain}</h4>
+                            <p className='explain_text'>{protocolProcedures?.enrolled_type_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -185,7 +185,7 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                     groupTypeArr?.includes('9') === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{protocolProcedures?.enrolled_group_explain}</h4>
+                            <p className='explain_text'>{protocolProcedures?.enrolled_group_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -202,7 +202,7 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                     protocolProcedures?.study_excluded === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{protocolProcedures?.study_excluded_explain}</h4> 
+                            <p className='explain_text'>{protocolProcedures?.study_excluded_explain}</p> 
                         </Form.Group>
                     )
                 }
@@ -225,14 +225,10 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                     recurementMethodArr?.includes('10') === true && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{protocolProcedures?.recurement_method_explain}</h4>
+                            <p className='explain_text'>{protocolProcedures?.recurement_method_explain}</p>
                         </Form.Group>
                     )
                 }
-
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all recruitment templates and subject-facing materials here:</InputLabel>
-                </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label">Will the sponsor require IRB approval of site-specific templates prior to use?</FormLabel>
@@ -247,7 +243,6 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                         <FormLabel id="demo-row-radio-buttons-group-label">What is the expected number of sites to participate in this study that will be submitted to this IRB *</FormLabel>
                         <TextField  variant="outlined" placeholder="" fullWidth name="changes_explain" id='explain' onChange={handleChange} />
                     </Box>
-                    {errors.changes_explain && <div className="error">{errors.changes_explain}</div>}
                 </Form.Group>
                 
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -267,10 +262,21 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research: *</FormLabel>
                                 <TextField  variant="outlined" placeholder="" fullWidth name="changes_explain" id='explain' rows={3} multiline onChange={handleChange} />
                             </Box>
-                            {errors.changes_explain && <div className="error">{errors.changes_explain}</div>}
                         </Form.Group>
                     )
                 }
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded all recruitment templates and subject-facing materials here:</InputLabel>
+                    {
+                        protocolProcedures?.documents?.length > 0 && protocolProcedures?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'subject_facing_materials'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
+                </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
                         <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
@@ -279,6 +285,7 @@ function ProtocolProceduresForm({protocolTypeDetails, protocolProcedures}) {
                         </FormGroup>
                     </FormControl>
                 </Form.Group>
+                
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button
                         variant="contained"

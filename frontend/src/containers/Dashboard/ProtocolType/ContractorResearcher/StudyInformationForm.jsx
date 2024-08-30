@@ -83,7 +83,7 @@ function StudyInformationForm({ protocolTypeDetails }) {
                 let ingredient_list = []
                 if (formData.ingredient_list) {
                     for (let file of formData.ingredient_list) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'Study Information', documentName: 'ingredient list'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'study_information', documentName: 'ingredient_list'})
                         ingredient_list.push(id)
                     }
                 }

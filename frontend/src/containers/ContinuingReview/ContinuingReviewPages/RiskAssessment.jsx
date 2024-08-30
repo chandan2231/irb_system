@@ -97,7 +97,7 @@ function RiskAssessment({ continuinReviewDetails }) {
                 let q1_supporting_documents = []
                 if (formData.q1_supporting_documents) {
                     for (let file of formData.q1_supporting_documents) {
-                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'risk_assessment', documentName: 'risk assessement supporting document'})
+                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'risk_assessment', documentName: 'supporting_document'})
                         q1_supporting_documents.push(id)
                     }
                 }

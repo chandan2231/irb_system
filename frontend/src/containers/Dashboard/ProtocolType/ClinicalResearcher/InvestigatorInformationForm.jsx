@@ -345,18 +345,18 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 }
                 else {
                     for (let file of formData.cv_files) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator and protocol information', documentName: 'investigator and sub-investigator CV'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'investigator_cv'})
                         cv_files.push(id)
                     }
                     if (formData.medical_license) {
                         for (let file of formData.medical_license) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator and protocol information', documentName: 'medical license'})
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'medical_license'})
                             medical_license.push(id)
                         }
                     }
                     if (formData.training_certificates) {
                         for (let file of formData.training_certificates) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator and protocol information', documentName: 'training certificates'})
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'training_certificates'})
                             training_certificates.push(id)
                         }
                     }

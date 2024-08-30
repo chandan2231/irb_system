@@ -124,7 +124,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                                 protocolInformation?.disapproved_or_withdrawn === 'Yes' && (
                                     <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                        <h4>{protocolInformation?.disapproved_or_withdrawn_explain}</h4>
+                                        <p className='explain_text'>{protocolInformation?.disapproved_or_withdrawn_explain}</p>
                                     </Form.Group>
                                 )
                             }
@@ -141,7 +141,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                                 protocolInformation?.oversite === 'Yes' && (
                                     <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                        <h4>{protocolInformation?.oversite_explain}</h4>
+                                        <p className='explain_text'>{protocolInformation?.oversite_explain}</p>
                                     </Form.Group>
                                 )
                             }
@@ -162,13 +162,11 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="Sponsor *" id="sponsor" name="sponsor" value={protocolInformation?.sponsor} />
                     </Box>
-                    {errors.sponsor && <div className="error">{errors.sponsor}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik09" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="Approximate duration of study *" id="study_duration" name="study_duration" value={protocolInformation?.study_duration} />
                     </Box>
-                    {errors.study_duration && <div className="error">{errors.study_duration}</div>}
                 </Form.Group>
                 <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>
                     <InputLabel id="demo-simple-select-autowidth-label">Funding source *</InputLabel>
@@ -182,23 +180,16 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                 </FormControl>
                 <Box sx={{ flexGrow: 1 }}>
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                        <Grid container spacing={2}>
-                            <Grid item xs={2}>
-                                <InputLabel id="demo-simple-select-autowidth-label">Upload Protocol *</InputLabel>
-                            </Grid>
-                            <Grid item xs={10}>
-                                <Button
-                                    component="label"
-                                    role={undefined}
-                                    variant="contained"
-                                    tabIndex={-1}
-                                    startIcon={<CloudUploadIcon />}
-                                >
-                                    Upload file
-                                    <VisuallyHiddenInput type="file" />
-                                </Button> 
-                            </Grid>
-                        </Grid>
+                        <InputLabel id="demo-simple-select-autowidth-label">Uploaded Protocol</InputLabel>
+                        {
+                            protocolInformation?.documents?.length > 0 && protocolInformation?.documents?.map((docList, index) => {
+                                if(docList.document_name === 'protocol'){
+                                    return(
+                                        <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                    )
+                                }
+                            })
+                        }
                     </Form.Group>
                 </Box>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>

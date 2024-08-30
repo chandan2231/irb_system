@@ -69,12 +69,7 @@ function StudyInformationForm({protocolTypeDetails, studyInformation}) {
 	const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(formData.research_type !== '' && formData.research_type === 'Other' && formData.research_type_explain === ""){
-                setExplainErrors('This is required')
-                return
-            } else {
-                setExplainErrors('')
-            }
+            
             const getValidatedform = await studyInfoSchema.validate(formData, {abortEarly: false});
             const isValid = await studyInfoSchema.isValid(getValidatedform)
             if(isValid === true){
@@ -93,8 +88,7 @@ function StudyInformationForm({protocolTypeDetails, studyInformation}) {
             setErrors(newErrors);
         }
     };
-    console.log('studyInformation', studyInformation)
-	return (
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>
@@ -123,13 +117,21 @@ function StudyInformationForm({protocolTypeDetails, studyInformation}) {
                     studyInformation?.research_type === 'Other' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{studyInformation?.research_type_explain}</h4>
+                            <p className='explain_text'>{studyInformation?.research_type_explain}</p>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list</InputLabel>
+                    {
+                        studyInformation?.documents?.length > 0 && studyInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'ingredient_list'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button

@@ -98,7 +98,7 @@
                 <InvestigatorInstitutionInfo  continuinReviewDetails={continuinReviewDetails} investigatorInstitutionInfoDetails = {continuinReviewDetailsById?.investigator_instuation_info} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-                <ResearchProgress continuinReviewDetails={continuinReviewDetails} researchProgressDetails = {continuinReviewDetailsById?.research_process_info} />
+                <ResearchProgress continuinReviewDetails={continuinReviewDetails} researchProgressDetails = {continuinReviewDetailsById?.research_progress_info} />
             </CustomTabPanel>
             </Box>
         )

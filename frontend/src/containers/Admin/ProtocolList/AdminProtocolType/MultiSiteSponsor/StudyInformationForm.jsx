@@ -18,18 +18,6 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {useSearchParams, useNavigate, Link} from 'react-router-dom';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
-
 const studyInfoSchema = yup.object().shape({
     research_type: yup.string().required("This is required"),
 })
@@ -123,13 +111,21 @@ function StudyInformationForm({protocolTypeDetails, studyInformation}) {
                     studyInformation?.research_type === 'Other' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{studyInformation?.research_type_explain}</h4>
+                            <p className='explain_text'>{studyInformation?.research_type_explain}</p>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list</InputLabel>
-                    
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list</InputLabel>
+                    {
+                        studyInformation?.documents?.length > 0 && studyInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'ingredient_list'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
                     <Button

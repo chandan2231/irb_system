@@ -89,39 +89,39 @@ function ResearchProgress({continuinReviewDetails, researchProgressDetails}) {
                 <h4>Question 1</h4>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="Total Subjects Enrolled *" id="subjects_enrolled" name="subjects_enrolled" value={researchProgressDetails?.subjects_enrolled} />
+                        <TextField fullWidth label="Total Subjects Enrolled " id="subjects_enrolled" name="subjects_enrolled" value={researchProgressDetails?.subjects_enrolled} />
                     </Box>
                 </Form.Group>
                 <h4>Question 2</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many subjects have discontinued their participation? *" id="discontinued_subjects" name="discontinued_subjects" value={researchProgressDetails?.discontinued_subjects} />
+                        <TextField fullWidth label="How many subjects have discontinued their participation? " id="discontinued_subjects" name="discontinued_subjects" value={researchProgressDetails?.discontinued_subjects} />
                     </Box>
                 </Form.Group>
                 <div style={{marginLeft: '0px'}}>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{width: '100%', maxWidth: '100%'}}>
-                            <TextField fullWidth label="Out of that number, how many subjects withdrew of their own accord *" id="sub_withdrew" name="sub_withdrew" value={researchProgressDetails?.sub_withdrew} />
+                            <TextField fullWidth label="Out of that number, how many subjects withdrew of their own accord " id="sub_withdrew" name="sub_withdrew" value={researchProgressDetails?.sub_withdrew} />
                         </Box>
                     </Form.Group>
                     {
                         researchProgressDetails?.sub_withdrew >= 1 && (
                             <div className='mt-mb-20'>
-                                <FormLabel>Describe the reasons for withdrawal *</FormLabel>
-                                <h4>{researchProgressDetails?.withdrawal_reason_explain}</h4>
+                                <FormLabel>Describe the reasons for withdrawal </FormLabel>
+                                <p className='explain_text'>{researchProgressDetails?.withdrawal_reason_explain}</p>
                             </div>
                         )
                     }
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{width: '100%', maxWidth: '100%'}}>
-                            <TextField fullWidth label="how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel *" id="sub_terminated_before_completion" name="sub_terminated_before_completion" value={researchProgressDetails?.sub_terminated_before_completion} />
+                            <TextField fullWidth label="how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel " id="sub_terminated_before_completion" name="sub_terminated_before_completion" value={researchProgressDetails?.sub_terminated_before_completion} />
                         </Box>
                     </Form.Group>
                     {
                         researchProgressDetails?.sub_terminated_before_completion >= 1 && (
                             <div className='mt-mb-20'>
-                                <FormLabel>Describe the reasons for termination *</FormLabel>
-                                <h4>{researchProgressDetails?.termination_reason_explain}</h4>
+                                <FormLabel>Describe the reasons for termination </FormLabel>
+                                <p className='explain_text'>{researchProgressDetails?.termination_reason_explain}</p>
                             </div>
                         )
                     }
@@ -129,7 +129,7 @@ function ResearchProgress({continuinReviewDetails, researchProgressDetails}) {
                 <h4>Question 3</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many adverse events have occurred since the last approval?*" id="occured_adverse_event" name="occured_adverse_event" value={researchProgressDetails?.occured_adverse_event} />
+                        <TextField fullWidth label="How many adverse events have occurred since the last approval?" id="occured_adverse_event" name="occured_adverse_event" value={researchProgressDetails?.occured_adverse_event} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01">
@@ -145,26 +145,25 @@ function ResearchProgress({continuinReviewDetails, researchProgressDetails}) {
                     researchProgressDetails?.adverse_event_submission === 'No'  && (
                         <>
                             <div className='mt-mb-20'>
-                                <FormLabel>What was the reason the adverse events were not reported to the IRB?*</FormLabel>
-                                <h4>{researchProgressDetails?.adverse_event_not_reported_explain}</h4>
+                                <FormLabel>What was the reason the adverse events were not reported to the IRB?</FormLabel>
+                                <p className='explain_text'>{researchProgressDetails?.adverse_event_not_reported_explain}</p>
                             </div>
                             <div className='mt-mb-20'>
-                                <FormLabel>Please describe the adverse events including what occurred, the timeline in which it occurred, and the time at which the study personnel became aware of the adverse event*</FormLabel>
-                                <h4>{researchProgressDetails?.adverse_event_explain}</h4>
+                                <FormLabel>Please describe the adverse events including what occurred, the timeline in which it occurred, and the time at which the study personnel became aware of the adverse event</FormLabel>
+                                <p className='explain_text'>{researchProgressDetails?.adverse_event_explain}</p>
                             </div>
                             
                             <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                                <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload any supporting documents</InputLabel>
-                                <Button
-                                    component="label"
-                                    role={undefined}
-                                    variant="contained"
-                                    tabIndex={-1}
-                                    startIcon={<CloudUploadIcon />}
-                                >
-                                    Upload file
-                                    <VisuallyHiddenInput type="file" />
-                                </Button>
+                                <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Uploaded any supporting documents</InputLabel>
+                                {
+                                    researchProgressDetails?.documents?.length > 0 && researchProgressDetails?.documents?.map((docList, index) => {
+                                        if(docList.document_name === 'q3_supporting_documents'){
+                                            return(
+                                                <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                            )
+                                        }
+                                    })
+                                }
                             </Form.Group>
                         </>
                     )
@@ -172,7 +171,7 @@ function ResearchProgress({continuinReviewDetails, researchProgressDetails}) {
                 <h4>Question 4</h4>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
-                        <TextField fullWidth label="How many subject have completed the study per protocol?*" id="subjecte_completed" name="subjecte_completed" value={researchProgressDetails?.subjecte_completed} />
+                        <TextField fullWidth label="How many subject have completed the study per protocol?" id="subjecte_completed" name="subjecte_completed" value={researchProgressDetails?.subjecte_completed} />
                     </Box>
                 </Form.Group>
                 <h4>Question 5</h4>
@@ -201,8 +200,8 @@ function ResearchProgress({continuinReviewDetails, researchProgressDetails}) {
                 {
                     researchProgressDetails?.last_approval_change_report === 'No' && (
                         <div className='mt-mb-20'>
-                            <FormLabel>What is the reason the changes have not reported to the IRB?*</FormLabel>
-                            <h4>{researchProgressDetails?.changes_not_reported_to_irb}</h4>
+                            <FormLabel>What is the reason the changes have not reported to the IRB?</FormLabel>
+                            <p className='explain_text'>{researchProgressDetails?.changes_not_reported_to_irb}</p>
                         </div>
                     )
                 }

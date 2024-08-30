@@ -113,7 +113,7 @@ function InformedConsentForm({protocolTypeDetails, informedConsent}) {
                     consentTypeArr?.includes('1') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain why no consent</FormLabel>
-                            <h4>{informedConsent?.no_consent_explain}</h4>
+                            <p className='explain_text'>{informedConsent?.no_consent_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -166,12 +166,20 @@ function InformedConsentForm({protocolTypeDetails, informedConsent}) {
                     informedConsent?.professional_translator === 'No' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{informedConsent?.professional_translator_explain}</h4>
+                            <p className='explain_text'>{informedConsent?.professional_translator_explain}</p>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent document templates, including translated consents, if applicable, <br />here (if applying for waiver of consent, document explaining reasoning must be uploaded here)</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded all consent document templates, including translated consents, if applicable, <br />here (if applying for waiver of consent, document explaining reasoning must be uploaded here)</InputLabel>
+                    {
+                        informedConsent?.documents?.length > 0 && informedConsent?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'consent_files'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} className="ul-list">
                     <p>The informed consent process is a continuous process and the IRB expects that

@@ -91,7 +91,7 @@ export const saveInvestigatorAndinstuation = (req, res) => {
 }
 export const saveResearchProcess = (req, res) => {
     var datetime = new Date();
-    const que = 'insert into research_process_info (`protocol_id`, `adverse_event_explain`, `adverse_event_not_reported_explain`, `adverse_event_submission`, `changes_not_reported_to_irb`, `discontinued_subjects`, `last_approval_change`, `last_approval_change_report`,`occured_adverse_event`, `sub_terminated_before_completion`, `sub_withdrew`, `subjecte_completed`, `subjects_enrolled`, `termination_reason_explain`, `withdrawal_reason_explain`, `created_at`, `updated_at`,`created_by`) value (?)';
+    const que = 'insert into research_progress_info (`protocol_id`, `adverse_event_explain`, `adverse_event_not_reported_explain`, `adverse_event_submission`, `changes_not_reported_to_irb`, `discontinued_subjects`, `last_approval_change`, `last_approval_change_report`,`occured_adverse_event`, `sub_terminated_before_completion`, `sub_withdrew`, `subjecte_completed`, `subjects_enrolled`, `termination_reason_explain`, `withdrawal_reason_explain`, `created_at`, `updated_at`,`created_by`) value (?)';
     const values = [
         req.body.protocol_id, 
         req.body.adverse_event_explain, 

@@ -7,10 +7,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
@@ -19,18 +16,6 @@ import { createInformedConsent } from '../../../../../services/ProtocolType/Clin
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {useSearchParams, useNavigate, Link} from 'react-router-dom';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
 const consentType = [
     {label: 'No consent (requesting waiver of consent)', value: '1'},
@@ -113,7 +98,7 @@ function InformedConsentForm({protocolTypeDetails, informedConsent}) {
                     consentTypeArr?.includes('1') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain why no consent</FormLabel>
-                            <h4>{informedConsent?.no_consent_explain}</h4>
+                            <p className='explain_text'>{informedConsent?.no_consent_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -166,12 +151,21 @@ function InformedConsentForm({protocolTypeDetails, informedConsent}) {
                     informedConsent?.professional_translator === 'No' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{informedConsent?.professional_translator_explain}</h4>
+                            <p className='explain_text'>{informedConsent?.professional_translator_explain}</p>
                         </Form.Group>
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent documents, including translated consents, if applicable <br /> (if applying for waiver of consent, document explaining reasoning must be uploaded) *</InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded all consent documents, including translated consents, if applicable <br /> (if applying for waiver of consent, document explaining reasoning must be uploaded)</InputLabel>
+                    {
+                        informedConsent?.documents?.length > 0 && informedConsent?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'consent_files'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} className="ul-list">
                     <p>The informed consent process is a continuous process and the IRB expects that

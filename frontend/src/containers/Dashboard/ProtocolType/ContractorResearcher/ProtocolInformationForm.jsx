@@ -129,7 +129,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                 }
                 else {
                     for (let file of formData.protocol_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'Protocol Information', documentName: 'protocol'  })
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_information', documentName: 'protocol'  })
                         protocol_file.push(id)
                     }
                 }

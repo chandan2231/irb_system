@@ -59,3 +59,9 @@ html, body, #root{
 .ml-20{
   margin-left: 20px;
 }
+.explain_text{
+  color: #000000;
+}
+.no_underline{
+  text-decoration: none;
+}

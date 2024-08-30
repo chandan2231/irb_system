@@ -100,13 +100,11 @@ function InformedConsentForm({consentInformation}) {
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="Principal Investigator name *" id="principal_investigator_name" name="principal_investigator_name" value={consentInformation?.principal_investigator_name} />
                     </Box>
-                    {errors.principal_investigator_name && <div className="error">{errors.principal_investigator_name}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="Site Address *" id="site_address" name="site_address" value={consentInformation?.site_address} />
                     </Box>
-                    {errors.site_address && <div className="error">{errors.site_address}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
@@ -117,13 +115,11 @@ function InformedConsentForm({consentInformation}) {
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="Primary phone number to be listed on the ICF (include the area code) *" id="primary_phone" name="primary_phone" value={consentInformation?.primary_phone} />
                     </Box>
-                    {errors.primary_phone && <div className="error">{errors.primary_phone}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                     <Box sx={{width: '100%', maxWidth: '100%'}}>
                         <TextField fullWidth label="24-hour phone number to be listed on the ICF (include the area code) *" id="always_primary_phone" name="always_primary_phone" value={consentInformation?.always_primary_phone} />
                     </Box>
-                    {errors.always_primary_phone && <div className="error">{errors.always_primary_phone}</div>}
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                     <FormControl>

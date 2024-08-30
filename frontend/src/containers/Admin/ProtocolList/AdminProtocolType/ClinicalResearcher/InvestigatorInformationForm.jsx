@@ -170,7 +170,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     investicatorProtocolInformation?.disapproved_or_withdrawn === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{investicatorProtocolInformation?.disapproved_or_withdrawn_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.disapproved_or_withdrawn_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -187,7 +187,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     investicatorProtocolInformation?.oversite === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{investicatorProtocolInformation?.oversite_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.oversite_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -204,7 +204,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     investicatorProtocolInformation?.immediate_family === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Please explain the compensation in great detail including amount received, services rendered, and name and title or relationship of the individual with the conflict</FormLabel>
-                            <h4>{investicatorProtocolInformation?.immediate_family_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.immediate_family_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -221,7 +221,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     investicatorProtocolInformation?.stock_ownership === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Please describe the monetary interest in detail including the estimated value, percentage of ownership, and name and role of the individual</FormLabel>
-                            <h4>{investicatorProtocolInformation?.stock_ownership_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.stock_ownership_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -238,7 +238,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     investicatorProtocolInformation?.property_interest === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the estimated value, ownership, patent information/investigational product information (if applicable), and name and role of the individual</FormLabel>
-                            <h4>{investicatorProtocolInformation?.property_interest_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.property_interest_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -257,7 +257,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the estimated value, ownership, patent information/investigational product information (if applicable), and name and role of the individual</FormLabel>
-                                <h4>{investicatorProtocolInformation?.financial_agreement_explain}</h4>
+                                <p className='explain_text'>{investicatorProtocolInformation?.financial_agreement_explain}</p>
                             </Box>
                         </Form.Group>
                     )
@@ -277,7 +277,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the position in detail including the estimated value of compensation, types of services rendered, duration that the individual has served in this capacity and name and role of the individual </FormLabel>
-                                <h4>{investicatorProtocolInformation?.server_position_explain}</h4>
+                                <p className='explain_text'>{investicatorProtocolInformation?.server_position_explain}</p>
                             </Box>
                             {errors.server_position_explain && <div className="error">{errors.server_position_explain}</div>}
                         </Form.Group>
@@ -298,7 +298,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the potential conflicts and how they may interfere with the study, and name and role of the individual </FormLabel>
-                                <h4>{investicatorProtocolInformation?.influence_conduct_explain}</h4>
+                                <p className='explain_text'>{investicatorProtocolInformation?.influence_conduct_explain}</p>
                             </Box>
                         </Form.Group>
                     )
@@ -318,7 +318,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Please describe the COI committee findings in detail including the name of the COI committee, the determinations, and describe the management plan </FormLabel>
-                                <h4>{investicatorProtocolInformation?.interest_conflict_explain}</h4>
+                                <p className='explain_text'>{investicatorProtocolInformation?.interest_conflict_explain}</p>
                             </Box>
                         </Form.Group>
                     )
@@ -337,7 +337,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                         <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                             <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                 <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                                <h4>{investicatorProtocolInformation?.fda_audit_explain}</h4>
+                                <p className='explain_text'>{investicatorProtocolInformation?.fda_audit_explain}</p>
                             </Box>
                         </Form.Group>
                     )
@@ -372,7 +372,7 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     trainingCompletedArr?.includes('8') && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{investicatorProtocolInformation?.training_completed_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.training_completed_explain}</p>
                         </Form.Group>
                     )
                 }
@@ -394,19 +394,45 @@ function InvestigatorInformationForm({protocolTypeDetails, investicatorProtocolI
                     investicatorProtocolInformation?.pending_or_active_research === 'Yes' && (
                         <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                             <FormLabel id="demo-row-radio-buttons-group-label">Explain</FormLabel>
-                            <h4>{investicatorProtocolInformation?.pending_or_active_research_explain}</h4>
+                            <p className='explain_text'>{investicatorProtocolInformation?.pending_or_active_research_explain}</p>
                         </Form.Group>
                     )
                 }
-
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here </InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded investigator and sub-investigator CV</InputLabel>
+                    {
+                        investicatorProtocolInformation?.documents?.length > 0 && investicatorProtocolInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'investigator_cv'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here </InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded Copies of medical license </InputLabel>
+                    {
+                        investicatorProtocolInformation?.documents?.length > 0 && investicatorProtocolInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'medical_license'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here </InputLabel>
+                    <InputLabel id="demo-simple-select-autowidth-label">Uploaded Copies of training certificates </InputLabel>
+                    {
+                        investicatorProtocolInformation?.documents?.length > 0 && investicatorProtocolInformation?.documents?.map((docList, index) => {
+                            if(docList.document_name === 'training_certificates'){
+                                return(
+                                    <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
+                                )
+                            }
+                        })
+                    }
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
