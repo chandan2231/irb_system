@@ -52,7 +52,7 @@
         };
         return (
             <Box sx={{ width: '100%' }}>
-            <h2 className='ml-20'>Continuin Review</h2>
+            <h2 className='ml-20'>Continuin Review ({continuinReviewDetails.protocolId})</h2>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
                 <Tab label="Risk Assessment" {...a11yProps(0)} style={{maxWidth: '400px'}} />

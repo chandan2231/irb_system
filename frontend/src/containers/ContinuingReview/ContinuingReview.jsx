@@ -31,7 +31,6 @@ function ContinuingReview() {
         }
     }, []);
     const navigateReviewDetails = (params) => {
-        console.log('params', params)
         navigate("/continuin-review-details", {state:{details: params.row}});
     };
     const columns = [

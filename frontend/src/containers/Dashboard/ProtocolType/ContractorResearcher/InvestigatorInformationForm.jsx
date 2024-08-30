@@ -20,6 +20,8 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { uploadFile } from '../../../../services/UserManagement/UserService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -36,7 +38,22 @@ const VisuallyHiddenInput = styled('input')({
 const investigatorInfoSchema = yup.object().shape({
     investigator_name: yup.string().required("This is required"),
     investigator_email: yup.string().required("This is required"),
-    sub_investigator_name: yup.string().required("This is required")
+    sub_investigator_name: yup.string().required("This is required"),
+    fda_audit_explain: yup.string().when('fda_audit', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    pending_or_active_research_explain: yup.string().when('pending_or_active_research', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    fwa_number: yup.string().when('site_fwp', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
 })
 
 function InvestigatorInformationForm({ protocolTypeDetails }) {
@@ -144,34 +161,35 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                 let cv_files = []
                 let medical_license = []
                 let training_certificates = []
-                // if (!formData.cv_files) {
-                //     return setErrors({ ...errors, ['cv_files']: 'This is required' });
-                // }
-                // else {
-                //     for (let file of formData.cv_files) {
-                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //         cv_files.push(id)
-                //     }
-                //     if (formData.medical_license) {
-                //         for (let file of formData.medical_license) {
-                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //             medical_license.push(id)
-                //         }
-                //     }
-                //     if (formData.training_certificates) {
-                //         for (let file of formData.training_certificates) {
-                //             let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //             training_certificates.push(id)
-                //         }
-                //     }
-                // }
-                dispatch(createInvestigatorInformation({ ...formData, cv_files, medical_license, training_certificates }))
-                    .then(data => {
-                        if (data.payload.status === 200) {
-                            alert(data.payload.data.msg)
-                        } else {
+                if (!formData.cv_files) {
+                    return setErrors({ ...errors, ['cv_files']: 'This is required' });
+                }
+                else {
+                    for (let file of formData.cv_files) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'Investigator Information', documentName: 'investigator and sub-investigator CV'})
+                        cv_files.push(id)
+                    }
+                    if (formData.medical_license) {
+                        for (let file of formData.medical_license) {
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'Investigator Information', documentName: 'medical license'})
+                            medical_license.push(id)
                         }
-                    })
+                    }
+                    if (formData.training_certificates) {
+                        for (let file of formData.training_certificates) {
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'Investigator Information', documentName: 'training certificates'})
+                            training_certificates.push(id)
+                        }
+                    }
+                }
+                dispatch(createInvestigatorInformation({ ...formData, cv_files, medical_license, training_certificates }))
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                        setFormData({})
+                        e.target.reset();
+                    }
+                })
             }
 
         } catch (error) {
@@ -179,21 +197,6 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
             error.inner.forEach((err) => {
                 newErrors[err.path] = err.message;
             });
-            if (formData.fda_audit !== '' && formData.fda_audit === 'Yes' && formData.fda_audit_explain === "") {
-                newErrors['fda_audit_explain_error'] = 'This is required';
-            } else {
-                newErrors['fda_audit_explain_error'] = '';
-            }
-            if (formData.pending_or_active_research !== '' && formData.pending_or_active_research === 'Yes' && formData.pending_or_active_research_explain === "") {
-                newErrors['pending_or_active_research_explain_error'] = 'This is required';
-            } else {
-                newErrors['pending_or_active_research_explain_error'] = '';
-            }
-            if (formData.site_fwp !== '' && formData.site_fwp === 'Yes' && formData.fwa_number === "") {
-                newErrors['fwa_number_error'] = 'This is required';
-            } else {
-                newErrors['fwa_number_error'] = '';
-            }
             if (otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === "") {
                 newErrors['training_completed_explain_error'] = 'This is required';
             } else {
@@ -203,228 +206,233 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
         }
     };
     return (
-        <Row>
-            <form onSubmit={handleSubmitData}>
-                <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name" onChange={handleChange} />
-                    </Box>
-                    {errors.investigator_name && <div className="error">{errors.investigator_name}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email" onChange={handleChange} />
-                    </Box>
-                    {errors.investigator_email && <div className="error">{errors.investigator_email}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Sub-Investigator Name *" id="sub_investigator_name" name="sub_investigator_name" onChange={handleChange} />
-                    </Box>
-                    {errors.sub_investigator_name && <div className="error">{errors.sub_investigator_name}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" onChange={handleChange} />
-                    </Box>
-                </Form.Group>
+        <>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <Row>
+                <form onSubmit={handleSubmitData}>
+                    <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name" onChange={handleChange} />
+                        </Box>
+                        {errors.investigator_name && <div className="error">{errors.investigator_name}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email" onChange={handleChange} />
+                        </Box>
+                        {errors.investigator_email && <div className="error">{errors.investigator_email}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Sub-Investigator Name *" id="sub_investigator_name" name="sub_investigator_name" onChange={handleChange} />
+                        </Box>
+                        {errors.sub_investigator_name && <div className="error">{errors.sub_investigator_name}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" onChange={handleChange} />
+                        </Box>
+                    </Form.Group>
 
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Primary point of contact if different from above" id="primary_contact" name="primary_contact" onChange={handleChange} />
-                    </Box>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Primary point of contact email address" id="primary_contact_email" name="primary_contact_email" onChange={handleChange} />
-                    </Box>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Has the investigator ever had an FDA audit?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="fda_audit" onChange={(event) => handleRadioButtonFdaAudit(event, 'fda_audit')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestion === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="fda_audit_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.fda_audit_explain_error && <div className="error">{errors.fda_audit_explain_error}</div>}
-                        </Form.Group>
-                    )
-                }
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Primary point of contact if different from above" id="primary_contact" name="primary_contact" onChange={handleChange} />
+                        </Box>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Primary point of contact email address" id="primary_contact_email" name="primary_contact_email" onChange={handleChange} />
+                        </Box>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Has the investigator ever had an FDA audit?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="fda_audit" onChange={(event) => handleRadioButtonFdaAudit(event, 'fda_audit')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestion === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="fda_audit_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.fda_audit_explain && <div className="error">{errors.fda_audit_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
 
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">How long has the investigator been involved in research?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="involved_years" onChange={(event) => handleInvestigatorsInvolvedYears(event, 'involved_years')}>
-                            <FormControlLabel value="New to research-1 year" control={<Radio />} label="New to research-&lt;1 year" />
-                            <FormControlLabel value="1-5 years" control={<Radio />} label="1-5 years" />
-                            <FormControlLabel value="6 years or more" control={<Radio />} label="6 years or more" />
-                        </RadioGroup>
-                    </FormControl>
-                </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">How long has the investigator been involved in research?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="involved_years" onChange={(event) => handleInvestigatorsInvolvedYears(event, 'involved_years')}>
+                                <FormControlLabel value="New to research-1 year" control={<Radio />} label="New to research-&lt;1 year" />
+                                <FormControlLabel value="1-5 years" control={<Radio />} label="1-5 years" />
+                                <FormControlLabel value="6 years or more" control={<Radio />} label="6 years or more" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
 
-                <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi" onChange={handleChange} />
-                    </Box>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">What training in the field of human subjects protection has the investigator completed?</FormLabel>
-                        <FormGroup onChange={(event) => handleTrainingCompletedChecked(event)} name="training_completed">
-                            <FormControlLabel control={<Checkbox />} label="OHRP Human Subject Assurance Training" value='1' />
-                            <FormControlLabel control={<Checkbox />} label="CITI Program Training" value='2' />
-                            <FormControlLabel control={<Checkbox />} label="Certified Physician Investigator Training" value='3' />
-                            <FormControlLabel control={<Checkbox />} label="ACRP training (CCRC, CCRA)" value='4' />
-                            <FormControlLabel control={<Checkbox />} label="SOCRA (CCRP)" value='5' />
-                            <FormControlLabel control={<Checkbox />} label="Graduate or undergraduate research studies or degrees" value='6' />
-                            <FormControlLabel control={<Checkbox />} label="Academy of Physicians in Clinical Research" value='7' />
-                            <FormControlLabel control={<Checkbox />} label="Other" value='8' />
-                        </FormGroup>
-                    </FormControl>
-                </Form.Group>
-                {
-                    showOtherQuestion === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.training_completed_explain_error && <div className="error">{errors.training_completed_explain_error}</div>}
-                        </Form.Group>
-                    )
-                }
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi" onChange={handleChange} />
+                        </Box>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">What training in the field of human subjects protection has the investigator completed?</FormLabel>
+                            <FormGroup onChange={(event) => handleTrainingCompletedChecked(event)} name="training_completed">
+                                <FormControlLabel control={<Checkbox />} label="OHRP Human Subject Assurance Training" value='1' />
+                                <FormControlLabel control={<Checkbox />} label="CITI Program Training" value='2' />
+                                <FormControlLabel control={<Checkbox />} label="Certified Physician Investigator Training" value='3' />
+                                <FormControlLabel control={<Checkbox />} label="ACRP training (CCRC, CCRA)" value='4' />
+                                <FormControlLabel control={<Checkbox />} label="SOCRA (CCRP)" value='5' />
+                                <FormControlLabel control={<Checkbox />} label="Graduate or undergraduate research studies or degrees" value='6' />
+                                <FormControlLabel control={<Checkbox />} label="Academy of Physicians in Clinical Research" value='7' />
+                                <FormControlLabel control={<Checkbox />} label="Other" value='8' />
+                            </FormGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showOtherQuestion === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.training_completed_explain && <div className="error">{errors.training_completed_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
 
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number" onChange={handleChange} />
-                    </Box>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Do you have any pending or active restrictions related to research or the practice of medicine?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="pending_or_active_research" onChange={(event) => handlePendingOrInactiveresearch(event, 'pending_or_active_research')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionPendingOrActive === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.pending_or_active_research_explain_error && <div className="error">{errors.pending_or_active_research_explain_error}</div>}
-                        </Form.Group>
-                    )
-                }
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Does your site have an FWA?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="site_fwp" onChange={(event) => handleSiteFWP(event, 'site_fwp')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionSiteFWP === true && (
-                        <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField fullWidth label="Please provide FWA number *" id="fwa_number" name="fwa_number" onChange={handleChange} />
-                            </Box>
-                            {errors.fwa_number_error && <div className="error">{errors.fwa_number_error}</div>}
-                        </Form.Group>
-                    )
-                }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator (if applicable) CV here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='cv_files'
-                            // required
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files });
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.cv_files?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.cv_files && <div className="error">{errors.cv_files}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='medical_license'
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files });
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.medical_license?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.medical_license && <div className="error">{errors.medical_license}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='training_certificates'
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files });
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.training_certificates?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.training_certificates && <div className="error">{errors.training_certificates}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="Submit"
-                    >
-                        SAVE AND CONTINUE
-                    </Button>
-                </Form.Group>
-            </form>
-        </Row>
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number" onChange={handleChange} />
+                        </Box>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Do you have any pending or active restrictions related to research or the practice of medicine?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="pending_or_active_research" onChange={(event) => handlePendingOrInactiveresearch(event, 'pending_or_active_research')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionPendingOrActive === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.pending_or_active_research_explain && <div className="error">{errors.pending_or_active_research_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Does your site have an FWA?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="site_fwp" onChange={(event) => handleSiteFWP(event, 'site_fwp')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionSiteFWP === true && (
+                            <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField fullWidth label="Please provide FWA number *" id="fwa_number" name="fwa_number" onChange={handleChange} />
+                                </Box>
+                                {errors.fwa_number && <div className="error">{errors.fwa_number}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label">Upload investigator and sub-investigator CV here *</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='cv_files'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                                multiple
+                            />
+                        </Button>
+                        {formData?.cv_files !== undefined && Array.from(formData?.cv_files)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.cv_files && <div className="error">{errors.cv_files}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label">Upload copy of medical license (if applicable) here</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='medical_license'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                                multiple
+                            />
+                        </Button>
+                        {formData?.medical_license !== undefined && Array.from(formData?.medical_license)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.medical_license && <div className="error">{errors.medical_license}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label">Upload copies of training certificates (if applicable) here</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='training_certificates'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                                multiple
+                            />
+                        </Button>
+                        {formData?.training_certificates !== undefined && Array.from(formData?.training_certificates)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.training_certificates && <div className="error">{errors.training_certificates}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="Submit"
+                        >
+                            SAVE AND CONTINUE
+                        </Button>
+                    </Form.Group>
+                </form>
+            </Row>
+        </>
     )
 }
 

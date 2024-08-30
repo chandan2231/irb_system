@@ -1,6 +1,16 @@
 import express from "express";
 
-import { saveProtocolInfo, saveInvestigatorInfo, saveStydyInfo, saveInformedInfo, saveProtocolProceduresInfo, saveContactInfo, saveInvestigatorAndProtocolInformation, saveClinicalInformedConsent } from "../controllers/researchInfo.js";
+import { 
+    saveProtocolInfo, 
+    saveInvestigatorInfo, 
+    saveStydyInfo, 
+    saveInformedInfo, 
+    saveProtocolProceduresInfo, 
+    saveContactInfo, 
+    saveInvestigatorAndProtocolInformation, 
+    saveClinicalInformedConsent, 
+    saveMultiSiteProtocolProceduresInfo 
+} from "../controllers/researchInfo.js";
 
 const router = express.Router()
 
@@ -9,6 +19,7 @@ router.post('/saveInvestigatorInfo', saveInvestigatorInfo)
 router.post('/saveStydyInfo', saveStydyInfo)
 router.post('/saveInformedInfo', saveInformedInfo)
 router.post('/saveProtocolProceduresInfo', saveProtocolProceduresInfo)
+router.post('/saveMultiSiteProtocolProceduresInfo', saveMultiSiteProtocolProceduresInfo)
 router.post('/saveContactInfo', saveContactInfo)
 router.post('/saveInvestigatorAndProtocolInformation', saveInvestigatorAndProtocolInformation)
 router.post('/saveClinicalInformedConsent', saveClinicalInformedConsent)

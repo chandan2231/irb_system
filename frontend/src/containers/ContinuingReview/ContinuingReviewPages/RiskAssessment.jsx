@@ -18,6 +18,8 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { uploadFile } from '../../../services/UserManagement/UserService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -62,7 +64,6 @@ function RiskAssessment({ continuinReviewDetails }) {
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
-
     const handleRadioButtonIRBReport = (event, radio_name) => {
         if (radio_name === 'irb_report' && event.target.value === 'Yes') {
             setShowAdditionalQuestionIrbReport(true)
@@ -92,24 +93,23 @@ function RiskAssessment({ continuinReviewDetails }) {
         try {
             const getValidatedform = await riskAssessmentSchema.validate(formData, { abortEarly: false });
             const isValid = await riskAssessmentSchema.isValid(getValidatedform)
-            console.log('formData', formData)
-            console.log('isValid', isValid)
             if (isValid === true) {
                 let q1_supporting_documents = []
-                // if (formData.q1_supporting_documents) {
-                //     for (let file of formData.q1_supporting_documents) {
-                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //         q1_supporting_documents.push(id)
-                //     }
-                // }
-                // else {
-                //     return setErrors({ ...errors, q1_supporting_documents: "This is required" })
-                // }
-                dispatch(riskAssessmentSave({ ...formData, q1_supporting_documents }))
+                if (formData.q1_supporting_documents) {
+                    for (let file of formData.q1_supporting_documents) {
+                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'risk_assessment', documentName: 'risk assessement supporting document'})
+                        q1_supporting_documents.push(id)
+                    }
+                }
+                else {
+                    return setErrors({ ...errors, q1_supporting_documents: "This is required" })
+                }
+                dispatch(riskAssessmentSave({ ...formData }))
                 .then(data => {
                     if (data.payload.status === 200) {
-                        alert(data.payload.data.msg)
-                    } else {
+                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                        setFormData({})
+                        e.target.reset();
                     }
                 })
             }
@@ -123,89 +123,91 @@ function RiskAssessment({ continuinReviewDetails }) {
     }
 
     return (
-        <Row>
-            <form onSubmit={handleSubmitData}>
-                <h4>Question 1</h4>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="irb_report" onChange={(event) => handleRadioButtonIRBReport(event, 'irb_report')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                        {errors.irb_report && <div className="error">{errors.irb_report}</div>}
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionIrbReport === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="irb_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.irb_report_explain && <div className="error">{errors.irb_report_explain}</div>}
-                        </Form.Group>
-                    )
-                }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='q1_supporting_documents'
-                            // required
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files });
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.q1_supporting_documents?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
-                </Form.Group>
-                <h4>Question 2</h4>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria: </FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>2. is related or possibly related to a subject’s participation in the research; and</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="criteria_report" onChange={(event) => handleRadioButtonCriteriaReport(event, 'criteria_report')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                        {errors.criteria_report && <div className="error">{errors.criteria_report}</div>}
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionCriteriaReport === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="criteria_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.criteria_report_explain && <div className="error">{errors.criteria_report_explain}</div>}
-                        </Form.Group>
-                    )
-                }
+        <>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <Row>
+                <form onSubmit={handleSubmitData}>
+                    <h4>Question 1</h4>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="irb_report" onChange={(event) => handleRadioButtonIRBReport(event, 'irb_report')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                            {errors.irb_report && <div className="error">{errors.irb_report}</div>}
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionIrbReport === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="irb_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.irb_report_explain && <div className="error">{errors.irb_report_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload supporting documents *</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='q1_supporting_documents'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                            />
+                        </Button>
+                        {formData?.q1_supporting_documents !== undefined && Array.from(formData?.q1_supporting_documents)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.q1_supporting_documents && <div className="error">{errors.q1_supporting_documents}</div>}
+                    </Form.Group>
+                    <h4>Question 2</h4>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria: </FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>2. is related or possibly related to a subject’s participation in the research; and</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="criteria_report" onChange={(event) => handleRadioButtonCriteriaReport(event, 'criteria_report')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                            {errors.criteria_report && <div className="error">{errors.criteria_report}</div>}
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionCriteriaReport === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="criteria_report_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.criteria_report_explain && <div className="error">{errors.criteria_report_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
 
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="Submit"
-                    >
-                        SAVE AND CONTINUE
-                    </Button>
-                </Form.Group>
-            </form>
-        </Row>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="Submit"
+                        >
+                            SAVE AND CONTINUE
+                        </Button>
+                    </Form.Group>
+                </form>
+            </Row>
+        </>
     )
 }
 

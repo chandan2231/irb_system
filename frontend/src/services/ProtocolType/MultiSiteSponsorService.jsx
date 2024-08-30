@@ -68,7 +68,7 @@ export const createProtocolProcedures = createAsyncThunk("ProtocolType/createPro
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/researchInfo/saveProtocolProceduresInfo`,
+        url: `${baseURL}/researchInfo/saveMultiSiteProtocolProceduresInfo`,
         data,
       });
       return response;

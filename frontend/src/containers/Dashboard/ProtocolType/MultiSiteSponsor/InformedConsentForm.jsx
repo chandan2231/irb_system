@@ -20,6 +20,8 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { uploadFile } from '../../../../services/UserManagement/UserService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -107,6 +109,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
             setShowOtherLangauageAdditionalQuestion(true)
         } else if (radio_name === 'other_language_selection' && event.target.value === 'No') {
             setShowOtherLangauageAdditionalQuestion(false)
+            setShowOtherLangauageAdditionalTextbox(false)
         }
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -145,24 +148,22 @@ function InformedConsentForm({ protocolTypeDetails }) {
             }
             // const getValidatedform = await investigatorInfoSchema.validate(formData, {abortEarly: false});
             // const isValid = await investigatorInfoSchema.isValid(getValidatedform)
-            console.log('formData', formData)
-            let isValid = true
+            const isValid = true
             if (isValid === true) {
-                let consent_file = ''
-                // if (formData.consent_file) {
-                //     for (let file of formData.consent_file) {
-                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //         consent_file.push(id)
-                //     }
-                // }
-                // else {
-                //     return setErrors({ ...errors, consent_file: "This is required" })
-                // }
+                let consent_file = []
+                if (!formData.consent_file) {
+                    return setErrors({ ...errors, ['consent_file']: 'This is required' });
+                } else {
+                    for (let file of formData.consent_file) {
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'contractor research informed consent', documentName: 'consent files'})
+                        consent_file.push(id)
+                    }
+                }
                 dispatch(createInformedConsent({ ...formData, consent_file }))
                 .then(data => {
                     if (data.payload.status === 200) {
-                        alert(data.payload.data.msg)
-                    } else {
+                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                        setFormData({})
                     }
                 })
             }
@@ -176,155 +177,160 @@ function InformedConsentForm({ protocolTypeDetails }) {
         }
     }
 
-    return (
-        <Row>
-            <form onSubmit={handleSubmitData}>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">What types of consent will this study use?</FormLabel>
-                        <FormGroup onChange={(event) => handleConsentTypeChecked(event)} name="consent_type_check">
-                            <FormControlLabel control={<Checkbox />} value="1" label="No consent (requesting waiver of consent)" />
-                            <FormControlLabel control={<Checkbox />} value="2" label="Verbal consent" />
-                            <FormControlLabel control={<Checkbox />} value="3" label="Written, signed consent by subject" />
-                            <FormControlLabel control={<Checkbox />} value="4" label="Written, signed consent by legally authorized representative" />
-                            <FormControlLabel control={<Checkbox />} value="5" label="Written, signed assent by minor" />
-                            <FormControlLabel control={<Checkbox />} value="6" label="HIPAA authorization agreement" />
-                            <FormControlLabel control={<Checkbox />} value="7" label="Waiver of HIPAA agreement" />
-                            <FormControlLabel control={<Checkbox />} value="8" label="Online/website/electronic signature consent" />
-                        </FormGroup>
-                    </FormControl>
-                </Form.Group>
-                {
-                    showOtherQuestion === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain why no consent*" name="no_consent_explain" id="no_consent_explain" fullWidth rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>}
-                        </Form.Group>
-                    )
-                }
 
-                {
-                    showICF === true && (
-                        <Form.Group as={Col} controlId="validationFormik01">
-                            <FormControl>
-                                <FormLabel id="demo-row-radio-buttons-group-label">Will HIPAA authorization language be included in the ICF (informed consent form)?</FormLabel>
-                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="include_icf" onChange={(event) => handleRadioButtonIncludedIcf(event, 'include_icf')}>
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
-                                </RadioGroup>
-                            </FormControl>
-                        </Form.Group>
-                    )
-                }
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label"> Will the participants be compensated for participation in the study?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="participation_compensated" onChange={(event) => handleRadioButtonCompensated(event, 'participation_compensated')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                    </FormControl>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Will the consent forms be offered in languages other than English?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="other_language_selection" onChange={(event) => handleRadioButtonOtherLanguageSelection(event, 'other_language_selection')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                    </FormControl>
-                </Form.Group>
-                {
-                    showOtherLangauageAdditionalQuestion === true && (
-                        <Form.Group as={Col} controlId="validationFormik01">
-                            <FormControl>
-                                <FormLabel id="demo-row-radio-buttons-group-label">Have the documents been translated by a professional translator?</FormLabel>
-                                <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="professional_translator" onChange={(event) => handleRadioButtonProfessionalTranslator(event, 'professional_translator')}>
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
-                                </RadioGroup>
-                            </FormControl>
-                        </Form.Group>
-                    )
-                }
-                {
-                    showOtherLangauageAdditionalTextbox === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain" name="professional_translator_explain" id="professional_translator_explain" fullWidth rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>}
-                        </Form.Group>
-                    )
-                }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label">Upload all consent document templates, including translated consents, if applicable, <br />here (if applying for waiver of consent, document explaining reasoning must be uploaded here) *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='consent_file'
-                            // required
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files});
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.consent_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.consent_file && <div className="error">{errors.consent_file}</div>}
-                </Form.Group>
-                <Form.Group as={Col} className="ul-list">
-                    <p>The informed consent process is a continuous process and the IRB expects that
-                        proper subject consent is ensured by the investigator throughout the research
-                        study. To comply with the terms set forth by this IRB, the investigator must
-                        ensure that:
-                    </p>
-                    <ul>
-                        <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
-                        <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
-                        <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
-                        <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
-                        <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
-                        <li>All efforts must be taken to ensure participant anonymity including:
-                            <ul style={{ marginTop: 0 }}>
-                                <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
-                                <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
-                                <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
-                            </ul>
-                        </li>
-                        <li>It is the responsibility of the sponsor to enforce these terms with the site investigators.</li>
-                    </ul>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-                        <FormGroup onChange={event => handleTermsChecked(event)}>
-                            <FormControlLabel control={<Checkbox />} label="Your initials below signify that you have read the terms and agree with them:" />
-                        </FormGroup>
-                    </FormControl>
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="Submit"
-                        disabled={!termsSelected}
-                    >
-                        SAVE AND CONTINUE
-                    </Button>
-                </Form.Group>
-            </form>
-        </Row>
+
+    return (
+        <>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <Row>
+                <form onSubmit={handleSubmitData}>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">What types of consent will this study use?</FormLabel>
+                            <FormGroup onChange={(event) => handleConsentTypeChecked(event)} name="consent_type_check">
+                                <FormControlLabel control={<Checkbox />} value="1" label="No consent (requesting waiver of consent)" />
+                                <FormControlLabel control={<Checkbox />} value="2" label="Verbal consent" />
+                                <FormControlLabel control={<Checkbox />} value="3" label="Written, signed consent by subject" />
+                                <FormControlLabel control={<Checkbox />} value="4" label="Written, signed consent by legally authorized representative" />
+                                <FormControlLabel control={<Checkbox />} value="5" label="Written, signed assent by minor" />
+                                <FormControlLabel control={<Checkbox />} value="6" label="HIPAA authorization agreement" />
+                                <FormControlLabel control={<Checkbox />} value="7" label="Waiver of HIPAA agreement" />
+                                <FormControlLabel control={<Checkbox />} value="8" label="Online/website/electronic signature consent" />
+                            </FormGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showOtherQuestion === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain why no consent*" name="no_consent_explain" id="no_consent_explain" fullWidth rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>}
+                            </Form.Group>
+                        )
+                    }
+
+                    {
+                        showICF === true && (
+                            <Form.Group as={Col} controlId="validationFormik01">
+                                <FormControl>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Will HIPAA authorization language be included in the ICF (informed consent form)?</FormLabel>
+                                    <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="include_icf" onChange={(event) => handleRadioButtonIncludedIcf(event, 'include_icf')}>
+                                        <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                        <FormControlLabel value="No" control={<Radio />} label="No" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label"> Will the participants be compensated for participation in the study?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="participation_compensated" onChange={(event) => handleRadioButtonCompensated(event, 'participation_compensated')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Will the consent forms be offered in languages other than English?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="other_language_selection" onChange={(event) => handleRadioButtonOtherLanguageSelection(event, 'other_language_selection')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showOtherLangauageAdditionalQuestion === true && (
+                            <Form.Group as={Col} controlId="validationFormik01">
+                                <FormControl>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Have the documents been translated by a professional translator?</FormLabel>
+                                    <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="professional_translator" onChange={(event) => handleRadioButtonProfessionalTranslator(event, 'professional_translator')}>
+                                        <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                        <FormControlLabel value="No" control={<Radio />} label="No" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Form.Group>
+                        )
+                    }
+                    {
+                        showOtherLangauageAdditionalTextbox === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" name="professional_translator_explain" id="professional_translator_explain" fullWidth rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label">Upload all consent document templates, including translated consents, if applicable, <br />here (if applying for waiver of consent, document explaining reasoning must be uploaded here) *</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='consent_file'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                                multiple
+                            />
+                        </Button>
+                        {formData?.consent_file !== undefined && Array.from(formData?.consent_file)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.consent_file && <div className="error">{errors.consent_file}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} className="ul-list">
+                        <p>The informed consent process is a continuous process and the IRB expects that
+                            proper subject consent is ensured by the investigator throughout the research
+                            study. To comply with the terms set forth by this IRB, the investigator must
+                            ensure that:
+                        </p>
+                        <ul>
+                            <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
+                            <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
+                            <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
+                            <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
+                            <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
+                            <li>All efforts must be taken to ensure participant anonymity including:
+                                <ul style={{ marginTop: 0 }}>
+                                    <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
+                                    <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
+                                    <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
+                                </ul>
+                            </li>
+                            <li>It is the responsibility of the sponsor to enforce these terms with the site investigators.</li>
+                        </ul>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+                            <FormGroup onChange={event => handleTermsChecked(event)}>
+                                <FormControlLabel control={<Checkbox />} label="Your initials below signify that you have read the terms and agree with them:" />
+                            </FormGroup>
+                        </FormControl>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="Submit"
+                            disabled={!termsSelected}
+                        >
+                            SAVE AND CONTINUE
+                        </Button>
+                    </Form.Group>
+                </form>
+            </Row>
+        </>
     )
 }
 

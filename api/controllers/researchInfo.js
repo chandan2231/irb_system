@@ -151,6 +151,7 @@ export const saveProtocolProceduresInfo = (req, res) => {
     })
 }
 
+
 export const saveContactInfo = (req, res) => {
     const que = 'insert into contact_information (`protocol_id`,`name`,`title`,`company_name`,`address`,`city`,`state`,`zip_code`,`country`,`phone_number`,`email`,`secondary_contact_name`,`secondary_contact_title`,`secondary_contact_phone_number`,`secondary_contact_email`,`created_by`) value (?)';
     const values = [
@@ -271,6 +272,37 @@ export const saveClinicalInformedConsent = (req, res) => {
             let result = {}
             result.status = 200
             result.msg = 'Informed Consent Information has been saved successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
+    const que = 'insert into protocol_procedure (`protocol_id`, `enrolled_study_type`,`enrolled_type_explain`,`enrolled_group`,`enrolled_group_explain`,`study_excluded`,`study_excluded_explain`,`enrolled_subject`,`recurement_method`,`recurement_method_explain`,`irb_approval`,`expected_number_sites`,`future_research`,`future_research_explain`,`created_by`) value (?)';
+    const values = [
+        req.body.protocol_id, 
+        req.body.enrolled_study_type.toString(), 
+        req.body.enrolled_type_explain, 
+        req.body.enrolled_group.toString(), 
+        req.body.enrolled_group_explain, 
+        req.body.study_excluded, 
+        req.body.study_excluded_explain,
+        req.body.enrolled_subject, 
+        req.body.recurement_method.toString(), 
+        req.body.recurement_method_explain, 
+        req.body.irb_approval,
+        req.body.expected_number_sites,
+        req.body.future_research, 
+        req.body.future_research_explain,
+        req.body.created_by,
+    ];
+    db.query(que, [values], (err, data) =>{
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Protocol Procedure has been saved successfully'
             return res.json(result)
         }
     })

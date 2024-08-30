@@ -38,8 +38,6 @@ const MultiSiteSponsorSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-
-
       .addCase(createInformedConsent.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -52,8 +50,6 @@ const MultiSiteSponsorSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-      
-      
       .addCase(createStudyInformation.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -77,11 +73,7 @@ const MultiSiteSponsorSlice = createSlice({
       .addCase(createProtocolProcedures.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
-      
-      
-      
-      ;
+      });
   },
 });
 

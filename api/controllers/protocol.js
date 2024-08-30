@@ -53,26 +53,46 @@ export const saveFile = async (req, res) => {
             let imageUrl = sRL.cdnUrl;
             // Remove the file from the local server
             fs.unlinkSync(req.file.path);
-            const que2 = 'insert into documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)';
-            const protocolValue = [
-                req.file.protocolId,
-                req.file.protocolType,
-                req.file.informationType,
-                req.file.documentName,
-                req.file.filename,
-                imageUrl,
-                req.body.createdBy,
-                datetime.toISOString().slice(0,10),
-                datetime.toISOString().slice(0,10),
-            ]
-
-            db.query(que2, [protocolValue], (err, data) => {
-                if (err) return res.status(500).json(err)
-                if (data) {
-                    return res.status(200).json({ id: data.insertId })
-                }
-            })
-
+            if(req.body.protocolType === 'continuein_review'){
+                const que2 = 'insert into continuein_review_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)';
+                const protocolValue = [
+                    req.body.protocolId,
+                    req.body.protocolType,
+                    req.body.informationType,
+                    req.body.documentName,
+                    req.file.filename,
+                    imageUrl,
+                    req.body.createdBy,
+                    datetime.toISOString().slice(0,10),
+                    datetime.toISOString().slice(0,10),
+                ]
+                db.query(que2, [protocolValue], (err, data) => {
+                    if (err) return res.status(500).json(err)
+                    if (data) {
+                        return res.status(200).json({ id: data.insertId })
+                    }
+                })
+            } else {
+                const que2 = 'insert into protocol_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)';
+                const protocolValue = [
+                    req.body.protocolId,
+                    req.body.protocolType,
+                    req.body.informationType,
+                    req.body.documentName,
+                    req.file.filename,
+                    imageUrl,
+                    req.body.createdBy,
+                    datetime.toISOString().slice(0,10),
+                    datetime.toISOString().slice(0,10),
+                ]
+                db.query(que2, [protocolValue], (err, data) => {
+                    if (err) return res.status(500).json(err)
+                    if (data) {
+                        return res.status(200).json({ id: data.insertId })
+                    }
+                })
+            }
+            
         }
         else {
             return res.status(400).json({ message: 'No file uploaded' });
@@ -86,10 +106,6 @@ export const saveFile = async (req, res) => {
 }
 
 export const generatePdf = async (req, res) => {
-
-
-
-    
     try {
         let file = {
             content: `
@@ -112,12 +128,10 @@ export const generatePdf = async (req, res) => {
             `
         };
         let filePath = await generatePdfFromHTML(file)
-
         let sRL = await s3Service.uploadFile(filePath);
         let pdfUrl = sRL.cdnUrl;
         // Remove the file from the local server
         fs.unlinkSync(filePath);
-
         return res.status(200).json({ pdfUrl })
     } catch (error) {
         console.log(error)

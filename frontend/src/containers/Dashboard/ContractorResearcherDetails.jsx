@@ -47,7 +47,7 @@ const ContractorResearcherDetails = ({protocolTypeDetails}) => {
         };
     }
     const location = useLocation();
-    console.log('location', location)
+    // console.log('location', location)
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);

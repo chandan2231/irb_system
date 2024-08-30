@@ -1,6 +1,6 @@
 {
-  "name": "Bima",
-  "short_name": "Bima",
+  "name": "IRB System",
+  "short_name": "IRB",
   "icons": [
     {
       "src": "/ui/image/android-chrome-192x192.png",

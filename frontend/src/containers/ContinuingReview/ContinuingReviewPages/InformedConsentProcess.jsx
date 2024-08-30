@@ -18,6 +18,8 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { uploadFile } from '../../../services/UserManagement/UserService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -117,36 +119,34 @@ function InformedConsentProcess({ continuinReviewDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            // if (!formData.icf_file) {
-            //     return setErrors({ icf_file: "" });
-            // }
             const getValidatedform = await investigatorInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await investigatorInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
             if (isValid === true) {
                 let icf_file = []
                 let consent_form = []
-                // if (!formData.icf_file) {
-                //     return setErrors({ ...errors, ['icf_file']: 'This is required' });
-                // }
-                // if (!formData.consent_form) {
-                //     return setErrors({ ...errors, ['consent_form']: 'This is required' });
-                // }
-                // else {
-                //     for (let file of formData.icf_file) {
-                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //         icf_file.push(id)
-                //     }
-                //     for (let file of formData.consent_form) {
-                //         let id = await uploadFile(file, { protocolId: formData.protocol_id })
-                //         consent_form.push(id)
-                //     }
-                // }
-                dispatch(informedConsentSave({ ...formData, icf_file, consent_form }))
+                if (!formData.icf_file) {
+                    return setErrors({ ...errors, ['icf_file']: 'This is required' });
+                }
+                if (!formData.consent_form) {
+                    return setErrors({ ...errors, ['consent_form']: 'This is required' });
+                }
+                else {
+                    for (let file of formData.icf_file) {
+                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'informed_consent_process', documentName: 'icf_file'})
+                        icf_file.push(id)
+                    }
+                    for (let file of formData.consent_form) {
+                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'informed_consent_process', documentName: 'consent_form'})
+                        consent_form.push(id)
+                    }
+                }
+                dispatch(informedConsentSave({ ...formData}))
                 .then(data => {
                     if (data.payload.status === 200) {
-                        alert(data.payload.data.msg)
-                    } else {
+                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                        setFormData({})
+                        e.target.reset();
                     }
                 })
             }
@@ -159,149 +159,150 @@ function InformedConsentProcess({ continuinReviewDetails }) {
         }
     };
     return (
-        <Row>
-            <form onSubmit={handleSubmitData}>
-                <h4>Question 1</h4>
-                <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Which version of the ICF are you currently using? *" id="icf_version" name="icf_version" onChange={handleChange} />
-                    </Box>
-                    {errors.icf_version && <div className="error">{errors.icf_version}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload the most recent ICF *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='icf_file'
-                            // required
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files });
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.icf_file?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.icf_file && <div className="error">{errors.icf_file}</div>}
-                </Form.Group>
-                <h4>Question 2</h4>
-                <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                        <TextField fullWidth label="Who is performing the informed consent at your site? *" id="performing_consent" name="performing_consent" onChange={handleChange} />
-                    </Box>
-                    {errors.performing_consent && <div className="error">{errors.performing_consent}</div>}
-                </Form.Group>
-                <h4>Question 3</h4>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Have there been any challenges faced to the consenting process?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="challenges_faced" onChange={(event) => handleChallengesFaced(event, 'challenges_faced')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                        {errors.challenges_faced && <div className="error">{errors.challenges_faced}</div>}
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionChallengesFaced === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="challenges_faced_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.challenges_faced_explain && <div className="error">{errors.challenges_faced_explain}</div>}
-                        </Form.Group>
-                    )
-                }
-                <h4>Question 4</h4>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes to the consent form that have not been reported to the IRB?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_consent" onChange={(event) => handleChangeConsent(event, 'changes_consent')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                        {errors.changes_consent && <div className="error">{errors.changes_consent}</div>}
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionChangeConsent === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="changes_consent_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.changes_consent_explain && <div className="error">{errors.changes_consent_explain}</div>}
-                        </Form.Group>
-                    )
-                }
-                <h4>Question 5</h4>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                    <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload new informed consent form here *</InputLabel>
-                    <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        startIcon={<CloudUploadIcon />}
-                    >
-                        Upload file
-                        <VisuallyHiddenInput
-                            type="file"
-                            name='consent_form'
-                            // required
-                            onChange={e => {
-                                if (e.target.files && e.target.files.length) {
-                                    setFormData({ ...formData, [e.target.name]: e.target.files });
-                                }
-                            }}
-                        />
-                    </Button>
-                    {formData?.consent_form?.map((file, i) => <div key={i}>{file?.name}</div>)}
-                    {errors.consent_form && <div className="error">{errors.consent_form}</div>}
-                </Form.Group>
-                <Form.Group as={Col} controlId="validationFormik01">
-                    <FormControl>
-                        <FormLabel id="demo-row-radio-buttons-group-label">Are you ensuring that:</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>1. The participants are made aware that their participation is voluntary and that they may choose to withdraw at any time?</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>2. The participants are provided with a copy of the informed consent form to take home?</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>3. The participants are provided with the most up-to-date contact information for study staff?</FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>4. The investigator is providing the most current information regarding the study that may affect the participants’ willingness to participate in the study? </FormLabel>
-                        <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>5. All participants have been consented or re-consented, where necessary, with the most current approved informed consent form?</FormLabel>
-                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="ensuring_list" onChange={(event) => handleRadioButtonEnsuringList(event, 'ensuring_list')}>
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                        </RadioGroup>
-                        {errors.ensuring_list && <div className="error">{errors.ensuring_list}</div>}
-                    </FormControl>
-                </Form.Group>
-                {
-                    showAdditionalQuestionEnsuringList === true && (
-                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                <TextField variant="outlined" placeholder="Explain *" fullWidth name="ensuring_list_explain" id='explain' rows={3} multiline onChange={handleChange} />
-                            </Box>
-                            {errors.ensuring_list_explain && <div className="error">{errors.ensuring_list_explain}</div>}
-                        </Form.Group>
-                    )
-                }
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        type="Submit"
-                    >
-                        SAVE AND CONTINUE
-                    </Button>
-                </Form.Group>
-            </form>
-        </Row>
+        <>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <Row>
+                <form onSubmit={handleSubmitData}>
+                    <h4>Question 1</h4>
+                    <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Which version of the ICF are you currently using? *" id="icf_version" name="icf_version" onChange={handleChange} />
+                        </Box>
+                        {errors.icf_version && <div className="error">{errors.icf_version}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload the most recent ICF *</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='icf_file'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                            />
+                        </Button>
+                        {formData?.icf_file !== undefined && Array.from(formData?.icf_file)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.icf_file && <div className="error">{errors.icf_file}</div>}
+                    </Form.Group>
+                    <h4>Question 2</h4>
+                    <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Who is performing the informed consent at your site? *" id="performing_consent" name="performing_consent" onChange={handleChange} />
+                        </Box>
+                        {errors.performing_consent && <div className="error">{errors.performing_consent}</div>}
+                    </Form.Group>
+                    <h4>Question 3</h4>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Have there been any challenges faced to the consenting process?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="challenges_faced" onChange={(event) => handleChallengesFaced(event, 'challenges_faced')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                            {errors.challenges_faced && <div className="error">{errors.challenges_faced}</div>}
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionChallengesFaced === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="challenges_faced_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.challenges_faced_explain && <div className="error">{errors.challenges_faced_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <h4>Question 4</h4>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes to the consent form that have not been reported to the IRB?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_consent" onChange={(event) => handleChangeConsent(event, 'changes_consent')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                            {errors.changes_consent && <div className="error">{errors.changes_consent}</div>}
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionChangeConsent === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="changes_consent_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.changes_consent_explain && <div className="error">{errors.changes_consent_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <h4>Question 5</h4>
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
+                        <InputLabel id="demo-simple-select-autowidth-label" className='mt-mb-10'>Upload new informed consent form here *</InputLabel>
+                        <Button
+                            component="label"
+                            role={undefined}
+                            variant="contained"
+                            tabIndex={-1}
+                            startIcon={<CloudUploadIcon />}
+                        >
+                            Upload file
+                            <VisuallyHiddenInput
+                                type="file"
+                                name='consent_form'
+                                onChange={e => {
+                                    if (e.target.files && e.target.files.length) {
+                                        setFormData({ ...formData, [e.target.name]: e.target.files });
+                                    }
+                                }}
+                            />
+                        </Button>
+                        {formData?.consent_form !== undefined && Array.from(formData?.consent_form)?.map((file, i) => <div key={i}>{file?.name}</div>)}
+                        {errors.consent_form && <div className="error">{errors.consent_form}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Are you ensuring that:</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>1. The participants are made aware that their participation is voluntary and that they may choose to withdraw at any time?</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>2. The participants are provided with a copy of the informed consent form to take home?</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>3. The participants are provided with the most up-to-date contact information for study staff?</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>4. The investigator is providing the most current information regarding the study that may affect the participants’ willingness to participate in the study? </FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>5. All participants have been consented or re-consented, where necessary, with the most current approved informed consent form?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="ensuring_list" onChange={(event) => handleRadioButtonEnsuringList(event, 'ensuring_list')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                            {errors.ensuring_list && <div className="error">{errors.ensuring_list}</div>}
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showAdditionalQuestionEnsuringList === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="ensuring_list_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                </Box>
+                                {errors.ensuring_list_explain && <div className="error">{errors.ensuring_list_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="Submit"
+                        >
+                            SAVE AND CONTINUE
+                        </Button>
+                    </Form.Group>
+                </form>
+            </Row>
+        </>
     )
 }
 

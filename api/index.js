@@ -4,7 +4,7 @@ import researchRoutes from './routes/researchInfo.js'
 import protocolRoutes from './routes/protocol.js'
 import continuinReviewRoutes from './routes/continuinReview.js'
 import adminRoutes from './routes/admin.js'
-import 'dotenv/config'
+
 
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
