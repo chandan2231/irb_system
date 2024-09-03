@@ -28,7 +28,7 @@
     const options = [
         { label: "Contractor/Researcher", value: "contractor_researcher" },
         { label: "Multi-site Sponsor", value: "multi_site_sponsor" },
-        { label: "Clinical Researcher", value: "clinical_researcher" },
+        { label: "Principal Investigator", value: "principal_investigator" },
     ]
     //password validation
     const lowercaseRegEx = /(?=.*[a-z])/

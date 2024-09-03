@@ -77,7 +77,6 @@ function StudyCloseoutRequestDetails() {
         subject_completed: '',
         subject_complaints_review: '',
         subject_complaints_review_explain: '',
-        protocol_id: protocolDetails.protocolId,
         not_reported_irb: '',
         not_reported_irb_explain: '',
         promptly_reportable_info: '',

@@ -141,24 +141,6 @@ function UsersList() {
             setAllUsersList(pListArr)
         }
     }, [usersList]);
-    
-    const addNewData = (data) => {
-        let dataObj = {
-            research_type_id: data.research_type_id,
-            login_id: user.id
-        }
-        dispatch(createProtocol(dataObj))
-        .then(data=> {
-            if(data.payload.status === 200){
-                setOpen(false);
-            } else {
-                alert(data.payload)
-            }
-        })
-        
-        
-    };
-    
 
     const handleChangeStatus = (status) => {
         //console.log('Change status Item', params)

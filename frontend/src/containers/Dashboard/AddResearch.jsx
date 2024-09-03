@@ -16,7 +16,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     const options = [
         { name: "Contractor/Researcher", id: "contractor_researcher" },
         { name: "Multi-site Sponsor", id: "multi_site_sponsor" },
-        { name: "Clinical Researcher", id: "clinical_researcher" },
+        { name: "Principal Investigator", id: "principal_investigator" },
     ]
     const modalStyles = {
         inputFields: {

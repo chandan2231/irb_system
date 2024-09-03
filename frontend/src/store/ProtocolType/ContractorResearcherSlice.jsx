@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createInformedConsent, createProtocolInformation, createInvestigatorInformation, createStudyInformation, createProtocolProcedures } from "../../services/ProtocolType/ContractorResearcherService";
 const ContractorResearcherSlice = createSlice({
-  name: "Contractor Researcher",
+  name: "Clinical Site",
   initialState: {
     loading: false,
     error: null,

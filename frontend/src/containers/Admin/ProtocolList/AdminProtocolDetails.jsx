@@ -36,7 +36,7 @@ const AdminProtocolDetails = () => {
     return (
         <>
         {
-            protocolTypeDetails.researchType === 'Contractor Researcher' ? (
+            protocolTypeDetails.researchType === 'Clinical Site' ? (
                 <ContractorResearcherDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />
             ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor' ) ? (
                 <MultiSiteSponsorDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />

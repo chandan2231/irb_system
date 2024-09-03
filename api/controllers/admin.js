@@ -85,7 +85,7 @@ export const getContinuinDetailsById = (req, res) => {
 
 export const getProtocolDetailsById = (req, res) => {
     const protocolDetailsObj = {}
-    if(req.body.protocolType === 'Contractor Researcher'){
+    if(req.body.protocolType === 'Clinical Site'){
         const que1 = "select * from protocol_information where protocol_id = ?"
         db.query(que1, [req.body.protocolId], (err, data) =>{
             if (data.length >= 0 ) {

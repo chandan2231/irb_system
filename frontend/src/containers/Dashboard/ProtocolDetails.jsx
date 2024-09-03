@@ -11,7 +11,7 @@
         return (
             <>
             {
-                protocolTypeDetails.researchType === 'Contractor Researcher' ? (
+                protocolTypeDetails.researchType === 'Clinical Site' ? (
                     <ContractorResearcherDetails protocolTypeDetails = {protocolTypeDetails} />
                 ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor' ) ? (
                     <MultiSiteSponsorDetails protocolTypeDetails = {protocolTypeDetails} />

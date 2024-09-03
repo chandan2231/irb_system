@@ -23,36 +23,41 @@ import { useLocation } from 'react-router-dom';
 import { uploadFile } from '../../../services/UserManagement/UserService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FormGroup from '@mui/material/FormGroup';
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
 
-const protocoalInfoSchema = yup.object().shape({
-    first_time_protocol: yup.string().required("This is required"),
-    disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    oversite_explain: yup.string().when('oversite', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    protocol_title: yup.string().required("This is required"),
+const adverseEventSchema = yup.object().shape({
     protocol_number: yup.string().required("This is required"),
-    sponsor: yup.string().required("This is required"),
-    study_duration: yup.string().required("This is required"),
-    funding_source: yup.string().required("This is required"),
+    participant_id_number: yup.string().required("This is required"),
+    event_start_date: yup.string().required("This is required"),
+    event_end_date: yup.string().required("This is required"),
+    event_aware_date: yup.string().required("This is required"),
+    irb_report_date: yup.string().required("This is required"),
+    unexpected_event_explain: yup.string().when('unexpected_event', {
+        is: 'Yes' || 'No',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    date_of_death: yup.string().when('event_nature', {
+        is: 'Death',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    event_nature_explain: yup.string().when('event_nature', {
+        is: 'Other',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    event_description: yup.string().required("This is required"),
+    study_discontinued_explain: yup.string().when('study_discontinued', {
+        is: 'Yes',
+        then: (schema) => schema.required("This is required"),
+        otherwise: (schema) => schema,
+    }),
+    person_name: yup.string().required("This is required"),
+    email: yup.string().required("This is required"),
+    phone: yup.string().required("This is required"),
+    your_name: yup.string().required("This is required"),
     
 })
 
@@ -62,51 +67,80 @@ function AdminAdverseEventsDetails() {
     const location = useLocation();
     const protocolDetails = location.state.details
     const userDetails = JSON.parse(localStorage.getItem('user'));
+    const [showUnexpectedEventTextArea, setShowUnexpectedEventTextArea] = React.useState(false);
+    const [showEventNatureDateOfDeath, setShowEventNatureDateOfDeath] = React.useState(false);
+    const [showEventNatureAdditionTextArea, setShowEventNatureAdditionTextArea] = React.useState(false);
     const [showAdditionalQuestion, setShowAdditionalQuestion] = React.useState(false);
-    const [showDisapproveAdditionTextArea, setShowDisapproveAdditionTextArea] = React.useState(false);
+    const [showStudyDiscontinuedAdditionTextArea, setShowStudyDiscontinuedAdditionTextArea] = React.useState(false);
     const [showOversiteAdditionTextArea, setShowOversiteAdditionTextArea] = React.useState(false);
     const [formData, setFormData] = useState({
-        first_time_protocol: '',
-        protocol_title: '',
         protocol_number: '',
-        sponsor: '',
-        study_duration: '',
-        funding_source: '',
-        disapproved_or_withdrawn: '',
-        disapproved_or_withdrawn_explain: '',
-        oversite: '',
-        oversite_explain: '',
+        adverse_event_criteria: '',
+        participant_id_number: '',
+        event_start_date: '',
+        event_end_date: '',
+        event_aware_date: '',
+        irb_report_date: '',
+        severity_level: '',
+        unexpected_event: '',
+        unexpected_event_explain: '',
+        event_nature: '',
+        date_of_death: '',
+        event_nature_explain: '',
+        event_description: '',
+        event_study_relationship: '',
+        study_discontinued: '',
+        study_discontinued_explain: '',
+        person_name: '',
+        email: '',
+        phone: '',
+        your_name: '',
         protocol_id: protocolDetails.protocolId,
         created_by: userDetails.id,
     });
     const [errors, setErrors] = useState({});
 
-    const handleRadioButtonSelectFirstTime = (event, radio_name) => {
-        if (radio_name === 'first_time_protocol' && event.target.value === 'No') {
-            setShowAdditionalQuestion(true)
-        } else if (radio_name === 'first_time_protocol' && event.target.value === 'Yes') {
-            setShowAdditionalQuestion(false)
-            setShowDisapproveAdditionTextArea(false)
+    const handleAdverseEventCriteria = (event, radio_name) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
+    const handleSeverityLevel = (event, radio_name) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
+    const handleUnexpectedEvent = (event, radio_name) => {
+        if (radio_name === 'unexpected_event' && event.target.value === 'Yes') {
+            setShowUnexpectedEventTextArea(true)
+        } else if (radio_name === 'unexpected_event' && event.target.value === 'No') {
+            setShowUnexpectedEventTextArea(true)
         }
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     }
-
-    const handleRadioButtonSelectDisapproved = (event, radio_name) => {
-        if (radio_name === 'disapproved_or_withdrawn' && event.target.value === 'Yes') {
-            setShowDisapproveAdditionTextArea(true)
-        } else if (radio_name === 'disapproved_or_withdrawn' && event.target.value === 'No') {
-            setShowDisapproveAdditionTextArea(false)
+    const handleEventNature = (event, radio_name) => {
+        if (radio_name === 'event_nature' && event.target.value === 'Death') {
+            setShowEventNatureDateOfDeath(true)
+            setShowEventNatureAdditionTextArea(false)
+        } else if (radio_name === 'event_nature' && event.target.value === 'Other') {
+            setShowEventNatureDateOfDeath(false)
+            setShowEventNatureAdditionTextArea(true)
+        } else {
+            setShowEventNatureDateOfDeath(false)
+            setShowEventNatureAdditionTextArea(false)
         }
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
     }
+    const handleEventStudyRelationship = (event, radio_name) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
 
-    const handleRadioButtonSelectOversite = (event, radio_name) => {
-        if (radio_name === 'oversite' && event.target.value === 'Yes') {
-            setShowOversiteAdditionTextArea(true)
-        } else if (radio_name === 'oversite' && event.target.value === 'No') {
-            setShowOversiteAdditionTextArea(false)
+    const handleStudyDiscontinued = (event, radio_name) => {
+        if (radio_name === 'study_discontinued' && event.target.value === 'Yes') {
+            setShowStudyDiscontinuedAdditionTextArea(true)
+        } else if (radio_name === 'study_discontinued' && event.target.value === 'No') {
+            setShowStudyDiscontinuedAdditionTextArea(false)
         }
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -120,8 +154,8 @@ function AdminAdverseEventsDetails() {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
-            const isValid = await protocoalInfoSchema.isValid(getValidatedform)
+            const getValidatedform = await adverseEventSchema.validate(formData, { abortEarly: false });
+            const isValid = await adverseEventSchema.isValid(getValidatedform)
             // const isValid = true
             if (isValid === true) {
                 let protocol_file = []
@@ -148,6 +182,12 @@ function AdminAdverseEventsDetails() {
                 newErrors[err.path] = err.message;
             });
             setErrors(newErrors);
+            if (Object.keys(newErrors).length > 0) {
+                const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
+                if (firstErrorField) {
+                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
     }
     return (
@@ -156,137 +196,205 @@ function AdminAdverseEventsDetails() {
             <Box className='pd-25'>
                 <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
                 <form onSubmit={handleSubmitData} id="protocol_information">
-                    <Form.Group as={Col} controlId="validationFormik01">
-                        <FormControl>
-                            <FormLabel id="demo-row-radio-buttons-group-label">Are you submitting this protocol for the first time? *</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="first_time_protocol" onChange={(event) => handleRadioButtonSelectFirstTime(event, 'first_time_protocol')}>
-                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                <FormControlLabel value="No" control={<Radio />} label="No" />
-                            </RadioGroup>
-                        </FormControl>
-                        {errors.first_time_protocol && <div className="error">{errors.first_time_protocol}</div>}
-                    </Form.Group>
-                    {
-                        showAdditionalQuestion === true && (
-                            <>
-                                <Form.Group as={Col} controlId="validationFormik02">
-                                    <FormControl>
-                                        <FormLabel id="demo-row-radio-buttons-group-label"> Has this study been disapproved or withdrawn from another IRB?</FormLabel>
-                                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="disapproved_or_withdrawn" onChange={(event) => handleRadioButtonSelectDisapproved(event, 'disapproved_or_withdrawn')}>
-                                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                                        </RadioGroup>
-                                    </FormControl>
-                                </Form.Group>
-                                {
-                                    showDisapproveAdditionTextArea === true && (
-                                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                                <TextField variant="outlined" placeholder="Explain *" name="disapproved_or_withdrawn_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
-                                            </Box>
-                                            {errors.disapproved_or_withdrawn_explain && <div className="error">{errors.disapproved_or_withdrawn_explain}</div>}
-                                        </Form.Group>
-                                    )
-                                }
-                                <Form.Group as={Col} controlId="validationFormik04">
-                                    <FormControl>
-                                        <FormLabel id="demo-row-radio-buttons-group-label"> Are you transferring oversight from another IRB?</FormLabel>
-                                        <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="oversite" onChange={(event) => handleRadioButtonSelectOversite(event, 'oversite')}>
-                                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                                        </RadioGroup>
-                                    </FormControl>
-                                </Form.Group>
-                                {
-                                    showOversiteAdditionTextArea === true && (
-                                        <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
-                                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                                <TextField variant="outlined" placeholder="Explain *" name="oversite_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.oversite_explain} />
-                                            </Box>
-                                            {errors.oversite_explain && <div className="error">{errors.oversite_explain}</div>}
-                                        </Form.Group>
-                                    )
-                                }
-                            </>
-
-                        )
-                    }
-                    <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Title of Protocol *" id="protocol_title" name="protocol_title" onChange={handleChange} value={formData.protocol_title} />
-                        </Box>
-                        {errors.protocol_title && <div className="error">{errors.protocol_title}</div>}
-                    </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
                             <TextField fullWidth label="Protocol number *" id="protocol_number" name="protocol_number" onChange={handleChange} value={formData.protocol_number} />
                         </Box>
                         {errors.protocol_number && <div className="error">{errors.protocol_number}</div>}
                     </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                        <div className='highlight-text'>An adverse event is any untoward medical occurrence that includes one or more of the following regardless of causality: death, is life-threatening, requires in-patient hospitalization, results in prolongation of current hospitalization, results in disability (acute or chronic), results in a birth defect, is an important medical event that requires intervention, and/or may jeopardize the health of the research participant</div>
+                        </FormControl>
+                    </Form.Group>
+                    
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Does the adverse event meet the criteria above? *</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="adverse_event_criteria" onChange={(event) => handleAdverseEventCriteria(event, 'adverse_event_criteria')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    
+                    <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Participant ID Number *" id="participant_id_number" name="participant_id_number" onChange={handleChange} value={formData.participant_id_number} />
+                        </Box>
+                        {errors.participant_id_number && <div className="error">{errors.participant_id_number}</div>}
+                    </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Sponsor *" id="sponsor" name="sponsor" onChange={handleChange} value={formData.sponsor} />
+                            <TextField fullWidth label="Event occur start date *" id="event_start_date" name="event_start_date" onChange={handleChange} value={formData.event_start_date} />
                         </Box>
-                        {errors.sponsor && <div className="error">{errors.sponsor}</div>}
+                        {errors.event_start_date && <div className="error">{errors.event_start_date}</div>}
                     </Form.Group>
-                    <Form.Group as={Col} controlId="validationFormik09" className='mt-mb-20'>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Approximate duration of study *" id="study_duration" name="study_duration" onChange={handleChange} value={formData.study_duration} />
+                            <TextField fullWidth label="Event occur end date *" id="event_end_date" name="event_end_date" onChange={handleChange} value={formData.event_end_date} />
                         </Box>
-                        {errors.study_duration && <div className="error">{errors.study_duration}</div>}
+                        {errors.event_end_date && <div className="error">{errors.event_end_date}</div>}
                     </Form.Group>
-                    <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>
-                        <InputLabel id="demo-simple-select-autowidth-label">Funding source *</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-autowidth-label"
-                            id="demo-simple-select-autowidth"
-                            autoWidth
-                            label="Funding source"
-                            name="funding_source"
-                            value={formData.funding_source}
-                            onChange={handleChange}
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            <MenuItem value='Self/Investigator-Sponsor/Internally Funded'>Self/Investigator-Sponsor/Internally Funded</MenuItem>
-                            <MenuItem value='Industry'>Industry</MenuItem>
-                            <MenuItem value='Non-profit organization'>Non-profit organization</MenuItem>
-                            <MenuItem value='U.S. Federal Grant'>U.S. Federal Grant</MenuItem>
-                            <MenuItem value='State or local Government'>State or local Government</MenuItem>
-                            <MenuItem value='No funding'>No funding</MenuItem>
-                        </Select>
-                        {errors.funding_source && <div className="error">{errors.funding_source}</div>}
-                    </FormControl>
-                    <Box sx={{ flexGrow: 1 }}>
-                        <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                            <Grid container spacing={2}>
-                                <Grid item xs={2}>
-                                    <InputLabel id="demo-simple-select-autowidth-label">Upload Protocol *</InputLabel>
-                                </Grid>
-                                <Grid item xs={10}>
-                                    <Button
-                                        component="label"
-                                        role={undefined}
-                                        variant="contained"
-                                        tabIndex={-1}
-                                        startIcon={<CloudUploadIcon />}
-                                    >
-                                        Upload file
-                                        <VisuallyHiddenInput
-                                            type="file"
-                                            name='protocol_file'
-                                            onChange={e => {
-                                                if (e.target.files && e.target.files.length) {
-                                                    setFormData({ ...formData, protocol_file: e.target.files });
-                                                }
-                                            }}
-                                        />
-                                    </Button>
-                                    {errors.protocol_file && <div className="error">{errors.protocol_file}</div>}
-                                    {formData?.protocol_file !== undefined && Array.from(formData?.protocol_file).map((file, i) => <div key={i}>{file?.name}</div>)}
-                                </Grid>
-                            </Grid>
-                        </Form.Group>
-                    </Box>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="When did you become aware of this event *" id="event_aware_date" name="event_aware_date" onChange={handleChange} value={formData.event_aware_date} />
+                        </Box>
+                        {errors.event_aware_date && <div className="error">{errors.event_aware_date}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Date of report to IRB *" id="irb_report_date" name="irb_report_date" onChange={handleChange} value={formData.irb_report_date} />
+                        </Box>
+                        {errors.irb_report_date && <div className="error">{errors.irb_report_date}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Which level of severity best describes the nature of the event?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="adverse_event_criteria" onChange={(event) => handleSeverityLevel(event, 'severity_level')}>
+                                <FormControlLabel value="Mild (asymptomatic or mild symptoms not requiring intervention, clinical or diagnostic observations only)" control={<Radio />} label="Mild (asymptomatic or mild symptoms not requiring intervention, clinical or diagnostic observations only)" />
+                                <FormControlLabel value="Moderate (minimal or non-invasive intervention required, limiting age-appropriate activities)" control={<Radio />} label="Moderate (minimal or non-invasive intervention required, limiting age-appropriate activities)" />
+                                <FormControlLabel value="Severe/medically significant (not immediately life-threatening, requires hospitalization/ prolongation of current hospitalization, disabling" control={<Radio />} label="Severe/medically significant (not immediately life-threatening, requires hospitalization/ prolongation of current hospitalization, disabling)" />
+                                <FormControlLabel value="Life-threatening (urgent intervention required to prevent death or other serious outcome including significant disability whether acute or long-term)" control={<Radio />} label="Life-threatening (urgent intervention required to prevent death or other serious outcome including significant disability whether acute or long-term)" />
+                                <FormControlLabel value="Death related to adverse event" control={<Radio />} label="Death related to adverse event" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Was this event unexpected?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="unexpected_event" onChange={(event) => handleUnexpectedEvent(event, 'unexpected_event')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showUnexpectedEventTextArea === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" name="unexpected_event_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.unexpected_event_explain} />
+                                </Box>
+                                {errors.unexpected_event_explain && <div className="error">{errors.unexpected_event_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Which category best describes the nature of the event?</FormLabel>
+                            <RadioGroup aria-labelledby="demo-row-radio-buttons-group-label" name="event_nature" onChange={(event) => handleEventNature(event, 'event_nature')}>
+                                <FormControlLabel value="Death" control={<Radio />} label="Death" />
+                                <FormControlLabel value="Life-threatening" control={<Radio />} label="Life-threatening" />
+                                <FormControlLabel value="Required in-patient hospitalization" control={<Radio />} label="Required in-patient hospitalization" />
+                                <FormControlLabel value="Resulted in prolongation of current hospitalization" control={<Radio />} label="Resulted in prolongation of current hospitalization" />
+                                <FormControlLabel value="Resulted in disability (acute or chronic)" control={<Radio />} label="Resulted in disability (acute or chronic)" />
+                                <FormControlLabel value="Resulted in a birth defect" control={<Radio />} label="Resulted in a birth defect" />
+                                <FormControlLabel value="An important medical event that required intervention" control={<Radio />} label="An important medical event that required intervention" />
+                                <FormControlLabel value="Jeopardized/possibly jeopardized the health of the research participant" control={<Radio />} label="Jeopardized/possibly jeopardized the health of the research participant" />
+                                <FormControlLabel value="Other" control={<Radio />} label="Other" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showEventNatureDateOfDeath === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField fullWidth label="Date of death *" id="date_of_death" name="date_of_death" onChange={handleChange} value={formData.date_of_death} />
+                                </Box>
+                                {errors.date_of_death && <div className="error">{errors.date_of_death}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    {
+                        showEventNatureAdditionTextArea === true && (
+                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" name="event_nature_explain" fullWidth id='event_nature_explain' rows={3} multiline onChange={handleChange} value={formData.event_nature_explain} />
+                                </Box>
+                                {errors.event_nature_explain && <div className="error">{errors.event_nature_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Use the text box below to describe the event in as much detail as is available</FormLabel>
+                            <TextField variant="outlined" placeholder="Explain *" name="event_description" fullWidth id='event_description' rows={5} multiline onChange={handleChange} value={formData.event_description} />
+                        </Box>
+                        {errors.event_description && <div className="error">{errors.event_description}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Relationship of event to study</FormLabel>
+                            <RadioGroup aria-labelledby="demo-row-radio-buttons-group-label" name="event_study_relationship" onChange={(event) => handleEventStudyRelationship(event, 'event_study_relationship')}>
+                                <FormControlLabel value="Unrelated (event is clearly NOT related to the study)" control={<Radio />} label="Unrelated (event is clearly NOT related to the study)" />
+                                <FormControlLabel value="Unlikely (it is doubtful the event is related to the study)" control={<Radio />} label="Unlikely (it is doubtful the event is related to the study)" />
+                                <FormControlLabel value="Possible (there is a chance the event could be related to the study)" control={<Radio />} label="Possible (there is a chance the event could be related to the study)" />
+                                <FormControlLabel value="Probable (it is likely the event is related to the study)" control={<Radio />} label="Probable (it is likely the event is related to the study)" />
+                                <FormControlLabel value="Related (event is clearly related to the study)" control={<Radio />} label="Related (event is clearly related to the study)" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik04">
+                        <FormControl>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Was the study discontinued for this participant as a result of the event?</FormLabel>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="study_discontinued" onChange={(event) => handleStudyDiscontinued(event, 'study_discontinued')}>
+                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Form.Group>
+                    {
+                        showStudyDiscontinuedAdditionTextArea === true && (
+                            <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
+                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                    <TextField variant="outlined" placeholder="Explain *" name="study_discontinued_explain" fullWidth id='explain' rows={3} multiline onChange={handleChange} value={formData.study_discontinued_explain} />
+                                </Box>
+                                {errors.study_discontinued_explain && <div className="error">{errors.study_discontinued_explain}</div>}
+                            </Form.Group>
+                        )
+                    }
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+                        <FormControl>
+                            <div className='highlight-text'>Please note that severity, category, and causality of adverse event must be determined by the site’s principal investigator. No other study personnel may determine the nature of the event. This form must be approved of by the PI prior to submission. Your electronic signature below guarantees that all information provided in this form was reviewed and completed by the PI prior to submission.</div>
+                        </FormControl>
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Person submitting this form *" id="person_name" name="person_name" onChange={handleChange} value={formData.person_name} />
+                        </Box>
+                        {errors.person_name && <div className="error">{errors.person_name}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Email *" id="email" name="email" onChange={handleChange} value={formData.email} />
+                        </Box>
+                        {errors.email && <div className="error">{errors.email}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Phone *" id="phone" name="phone" onChange={handleChange} value={formData.phone} />
+                        </Box>
+                        {errors.phone && <div className="error">{errors.phone}</div>}
+                    </Form.Group>
+                    <h3>Acknowledgement</h3>
+                    <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
+						<FormControl>
+							<FormGroup>
+                                <FormLabel>- By submitting this form you confirm the following is true and accurate to the best of your knowledge:</FormLabel>
+                                <FormLabel>- The information in this form is accurate and complete</FormLabel>
+                                <FormLabel>- You are an authorized designee to submit this information</FormLabel>
+                                <FormLabel>- The principal investigator has full awareness of the information submitted within this form</FormLabel>
+							</FormGroup>
+						</FormControl>
+					</Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Your Name *" id="your_name" name="your_name" onChange={handleChange} value={formData.your_name} />
+                        </Box>
+                        <div className='highlight-text'>Note: Your name above is the equivalent of a hand-written signature and is legally binding. Your signature confirms that you are authorized to submit this document and you acknowledge that it is accurate.</div>
+                        {errors.your_name && <div className="error">{errors.your_name}</div>}
+                    </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                         <Button
                             // disabled={!dirty || !isValid}
@@ -304,15 +412,3 @@ function AdminAdverseEventsDetails() {
 }
 
 export default AdminAdverseEventsDetails
-
-
-
-
-
-
-
-
-
-
-
-
