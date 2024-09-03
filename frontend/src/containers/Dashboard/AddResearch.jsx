@@ -14,8 +14,8 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     const [values, setValues] = useState(defaultInputValues);
     const [researchTypeError, setResearchTypeError] = useState('')
     const options = [
-        { name: "Contractor/Researcher", id: "contractor_researcher" },
-        { name: "Multi-site Sponsor", id: "multi_site_sponsor" },
+        { name: "Clinical Site", id: "clinical_site" },
+        { name: "Multi-Site Sponsor", id: "multi_site_sponsor" },
         { name: "Principal Investigator", id: "principal_investigator" },
     ]
     const modalStyles = {

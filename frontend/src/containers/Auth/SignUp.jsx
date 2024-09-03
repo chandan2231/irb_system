@@ -26,8 +26,8 @@
         researcherType: "",
     }
     const options = [
-        { label: "Contractor/Researcher", value: "contractor_researcher" },
-        { label: "Multi-site Sponsor", value: "multi_site_sponsor" },
+        { label: "Clinical Site", value: "clinical_site" },
+        { label: "Multi-Site Sponsor", value: "multi_site_sponsor" },
         { label: "Principal Investigator", value: "principal_investigator" },
     ]
     //password validation
@@ -79,7 +79,7 @@
             <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
             <Grid item lg={6} md={6} sm={12} xs={12}>
             <Card>
-                <CardHeader title="SIGN UP"></CardHeader>
+                <CardHeader title="REGISTER"></CardHeader>
                 {successMessage !== '' && <span className='success_msg'>{successMessage}</span>}
                 <Formik
                 initialValues={initialValues}
@@ -112,7 +112,7 @@
                                 component={TextField}
                             />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
                             <Field
                                 label="Email"
                                 variant="outlined"
@@ -122,7 +122,7 @@
                                 component={TextField}
                             />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
                             <Field
                                 label="Password"
                                 variant="outlined"
@@ -133,7 +133,7 @@
                                 component={TextField}
                             />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
                             <FormControl fullWidth variant="outlined">
                                 <InputLabel id="demo-simple-select-outlined-label">
                                 Researcher Type
@@ -153,10 +153,10 @@
                                     </MenuItem>
                                 ))}
                                 </Select>
-                                <p className="error_text">{researchTypeError}</p>
+                                <span className="error">{researchTypeError}</span>
                             </FormControl>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
+                            <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
                             <Field
                                 label="City"
                                 variant="outlined"
@@ -168,31 +168,31 @@
                             </Grid>
                         </Grid>
                         </CardContent>
-                        <Grid item container spacing={1} justify="center" style={{paddingBottom: '25px'}}>
+                        <Grid item container spacing={1} justify="center" style={{paddingBottom: '25px', paddingTop: '25px'}}>
                             <Grid item xs={12} sm={6} md={6}>
                                 <CardActions style={{paddingLeft: '15px'}}>
-                                <Button
-                                    disabled={!dirty || !isValid}
-                                    variant="contained"
-                                    color="primary"
-                                    type="Submit"
-                                   
-                                >
-                                    REGISTER
-                                </Button>
+                                    <Button
+                                        disabled={!dirty || !isValid}
+                                        variant="contained"
+                                        color="primary"
+                                        type="Submit"
+                                    
+                                    >
+                                        REGISTER
+                                    </Button>
                                 </CardActions>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6} style={{float: 'right', paddingLeft: '65px'}}>
-                                <CardActions>
-                                <span>Do you have an account?</span>
-                                <Link to="/signin">
-                                    <Button
-                                    variant="contained"
-                                    color="primary"
-                                    >
-                                    SIGN IN
-                                    </Button>
-                                </Link>
+                            <Grid item xs={12} sm={6} md={6} style={{float: 'right', paddingLeft: '85px', marginTop: '10px'}}>
+                                <CardActions style={{padding: '0px'}}>
+                                    <span>Do you have an account?</span>
+                                    <Link to="/signin">
+                                        <Button
+                                        variant="contained"
+                                        color="primary"
+                                        >
+                                        LOGIN
+                                        </Button>
+                                    </Link>
                                 </CardActions>
                             </Grid>
                         </Grid>

@@ -95,7 +95,7 @@ function SignIn() {
             marginTop: '20px',
             marginBottom: '15px',
             '.MuiFormControl-root': {
-                marginBottom: '20px',
+                marginBottom: '10px',
             },
         },
     };
@@ -127,7 +127,7 @@ function SignIn() {
                                     <></>
                                 )
                             }
-                            <Typography sx={{mt: 2, mb: 5}}><h2 sx={styles.title}>Sign In</h2></Typography>
+                            <Typography sx={{mt: 2, mb: 5}}><h2 sx={styles.title}>LOGIN</h2></Typography>
                             <FormControl fullWidth variant="outlined">
                                 <TextField
                                     placeholder="Email"
@@ -167,20 +167,22 @@ function SignIn() {
                                 />
                                 {Object.keys(errors).length > 0 && <div className="error_msg">{errors?.password?.message}</div>}
                             </FormControl>
-                            <Grid item xs={12} sm={6} md={6} style={{float: 'right', paddingLeft: '0px'}}>
-                                <CardActions>
-                                    <span>Don't you have an account?</span>
-                                    <Link to="/signup">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                    >
-                                        SIGN UP
-                                    </Button>
-                                    </Link>
-                                </CardActions>
-                            </Grid>
-                            <Button variant="contained" type='submit'>Submit</Button>
+                            <Box style={{marginTop: '40px'}}>
+                                <Grid item xs={12} sm={6} md={6} style={{float: 'right', paddingLeft: '0px'}}>
+                                    <CardActions style={{padding: '0px'}}>
+                                        <span>Don't you have an account?</span>
+                                        <Link to="/signup">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                        >
+                                            REGISTER
+                                        </Button>
+                                        </Link>
+                                    </CardActions>
+                                </Grid>
+                                <Button variant="contained" type='submit'>Submit</Button>
+                            </Box>
                         </CardContent>
                     </form>
                     
