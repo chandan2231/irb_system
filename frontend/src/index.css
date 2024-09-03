@@ -65,3 +65,9 @@ html, body, #root{
 .no_underline{
   text-decoration: none;
 }
+.pd-25{
+  padding: 0px 25px;
+}
+.highlight-text{
+  color: rgb(255, 115, 0);
+}

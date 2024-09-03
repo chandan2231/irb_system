@@ -74,8 +74,7 @@ function RiskAssessment({continuinReviewDetails, riskAssessmentDetails}) {
             setErrors(newErrors);
         }
     }
-    console.log('riskAssessmentDetails', riskAssessmentDetails)
-	return (
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <h4>Question 1</h4>

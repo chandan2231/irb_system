@@ -20,6 +20,7 @@ export const getAllUsers = (req, res) => {
         }
     })
 }
+
 export const getContinuinDetailsById = (req, res) => {
     const continuinReviewDetailObj = {}
     const que = "select * from risk_assessment where protocol_id = ?"
@@ -255,7 +256,6 @@ export const getProtocolDetailsById = (req, res) => {
                             }
                             return res.status(200).json(protocolDetailsObj)
                         })
-                        
                     }
                 })
             }

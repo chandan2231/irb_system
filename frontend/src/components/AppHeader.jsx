@@ -15,7 +15,7 @@ function AppHeader () {
     const {collapseSidebar, toggleSidebar, broken} = useProSidebar();
     const [err, setErr] = useState(null)
     const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
-
+    const userDetails = JSON.parse(localStorage.getItem('user'));
     const handleCloseUserMenu = () => {
         dispatch(userLogout())
         .then(data => {
@@ -47,7 +47,8 @@ function AppHeader () {
                         <IconButton onClick={() => broken ? toggleSidebar() : collapseSidebar()}>
                             <MenuTwoToneIcon sx={styles.iconColor} />
                         </IconButton>
-                        <Box><h2>IRB System</h2></Box>
+                        <h2>IRB System</h2>
+                        <Box className="center-card"><h2>{userDetails.researcher_type === 'admin' ? 'Admin Portal' : ''}</h2></Box>
                         {/* <Box
                             component='img'
                             sx={styles.appLogo}

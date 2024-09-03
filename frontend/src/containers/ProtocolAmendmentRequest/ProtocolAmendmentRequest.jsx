@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchContinuinReviewProtocolList } from "../../../services/Admin/ContinuinReviewListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -10,17 +9,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
-import { viewReport } from "../../../services/UserManagement/UserService";
+import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
 
-function ContinuinReviewList() {
+function ProtocolAmendmentRequest() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [protocolDataList, setProtocolDataList] = useState([]);
+    const [protocolDataList, setProtocolDataList] = React.useState([]);
     const [user, setUser] = useState([]);
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('user'));
@@ -29,7 +26,7 @@ function ContinuinReviewList() {
         }
     }, []);
     const navigateReviewDetails = (params) => {
-        navigate("/admin/continuin-review-details", {state:{details: params.row}});
+        navigate("/protocol-amendment-request-details", {state:{details: params.row}});
     };
     const columns = [
         {
@@ -61,8 +58,8 @@ function ContinuinReviewList() {
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<RadioButtonUncheckedIcon />}
-                    label="View Report"
-                    onClick={() => handleChangeStatus(params)}
+                    label="Change Status"
+                    onClick={handleChangeStatus(params)}
                     showInMenu
                 />,
                 <GridActionsCellItem
@@ -88,19 +85,19 @@ function ContinuinReviewList() {
     ];
     
     var totalElements = 0;
-    const { continuinReviewProtocolList, loading, error } = useSelector(
+    const { protocolList, loading, error } = useSelector(
         state => ({
-            error: state.admin.error,
-            continuinReviewProtocolList: state.admin.continuinReviewProtocolList,
-            loading: state.admin.loading,
+            error: state.dashboard.error,
+            protocolList: state.dashboard.protocolList,
+            loading: state.dashboard.loading,
         })
     );
     useEffect(() => {
-        dispatch(fetchContinuinReviewProtocolList());
+        const data = { login_id: user.id };
+        dispatch(fetchProtocolList(data));
     }, [dispatch, user.id]);
-
-    if(continuinReviewProtocolList !== '' && continuinReviewProtocolList?.length > 0){
-        totalElements = continuinReviewProtocolList.length;
+    if(protocolList !== '' && protocolList?.length > 0){
+        totalElements = protocolList.length;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -110,10 +107,14 @@ function ContinuinReviewList() {
         return rowCountRef.current;
     }, [totalElements]);
 
+    const addNew = () => {
+        setOpen(true);
+    };
+
     useEffect(() => {
         const pListArr = []
-        if(continuinReviewProtocolList && continuinReviewProtocolList?.length > 0) {
-            continuinReviewProtocolList.map((pList, index) => {
+        if(protocolList && protocolList?.length > 0) {
+            protocolList.map((pList, index) => {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
@@ -125,15 +126,12 @@ function ContinuinReviewList() {
             })
             setProtocolDataList(pListArr)
         }
-    }, [continuinReviewProtocolList]);
+    }, [protocolList]);
     
     
 
-    const handleChangeStatus = async (params) => {
-        let data = {}
-        data.protocolId = params.row.protocolId
-        data.researchType = params.row.researchType
-        let id = await viewReport(data)
+    const handleChangeStatus = (params) => {
+        //console.log('Status Item', params)
     }
     const handleItemDelete = (params) => {
         //console.log('Delete Item', params)
@@ -151,9 +149,7 @@ function ContinuinReviewList() {
             <Box>
                 <Grid container spacing={2}>
                     <Grid item xs={5} sm={5} md={8} lg={8}>
-                        <Typography variant="h5" mb={2}>
-                            Continuing Review
-                        </Typography>
+                        <Typography variant="h5" mb={2}>Protocol Amendment Request</Typography>
                     </Grid>
                 </Grid>
             </Box>
@@ -164,7 +160,7 @@ function ContinuinReviewList() {
                     rowCount={rowCount}
                     loading={loading}
                     paginationMode="server"
-                    // onCellClick={(param) => handleChangeStatus(param)}
+                    onCellClick={(param) => handleChangeStatus(param)}
                     // onRowClick={(param) => handleChangeStatus(param)}
                 />
             </Box>
@@ -172,4 +168,4 @@ function ContinuinReviewList() {
     );
     }
 
-    export default ContinuinReviewList;
+    export default ProtocolAmendmentRequest;

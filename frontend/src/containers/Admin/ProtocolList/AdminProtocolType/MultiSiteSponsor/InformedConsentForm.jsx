@@ -178,6 +178,7 @@ function InformedConsentForm({protocolTypeDetails, informedConsent}) {
                                 return(
                                     <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
                                 )
+                            }
                         })
                     }
                 </Form.Group>
