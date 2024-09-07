@@ -100,10 +100,72 @@ const continuingReviewHTMLTemplate = (templateProps) => {
 
         <div style="page-break-after: always;">
           <h3>Investigator and Institution Information</h3>
+          <div>
+            <h4>Question 1</h4>
+            <span>
+              Have there been any changes in the investigator’s situation or
+              qualifications?
+            </span>
+          </div>
+          <div>
+            <h4>Question 2</h4>
+            <span>
+              Have there been any investigation of or complaints related to the
+              investigator’s conduct of research?
+            </span>
+          </div>
+          <div>
+            <h4>Question 3</h4>
+            <span>
+              Have there been any changes in the facility’s ability to
+              adequately support the research protocol?
+            </span>
+          </div>
+          <div>
+            <h4>Question 4</h4>
+            <span>
+              Have there been any changes in facility regulations, standard
+              operating procedures, or standards of professional conduct?
+            </span>
+          </div>
+          <div>
+            <h4>Question 5</h4>
+            <span>
+              Have there been any changes to state or local law regarding
+              research that affects the conduct of research?
+            </span>
+          </div>
         </div>
 
         <div style="page-break-after: always;">
           <h3>Research Progress</h3>
+          <div>
+            <h4>Question 1</h4>
+            <span>Total Subjects Enrolled</span>
+          </div>
+          <div>
+            <h4>Question 2</h4>
+            <span>
+              How many subjects have discontinued their participation?
+            </span>
+          </div>
+          <div>
+            <h4>Question 3</h4>
+            <span>
+              How many adverse events have occurred since the last approval?
+            </span>
+          </div>
+          <div>
+            <h4>Question 4</h4>
+            <span>How many subject have completed the study per protocol?</span>
+          </div>
+          <div>
+            <h4>Question 5</h4>
+            <span>
+              Have there been any updates/changes to the protocol since the last
+              approval?
+            </span>
+          </div>
         </div>
       </main>
     </body>`;
