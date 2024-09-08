@@ -7,8 +7,18 @@ const renderHeader = (props) => {
 
 const RenderTextOnly = (text) => {
   return `<div>
-      <span>${text}</span>
+      <p>${text}</p>
     </div>`;
+};
+
+const RenderSubTextAnswer = (answer, answerObject) => {
+  return `<div>
+          ${
+            answerObject[answer]
+              ? `<span>${answerObject[answer]}</span>`
+              : `<h4>No Answer</h4>`
+          }
+      </div>`;
 };
 
 const RenderQuestion = (sequence, text) => {
@@ -242,10 +252,10 @@ const RenderInvestigatorInstuationInfoThirdQuestion = (
   ${RenderAnswer(answerObject, answer)}
   ${RenderCheckboxAnswer(firstSubText, answerObject)}
   ${RenderTextOnly(secoundSubText.text)}
-  ${RenderAnswer(answerObject, secoundSubText.answer)}
+  ${RenderSubTextAnswer(answerObject, secoundSubText.answer)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
   ${RenderTextOnly(firstSubText.text)}
-  ${RenderAnswer(answerObject, firstSubText.answer)}
+  ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
   ${RenderElplanation(answerObject, firstSubText.explanation)}
   </div>`;
 };
@@ -307,21 +317,21 @@ const RenderResearchProgressInfoSecondQuestion = (
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderTextOnly(firstSubText.text)}
-  ${RenderAnswer(answerObject, firstSubText.answer)}
+  ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
   ${
     answerObject["sub_withdrew"] >= 1 &&
     `<div>
      ${RenderTextOnly(secoundSubText.text)}
-     ${RenderAnswer(answerObject, secoundSubText.answer)}
+     ${RenderSubTextAnswer(answerObject, secoundSubText.answer)}
     </div>`
   }
   ${RenderTextOnly(thirstSubtext.text)}
-  ${RenderAnswer(answerObject, thirstSubtext.answer)}
+  ${RenderSubTextAnswer(answerObject, thirstSubtext.answer)}
   ${
     answerObject["sub_terminated_before_completion"] >= 1 &&
     `<div>
      ${RenderTextOnly(fourthSubText.text)}
-     ${RenderAnswer(answerObject, fourthSubText.answer)}
+     ${RenderSubTextAnswer(answerObject, fourthSubText.answer)}
     </div>`
   } 
   </div>`;
@@ -342,17 +352,17 @@ const RenderResearchProgressInfoThirdQuestion = (
   ${RenderAnswer(answerObject, answer)}
   
   ${RenderTextOnly(firstSubText.text)}
-  ${RenderAnswer(answerObject, firstSubText.answer)}
+  ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
 
   ${
     answerObject["adverse_event_submission"] === "No" &&
     `<div>
     ${RenderTextOnly(secoundSubText.text)}
-    ${RenderAnswer(answerObject, secoundSubText.answer)}
+    ${RenderSubTextAnswer(answerObject, secoundSubText.answer)}
 
     ${RenderTextOnly(thirdSubText.text)}
-    ${RenderAnswer(answerObject, thirdSubText.answer)}
-    
+    ${RenderSubTextAnswer(answerObject, thirdSubText.answer)}
+
     ${RenderDocuments(answerObject, documentHeader, documentName)}
   </div>`
   }
@@ -388,7 +398,7 @@ const RenderResearchProgressInfoFifthQuestion = (
     answerObject["last_approval_change"] === "Yes" &&
     `<div>
      ${RenderTextOnly(firstSubText.text)}
-     ${RenderAnswer(answerObject, firstSubText.answer)}
+     ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
     </div>`
   }
   ${RenderElplanation(answerObject, explanation)}
