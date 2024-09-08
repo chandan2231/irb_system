@@ -56,27 +56,19 @@ const RenderAnswer = (answerObject, answer) => {
     </div>`;
 };
 
-const RenderCheckboxAnswer = (checkBoxObject, answerObject) => {
+const RenderCheckboxAnswer = (answerObject, checkBoxObject) => {
   const { header, options, answer } = checkBoxObject;
-  if (!options) return "";
+  const selectedAnswers = answerObject[answer]?.split(",") || [];
   return `
     <div>
       <h4>${header}</h4>
       ${options
-        .map((option) => {
-          const isChecked = answerObject[answer]?.includes(option.value);
-          if (!isChecked) return "";
+        ?.map((option) => {
+          const isChecked = selectedAnswers.includes(option.value);
           return `
             <div>
-              <input
-                type="checkbox"
-                id="${option.value}"
-                name="${option.value}"
-                value="${option.value}"
-                checked
-                disabled
-              />
-              <label for="${option.value}">${option.label}</label>
+              <input type="checkbox" ${isChecked ? "checked" : "disabled"} />
+              <label>${option.label}</label>
             </div>
           `;
         })
@@ -218,7 +210,7 @@ const RenderInvestigatorInstuationInfoFirstQuestion = (
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
-  ${RenderCheckboxAnswer(checkboxes, answer)}
+  ${RenderCheckboxAnswer(answerObject, checkboxes)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
   </div>`;
 };
@@ -243,14 +235,15 @@ const RenderInvestigatorInstuationInfoThirdQuestion = (
   answerObject
 ) => {
   const { question3 } = questionObject;
-  const { text, answer, documentHeader, documentName, subTexts } = question3;
+  const { text, answer, documentHeader, documentName, subTexts, checkboxes } =
+    question3;
   const firstSubText = subTexts[0];
   const secoundSubText = subTexts[1];
   const sequence = 3;
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
-  ${RenderCheckboxAnswer(firstSubText, answerObject)}
+  ${RenderCheckboxAnswer(answerObject, checkboxes)}
   ${RenderTextOnly(secoundSubText.text)}
   ${RenderSubTextAnswer(answerObject, secoundSubText.answer)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
