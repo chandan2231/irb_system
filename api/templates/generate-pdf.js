@@ -21,8 +21,16 @@ const ContinuingReviewPdfTemplate = (
   return template;
 };
 
+const protocolAmendmentRequestPdfTemplate = () => {
+  const template = {
+    content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate()}`,
+  };
+  return template;
+};
+
 const PdfTemplates = {
   ContinuingReviewPdfTemplate,
+  protocolAmendmentRequestPdfTemplate,
 };
 
 export default PdfTemplates;
