@@ -6,7 +6,14 @@ const renderHeader = (props) => {
 };
 
 const RenderQuestionAndAnswer = (sequence, question, answerObject) => {
-  const { text, subOptions, answer, explanation, pdfLink } = question;
+  const {
+    text,
+    subOptions,
+    answer,
+    explanation,
+    documentHeader,
+    documentName,
+  } = question;
   return `<div>
       <h4>Question ${sequence}</h4>
       ${text ? `<span>${text}</span>` : ``}
@@ -33,6 +40,18 @@ const RenderQuestionAndAnswer = (sequence, question, answerObject) => {
           ? `<h4>Explanation</h4>
              <span>${answerObject[explanation]}</span>`
           : ``
+      }
+      ${
+        documentHeader && answerObject["documents"]?.length > 0
+          ? `<h4>${documentHeader}</h4>
+        ${answerObject["documents"]
+          ?.map((docListItem) => {
+            if (docListItem["document_name"] === documentName) {
+              return `<div><a href=${docListItem[documentName]} target='_blank'>${docListItem["file_name"]}</a></div>`;
+            }
+          })
+          .join("")}`
+          : `No Documents Uploaded`
       }
     </div>
   </div>`;

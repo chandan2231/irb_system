@@ -2,28 +2,6 @@
 //     "risk_assessment": {
 //         "id": 1,
 //         "protocol_id": "IRB578940",
-//         "criteria_report": "Yes",
-//         "criteria_report_explain": "Since the date of the last approval, have you encountered any unanticipated problems? Unanticipated problems involve risks to subjects or others and include any incident, experience, or outcome that meets all of the following criteria:\n1. is unexpected (in terms of nature, severity, or frequency) given (a) the research procedures that are described in the protocol-related documents, such as the IRB-approved research protocol and informed consent document; and (b) the characteristics of the subject population being studied:\n2. is related or possibly related to a subject’s participation in the research; and\n3. suggests that the research places subjects or others at a greater risk of harm (including physical, psychological, economic, or social harm) related to the research than was previously known or recognized.",
-//         "irb_report": "Yes",
-//         "irb_report_explain": "Since the date of the last approval, has any regulatory agency including, but not limited to, the sponsor, statistical agency, medical monitor, data safety monitoring board (DSMB), or a data monitoring committee (DMC) provided any correspondence that has not yet been reported to the IRB?",
-//         "created_at": "2024-08-29T18:30:00.000Z",
-//         "updated_at": "2024-08-29T18:30:00.000Z",
-//         "created_by": 2,
-//         "documents": [
-//             {
-//                 "id": 1,
-//                 "protocol_id": "IRB578940",
-//                 "protocol_type": "continuein_review",
-//                 "information_type": "risk_assessment",
-//                 "document_name": "supporting_document",
-//                 "file_name": "1725004316210-651-1705563391376-ReferredTo (2).pdf",
-//                 "file_url": "https://dev-patient-reports.s3.us-east-2.amazonaws.com/public/images/1725004316210-651-1705563391376-ReferredTo%20%282%29.pdf",
-//                 "created_by": 2,
-//                 "created_at": "2024-08-29T18:30:00.000Z",
-//                 "updated_at": "2024-08-29T18:30:00.000Z"
-//             }
-//         ]
-//     },
 //     "informed_consent_process": {
 //         "id": 2,
 //         "protocol_id": "IRB578940",

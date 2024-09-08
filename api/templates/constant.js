@@ -30,6 +30,8 @@ const continuingReviewQuestions = {
       },
       answer: "criteria_report",
       explanation: "criteria_report_explain",
+      documentHeader: "Uploaded supporting documents",
+      documentName: "supporting_document",
     },
   },
   informedConsentProcess: {
