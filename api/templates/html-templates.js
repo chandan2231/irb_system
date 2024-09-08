@@ -16,7 +16,7 @@ const RenderSubTextAnswer = (answer, answerObject) => {
           ${
             answerObject[answer]
               ? `<span>${answerObject[answer]}</span>`
-              : `<h4>No Answer</h4>`
+              : `<h4>N/A</h4>`
           }
       </div>`;
 };
@@ -50,7 +50,7 @@ const RenderAnswer = (answerObject, answer) => {
         ${
           answerObject[answer]
             ? `<span>${answerObject[answer]}</span>`
-            : `<h4>No Answer</h4>`
+            : `<h4>N/A</h4>`
         }
       </div>
     </div>`;
