@@ -1,170 +1,112 @@
+import questionsToRender from "./constant.js";
+
+const renderHeader = (props) => {
+  const { title } = props;
+  return `<h3>${title}</h3>`;
+};
+
+const RenderQuestion = (sequence, question) => {
+  return `<div>
+      ${sequence && `<h4>Question ${sequence}</h4>`}
+      ${question.text ? `<span>${question.text}</span>` : ``}
+      ${
+        question.subOptions
+          ? `<ul>
+              ${Object.keys(question.subOptions)
+                .map((key) => {
+                  return `<li>${question.subOptions[key]}</li>`;
+                })
+                .join("")}
+            </ul>`
+          : ""
+      }
+    </div>`;
+};
+
 const continuingReviewHTMLTemplate = (templateProps) => {
+  const { continuingReviewQuestions } = questionsToRender;
+  const {
+    riskAssessment,
+    informedConsentProcess,
+    investigatorInstuationInfo,
+    researchProgressInfo,
+  } = continuingReviewQuestions;
+  const {
+    risk_assessment,
+    informed_consent_process,
+    investigator_instuation_info,
+    research_progress_info,
+  } = templateProps;
   return `<body>
       <main>
         <h1>
           ${templateProps.headerText} (${templateProps.protocolId})
         </h1>
         <div style="page-break-after: always;">
-          <h3>Risk Assessment</h3>
+          <div>${renderHeader(riskAssessment)}</div>  
           <div>
-            <h4>Question 1</h4>
-            <span>
-              Since the date of the last approval, has any regulatory agency
-              including, but not limited to, the sponsor, statistical agency,
-              medical monitor, data safety monitoring board (DSMB), or a data
-              monitoring committee (DMC) provided any correspondence that has
-              not yet been reported to the IRB?
-            </span>
+            ${RenderQuestion(1, riskAssessment.question1)}
+            <h4>Answer</h4>
           </div>
           <div>
-            <h4>Question 2</h4>
-            <span>
-              Since the date of the last approval, have you encountered any
-              unanticipated problems? Unanticipated problems involve risks to
-              subjects or others and include any incident, experience, or
-              outcome that meets all of the following criteria:{" "}
-            </span>
-            <ul>
-              <li>
-                1. is unexpected (in terms of nature, severity, or frequency)
-                given (a) the research procedures that are described in the
-                protocol-related documents, such as the IRB-approved research
-                protocol and informed consent document; and (b) the
-                characteristics of the subject population being studied:
-              </li>
-              <li>
-                2. is related or possibly related to a subject’s participation
-                in the research; and
-              </li>
-              <li>
-                3. suggests that the research places subjects or others at a
-                greater risk of harm (including physical, psychological,
-                economic, or social harm) related to the research than was
-                previously known or recognized.
-              </li>
-            </ul>
+            ${RenderQuestion(2, riskAssessment.question2)}
           </div>
         </div>
 
         <div style="page-break-after: always;">
-          <h3>Informed Consent Process</h3>
+           <div>${renderHeader(informedConsentProcess)}</div>
           <div>
-            <h4>Question 1</h4>
-            <span>Which version of the ICF are you currently using?</span>
+            ${RenderQuestion(1, informedConsentProcess.question1)}
           </div>
           <div>
-            <h4>Question 2</h4>
-            <span>Who is performing the informed consent at your site?</span>
+            ${RenderQuestion(2, informedConsentProcess.question2)}
           </div>
           <div>
-            <h4>Question 3</h4>
-            <span>
-              Have there been any challenges faced to the consenting process?
-            </span>
+            ${RenderQuestion(3, informedConsentProcess.question3)}
           </div>
           <div>
-            <h4>Question 4</h4>
-            <span>
-              Have there been any changes to the consent form that have not been
-              reported to the IRB?
-            </span>
+            ${RenderQuestion(4, informedConsentProcess.question4)}
           </div>
           <div>
-            <h4>Question 5</h4>
-            <span>Are you ensuring that:</span>
-            <ul>
-              <li>
-                1. The participants are made aware that their participation is
-                voluntary and that they may choose to withdraw at any time?
-              </li>
-              <li>
-                2. The participants are provided with a copy of the informed
-                consent form to take home?
-              </li>
-              <li>
-                3. The participants are provided with the most up-to-date
-                contact information for study staff?
-              </li>
-              <li>
-                4. The investigator is providing the most current information
-                regarding the study that may affect the participants’
-                willingness to participate in the study?{" "}
-              </li>
-              <li>
-                5. All participants have been consented or re-consented, where
-                necessary, with the most current approved informed consent form?
-              </li>
-            </ul>
+            ${RenderQuestion(5, informedConsentProcess.question5)}
           </div>
         </div>
 
         <div style="page-break-after: always;">
-          <h3>Investigator and Institution Information</h3>
+          <div>${renderHeader(investigatorInstuationInfo)}</div>
           <div>
-            <h4>Question 1</h4>
-            <span>
-              Have there been any changes in the investigator’s situation or
-              qualifications?
-            </span>
+            ${RenderQuestion(1, investigatorInstuationInfo.question1)}
           </div>
           <div>
-            <h4>Question 2</h4>
-            <span>
-              Have there been any investigation of or complaints related to the
-              investigator’s conduct of research?
-            </span>
+            ${RenderQuestion(2, investigatorInstuationInfo.question2)}
           </div>
           <div>
-            <h4>Question 3</h4>
-            <span>
-              Have there been any changes in the facility’s ability to
-              adequately support the research protocol?
-            </span>
+            ${RenderQuestion(3, investigatorInstuationInfo.question3)}
           </div>
           <div>
-            <h4>Question 4</h4>
-            <span>
-              Have there been any changes in facility regulations, standard
-              operating procedures, or standards of professional conduct?
-            </span>
+            ${RenderQuestion(4, investigatorInstuationInfo.question4)}
           </div>
           <div>
-            <h4>Question 5</h4>
-            <span>
-              Have there been any changes to state or local law regarding
-              research that affects the conduct of research?
-            </span>
+            ${RenderQuestion(5, investigatorInstuationInfo.question5)}
           </div>
         </div>
 
         <div style="page-break-after: always;">
-          <h3>Research Progress</h3>
+          <div>${renderHeader(researchProgressInfo)}</div>
           <div>
-            <h4>Question 1</h4>
-            <span>Total Subjects Enrolled</span>
+            ${RenderQuestion(1, researchProgressInfo.question1)}
           </div>
           <div>
-            <h4>Question 2</h4>
-            <span>
-              How many subjects have discontinued their participation?
-            </span>
+            ${RenderQuestion(2, researchProgressInfo.question2)}
           </div>
           <div>
-            <h4>Question 3</h4>
-            <span>
-              How many adverse events have occurred since the last approval?
-            </span>
+            ${RenderQuestion(3, researchProgressInfo.question3)}
           </div>
           <div>
-            <h4>Question 4</h4>
-            <span>How many subject have completed the study per protocol?</span>
+            ${RenderQuestion(4, researchProgressInfo.question4)}
           </div>
           <div>
-            <h4>Question 5</h4>
-            <span>
-              Have there been any updates/changes to the protocol since the last
-              approval?
-            </span>
+            ${RenderQuestion(5, researchProgressInfo.question5)}
           </div>
         </div>
       </main>

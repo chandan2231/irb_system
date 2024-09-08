@@ -9,6 +9,11 @@ const ContinuingReviewPdfTemplate = (
     headerText: "Continuin Review Details",
     protocolId,
     researchType,
+    risk_assessment: continuinReviewDetailObj.risk_assessment,
+    informed_consent_process: continuinReviewDetailObj.informed_consent_process,
+    investigator_instuation_info:
+      continuinReviewDetailObj.investigator_instuation_info,
+    research_progress_info: continuinReviewDetailObj.research_progress_info,
   };
   const template = {
     content: `${htmlTemplates.continuingReviewHTMLTemplate(templatePayload)}`,
