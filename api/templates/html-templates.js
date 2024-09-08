@@ -2,45 +2,91 @@ import questionsToRender from "./constant.js";
 
 const renderHeader = (props) => {
   const { title } = props;
-  return `<h3>${title}</h3>`;
+  return `<div><h3>${title}</h3></div>`;
 };
 
-const RenderQuestionAndAnswer = (sequence, question, answerObject) => {
-  const {
-    text,
-    subOptions,
-    answer,
-    explanation,
-    documentHeader,
-    documentName,
-  } = question;
+const RenderTextOnly = (text) => {
   return `<div>
-      <h4>Question ${sequence}</h4>
-      ${text ? `<span>${text}</span>` : ``}
+      <span>${text}</span>
+    </div>`;
+};
+
+const RenderQuestion = (sequence, text) => {
+  return `<div>
+      <h3>Question ${sequence}</h3>${text ? `<span>${text}</span>` : ``}
+    </div>`;
+};
+
+const RenderSubOptions = (subOptions) => {
+  return `<div>
       ${
         subOptions
           ? `<ul>
-              ${Object.keys(subOptions)
-                .map((key) => {
-                  return `<li>${subOptions[key]}</li>`;
-                })
-                .join("")}
-            </ul>`
+        ${Object.keys(subOptions)
+          .map((key) => {
+            return `<li>${subOptions[key]}</li>`;
+          })
+          .join("")}
+      </ul>`
           : ""
       }
-      <div>
+    </div>`;
+};
+
+const RenderAnswer = (answerObject, answer) => {
+  return `<div>
       <h4>Answer</h4>
-      ${
-        answerObject[answer]
-          ? `<span>${answerObject[answer]}</span>`
-          : `<span>No Answer Submitted</span>`
-      }
+      <div>
+        ${
+          answerObject[answer]
+            ? `<span>${answerObject[answer]}</span>`
+            : `<h4>No Answer</h4>`
+        }
+      </div>
+    </div>`;
+};
+
+const RenderCheckboxAnswer = (checkBoxObject, answerObject) => {
+  const { header, options, answer } = checkBoxObject;
+  if (!options) return "";
+  return `
+    <div>
+      <h4>${header}</h4>
+      ${options
+        .map((option) => {
+          const isChecked = answerObject[answer]?.includes(option.value);
+          if (!isChecked) return "";
+          return `
+            <div>
+              <input
+                type="checkbox"
+                id="${option.value}"
+                name="${option.value}"
+                value="${option.value}"
+                checked
+                disabled
+              />
+              <label for="${option.value}">${option.label}</label>
+            </div>
+          `;
+        })
+        .join("")}
+    </div>`;
+};
+
+const RenderElplanation = (answerObject, explanation) => {
+  return `<div>
       ${
         answerObject[explanation]
           ? `<h4>Explanation</h4>
-             <span>${answerObject[explanation]}</span>`
+         <span>${answerObject[explanation]}</span>`
           : ``
       }
+    </div>`;
+};
+
+const RenderDocuments = (answerObject, documentHeader, documentName) => {
+  return `<div>
       ${
         documentHeader && answerObject["documents"]?.length > 0
           ? `<h4>${documentHeader}</h4>
@@ -51,9 +97,301 @@ const RenderQuestionAndAnswer = (sequence, question, answerObject) => {
             }
           })
           .join("")}`
-          : `No Documents Uploaded`
+          : `<h4>No Documents Uploaded</h4>`
       }
-    </div>
+    </div>`;
+};
+
+const RenderRiskAssessmentFirstQuestion = (questionObject, answerObject) => {
+  const { question1 } = questionObject;
+  const { text, answer, explanation, documentHeader, documentName } = question1;
+  const sequence = 1;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`;
+};
+
+const RenderRiskAssessmentSecondQuestion = (questionObject, answerObject) => {
+  const { question2 } = questionObject;
+  const { text, answer, subOptions, explanation } = question2;
+  const sequence = 2;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderSubOptions(subOptions)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  </div>`;
+};
+
+const RenderInformedConsentProcessFirstQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question1 } = questionObject;
+  const { text, answer, documentHeader, documentName } = question1;
+  const sequence = 1;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`;
+};
+
+const RenderInformedConsentProcessSecondQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question2 } = questionObject;
+  const { text, answer } = question2;
+  const sequence = 2;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  </div>`;
+};
+
+const RenderInformedConsentThirdQuestion = (questionObject, answerObject) => {
+  const { question3 } = questionObject;
+  const { text, answer, explanation } = question3;
+  const sequence = 3;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  </div>`;
+};
+
+const RenderInformedConsentProcessFourthQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question4 } = questionObject;
+  const { text, answer, explanation } = question4;
+  const sequence = 4;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  </div>`;
+};
+
+const RenderInformedConsentFifthQuestion = (questionObject, answerObject) => {
+  const { question5 } = questionObject;
+  const {
+    text,
+    subOptions,
+    answer,
+    explanation,
+    documentHeader,
+    documentName,
+  } = question5;
+  const sequence = 5;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderSubOptions(subOptions)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`;
+};
+
+const RenderInvestigatorInstuationInfoFirstQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question1 } = questionObject;
+  const { text, answer, checkboxes, documentHeader, documentName } = question1;
+  const sequence = 1;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderCheckboxAnswer(checkboxes, answer)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`;
+};
+
+const RenderInvestigatorInstuationInfoSecondQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question2 } = questionObject;
+  const { text, answer, explanation, documentHeader, documentName } = question2;
+  const sequence = 2;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`;
+};
+
+const RenderInvestigatorInstuationInfoThirdQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question3 } = questionObject;
+  const { text, answer, documentHeader, documentName, subTexts } = question3;
+  const firstSubText = subTexts[0];
+  const secoundSubText = subTexts[1];
+  const sequence = 3;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderCheckboxAnswer(firstSubText, answerObject)}
+  ${RenderTextOnly(secoundSubText.text)}
+  ${RenderAnswer(answerObject, secoundSubText.answer)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  ${RenderTextOnly(firstSubText.text)}
+  ${RenderAnswer(answerObject, firstSubText.answer)}
+  ${RenderElplanation(answerObject, firstSubText.explanation)}
+  </div>`;
+};
+
+const RenderInvestigatorInstuationInfoFourthQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question4 } = questionObject;
+  const { text, answer, explanation, documentHeader, documentName } = question4;
+  const sequence = 4;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`;
+};
+
+const RenderInvestigatorInstuationInfoFifthQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question5 } = questionObject;
+  const { text, answer, explanation } = question5;
+  const sequence = 5;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderElplanation(answerObject, explanation)}
+  </div>`;
+};
+
+const RenderResearchProgressInfoFirstQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question1 } = questionObject;
+  const { text, answer } = question1;
+  const sequence = 1;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  </div>`;
+};
+
+const RenderResearchProgressInfoSecondQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question2 } = questionObject;
+  const { text, answer, subTexts } = question2;
+  const firstSubText = subTexts[0];
+  const secoundSubText = subTexts[1];
+  const thirstSubtext = subTexts[2];
+  const fourthSubText = subTexts[3];
+  const sequence = 2;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${RenderTextOnly(firstSubText.text)}
+  ${RenderAnswer(answerObject, firstSubText.answer)}
+  ${
+    answerObject["sub_withdrew"] >= 1 &&
+    `<div>
+     ${RenderTextOnly(secoundSubText.text)}
+     ${RenderAnswer(answerObject, secoundSubText.answer)}
+    </div>`
+  }
+  ${RenderTextOnly(thirstSubtext.text)}
+  ${RenderAnswer(answerObject, thirstSubtext.answer)}
+  ${
+    answerObject["sub_terminated_before_completion"] >= 1 &&
+    `<div>
+     ${RenderTextOnly(fourthSubText.text)}
+     ${RenderAnswer(answerObject, fourthSubText.answer)}
+    </div>`
+  } 
+  </div>`;
+};
+
+const RenderResearchProgressInfoThirdQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question3 } = questionObject;
+  const { text, answer, subTexts, documentHeader, documentName } = question3;
+  const sequence = 3;
+  const firstSubText = subTexts[0];
+  const secoundSubText = subTexts[1];
+  const thirdSubText = subTexts[2];
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  
+  ${RenderTextOnly(firstSubText.text)}
+  ${RenderAnswer(answerObject, firstSubText.answer)}
+
+  ${
+    answerObject["adverse_event_submission"] === "No" &&
+    `<div>
+    ${RenderTextOnly(secoundSubText.text)}
+    ${RenderAnswer(answerObject, secoundSubText.answer)}
+
+    ${RenderTextOnly(thirdSubText.text)}
+    ${RenderAnswer(answerObject, thirdSubText.answer)}
+    
+    ${RenderDocuments(answerObject, documentHeader, documentName)}
+  </div>`
+  }
+
+  </div>`;
+};
+
+const RenderResearchProgressInfoFourthQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question4 } = questionObject;
+  const { text, answer } = question4;
+  const sequence = 4;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  </div>`;
+};
+
+const RenderResearchProgressInfoFifthQuestion = (
+  questionObject,
+  answerObject
+) => {
+  const { question5 } = questionObject;
+  const { text, answer, explanation, subTexts } = question5;
+  const firstSubText = subTexts[0];
+  const sequence = 5;
+  return `<div>
+  ${RenderQuestion(sequence, text)}
+  ${RenderAnswer(answerObject, answer)}
+  ${
+    answerObject["last_approval_change"] === "Yes" &&
+    `<div>
+     ${RenderTextOnly(firstSubText.text)}
+     ${RenderAnswer(answerObject, firstSubText.answer)}
+    </div>`
+  }
+  ${RenderElplanation(answerObject, explanation)}
   </div>`;
 };
 
@@ -77,138 +415,81 @@ const continuingReviewHTMLTemplate = (templateProps) => {
           ${templateProps.headerText} (${templateProps.protocolId})
         </h1>
         <div style="page-break-after: always;">
-          <div>${renderHeader(riskAssessment)}</div>  
-          <div>
-            ${RenderQuestionAndAnswer(
-              1,
-              riskAssessment.question1,
-              risk_assessment
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              2,
-              riskAssessment.question2,
-              risk_assessment
-            )}
-          </div>
+          ${renderHeader(riskAssessment)}
+          ${RenderRiskAssessmentFirstQuestion(riskAssessment, risk_assessment)}
+          ${RenderRiskAssessmentSecondQuestion(riskAssessment, risk_assessment)}
         </div>
 
         <div style="page-break-after: always;">
-           <div>${renderHeader(informedConsentProcess)}</div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              1,
-              informedConsentProcess.question1,
-              informed_consent_process
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              2,
-              informedConsentProcess.question2,
-              informed_consent_process
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              3,
-              informedConsentProcess.question3,
-              informed_consent_process
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              4,
-              informedConsentProcess.question4,
-              informed_consent_process
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              5,
-              informedConsentProcess.question5,
-              informed_consent_process
-            )}
-          </div>
+          ${renderHeader(informedConsentProcess)}
+          ${RenderInformedConsentProcessFirstQuestion(
+            informedConsentProcess,
+            informed_consent_process
+          )}
+          ${RenderInformedConsentProcessSecondQuestion(
+            informedConsentProcess,
+            informed_consent_process
+          )}
+          ${RenderInformedConsentThirdQuestion(
+            informedConsentProcess,
+            informed_consent_process
+          )}
+          ${RenderInformedConsentProcessFourthQuestion(
+            informedConsentProcess,
+            informed_consent_process
+          )}
+          ${RenderInformedConsentFifthQuestion(
+            informedConsentProcess,
+            informed_consent_process
+          )}
         </div>
 
         <div style="page-break-after: always;">
-          <div>${renderHeader(investigatorInstuationInfo)}</div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              1,
-              investigatorInstuationInfo.question1,
-              investigator_instuation_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              2,
-              investigatorInstuationInfo.question2,
-              investigator_instuation_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              3,
-              investigatorInstuationInfo.question3,
-              investigator_instuation_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              4,
-              investigatorInstuationInfo.question4,
-              investigator_instuation_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              5,
-              investigatorInstuationInfo.question5,
-              investigator_instuation_info
-            )}
-          </div>
+          ${renderHeader(investigatorInstuationInfo)}
+          ${RenderInvestigatorInstuationInfoFirstQuestion(
+            investigatorInstuationInfo,
+            investigator_instuation_info
+          )}
+          ${RenderInvestigatorInstuationInfoSecondQuestion(
+            investigatorInstuationInfo,
+            investigator_instuation_info
+          )}
+          ${RenderInvestigatorInstuationInfoThirdQuestion(
+            investigatorInstuationInfo,
+            investigator_instuation_info
+          )}
+          ${RenderInvestigatorInstuationInfoFourthQuestion(
+            investigatorInstuationInfo,
+            investigator_instuation_info
+          )}
+          ${RenderInvestigatorInstuationInfoFifthQuestion(
+            investigatorInstuationInfo,
+            investigator_instuation_info
+          )}
         </div>
 
         <div style="page-break-after: always;">
-          <div>${renderHeader(researchProgressInfo)}</div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              1,
-              researchProgressInfo.question1,
-              research_progress_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              2,
-              researchProgressInfo.question2,
-              research_progress_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              3,
-              researchProgressInfo.question3,
-              research_progress_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              4,
-              researchProgressInfo.question4,
-              research_progress_info
-            )}
-          </div>
-          <div>
-            ${RenderQuestionAndAnswer(
-              5,
-              researchProgressInfo.question5,
-              research_progress_info
-            )}
-          </div>
+          ${renderHeader(researchProgressInfo)}
+          ${RenderResearchProgressInfoFirstQuestion(
+            researchProgressInfo,
+            research_progress_info
+          )}
+          ${RenderResearchProgressInfoSecondQuestion(
+            researchProgressInfo,
+            research_progress_info
+          )}
+          ${RenderResearchProgressInfoThirdQuestion(
+            researchProgressInfo,
+            research_progress_info
+          )}
+          ${RenderResearchProgressInfoFourthQuestion(
+            researchProgressInfo,
+            research_progress_info
+          )}
+          ${RenderResearchProgressInfoFifthQuestion(
+            researchProgressInfo,
+            research_progress_info
+          )}
         </div>
       </main>
     </body>`;
