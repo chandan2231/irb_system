@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -10,27 +9,18 @@ import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import Form from 'react-bootstrap/Form';
 import TextField from '@mui/material/TextField';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
-import { createProtocolInformation } from '../../services/ProtocolType/MultiSiteSponsorService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
+import { createPromptlyReportableEvent } from '../../services/EventAndRequest/EventAndRequestService';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const promptlyReportableSchema = yup.object().shape({
     submitter_type: yup.string().required("This is required"),
@@ -41,9 +31,9 @@ const promptlyReportableSchema = yup.object().shape({
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),
+    describe_problem: yup.string().required("This is required"),
     date_problem_discovered: yup.string().required("This is required"),
     date_of_occurrence: yup.string().required("This is required"),
-    describe_problem: yup.string().required("This is required"),
     action_taken: yup.string().required("This is required"),
     plan_action_taken: yup.string().required("This is required"),
     question_not_covered: yup.string().required("This is required"),
@@ -111,6 +101,11 @@ function PromptlyReportableEventDetails() {
         setFormData({ ...formData, [name]: value });
     }
 
+    const handleProtocolChange = (event, radio_name) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+    }
+
     const handleFinalSubmissionTearmChecked = (event) => {
         const {checked} = event.target
         if(checked === true){
@@ -128,15 +123,23 @@ function PromptlyReportableEventDetails() {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
+            // if (formData.date_problem_discovered === '') {
+            //     return setErrors({ ...errors, ['date_problem_discovered']: 'This is required' });
+            // }
+            // if (formData.date_of_occurrence === '') {
+            //     return setErrors({ ...errors, ['date_of_occurrence']: 'This is required' });
+            // }
             const getValidatedform = await promptlyReportableSchema.validate(formData, { abortEarly: false });
             const isValid = await promptlyReportableSchema.isValid(getValidatedform)
             // const isValid = true
             if (isValid === true) {
-                dispatch(createProtocolInformation({ ...formData }))
+                dispatch(createPromptlyReportableEvent({ ...formData }))
                 .then(data => {
                     if (data.payload.status === 200) {
                         toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                         setFormData({})
+                    } else {
+                        toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                     }
                 })
             }
@@ -170,7 +173,7 @@ function PromptlyReportableEventDetails() {
                             </RadioGroup>
                         </FormControl>
                     </Form.Group>
-                    <h3>PROTOCOL INFORMATION:</h3>
+                    <h4>PROTOCOL INFORMATION:</h4>
                     <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
                             <TextField fullWidth label="IRB Protocol Number *" id="irb_protocol_number" name="irb_protocol_number" onChange={handleChange} value={formData.irb_protocol_number} />
@@ -229,20 +232,41 @@ function PromptlyReportableEventDetails() {
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Date problem discovered *" id="date_problem_discovered" name="date_problem_discovered" onChange={handleChange} value={formData.date_problem_discovered} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Date problem discovered *"
+                                    onChange={newValue => (setFormData({ ...formData, date_problem_discovered: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
                         </Box>
                         {errors.date_problem_discovered && <div className="error">{errors.date_problem_discovered}</div>}
                     </Form.Group>
                     
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Date of occurrence *" id="date_of_occurrence" name="date_of_occurrence" onChange={handleChange} value={formData.date_of_occurrence} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Date of occurrence *"
+                                    onChange={newValue => (setFormData({ ...formData, date_of_occurrence: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
                         </Box>
                         {errors.date_of_occurrence && <div className="error">{errors.date_of_occurrence}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Date reported to sponsor (if applicable)" id="date_reported_to_sponsor" name="date_reported_to_sponsor" onChange={handleChange} value={formData.date_reported_to_sponsor} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Date reported to sponsor (if applicable)"
+                                    onChange={newValue => (setFormData({ ...formData, date_reported_to_sponsor: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
                         </Box>
                         {errors.date_reported_to_sponsor && <div className="error">{errors.date_reported_to_sponsor}</div>}
                     </Form.Group>
@@ -331,7 +355,7 @@ function PromptlyReportableEventDetails() {
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                         <Button variant="contained" color="primary" type="Submit" >
-                            SAVE AND CONTINUE
+                            SUBMIT
                         </Button>
                     </Form.Group>
                 </form>

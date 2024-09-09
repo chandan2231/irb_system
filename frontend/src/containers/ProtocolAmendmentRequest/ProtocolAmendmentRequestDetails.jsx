@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
@@ -11,14 +9,12 @@ import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
 import Grid from '@mui/material/Grid';
-import { createProtocolInformation } from '../../services/ProtocolType/MultiSiteSponsorService';
+import { createProtocolAmendmentRequest } from '../../services/EventAndRequest/EventAndRequestService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
@@ -42,6 +38,10 @@ const protocoalAmendmentSchema = yup.object().shape({
     protocol_number: yup.string().required("This is required"),
     describe_change_request: yup.string().required("This is required"),
     describe_reasoning: yup.string().required("This is required"),
+    person_name: yup.string().required("This is required"),
+    email: yup.string().required("This is required"),
+    phone: yup.string().required("This is required"),
+    your_name: yup.string().required("This is required"),
     
 })
 
@@ -59,6 +59,10 @@ function ProtocolAmendmentRequestDetails() {
         amend_document_explain: '',
         describe_change_request: '',
         describe_reasoning: '',
+        person_name: '',
+        email: '',
+        phone: '',
+        your_name: '',
         protocol_id: protocolDetails.protocolId,
         created_by: userDetails.id,
     });
@@ -107,15 +111,17 @@ function ProtocolAmendmentRequestDetails() {
                 }
                 else {
                     for (let file of formData.redlined_document) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_information', documentName: 'protocol'  })
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolDetails.researchType, informationType: 'protocol_amendment', documentName: 'redlined document'  })
                         redlined_document.push(id)
                     }
                 }
-                dispatch(createProtocolInformation({ ...formData, redlined_document }))
+                dispatch(createProtocolAmendmentRequest({ ...formData }))
                 .then(data => {
                     if (data.payload.status === 200) {
                         toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                         setFormData({})
+                    } else {
+                        toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                     }
                 })
             }
@@ -171,9 +177,7 @@ function ProtocolAmendmentRequestDetails() {
                     
                     <Box sx={{ flexGrow: 1 }}>
                         <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
-                            
                             <InputLabel id="demo-simple-select-autowidth-label">Upload redlined document(s) here *</InputLabel>
-                            
                             <Button
                                 component="label"
                                 role={undefined}
@@ -213,14 +217,38 @@ function ProtocolAmendmentRequestDetails() {
                             {errors.describe_reasoning && <div className="error">{errors.describe_reasoning}</div>}
                         </Form.Group>
                     </Box>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Person submitting this form *" id="person_name" name="person_name" onChange={handleChange} value={formData.person_name} />
+                        </Box>
+                        {errors.person_name && <div className="error">{errors.person_name}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Email *" id="email" name="email" onChange={handleChange} value={formData.email} />
+                        </Box>
+                        {errors.email && <div className="error">{errors.email}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Phone *" id="phone" name="phone" onChange={handleChange} value={formData.phone} />
+                        </Box>
+                        {errors.phone && <div className="error">{errors.phone}</div>}
+                    </Form.Group>
+                    <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
+                        <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                            <TextField fullWidth label="Your Name *" id="your_name" name="your_name" onChange={handleChange} value={formData.your_name} />
+                        </Box>
+                        <div className='highlight-text'>Note: Your name above is the equivalent of a hand-written signature and is legally binding. Your signature confirms that you are authorized to submit this document and you acknowledge that it is accurate.</div>
+                        {errors.your_name && <div className="error">{errors.your_name}</div>}
+                    </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                         <Button
-                            // disabled={!dirty || !isValid}
                             variant="contained"
                             color="primary"
                             type="Submit"
                         >
-                            SAVE AND CONTINUE
+                            SUBMIT
                         </Button>
                     </Form.Group>
                 </form>

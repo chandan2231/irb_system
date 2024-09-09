@@ -4,7 +4,7 @@ import researchRoutes from './routes/researchInfo.js'
 import protocolRoutes from './routes/protocol.js'
 import continuinReviewRoutes from './routes/continuinReview.js'
 import adminRoutes from './routes/admin.js'
-
+import eventAndRequest from "./routes/eventAndRequest.js";
 
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -23,6 +23,7 @@ app.use("/api/auth", authRoutes)
 app.use("/api/researchInfo", researchRoutes)
 app.use("/api/protocol", protocolRoutes)
 app.use("/api/continuinReview", continuinReviewRoutes)
+app.use("/api/eventAndRequest", eventAndRequest)
 app.use("/api/admin", adminRoutes)
 
 app.listen(8800, () => {

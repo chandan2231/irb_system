@@ -13,7 +13,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
-import { viewReport } from "../../../services/UserManagement/UserService";
+import { continueinReviewReport } from "../../../services/UserManagement/UserService";
 
 function ContinuinReviewList() {
     const theme = useTheme();
@@ -133,7 +133,7 @@ function ContinuinReviewList() {
         let data = {}
         data.protocolId = params.row.protocolId
         data.researchType = params.row.researchType
-        let id = await viewReport(data)
+        let id = await continueinReviewReport(data)
     }
     const handleItemDelete = (params) => {
         //console.log('Delete Item', params)

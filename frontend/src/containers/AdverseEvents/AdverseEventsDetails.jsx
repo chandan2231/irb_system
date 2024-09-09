@@ -8,22 +8,19 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Form from 'react-bootstrap/Form';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
-import Grid from '@mui/material/Grid';
-import { createProtocolInformation } from '../../services/ProtocolType/MultiSiteSponsorService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
-import { uploadFile } from '../../services/UserManagement/UserService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormGroup from '@mui/material/FormGroup';
+import { createAdverseEvent } from '../../services/EventAndRequest/EventAndRequestService';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 
 const adverseEventSchema = yup.object().shape({
@@ -70,9 +67,7 @@ function AdverseEventsDetails() {
     const [showUnexpectedEventTextArea, setShowUnexpectedEventTextArea] = React.useState(false);
     const [showEventNatureDateOfDeath, setShowEventNatureDateOfDeath] = React.useState(false);
     const [showEventNatureAdditionTextArea, setShowEventNatureAdditionTextArea] = React.useState(false);
-    const [showAdditionalQuestion, setShowAdditionalQuestion] = React.useState(false);
     const [showStudyDiscontinuedAdditionTextArea, setShowStudyDiscontinuedAdditionTextArea] = React.useState(false);
-    const [showOversiteAdditionTextArea, setShowOversiteAdditionTextArea] = React.useState(false);
     const [formData, setFormData] = useState({
         protocol_number: '',
         adverse_event_criteria: '',
@@ -158,21 +153,13 @@ function AdverseEventsDetails() {
             const isValid = await adverseEventSchema.isValid(getValidatedform)
             // const isValid = true
             if (isValid === true) {
-                let protocol_file = []
-                if (!formData.protocol_file) {
-                    return setErrors({ ...errors, ['protocol_file']: 'This is required' });
-                }
-                else {
-                    for (let file of formData.protocol_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_information', documentName: 'protocol'  })
-                        protocol_file.push(id)
-                    }
-                }
-                dispatch(createProtocolInformation({ ...formData, protocol_file }))
+                dispatch(createAdverseEvent({ ...formData }))
                 .then(data => {
                     if (data.payload.status === 200) {
                         toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                         setFormData({})
+                    } else {
+                        toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                     }
                 })
             }
@@ -210,7 +197,7 @@ function AdverseEventsDetails() {
                     
                     <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                         <FormControl>
-                            <FormLabel id="demo-row-radio-buttons-group-label">Does the adverse event meet the criteria above? *</FormLabel>
+                            <FormLabel id="demo-row-radio-buttons-group-label">Does the adverse event meet the criteria above?</FormLabel>
                             <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="adverse_event_criteria" onChange={(event) => handleAdverseEventCriteria(event, 'adverse_event_criteria')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
@@ -226,32 +213,64 @@ function AdverseEventsDetails() {
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Event occur start date *" id="event_start_date" name="event_start_date" onChange={handleChange} value={formData.event_start_date} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Event occur start date *"
+                                    onChange={newValue => (setFormData({ ...formData, event_start_date: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
+                            {/* <TextField fullWidth label="Event occur start date *" id="event_start_date" name="event_start_date" onChange={handleChange} value={formData.event_start_date} /> */}
                         </Box>
                         {errors.event_start_date && <div className="error">{errors.event_start_date}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Event occur end date *" id="event_end_date" name="event_end_date" onChange={handleChange} value={formData.event_end_date} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Event occur end date *"
+                                    onChange={newValue => (setFormData({ ...formData, event_end_date: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
+                            {/* <TextField fullWidth label="Event occur end date *" id="event_end_date" name="event_end_date" onChange={handleChange} value={formData.event_end_date} /> */}
                         </Box>
                         {errors.event_end_date && <div className="error">{errors.event_end_date}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="When did you become aware of this event *" id="event_aware_date" name="event_aware_date" onChange={handleChange} value={formData.event_aware_date} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="When did you become aware of this event *"
+                                    onChange={newValue => (setFormData({ ...formData, event_aware_date: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
+                            {/* <TextField fullWidth label="When did you become aware of this event *" id="event_aware_date" name="event_aware_date" onChange={handleChange} value={formData.event_aware_date} /> */}
                         </Box>
                         {errors.event_aware_date && <div className="error">{errors.event_aware_date}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Date of report to IRB *" id="irb_report_date" name="irb_report_date" onChange={handleChange} value={formData.irb_report_date} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Date of report to IRB *"
+                                    onChange={newValue => (setFormData({ ...formData, irb_report_date: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "50%" }}
+                                />
+                            </LocalizationProvider>
+                            {/* <TextField fullWidth label="Date of report to IRB *" id="irb_report_date" name="irb_report_date" onChange={handleChange} value={formData.irb_report_date} /> */}
                         </Box>
                         {errors.irb_report_date && <div className="error">{errors.irb_report_date}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Which level of severity best describes the nature of the event?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="adverse_event_criteria" onChange={(event) => handleSeverityLevel(event, 'severity_level')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="severity_level" onChange={(event) => handleSeverityLevel(event, 'severity_level')}>
                                 <FormControlLabel value="Mild (asymptomatic or mild symptoms not requiring intervention, clinical or diagnostic observations only)" control={<Radio />} label="Mild (asymptomatic or mild symptoms not requiring intervention, clinical or diagnostic observations only)" />
                                 <FormControlLabel value="Moderate (minimal or non-invasive intervention required, limiting age-appropriate activities)" control={<Radio />} label="Moderate (minimal or non-invasive intervention required, limiting age-appropriate activities)" />
                                 <FormControlLabel value="Severe/medically significant (not immediately life-threatening, requires hospitalization/ prolongation of current hospitalization, disabling" control={<Radio />} label="Severe/medically significant (not immediately life-threatening, requires hospitalization/ prolongation of current hospitalization, disabling)" />
@@ -300,7 +319,15 @@ function AdverseEventsDetails() {
                         showEventNatureDateOfDeath === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField fullWidth label="Date of death *" id="date_of_death" name="date_of_death" onChange={handleChange} value={formData.date_of_death} />
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DatePicker
+                                            label="Date of death *"
+                                            onChange={newValue => (setFormData({ ...formData, date_of_death: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                            renderInput={(params) => <TextField {...params} />}
+                                            sx={{ width: "50%" }}
+                                        />
+                                    </LocalizationProvider>
+                                    {/* <TextField fullWidth label="Date of death *" id="date_of_death" name="date_of_death" onChange={handleChange} value={formData.date_of_death} /> */}
                                 </Box>
                                 {errors.date_of_death && <div className="error">{errors.date_of_death}</div>}
                             </Form.Group>
@@ -397,12 +424,11 @@ function AdverseEventsDetails() {
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                         <Button
-                            // disabled={!dirty || !isValid}
                             variant="contained"
                             color="primary"
                             type="Submit"
                         >
-                            SAVE AND CONTINUE
+                            SUBMIT
                         </Button>
                     </Form.Group>
                 </form>
