@@ -146,7 +146,6 @@ function Dashboard() {
             if (data.payload.status === 200) {
                 setOpen(false);
                 toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                setFormData({})
             }
         })
         

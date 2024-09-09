@@ -11,19 +11,20 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import { createProtocolInformation } from '../../services/ProtocolType/MultiSiteSponsorService';
+import { createStudyCloseoutRequest } from '../../services/EventAndRequest/EventAndRequestService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const studyCloseSchema = yup.object().shape({
     protocol_number: yup.string().required("This is required"),
     pi_name: yup.string().required("This is required"),
-    study_completion_date: yup.string().required("This is required"),
     study_closeout_reason: yup.string().required("This is required"),
     study_closeout_reason_other: yup.string().when('study_closeout_reason', {
         is: 'other',
@@ -57,6 +58,7 @@ function StudyCloseoutRequestDetails() {
     const location = useLocation();
     const protocolDetails = location.state.details
     const userDetails = JSON.parse(localStorage.getItem('user'));
+    const [value, setValue] = React.useState(null);
     const [showStudyCloseoutReason, setShowStudyCloseoutReason] = React.useState(false);
     const [showSubjectComplaintsReviewTextbox, setShowSubjectComplaintsReviewTextbox] = React.useState(false);
     const [showChangesNotReportedToIRBTextbox, setShowChangesNotReportedToIRBTextbox] = React.useState(false);
@@ -66,7 +68,7 @@ function StudyCloseoutRequestDetails() {
     const [formData, setFormData] = useState({
         protocol_number: '',
         pi_name: '',
-        study_completion_date: '',
+        study_completion_date: null,
         study_closeout_reason: '',
         study_closeout_reason_other: '',
         subject_enrolled_number: '',
@@ -133,16 +135,15 @@ function StudyCloseoutRequestDetails() {
         setFormData({ ...formData, [name]: value });
     }
 
-    const handleFinalSubmissionTearmChecked = (event) => {
-        const {checked} = event.target
-        if(checked === true){
-            setTermsSelected(true)
-        } else if (checked === false){
-            setTermsSelected(false)
-        }
-    }
+    // const handleFinalSubmissionTearmChecked = (event) => {
+    //     const {checked} = event.target
+    //     if(checked === true){
+    //         setTermsSelected(true)
+    //     } else if (checked === false){
+    //         setTermsSelected(false)
+    //     }
+    // }
 
-    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -151,15 +152,21 @@ function StudyCloseoutRequestDetails() {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
+            if (formData.study_completion_date === null) {
+                return setErrors({ ...errors, ['study_completion_date']: 'This is required' });
+            }
             const getValidatedform = await studyCloseSchema.validate(formData, { abortEarly: false });
             const isValid = await studyCloseSchema.isValid(getValidatedform)
-            // const isValid = true
+            console.log('formData', formData)
+            //return
             if (isValid === true) {
-                dispatch(createProtocolInformation({ ...formData }))
+                dispatch(createStudyCloseoutRequest({ ...formData }))
                 .then(data => {
                     if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
+                        toast.success(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                        setFormData()
+                    } else {
+                        toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                     }
                 })
             }
@@ -177,6 +184,10 @@ function StudyCloseoutRequestDetails() {
             }
         }
     }
+    // const handleDateChange = (newValue) => {
+    //     console.log(dayjs(newValue).format('YYYY-MM-DD'))
+    //     setFormData({ ...formData, study_completion_date: dayjs(newValue).format('YYYY-MM-DD')});
+    // };
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>Study Closeout Request Details ({protocolDetails.protocolId})</h2>
@@ -197,7 +208,14 @@ function StudyCloseoutRequestDetails() {
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Date of Study Completion *" id="study_completion_date" name="study_completion_date" onChange={handleChange} value={formData.study_completion_date} />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Date of Study Completion *"
+                                    onChange={newValue => (setFormData({ ...formData, study_completion_date: dayjs(newValue).format('YYYY-MM-DD')}))}
+                                    renderInput={(params) => <TextField {...params} />}
+                                    sx={{ width: "100% " }}
+                                />
+                            </LocalizationProvider>
                         </Box>
                         {errors.study_completion_date && <div className="error">{errors.study_completion_date}</div>}
                     </Form.Group>
@@ -356,7 +374,7 @@ function StudyCloseoutRequestDetails() {
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                         <Button variant="contained" color="primary" type="Submit">
-                            SAVE AND CONTINUE
+                            SUBMIT
                         </Button>
                     </Form.Group>
                 </form>

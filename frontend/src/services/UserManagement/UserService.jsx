@@ -97,12 +97,29 @@ export const uploadFile = async (file, fileData={}) => {
 }
 
 
-export const viewReport = async (protocolDetails) => {
+export const continueinReviewReport = async (protocolDetails) => {
 
   try {
     let response = await ApiCall({
       method: "POST",
-      url: `http://localhost:8800/api/protocol/generate/pdf`,
+      url: `http://localhost:8800/api/protocol/continuein/generate/pdf`,
+      data : protocolDetails,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    return response.data?.id;
+  } catch (error) {
+
+  }
+}
+
+export const protocolReport = async (protocolDetails) => {
+
+  try {
+    let response = await ApiCall({
+      method: "POST",
+      url: `http://localhost:8800/api/protocol/continuein/generate/pdf`,
       data : protocolDetails,
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
