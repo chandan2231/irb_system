@@ -246,6 +246,7 @@ export const continueinReviewGeneratePdf = async (req, res) => {
 
 
 export const protocolGeneratePdf = async (req, res) => {
+  const protocolDetailsObj = {};
     if(req.body.protocolType === 'Clinical Site'){
         const que1 = "select * from protocol_information where protocol_id = ?"
         db.query(que1, [req.body.protocolId], (err, data) =>{
