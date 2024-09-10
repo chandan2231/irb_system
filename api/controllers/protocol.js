@@ -125,7 +125,7 @@ export const saveFile = async (req, res) => {
   }
 };
 
-export const generatePdf = async (req, res) => {
+export const continueinReviewGeneratePdf = async (req, res) => {
   console.log("reqreqreq", req.body);
   const continuinReviewDetailObj = {};
   const que = "select * from risk_assessment where protocol_id = ?";
