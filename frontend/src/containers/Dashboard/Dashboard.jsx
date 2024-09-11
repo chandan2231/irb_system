@@ -17,6 +17,7 @@ import AddResearch from "./AddResearch";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {protocolReport} from "../../services/UserManagement/UserService"
 
 function Dashboard() {
     const theme = useTheme();
@@ -63,6 +64,12 @@ function Dashboard() {
             type: 'actions',
             width: 80,
             getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<RadioButtonUncheckedIcon />}
+                    label="View Pdf"
+                    onClick={() => handleViewPdf(params)}
+                    showInMenu
+                />,
                 <GridActionsCellItem
                     icon={<RadioButtonUncheckedIcon />}
                     label="Change Status"
@@ -165,6 +172,18 @@ function Dashboard() {
             dispatch(changeStatus(data));
         }
     }
+
+    const handleViewPdf = async (params) => {
+        console.log('View Pdf', params)
+        const {row} = params
+        const {protocolId, researchType} = row
+        const protocolReportPayload = {
+            protocolId: protocolId,
+            protocolType: researchType
+        }
+        let id = await protocolReport(protocolReportPayload)
+    }
+    
     const handleItemDelete = (params) => {
         //console.log('Delete Item', params)
     }

@@ -412,7 +412,7 @@ const continuingReviewHTMLTemplate = (templateProps) => {
     investigator_instuation_info,
     research_progress_info,
   } = templateProps;
-  return `<body>
+  return `<body style="padding:25px">
       <main>
         <h1>
           ${templateProps.headerText} (${templateProps.protocolId})

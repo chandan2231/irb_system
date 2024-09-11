@@ -56,6 +56,12 @@ function ProtocolAmendmentRequest() {
             type: 'actions',
             width: 80,
             getActions: (params) => [
+                // <GridActionsCellItem
+                //     icon={<RadioButtonUncheckedIcon />}
+                //     label="View Pdf"
+                //     onClick={() => handleViewPdf(params)}
+                //     showInMenu
+                // />,
                 <GridActionsCellItem
                     icon={<RadioButtonUncheckedIcon />}
                     label="Change Status"
@@ -128,7 +134,15 @@ function ProtocolAmendmentRequest() {
         }
     }, [protocolList]);
     
-    
+    // const handleViewPdf = async (params) => {
+    //     const {row} = params
+    //     const {protocolId, researchType} = row
+    //     const protocolReportPayload = {
+    //         protocolId: protocolId,
+    //         protocolType: researchType
+    //     }
+    //     let id = await protocolReport(protocolReportPayload)
+    // }
 
     const handleChangeStatus = (params) => {
         //console.log('Status Item', params)

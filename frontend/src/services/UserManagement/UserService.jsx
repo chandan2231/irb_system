@@ -119,7 +119,7 @@ export const protocolReport = async (protocolDetails) => {
   try {
     let response = await ApiCall({
       method: "POST",
-      url: `http://localhost:8800/api/protocol/continuein/generate/pdf`,
+      url: `http://localhost:8800/api/protocol/protocol/generate/pdf`,
       data : protocolDetails,
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
