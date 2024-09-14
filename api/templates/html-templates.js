@@ -1,12 +1,11 @@
 import questionsToRender from "./constant.js";
 
 const renderHeader = (Children) => {
-  return `<body style="padding:25px">${Children}</body>`;
+  return `<p style="padding:25px">${Children}</p>`;
 };
 
-const RenderBody = (props) => {
-  const { body } = props;
-  return `<div><p>${body}</p></div>`;
+const RenderBody = (children) => {
+  return `<body style="padding:25">${children}</body>`;
 };
 
 const RenderTextOnly = (text) => {
