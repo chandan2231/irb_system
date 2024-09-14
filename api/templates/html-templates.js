@@ -1,8 +1,12 @@
 import questionsToRender from "./constant.js";
 
-const renderHeader = (props) => {
-  const { title } = props;
-  return `<div><h3>${title}</h3></div>`;
+const renderHeader = (Children) => {
+  return `<body style="padding:25px">${Children}</body>`;
+};
+
+const RenderBody = (props) => {
+  const { body } = props;
+  return `<div><p>${body}</p></div>`;
 };
 
 const RenderTextOnly = (text) => {
@@ -412,7 +416,7 @@ const continuingReviewHTMLTemplate = (templateProps) => {
     investigator_instuation_info,
     research_progress_info,
   } = templateProps;
-  return `<body style="padding:25px">
+  const children = `
       <main>
         <h1>
           ${templateProps.headerText} (${templateProps.protocolId})
@@ -495,11 +499,68 @@ const continuingReviewHTMLTemplate = (templateProps) => {
           )}
         </div>
       </main>
-    </body>`;
+   `;
+  return RenderBody(children);
 };
 
-const protocolAmendmentRequestHTMLTemplate = () => {
-  return `<div>Hello World</div>`;
+const ClinicalSiteHTMLTemplate = (templateProps) => {
+  const { protocolDetails } = questionsToRender;
+  const { clinicalReviewQuestions } = protocolDetails;
+  const {
+    headerText,
+    protocolId,
+    protocolType,
+    protocol_information,
+    investigator_information,
+    study_information,
+    informed_consent,
+    protocol_procedure,
+  } = templateProps;
+  const children = `<main>
+      <h1>Clinical Site</h1>
+    </main>`;
+  return RenderBody(children);
+};
+
+const MultiSiteSponsorHTMLTemplate = (templateProps) => {
+  const { protocolDetails } = questionsToRender;
+  const { multiSiteSponsorQuestions } = protocolDetails;
+  const {
+    headerText,
+    protocolId,
+    protocolType,
+    protocol_information,
+    contact_information,
+    study_information,
+    informed_consent,
+    protocol_procedure,
+  } = templateProps;
+  const children = `<main>
+      <h1>Multi Site Sponsor</h1>
+    </main>`;
+  return RenderBody(children);
+};
+
+const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
+  const { protocolDetails } = questionsToRender;
+  const { principalInvestigatorQuestions } = protocolDetails;
+  const {
+    headerText,
+    protocolId,
+    protocolType,
+    investigator_protocol_information,
+    consent_information,
+  } = templateProps;
+  const children = `<main>
+      <h1>Principal Investigator</h1>
+    </main>`;
+  return RenderBody(children);
+};
+
+const protocolAmendmentRequestHTMLTemplate = {
+  ClinicalSiteHTMLTemplate,
+  MultiSiteSponsorHTMLTemplate,
+  PrincipalInvestigatorHTMLTemplate,
 };
 
 const htmlTemplates = {

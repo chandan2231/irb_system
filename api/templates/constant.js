@@ -228,7 +228,17 @@ const continuingReviewQuestions = {
   },
 };
 
-const protocolDetails = {};
+const clinicalReviewQuestions = {};
+
+const multiSiteSponsorQuestions = {};
+
+const principalInvestigatorQuestions = {};
+
+const protocolDetails = {
+  clinicalReviewQuestions,
+  multiSiteSponsorQuestions,
+  principalInvestigatorQuestions,
+};
 
 const questionsToRender = {
   continuingReviewQuestions,
