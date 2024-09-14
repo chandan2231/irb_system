@@ -1,7 +1,8 @@
 import questionsToRender from "./constant.js";
 
-const renderHeader = (Children) => {
-  return `<p style="padding:25px">${Children}</p>`;
+const renderHeader = (props) => {
+  const { title } = props;
+  return `<div><h3>${title}</h3></div>`;
 };
 
 const RenderBody = (children) => {
