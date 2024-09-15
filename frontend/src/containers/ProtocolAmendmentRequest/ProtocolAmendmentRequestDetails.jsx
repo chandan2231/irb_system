@@ -50,6 +50,7 @@ function ProtocolAmendmentRequestDetails() {
     const dispatch = useDispatch();
     const location = useLocation();
     const protocolDetails = location.state.details
+    console.log('protocolDetails', protocolDetails)
     const userDetails = JSON.parse(localStorage.getItem('user'));
     const [showAdditionalQuestionAmendType, setShowAdditionalQuestionAmendType] = React.useState(false);
     const [explainEnrolledTypeErrors, setExplainAmendDocumentErrors] = React.useState();
@@ -111,7 +112,7 @@ function ProtocolAmendmentRequestDetails() {
                 }
                 else {
                     for (let file of formData.redlined_document) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolDetails.researchType, informationType: 'protocol_amendment', documentName: 'redlined document'  })
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id,  protocolType: 'Protocol Amendment Request', informationType: 'protocol_amendment', documentName: 'redlined document', createdBy: formData.created_by})
                         redlined_document.push(id)
                     }
                 }

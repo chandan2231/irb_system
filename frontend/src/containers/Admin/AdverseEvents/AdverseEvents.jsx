@@ -11,14 +11,14 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useNavigate } from "react-router-dom";
-import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
+import { getAdverseEvent } from "../../../services/Admin/EventAndRequestService";
 
-function AdverseEvents() {
+function AdminAdverseEvents() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [protocolDataList, setProtocolDataList] = React.useState([]);
+    const [adverseEventDataList, setAdverseEventDataList] = React.useState([]);
     const [user, setUser] = useState([]);
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('user'));
@@ -27,7 +27,7 @@ function AdverseEvents() {
         }
     }, []);
     const navigateReviewDetails = (params) => {
-        navigate("/adverse-events-details", {state:{details: params.row}});
+        navigate("/admin/adverse-events-details", {state:{details: params.row}});
     };
     const columns = [
         {
@@ -86,19 +86,18 @@ function AdverseEvents() {
     ];
     
     var totalElements = 0;
-    const { protocolList, loading, error } = useSelector(
+    const { adverseEventList, loading, error } = useSelector(
         state => ({
-            error: state.dashboard.error,
-            protocolList: state.dashboard.protocolList,
-            loading: state.dashboard.loading,
+            error: state.admin.error,
+            adverseEventList: state.admin.adverseEventList?.data,
+            loading: state.admin.loading,
         })
     );
     useEffect(() => {
-        const data = { login_id: user.id };
-        dispatch(fetchProtocolList(data));
-    }, [dispatch, user.id]);
-    if(protocolList !== '' && protocolList?.length > 0){
-        totalElements = protocolList.length;
+        dispatch(getAdverseEvent());
+    }, [dispatch]);
+    if(adverseEventList !== '' && adverseEventList?.length > 0){
+        totalElements = adverseEventList.length;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -114,20 +113,20 @@ function AdverseEvents() {
 
     useEffect(() => {
         const pListArr = []
-        if(protocolList && protocolList?.length > 0) {
-            protocolList.map((pList, index) => {
+        if(adverseEventList && adverseEventList?.length > 0) {
+            adverseEventList.map((pList, index) => {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
                     researchType:  pList.research_type === 'clinical_site' ? 'Clinical Site' :  pList.research_type === 'multi_site_sponsor' ? 'Multi Site Sponsor' : 'Principal Investigator',
-                    createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
-                    updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
+                    createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
+                    updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
                 }
                 pListArr.push(protocolObject)
             })
-            setProtocolDataList(pListArr)
+            setAdverseEventDataList(pListArr)
         }
-    }, [protocolList]);
+    }, [adverseEventList]);
     
     
 
@@ -156,7 +155,7 @@ function AdverseEvents() {
             </Box>
             <Box sx={{ mt: 5 }}>
                 <DataGrid
-                    rows={protocolDataList}
+                    rows={adverseEventDataList}
                     columns={columns}
                     rowCount={rowCount}
                     loading={loading}
@@ -169,4 +168,4 @@ function AdverseEvents() {
     );
     }
 
-    export default AdverseEvents;
+    export default AdminAdverseEvents;

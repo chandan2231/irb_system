@@ -18,8 +18,6 @@ import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-
 const studyCloseSchema = yup.object().shape({
     protocol_number: yup.string().required("This is required"),
     pi_name: yup.string().required("This is required"),
@@ -56,6 +54,7 @@ function AdminStudyCloseoutRequestDetails() {
     const dispatch = useDispatch();
     const location = useLocation();
     const protocolDetails = location.state.details
+    console.log('protocolDetails', protocolDetails)
     const userDetails = JSON.parse(localStorage.getItem('user'));
     const [showStudyCloseoutReason, setShowStudyCloseoutReason] = React.useState(false);
     const [showSubjectComplaintsReviewTextbox, setShowSubjectComplaintsReviewTextbox] = React.useState(false);

@@ -2,6 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { fetchProtocolList, fetchProtocolDetailsById } from "../../services/Admin/ProtocolListService";
 import { fetchContinuinReviewProtocolList, fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
 import { fetchUsersList } from "../../services/Admin/UsersListService";
+import { getStudyCloseoutRequest, getPromptlyReportableEvent, getProtocolAmendmentRequest, getAdverseEvent } from "../../services/Admin/EventAndRequestService";
+
+
+
 const AdminSlice = createSlice({
     name: "admin",
     initialState: {
@@ -12,6 +16,10 @@ const AdminSlice = createSlice({
         usersList: null,
         continuinReviewDetailsById: null,
         protocolDetailsById: null,
+        studyCloseoutRequestList: null,
+        promptlyReportableEventList: null,
+        protocolAmendmentRequestList: null,
+        adverseEventList: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -73,6 +81,54 @@ const AdminSlice = createSlice({
             state.protocolDetailsById = action.payload;
         })
         .addCase(fetchProtocolDetailsById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(getStudyCloseoutRequest.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getStudyCloseoutRequest.fulfilled, (state, action) => {
+            state.loading = false;
+            state.studyCloseoutRequestList = action.payload;
+        })
+        .addCase(getStudyCloseoutRequest.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(getPromptlyReportableEvent.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getPromptlyReportableEvent.fulfilled, (state, action) => {
+            state.loading = false;
+            state.promptlyReportableEventList = action.payload;
+        })
+        .addCase(getPromptlyReportableEvent.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(getProtocolAmendmentRequest.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getProtocolAmendmentRequest.fulfilled, (state, action) => {
+            state.loading = false;
+            state.protocolAmendmentRequestList = action.payload;
+        })
+        .addCase(getProtocolAmendmentRequest.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(getAdverseEvent.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getAdverseEvent.fulfilled, (state, action) => {
+            state.loading = false;
+            state.adverseEventList = action.payload;
+        })
+        .addCase(getAdverseEvent.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
         });

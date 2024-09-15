@@ -10,14 +10,14 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useNavigate } from "react-router-dom";
-import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
+import { getStudyCloseoutRequest } from "../../../services/Admin/EventAndRequestService";
 
-function StudyCloseoutRequest() {
+function AdminStudyCloseoutRequest() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [protocolDataList, setProtocolDataList] = React.useState([]);
+    const [studyCloseoutDataList, setStudyCloseoutDataList] = React.useState([]);
     const [user, setUser] = useState([]);
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('user'));
@@ -26,7 +26,7 @@ function StudyCloseoutRequest() {
         }
     }, []);
     const navigateReviewDetails = (params) => {
-        navigate("/study-close-request-details", {state:{details: params.row}});
+        navigate("/admin/study-close-request-details", {state:{details: params.row}});
     };
     const columns = [
         {
@@ -85,19 +85,18 @@ function StudyCloseoutRequest() {
     ];
     
     var totalElements = 0;
-    const { protocolList, loading, error } = useSelector(
+    const { studyCloseoutRequestList, loading, error } = useSelector(
         state => ({
-            error: state.dashboard.error,
-            protocolList: state.dashboard.protocolList,
-            loading: state.dashboard.loading,
+            error: state.admin.error,
+            studyCloseoutRequestList: state.admin.studyCloseoutRequestList?.data,
+            loading: state.admin.loading,
         })
     );
     useEffect(() => {
-        const data = { login_id: user.id };
-        dispatch(fetchProtocolList(data));
-    }, [dispatch, user.id]);
-    if(protocolList !== '' && protocolList?.length > 0){
-        totalElements = protocolList.length;
+        dispatch(getStudyCloseoutRequest());
+    }, [dispatch]);
+    if(studyCloseoutRequestList !== '' && studyCloseoutRequestList?.length > 0){
+        totalElements = studyCloseoutRequestList.length;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -113,20 +112,20 @@ function StudyCloseoutRequest() {
 
     useEffect(() => {
         const pListArr = []
-        if(protocolList && protocolList?.length > 0) {
-            protocolList.map((pList, index) => {
+        if(studyCloseoutRequestList && studyCloseoutRequestList?.length > 0) {
+            studyCloseoutRequestList.map((pList, index) => {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
                     researchType:  pList.research_type === 'clinical_site' ? 'Clinical Site' :  pList.research_type === 'multi_site_sponsor' ? 'Multi Site Sponsor' : 'Principal Investigator',
-                    createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
-                    updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
+                    createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
+                    updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
                 }
                 pListArr.push(protocolObject)
             })
-            setProtocolDataList(pListArr)
+            setStudyCloseoutDataList(pListArr)
         }
-    }, [protocolList]);
+    }, [studyCloseoutRequestList]);
     
     
 
@@ -155,7 +154,7 @@ function StudyCloseoutRequest() {
             </Box>
             <Box sx={{ mt: 5 }}>
                 <DataGrid
-                    rows={protocolDataList}
+                    rows={studyCloseoutDataList}
                     columns={columns}
                     rowCount={rowCount}
                     loading={loading}
@@ -168,4 +167,4 @@ function StudyCloseoutRequest() {
     );
     }
 
-    export default StudyCloseoutRequest;
+    export default AdminStudyCloseoutRequest;

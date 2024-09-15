@@ -37,9 +37,17 @@ import ContinuinReviewList from "./containers/Admin/ContinuinReviewList/Continui
 import UsersList from "./containers/Admin/UsersList/UsersList";
 import AdminProtocolDetails from "./containers/Admin/ProtocolList/AdminProtocolDetails";
 import AdminContinuingReviewDetails from "./containers/Admin/ContinuinReviewList/AdminContinuingReviewDetails";
+
+import AdminPromptlyReportableEvent from "./containers/Admin/PromptlyReportableEvent/PromptlyReportableEvent.jsx";
 import AdminPromptlyReportableEventDetails from "./containers/Admin/PromptlyReportableEvent/AdminPromptlyReportableEventDetails";
+
+import AdminStudyCloseoutRequest from "./containers/Admin/StudyCloseoutRequest/StudyCloseoutRequest";
 import AdminStudyCloseoutRequestDetails from "./containers/Admin/StudyCloseoutRequest/AdminStudyCloseoutRequestDetails";
+
+import AdminAdverseEvents from "./containers/Admin/AdverseEvents/AdverseEvents";
 import AdminAdverseEventsDetails from "./containers/Admin/AdverseEvents/AdminAdverseEventsDetails";
+
+import AdminProtocolAmendmentRequest from "./containers/Admin/ProtocolAmendmentRequest/ProtocolAmendmentRequest.jsx";
 import AdminProtocolAmendmentRequestDetails from "./containers/Admin/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 
 function App() {
@@ -124,13 +132,13 @@ function App() {
                         <Route path='/admin/continuin-review-list' element={<ContinuinReviewList/>} />
                         <Route path='/admin/continuin-review-details' element={<AdminContinuingReviewDetails/>} />
                         <Route path='/admin/users-list' element={<UsersList/>} />
-                        <Route path='/admin/protocol-amendment-request' element={<ProtocolAmendmentRequest/>} />
+                        <Route path='/admin/protocol-amendment-request' element={<AdminProtocolAmendmentRequest/>} />
                         <Route path='/admin/protocol-amendment-request-details' element={<AdminProtocolAmendmentRequestDetails/>} />
-                        <Route path='/admin/adverse-events' element={<AdverseEvents/>} />
+                        <Route path='/admin/adverse-events' element={<AdminAdverseEvents/>} />
                         <Route path='/admin/adverse-events-details' element={<AdminAdverseEventsDetails/>} />
-                        <Route path='/admin/promptly-reportable-event' element={<PromptlyReportableEvent/>} />
+                        <Route path='/admin/promptly-reportable-event' element={<AdminPromptlyReportableEvent/>} />
                         <Route path='/admin/promptly-reportable-event-details' element={<AdminPromptlyReportableEventDetails/>} />
-                        <Route path='/admin/study-close-request' element={<StudyCloseoutRequest/>} />
+                        <Route path='/admin/study-close-request' element={<AdminStudyCloseoutRequest/>} />
                         <Route path='/admin/study-close-request-details' element={<AdminStudyCloseoutRequestDetails/>} />
                       
                       {/* </Route> */}

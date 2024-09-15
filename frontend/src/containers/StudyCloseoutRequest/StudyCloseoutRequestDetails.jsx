@@ -164,7 +164,7 @@ function StudyCloseoutRequestDetails() {
                 .then(data => {
                     if (data.payload.status === 200) {
                         toast.success(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData()
+                        setFormData({})
                     } else {
                         toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                     }
@@ -213,7 +213,7 @@ function StudyCloseoutRequestDetails() {
                                     label="Date of Study Completion *"
                                     onChange={newValue => (setFormData({ ...formData, study_completion_date: dayjs(newValue).format('YYYY-MM-DD')}))}
                                     renderInput={(params) => <TextField {...params} />}
-                                    sx={{ width: "100% " }}
+                                    sx={{ width: "50%" }}
                                 />
                             </LocalizationProvider>
                         </Box>

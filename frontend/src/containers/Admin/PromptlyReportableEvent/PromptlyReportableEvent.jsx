@@ -11,14 +11,15 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useNavigate } from "react-router-dom";
-import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
+import { getPromptlyReportableEvent } from "../../../services/Admin/EventAndRequestService";
 
-function PromptlyReportableEvent() {
+
+function AdminPromptlyReportableEvent() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [protocolDataList, setProtocolDataList] = React.useState([]);
+    const [promptlyReportableEventDataList, setPromptlyReportableEventDataList] = React.useState([]);
     const [user, setUser] = useState([]);
     useEffect(() => {
         const userDetails = JSON.parse(localStorage.getItem('user'));
@@ -27,7 +28,7 @@ function PromptlyReportableEvent() {
         }
     }, []);
     const navigateReviewDetails = (params) => {
-        navigate("/promptly-reportable-event-details", {state:{details: params.row}});
+        navigate("/admin/promptly-reportable-event-details", {state:{details: params.row}});
     };
     const columns = [
         {
@@ -86,19 +87,18 @@ function PromptlyReportableEvent() {
     ];
     
     var totalElements = 0;
-    const { protocolList, loading, error } = useSelector(
+    const { promptlyReportableEventList, loading, error } = useSelector(
         state => ({
-            error: state.dashboard.error,
-            protocolList: state.dashboard.protocolList,
-            loading: state.dashboard.loading,
+            error: state.admin.error,
+            promptlyReportableEventList: state.admin.promptlyReportableEventList?.data,
+            loading: state.admin.loading,
         })
     );
     useEffect(() => {
-        const data = { login_id: user.id };
-        dispatch(fetchProtocolList(data));
-    }, [dispatch, user.id]);
-    if(protocolList !== '' && protocolList?.length > 0){
-        totalElements = protocolList.length;
+        dispatch(getPromptlyReportableEvent());
+    }, [dispatch]);
+    if(promptlyReportableEventList !== '' && promptlyReportableEventList?.length > 0){
+        totalElements = promptlyReportableEventList.length;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -114,20 +114,20 @@ function PromptlyReportableEvent() {
 
     useEffect(() => {
         const pListArr = []
-        if(protocolList && protocolList?.length > 0) {
-            protocolList.map((pList, index) => {
+        if(promptlyReportableEventList && promptlyReportableEventList?.length > 0) {
+            promptlyReportableEventList.map((pList, index) => {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
                     researchType:  pList.research_type === 'clinical_site' ? 'Clinical Site' :  pList.research_type === 'multi_site_sponsor' ? 'Multi Site Sponsor' : 'Principal Investigator',
-                    createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
-                    updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
+                    createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
+                    updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
                 }
                 pListArr.push(protocolObject)
             })
-            setProtocolDataList(pListArr)
+            setPromptlyReportableEventDataList(pListArr)
         }
-    }, [protocolList]);
+    }, [promptlyReportableEventList]);
     
     
 
@@ -156,7 +156,7 @@ function PromptlyReportableEvent() {
             </Box>
             <Box sx={{ mt: 5 }}>
                 <DataGrid
-                    rows={protocolDataList}
+                    rows={promptlyReportableEventDataList}
                     columns={columns}
                     rowCount={rowCount}
                     loading={loading}
@@ -169,4 +169,4 @@ function PromptlyReportableEvent() {
     );
     }
 
-    export default PromptlyReportableEvent;
+    export default AdminPromptlyReportableEvent;

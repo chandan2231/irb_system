@@ -1,5 +1,5 @@
 import express from "express";
-import { saveStudyCloseoutRequest, saveProtocolAmendmentRequest,  savePromptlyReportableEvent, saveAdverseEvent} from "../controllers/eventAndRequest.js";
+import { saveStudyCloseoutRequest, saveProtocolAmendmentRequest, savePromptlyReportableEvent, saveAdverseEvent} from "../controllers/eventAndRequest.js";
 const router = express.Router()
 
 router.post('/createStudyCloseoutRequest', saveStudyCloseoutRequest)

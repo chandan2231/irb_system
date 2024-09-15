@@ -90,19 +90,21 @@ export const savePromptlyReportableEvent = (req, res) => {
     }) 
 }
 
+
 export const saveProtocolAmendmentRequest = (req, res) => {
     var datetime = new Date();
-    const que = 'insert into informed_consent_process (`protocol_id`, `challenges_faced`, `challenges_faced_explain`, `changes_consent`, `changes_consent_explain`, `ensuring_list`, `ensuring_list_explain`, `icf_version`,`performing_consent`, `created_at`, `updated_at`,`created_by`) value (?)';
+    const que = 'insert into protocol_amendment_request (`protocol_id`, `protocol_number`, `amend_document`, `amend_document_explain`, `describe_change_request`, `describe_reasoning`, `person_name`, `email`, `phone`,  `your_name`, `updated_at`, `created_at`, `created_by`) value (?)';
     const values = [
         req.body.protocol_id, 
-        req.body.challenges_faced, 
-        req.body.challenges_faced_explain, 
-        req.body.changes_consent, 
-        req.body.changes_consent_explain,
-        req.body.ensuring_list,
-        req.body.ensuring_list_explain,
-        req.body.icf_version,
-        req.body.performing_consent,
+        req.body.protocol_number, 
+        req.body.amend_document.toString(), 
+        req.body.amend_document_explain, 
+        req.body.describe_change_request,
+        req.body.describe_reasoning,
+        req.body.person_name,
+        req.body.email,
+        req.body.phone,
+        req.body.your_name,
         datetime.toISOString().slice(0,10),
         datetime.toISOString().slice(0,10),
         req.body.created_by,
@@ -113,7 +115,7 @@ export const saveProtocolAmendmentRequest = (req, res) => {
         } else {
             let result = {}
             result.status = 200
-            result.msg = 'Informed Consent Process has been saved successfully'
+            result.msg = 'Protocol Amendment Request Details has been saved successfully'
             return res.json(result)
         }
     }) 

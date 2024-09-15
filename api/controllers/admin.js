@@ -262,3 +262,43 @@ export const getProtocolDetailsById = (req, res) => {
         })
     }
 }
+
+export const getStudyCloseoutRequestList = (req, res) => {
+    const que = "select * from study_closeout_request"
+    db.query(que, {}, (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getPromptlyReportableEventList = (req, res) => {
+    const que = "select * from promptly_reportable_event"
+    db.query(que, {}, (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getAdverseEventList = (req, res) => {
+    const que = "select * from adverse_event"
+    db.query(que, {}, (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getProtocolAmendmentRequestList = (req, res) => {
+    const que = "select * from protocol_amendment_request"
+    db.query(que, {}, (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
