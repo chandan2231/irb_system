@@ -228,11 +228,1095 @@ const continuingReviewQuestions = {
   },
 };
 
-const clinicalReviewQuestions = {};
+const clinicalReviewQuestions = {
+  protocolInformation: {
+    title: "Protocol Information",
+    question1: {
+      text: `Are you submitting this protocol for the first time?`,
+      answer: "first_time_protocol",
+      subTexts: [
+        {
+          text: `Has this study been disapproved or withdrawn from another IRB?`,
+          answer: "disapproved_or_withdrawn",
+          explanation: "disapproved_or_withdrawn_explain",
+        },
+        {
+          text: `Are you transferring oversight from another IRB?`,
+          answer: "oversite",
+          explanation: "oversite_explain",
+        },
+        {
+          text: `Title of Protocol`,
+          answer: "protocol_title",
+        },
+        {
+          text: `Protocol Number`,
+          answer: "protocol_number",
+        },
+        {
+          text: `Study Duration`,
+          answer: "study_duration",
+        },
+        {
+          text: `Sponsor`,
+          answer: "sponsor",
+        },
+        {
+          text: `Funding Source`,
+          answer: "funding_source",
+        },
+      ],
+      documentHeader: "Uploaded Protocol",
+      documentName: "protocol_file",
+    },
+  },
+  investigatorInformation: {
+    title: "Investigator Information",
+    question1: {
+      text: `Investigator Name`,
+      answer: "investigator_name",
+    },
+    question2: {
+      text: `Investigator Email`,
+      answer: "investigator_email",
+    },
+    question3: {
+      text: `Sub Investigator Name`,
+      answer: "sub_investigator_name",
+    },
+    question3: {
+      text: `Sub Investigator Email`,
+      answer: "sub_investigator_email",
+    },
+    question4: {
+      text: `Primary point of contact if different from above`,
+      answer: "primary_contact",
+    },
+    question5: {
+      text: `Primary point of contact email address`,
+      answer: "primary_contact_email",
+    },
+    question6: {
+      text: `Has the investigator ever had an FDA audit?`,
+      answer: "fda_audit",
+      explanation: "fda_audit_explain",
+    },
+    question7: {
+      text: `How long has the investigator been involved in research?`,
+      answer: "involved_years",
+    },
+    question8: {
+      text: `What is the investigator's NPI if applicable`,
+      answer: "investigators_npi",
+    },
+    checkboxes: {
+      header:
+        "What training in the field of human subjects protection has the investigator completed?",
+      answer: "training_completed",
+      options: [
+        { label: "OHRP Human Subject Assurance Training", value: "1" },
+        { label: "CITI Program Training", value: "2" },
+        { label: "Certified Physician Investigator Training", value: "3" },
+        { label: "ACRP training (CCRC, CCRA)", value: "4" },
+        { label: "SOCRA (CCRP)", value: "5" },
+        {
+          label: "Graduate or undergraduate research studies or degrees",
+          value: "6",
+        },
+        { label: "Academy of Physicians in Clinical Research", value: "7" },
+        { label: "Other", value: "8" },
+      ],
+      explanation: "training_completed_explain",
+    },
+    question9: {
+      text: `What is the current number of research studies supervised by the investigator?`,
+      answer: "investigator_research_number",
+    },
+    question10: {
+      text: `Do you have any pending or active restrictions related to research or the practice of medicine?`,
+      answer: "pending_or_active_research",
+      explanation: "pending_or_active_research_explain",
+    },
+    question11: {
+      text: `Does your site have an FWA?`,
+      answer: "site_fwp",
+    },
+    question12: {
+      text: `Please provide FWA number`,
+      answer: "fwa_number",
+    },
+    documentsUploadedList: [
+      {
+        documentHeader: "Upload investigator and sub-investigator CV here",
+        documentName: "cv_files",
+      },
+      {
+        documentHeader: "Upload copy of medical license (if applicable) here",
+        documentName: "medical_license",
+      },
+      {
+        documentHeader:
+          "Upload copies of training certificates (if applicable) here",
+        documentName: "training_certificates",
+      },
+    ],
+  },
+  studyInformation: {
+    title: "Study Information",
+    question1: {
+      text: `What type of research is being conducted?`,
+      answer: "research_type",
+      explanation: "research_type_explain",
+    },
+    documentsUploadedList: [
+      {
+        documentHeader:
+          "Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list",
+        documentName: "ingredient_list",
+      },
+    ],
+  },
+  informedConsentForm: {
+    title: "Informed Consent Form",
+    checkboxes: {
+      header: "What type of consent is required for this study?",
+      answer: "consent_type",
+      options: [
+        { label: "No consent (requesting waiver of consent)", value: "1" },
+        { lavel: "Verbal consent", value: "2" },
+        { label: "Written, signed consent by subject", value: "3" },
+        {
+          label: "Written, signed consent by legally authorized representative",
+          value: "4",
+        },
+        { label: "Written, signed assent by minor", value: "5" },
+        { label: "HIPAA authorization agreement", value: "6" },
+        { label: "Waiver of HIPAA agreement", value: "7" },
+        { label: "Online/website/electronic signature consent", value: "8" },
+      ],
+      explanation: "no_consent_explain",
+    },
+    question1: {
+      text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
+      answer: "include_icf",
+    },
+    question2: {
+      text: `Will the participants be compensated for participation in the study?`,
+      answer: "participation_compensated",
+    },
+    question3: {
+      text: `Will the consent forms be offered in languages other than English?`,
+      answer: "other_language_selection",
+    },
+    question4: {
+      text: `Have the dcument been translated by a professional translator?`,
+      answer: "professional_translator",
+      explanation: "professional_translator_explain",
+    },
+    documentsUploadedList: [
+      {
+        documentHeader: `Upload all consent documents, including translated consents, if applicable
+(if applying for waiver of consent, document explaining reasoning must be uploaded)`,
+        documentName: "consent_file",
+      },
+    ],
+    declaration: {
+      header: ` <p>The informed consent process is a continuous process and the IRB expects that
+                            proper subject consent is ensured by the investigator throughout the research
+                            study. To comply with the terms set forth by this IRB, the investigator must
+                            ensure that:
+                        </p>
+                        <ul>
+                            <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
+                            <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
+                            <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
+                            <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
+                            <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
+                            <li>All efforts must be taken to ensure participant anonymity including:
+                                <ul style={{ marginTop: 0 }}>
+                                    <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
+                                    <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
+                                    <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
+                                </ul>
+                            </li>
+                        </ul>`,
+      checkBox: {
+        label:
+          "Your initials below signify that you have read the terms and agree with them:",
+        value: "consent_declaration",
+      },
+    },
+  },
+  protocolProcedure: {
+    title: "Protocol Procedures",
+    checkboxes: {
+      header: "Which subject populations will be enrolled in the study?",
+      answer: "enrolled_type",
+      options: [
+        {
+          label: "Adults",
+          value: "1",
+        },
+        {
+          label: "Children (17 years and under)",
+          value: "2",
+        },
+        {
+          label: "Blind/Visually Impaired",
+          value: "3",
+        },
+        {
+          label: "Deaf/Hard of Hearing (including sign language communicators)",
+          value: "4",
+        },
+        {
+          label:
+            "Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)",
+          value: "5",
+        },
+        {
+          label: "Educationally Disadvantaged/Impaired or no reading skills",
+          value: "6",
+        },
+        {
+          label: "Economically disadvantaged",
+          value: "7",
+        },
+        {
+          label: "Healthy individuals",
+          value: "8",
+        },
+        {
+          label: "Terminally ill individuals",
+          value: "9",
+        },
+        {
+          label: "HIV positive",
+          value: "10",
+        },
+        {
+          label: "Hospitalized",
+          value: "11",
+        },
+        {
+          label:
+            "Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)",
+          value: "12",
+        },
+        {
+          label: "Prisoners",
+          value: "13",
+        },
+        {
+          label: "Military Personnel",
+          value: "14",
+        },
+        {
+          label: "Pregnant women",
+          value: "15",
+        },
+        {
+          label: "Human fetuses/neonates",
+          value: "16",
+        },
+        {
+          label: "Non-English speakers",
+          value: "17",
+        },
+        {
+          label: "Women only",
+          value: "18",
+        },
+        {
+          label: "Men only",
+          value: "19",
+        },
+        {
+          label: "Other",
+          value: "20",
+        },
+      ],
+      explanation: "enrolled_type_explain",
+    },
+    checkboxes2: {
+      header: "Which race and ethnic groups will be enrolled in the study?",
+      answer: "enrolled_group",
+      options: [
+        { label: "White, not of Hispanic origin", value: "1" },
+        { label: "White, of Hispanic origin", value: "2" },
+        { label: "Black, not of Hispanic origin", value: "3" },
+        { label: "Black, of Hispanic origin", value: "4" },
+        { label: "American Indian/Alaskan Native", value: "5" },
+        { label: "Asian", value: "6" },
+        { label: "Native Hawaiian/Pacific Islander", value: "7" },
+        { label: "Multiracial", value: "8" },
+        { label: "Other", value: "9" },
+      ],
+      explanation: "enrolled_group_explain",
+    },
+    question1: {
+      text: `Will any subject populations be excluded from the study?`,
+      answer: "excluded_study_type",
+      explanation: "excluded_study_type_explain",
+    },
+    question2: {
+      text: `How many subjects will be enrolled in the study?`,
+      answer: "enrolled_subjects",
+    },
+    checkboxes3: {
+      header: "What recruitment methods will be used in the study?",
+      answer: "recruitment_method",
+      options: [
+        {
+          label: "In-person conversation during routine office visits",
+          value: "1",
+        },
+        {
+          label: "Recruiting participants from previous research studies",
+          value: "2",
+        },
+        {
+          label:
+            "Mass print advertisements such as a newspaper, magazine, or billboard",
+          value: "3",
+        },
+        {
+          label: "Flyer, poster, or bulletin board in office",
+          value: "4",
+        },
+        {
+          label: "Radio or television ads",
+          value: "5",
+        },
+        {
+          label: "Direct mail to potential subjects",
+          value: "6",
+        },
+        {
+          label: "Internet including social media recruiting",
+          value: "7",
+        },
+        {
+          label: "Chart review",
+          value: "8",
+        },
+        {
+          label: "Telephone screening",
+          value: "9",
+        },
+        {
+          label: "Other",
+          value: "10",
+        },
+      ],
+      explanation: "recruitment_method_explain",
+    },
+    question3: {
+      text: `What is the location(s) name and address where the research procedures will take place?`,
+      answer: "research_place_name_address",
+    },
+    question4: {
+      text: `Will any samples or data collected in this study be retained for future research?`,
+      answer: "future_research",
+      explanation: {
+        header: `Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *`,
+        answer: "future_research_explain",
+      },
+    },
+    documentHeader: "Upload all recruitment and subject-facing materials *",
+    documentName: "facing_materials",
+    checkBox: {
+      label:
+        "Your initials below signify that you have read the terms and agree with them:",
+      value: "protocol_declaration",
+    },
+  },
+  submissinForm: {
+    text: `<p>By submitting this application you attest to the following:</p>
+						<ul>
+							<li>Research will not commence prior to receiving the IRB approval letter.</li>
+							<li>The principal investigator will personally supervise and/or conduct the study.</li>
+							<li>The principal investigator ensures that all persons involved in conducting the study are trained and have proper credentialing for conducting research.</li>
+							<li>Only the most current IRB-approved consent form will be used to enroll subjects.</li>
+							<li>No changes will be made to the research protocol, consents forms, and all patient-facing materials without the approval of the IRB </li>
+							<li>The study procedures will comply with all applicable laws and regulations regarding the conduct of research</li>
+							<li>All findings from the study that directly affect subject safety will be communicated to subjects and to this IRB</li>
+							<li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
+							<li>The sponsor agrees to submit and provide payment to this IRB for annual review yearly</li>
+						</ul>`,
+    checkBox: {
+      label:
+        "Your initials below signify that you have read and agree to the terms listed above",
+      value: "terms_selected",
+    },
+  },
+};
 
-const multiSiteSponsorQuestions = {};
+const multiSiteSponsorQuestions = {
+  protocolInformation: {
+    title: "Protocol Information",
+    question1: {
+      text: `Are you submitting this protocol for the first time?`,
+      answer: "first_time_protocol",
+      subTexts: [
+        {
+          text: `Has this study been disapproved or withdrawn from another IRB?`,
+          answer: "disapproved_or_withdrawn",
+          explanation: "disapproved_or_withdrawn_explain",
+        },
+        {
+          text: `Are you transferring oversight from another IRB?`,
+          answer: "oversite",
+          explanation: "oversite_explain",
+        },
+        {
+          text: `Title of Protocol`,
+          answer: "protocol_title",
+        },
+        {
+          text: `Protocol Number`,
+          answer: "protocol_number",
+        },
+        {
+          text: `Sponsor`,
+          answer: "sponsor",
+        },
+        {
+          text: `Study Duration`,
+          answer: "study_duration",
+        },
+        {
+          text: `Funding Source`,
+          answer: "funding_source",
+        },
+      ],
+      documentHeader: "Uploaded Protocol",
+      documentName: "protocol_file",
+    },
+  },
+  contactInformation: {
+    title: "Contact Information",
+    questionsList: {
+      first: [
+        {
+          header: "Who is the primary point of contact for this study?",
+        },
+        {
+          text: "Name",
+          answer: "name",
+        },
+        {
+          text: "Title",
+          answer: "title",
+        },
+        {
+          text: "Company Name",
+          answer: "company_name",
+        },
+        {
+          text: "Address",
+          answer: "address",
+        },
+        {
+          text: "City",
+          answer: "city",
+        },
+        {
+          text: "State",
+          answer: "state",
+        },
+        {
+          text: "Zip code",
+          answer: "zip_code",
+        },
+        {
+          text: "Country",
+          answer: "country",
+        },
+        {
+          text: "Phone Number",
+          answer: "phone_number",
+        },
+        {
+          text: "Email",
+          answer: "email",
+        },
+      ],
+      secound: [
+        {
+          header: "Who is the secondary point of contact for this study?",
+        },
+        {
+          text: "Name",
+          answer: "secondary_contact_name",
+        },
+        {
+          text: "Title",
+          answer: "secondary_contact_title",
+        },
+        {
+          text: "Phone Number",
+          answer: "secondary_contact_phone_number",
+        },
+        {
+          text: "Email",
+          answer: "secondary_contact_email",
+        },
+      ],
+    },
+  },
+  studyInformation: {
+    title: "Study Information",
+    question1: {
+      text: `What type of research study are you submitting?`,
+      answer: "research_type",
+      explanation: "research_type_explain",
+    },
+    documentsUploadedList: [
+      {
+        documentHeader:
+          "Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list",
+        documentName: "ingredient_list",
+      },
+    ],
+  },
+  informedConsentForm: {
+    title: "Informed Consent",
+    checkboxes: {
+      header: "What type of consent is required for this study?",
+      answer: "consent_type",
+      options: [
+        { label: "No consent (requesting waiver of consent)", value: "1" },
+        { lavel: "Verbal consent", value: "2" },
+        { label: "Written, signed consent by subject", value: "3" },
+        {
+          label: "Written, signed consent by legally authorized representative",
+          value: "4",
+        },
+        { label: "Written, signed assent by minor", value: "5" },
+        { label: "HIPAA authorization agreement", value: "6" },
+        { label: "Waiver of HIPAA agreement", value: "7" },
+        { label: "Online/website/electronic signature consent", value: "8" },
+      ],
+      explanation: "no_consent_explain",
+    },
+    question1: {
+      text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
+      answer: "include_icf",
+    },
+    question2: {
+      text: `Will the participants be compensated for participation in the study?`,
+      answer: "participation_compensated",
+    },
+    question3: {
+      text: `Will the consent forms be offered in languages other than English?`,
+      answer: "other_language_selection",
+    },
+    question4: {
+      text: `Have the dcument been translated by a professional translator?`,
+      answer: "professional_translator",
+      explanation: "professional_translator_explain",
+    },
+    documentHeader: `Upload all consent document templates, including translated consents, if applicable,
+here (if applying for waiver of consent, document explaining reasoning must be uploaded here)`,
+    documentName: "consent_file",
+    declaration: {
+      header: `<p>The informed consent process is a continuous process and the IRB expects that
+                            proper subject consent is ensured by the investigator throughout the research
+                            study. To comply with the terms set forth by this IRB, the investigator must
+                            ensure that:
+                        </p>
+                        <ul>
+                            <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
+                            <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
+                            <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
+                            <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
+                            <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
+                            <li>All efforts must be taken to ensure participant anonymity including:
+                                <ul style={{ marginTop: 0 }}>
+                                    <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
+                                    <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
+                                    <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
+                                </ul>
+                            </li>
+                            <li>It is the responsibility of the sponsor to enforce these terms with the site investigators.</li>
+                        </ul>`,
+      checkBox: {
+        label:
+          "Your initials below signify that you have read the terms and agree with them:",
+        value: "consent_declaration",
+      },
+    },
+  },
+  protocolProcedure: {
+    title: "Protocol Procedures",
+    checkboxes: {
+      header: "Which subject populations will be enrolled in the study?",
+      answer: "enrolled_study_type",
+      options: [
+        {
+          label: "Adults",
+          value: "1",
+        },
+        {
+          label: "Children (17 years and under)",
+          value: "2",
+        },
+        {
+          label: "Blind/Visually Impaired",
+          value: "3",
+        },
+        {
+          label: "Deaf/Hard of Hearing (including sign language communicators)",
+          value: "4",
+        },
+        {
+          label:
+            "Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)",
+          value: "5",
+        },
+        {
+          label: "Educationally Disadvantaged/Impaired or no reading skills",
+          value: "6",
+        },
+        {
+          label: "Economically disadvantaged",
+          value: "7",
+        },
+        {
+          label: "Healthy individuals",
+          value: "8",
+        },
+        {
+          label: "Terminally ill individuals",
+          value: "9",
+        },
+        {
+          label: "HIV positive",
+          value: "10",
+        },
+        {
+          label: "Hospitalized",
+          value: "11",
+        },
+        {
+          label:
+            "Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)",
+          value: "12",
+        },
+        {
+          label: "Prisoners",
+          value: "13",
+        },
+        {
+          label: "Military Personnel",
+          value: "14",
+        },
+        {
+          label: "Pregnant women",
+          value: "15",
+        },
+        {
+          label: "Human fetuses/neonates",
+          value: "16",
+        },
+        {
+          label: "Non-English speakers",
+          value: "17",
+        },
+        {
+          label: "Women only",
+          value: "18",
+        },
+        {
+          label: "Men only",
+          value: "19",
+        },
+        {
+          label: "Other",
+          value: "20",
+        },
+      ],
+      explanation: "enrolled_type_explain",
+    },
+    checkboxes2: {
+      header: "Which race and ethnic groups will be enrolled in the study?",
+      answer: "enrolled_group",
+      options: [
+        { label: "White, not of Hispanic origin", value: "1" },
+        { label: "White, of Hispanic origin", value: "2" },
+        { label: "Black, not of Hispanic origin", value: "3" },
+        { label: "Black, of Hispanic origin", value: "4" },
+        { label: "American Indian/Alaskan Native", value: "5" },
+        { label: "Asian", value: "6" },
+        { label: "Native Hawaiian/Pacific Islander", value: "7" },
+        { label: "Multiracial", value: "8" },
+        { label: "Other", value: "9" },
+      ],
+      explanation: "enrolled_group_explain",
+    },
+    question1: {
+      text: `Will any subject populations be excluded from the study?`,
+      answer: "excluded_study_type",
+      explanation: "excluded_study_type_explain",
+    },
+    question2: {
+      text: `How many subjects will be enrolled in the study?`,
+      answer: "enrolled_subjects",
+    },
+    checkboxes3: {
+      header: "What recruitment methods will be used in the study?",
+      answer: "recruitment_method",
+      options: [
+        {
+          label: "In-person conversation during routine office visits",
+          value: "1",
+        },
+        {
+          label: "Recruiting participants from previous research studies",
+          value: "2",
+        },
+        {
+          label:
+            "Mass print advertisements such as a newspaper, magazine, or billboard",
+          value: "3",
+        },
+        {
+          label: "Flyer, poster, or bulletin board in office",
+          value: "4",
+        },
+        {
+          label: "Radio or television ads",
+          value: "5",
+        },
+        {
+          label: "Direct mail to potential subjects",
+          value: "6",
+        },
+        {
+          label: "Internet including social media recruiting",
+          value: "7",
+        },
+        {
+          label: "Chart review",
+          value: "8",
+        },
+        {
+          label: "Telephone screening",
+          value: "9",
+        },
+        {
+          label: "Other",
+          value: "10",
+        },
+      ],
+      explanation: "recruitment_method_explain",
+    },
+    question3: {
+      text: `Will the sponsor require IRB approval of site-specific templates prior to use?`,
+      answer: "irb_approval",
+    },
+    question4: {
+      text: `What is the expected number of sites to participate in this study that will be submitted to this IRB?`,
+      answer: "expected_number_sites",
+    },
+    question5: {
+      text: `Will any samples or data collected in this study be retained for future research?`,
+      answer: "future_research",
+      explanation: {
+        header: `Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *`,
+        answer: "future_research_explain",
+      },
+    },
+    documentHeader: "Upload all recruitment and subject-facing materials *",
+    documentName: "facing_materials",
+    checkBox: {
+      label:
+        "Your initials below signify that you have read the terms and agree with them:",
+      value: "protocol_declaration",
+    },
+  },
+  submissinForm: {
+    text: `<p>By submitting this application you attest to the following:</p>
+            <ul>
+              <li>Research will not commence prior to receiving the IRB approval letter.</li>
+              <li>The principal investigator will personally supervise and/or conduct the study.</li>
+              <li>The principal investigator ensures that all persons involved in conducting the study are trained and have proper credentialing for conducting research.</li>
+              <li>Only the most current IRB-approved consent form will be used to enroll subjects.</li>
+              <li>No changes will be made to the research protocol, consents forms, and all patient-facing materials without the approval of the IRB </li>
+              <li>The study procedures will comply with all applicable laws and regulations regarding the conduct of research</li>
+              <li>All findings from the study that directly affect subject safety will be communicated to subjects and to this IRB</li>
+              <li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
+              <li>The sponsor agrees to submit and provide payment to this IRB for annual review yearly</li>
+            </ul>`,
+    checkBox: {
+      label:
+        "Your initials below signify that you have read and agree to the terms listed above",
+      value: "terms_selected",
+    },
+  },
+};
 
-const principalInvestigatorQuestions = {};
+const principalInvestigatorQuestions = {
+  investigatorInformation: {
+    title: "Principal Investigator Information",
+    subQuestions: [
+      {
+        text: "Investigator Name *",
+        answer: "investigator_name",
+      },
+      {
+        text: "Investigator Email *",
+        answer: "investigator_email",
+      },
+      {
+        text: "Sub-Investigator Name",
+        answer: "sub_investigator_name",
+      },
+      {
+        text: "Sub-Investigator Email",
+        answer: "sub_investigator_email",
+      },
+      {
+        text: "Additional Study personnel name",
+        answer: "additional_study_name",
+      },
+      {
+        text: "Additional Study personnel email address",
+        answer: "additional_study_email",
+      },
+    ],
+    question1: {
+      text: "Investigational/Research Location:",
+      subTexts: [
+        {
+          text: "Name of the site *",
+          answer: "site_name",
+        },
+        {
+          text: "Address of site *",
+          answer: "site_address",
+        },
+        {
+          text: "Do you have more than one site where research will be conducted?",
+          answer: "more_site",
+        },
+        {
+          text: "Full protocol title *",
+          answer: "protocol_title",
+        },
+        {
+          text: "Protocol number *",
+          answer: "protocol_number",
+        },
+        {
+          text: "Your initials below confirm that your site will only enroll subjects that meet criteria for inclusion in the study *",
+          answer: "study_criteria",
+        },
+        {
+          text: "How many subjects do you expect to enroll at your site(s) *",
+          answer: "subject_number",
+        },
+        {
+          text: "What is your site number assigned by the sponsor",
+          answer: "site_number",
+        },
+        {
+          text: "Has this study been disapproved or withdrawn from another IRB?",
+          answer: "disapproved_or_withdrawn",
+        },
+        {
+          text: "Are you transferring oversight from another IRB?",
+          answer: "oversite",
+        },
+        {
+          text: "Have any individuals or immediate family members at this site received compensation from the sponsor of this study in the past 12 months that amounts to $5,000 or greater?",
+          answer: "immediate_family",
+        },
+        {
+          text: "Do any individuals or immediate family members at this site own interest in the form of stock or other ownership in the sponsor company of this study in the last 12 months that amounts to $5,000 or greater?",
+          answer: "stock_ownership",
+        },
+        {
+          text: "Do any individuals at this site have proprietary interests being investigated in this study such as, but not limited to, patents, investigational products, or licensing agreements?",
+          answer: "property_interest",
+        },
+        {
+          text: "Do any individuals at this site have a financial agreement with the sponsor for which they will receive compensation that is linked to the outcome of the study?",
+          answer: "financial_agreement",
+        },
+        {
+          text: "Do any individuals at this site serve in any executive position or on a board of directors for the sponsor of this study?",
+          answer: "server_position",
+        },
+        {
+          text: "Do any individuals at this site have any interests that may influence the conduct, outcome, or safety of this study?",
+          answer: "influence_conduct",
+        },
+        {
+          text: "Is there a Conflict of Interest Committee that has made any determinations related to the potential conflicts and is there a management plan in place?",
+          answer: "interest_conflict",
+        },
+        {
+          text: "Has the investigator ever had an FDA audit?",
+          answer: "fda_audit",
+        },
+        {
+          text: "How long has the investigator been involved in research?",
+          answer: "involved_years",
+        },
+        {
+          text: "What is the investigator's NPI if applicable",
+          answer: "investigators_npi",
+        },
+      ],
+    },
+    checkboxes: {
+      label:
+        "What training in the field of human subjects protection has the investigator completed?",
+      value: "training_completed",
+      options: [
+        {
+          value: "1",
+          label: "OHRP Human Subject Assurance Training",
+        },
+        {
+          value: "2",
+          label: "CITI Program Training",
+        },
+        {
+          value: "3",
+          label: "Certified Physician Investigator Training",
+        },
+        {
+          value: "4",
+          label: "ACRP training (CCRC, CCRA)",
+        },
+        {
+          value: "5",
+          label: "SOCRA (CCRP)",
+        },
+        {
+          value: "6",
+          label: "Graduate or undergraduate research studies or degrees",
+        },
+        {
+          value: "7",
+          label: "Academy of Physicians in Clinical Research",
+        },
+        {
+          value: "8",
+          label: "Other",
+        },
+      ],
+      explanation: "training_completed_explain",
+    },
+    question2: {
+      text: "What is the current number of research studies supervised by the investigator?",
+      answer: "investigator_research_number",
+    },
+    question3: {
+      text: "Do you have any pending or active restrictions related to research or the practice of medicine?",
+      answer: "pending_or_active_research",
+      explanation: "pending_or_active_research_explain",
+    },
+    documentsUploadedList: [
+      {
+        documentHeader:
+          "Upload investigator and sub-investigator (if applicable) CV here *",
+        documentName: "cv_files",
+      },
+      {
+        documentHeader: "Upload copy of medical license (if applicable) here",
+        documentName: "medical_license",
+      },
+      {
+        documentHeader:
+          "Upload copies of training certificates (if applicable) here",
+        documentName: "training_certificates",
+      },
+    ],
+  },
+  informedConsentForm: {
+    title: "Informed Consent Document Information",
+    question1: {
+      text: `The IRB will provide your site with an informed consent form formatted with your information. Please answer the questions below so that we may include it in the document`,
+      subTexts: [
+        {
+          text: "Principal Investigator name *",
+          answer: "principal_investigator_name",
+        },
+        {
+          text: "Site Name *",
+          answer: "site_name",
+        },
+        {
+          text: "Site Address *",
+          answer: "site_address",
+        },
+        {
+          text: "Additional Site Address",
+          answer: "additional_site_address",
+        },
+        {
+          text: "Primary phone number to be listed on the ICF (include the area code) *",
+          answer: "primary_phone",
+        },
+        {
+          text: "24-hour phone number to be listed on the ICF (include the area code) *",
+          answer: "always_primary_phone",
+        },
+        {
+          text: "Will your site(s) use electronic consent?",
+          answer: "site_electronic_consent",
+        },
+      ],
+      declaration: {
+        header: `<p>Mandatory message to end users, must be initialed before moving on to the next step:</p>
+                <p>The informed consent process is a continuous process and the IRB expects that proper subject consent is ensured by the investigator throughout the research study. To comply with the terms set forth by this IRB, the investigator must ensure that:</p>
+                <ul>
+                    <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
+                    <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
+                    <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
+                    <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
+                    <li>Only the most current, IRB-approved consent forms may be used for enrollment.</li>
+                    <li>All efforts must be taken to ensure participant anonymity including:
+                        <ul style={{marginTop: 0}}>
+                            <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
+                            <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
+                            <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
+                        </ul>
+                    </li>
+                </ul>`,
+      },
+      checkBox: {
+        label:
+          "Your initials below signify that you have read the terms and agree with them:",
+        value: "terms_selected",
+      },
+    },
+  },
+  submissinForm: {
+    title: "Submission",
+    text: `<p>By submitting this application you attest to the following:</p>
+						<ul>
+							<li>Research will not commence prior to receiving the IRB approval letter</li>
+							<li>The principal investigator will personally supervise and/or conduct the study</li>
+							<li>The principal investigator ensures that all persons involved in conducting the study are trained and have proper credentialing for conducting research</li>
+							<li>Only the most current IRB-approved consent form will be used to enroll subjects</li>
+							<li>No changes will be made to the research protocol, consents forms, and all patient-facing materials without the approval of the IRB</li>
+							<li>The study procedures will comply with all applicable laws and regulations regarding the conduct of research</li>
+							<li>All findings from the study that directly affect subject safety will be communicated to subjects, the sponsor, and to this IRB</li>
+							<li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
+							<li>The investigator will submit annual review and reviews in compliance with sponsor</li>
+						</ul>`,
+    checkBox: {
+      label:
+        "Your initials below signify that you have read and agree to the terms listed above",
+      value: "terms_selected",
+    },
+  },
+};
 
 const protocolDetails = {
   clinicalReviewQuestions,

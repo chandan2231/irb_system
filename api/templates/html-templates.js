@@ -1,5 +1,6 @@
 import questionsToRender from "./constant.js";
 
+// base template
 const renderHeader = (props) => {
   const { title } = props;
   return `<div><h3>${title}</h3></div>`;
@@ -108,6 +109,7 @@ const RenderDocuments = (answerObject, documentHeader, documentName) => {
     </div>`;
 };
 
+// Render functions for each question
 const RenderRiskAssessmentFirstQuestion = (questionObject, answerObject) => {
   const { question1 } = questionObject;
   const { text, answer, explanation, documentHeader, documentName } = question1;
@@ -503,6 +505,9 @@ const continuingReviewHTMLTemplate = (templateProps) => {
   return RenderBody(children);
 };
 
+// Protocol Amendment Request
+
+// Clinical Site
 const ClinicalSiteHTMLTemplate = (templateProps) => {
   const { protocolDetails } = questionsToRender;
   const { clinicalReviewQuestions } = protocolDetails;
@@ -517,11 +522,19 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
     protocol_procedure,
   } = templateProps;
   const children = `<main>
-      <h1>Clinical Site</h1>
+       <h1>
+          ${headerText} (${protocolId})
+        </h1>
+         <div style="page-break-after: always;">
+        </div>
+
+         <div style="page-break-after: always;">
+        </div>
     </main>`;
   return RenderBody(children);
 };
 
+// Multi Site Sponsor
 const MultiSiteSponsorHTMLTemplate = (templateProps) => {
   const { protocolDetails } = questionsToRender;
   const { multiSiteSponsorQuestions } = protocolDetails;
@@ -541,6 +554,7 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
   return RenderBody(children);
 };
 
+// Principal Investigator
 const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
   const { protocolDetails } = questionsToRender;
   const { principalInvestigatorQuestions } = protocolDetails;

@@ -359,7 +359,12 @@ export const protocolGeneratePdf = async (req, res) => {
                               let pdfUrl = sRL.cdnUrl;
                               // Remove the file from the local server
                               // fs.unlinkSync(filePath);
-                              return res.status(200).json({ pdfUrl });
+                              return res
+                                .status(200)
+                                .json({ pdfUrl, protocolDetailsObj });
+                              // console.log("Clinical Site", {
+                              //   protocolDetailsObj
+                              // });
                             } catch (error) {
                               console.log(error);
                               return res
@@ -484,7 +489,12 @@ export const protocolGeneratePdf = async (req, res) => {
                               let pdfUrl = sRL.cdnUrl;
                               // Remove the file from the local server
                               // fs.unlinkSync(filePath);
-                              return res.status(200).json({ pdfUrl });
+                              // console.log("Multi Site Sponser", {
+                              //   protocolDetailsObj,
+                              // });
+                              return res
+                                .status(200)
+                                .json({ pdfUrl, protocolDetailsObj });
                             } catch (error) {
                               console.log(error);
                               return res
@@ -555,7 +565,10 @@ export const protocolGeneratePdf = async (req, res) => {
                   let pdfUrl = sRL.cdnUrl;
                   // Remove the file from the local server
                   // fs.unlinkSync(filePath);
-                  return res.status(200).json({ pdfUrl });
+                  // console.log("Principal Investigator", {
+                  //   protocolDetailsObj,
+                  // });
+                  return res.status(200).json({ pdfUrl, protocolDetailsObj });
                 } catch (error) {
                   console.log(error);
                   return res
