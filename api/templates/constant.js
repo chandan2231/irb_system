@@ -690,112 +690,131 @@ const multiSiteSponsorQuestions = {
     question1: {
       text: `Are you submitting this protocol for the first time?`,
       answer: "first_time_protocol",
-      subTexts: [
-        {
-          text: `Has this study been disapproved or withdrawn from another IRB?`,
-          answer: "disapproved_or_withdrawn",
-          explanation: "disapproved_or_withdrawn_explain",
-        },
-        {
-          text: `Are you transferring oversight from another IRB?`,
-          answer: "oversite",
-          explanation: "oversite_explain",
-        },
-        {
-          text: `Title of Protocol`,
-          answer: "protocol_title",
-        },
-        {
-          text: `Protocol Number`,
-          answer: "protocol_number",
-        },
-        {
-          text: `Sponsor`,
-          answer: "sponsor",
-        },
-        {
-          text: `Study Duration`,
-          answer: "study_duration",
-        },
-        {
-          text: `Funding Source`,
-          answer: "funding_source",
-        },
-      ],
-      documentHeader: "Uploaded Protocol",
-      documentName: "protocol_file",
     },
+    subTexts: [
+      {
+        sequence: 2,
+        text: `Has this study been disapproved or withdrawn from another IRB?`,
+        answer: "disapproved_or_withdrawn",
+        explanation: "disapproved_or_withdrawn_explain",
+      },
+      {
+        sequence: 3,
+        text: `Are you transferring oversight from another IRB?`,
+        answer: "oversite",
+        explanation: "oversite_explain",
+      },
+      {
+        sequence: 4,
+        text: `Title of Protocol`,
+        answer: "protocol_title",
+      },
+      {
+        sequence: 5,
+        text: `Protocol Number`,
+        answer: "protocol_number",
+      },
+      {
+        sequence: 6,
+        text: `Sponsor`,
+        answer: "sponsor",
+      },
+      {
+        sequence: 7,
+        text: `Study Duration`,
+        answer: "study_duration",
+      },
+      {
+        sequence: 8,
+        text: `Funding Source`,
+        answer: "funding_source",
+      },
+    ],
+    documentHeader: "Uploaded Protocol",
+    documentName: "protocol_file",
   },
   contactInformation: {
     title: "Contact Information",
-    questionsList: {
-      first: [
-        {
-          header: "Who is the primary point of contact for this study?",
-        },
-        {
-          text: "Name",
-          answer: "name",
-        },
-        {
-          text: "Title",
-          answer: "title",
-        },
-        {
-          text: "Company Name",
-          answer: "company_name",
-        },
-        {
-          text: "Address",
-          answer: "address",
-        },
-        {
-          text: "City",
-          answer: "city",
-        },
-        {
-          text: "State",
-          answer: "state",
-        },
-        {
-          text: "Zip code",
-          answer: "zip_code",
-        },
-        {
-          text: "Country",
-          answer: "country",
-        },
-        {
-          text: "Phone Number",
-          answer: "phone_number",
-        },
-        {
-          text: "Email",
-          answer: "email",
-        },
-      ],
-      secound: [
-        {
-          header: "Who is the secondary point of contact for this study?",
-        },
-        {
-          text: "Name",
-          answer: "secondary_contact_name",
-        },
-        {
-          text: "Title",
-          answer: "secondary_contact_title",
-        },
-        {
-          text: "Phone Number",
-          answer: "secondary_contact_phone_number",
-        },
-        {
-          text: "Email",
-          answer: "secondary_contact_email",
-        },
-      ],
-    },
+    subQuestions: [
+      {
+        header: "Who is the primary point of contact for this study?",
+      },
+      {
+        sequence: 1,
+        text: "Name",
+        answer: "name",
+      },
+      {
+        sequence: 2,
+        text: "Title",
+        answer: "title",
+      },
+      {
+        sequence: 3,
+        text: "Company Name",
+        answer: "company_name",
+      },
+      {
+        sequence: 4,
+        text: "Address",
+        answer: "address",
+      },
+      {
+        sequence: 5,
+        text: "City",
+        answer: "city",
+      },
+      {
+        sequence: 6,
+        text: "State",
+        answer: "state",
+      },
+      {
+        sequence: 7,
+        text: "Zip code",
+        answer: "zip_code",
+      },
+      {
+        sequence: 8,
+        text: "Country",
+        answer: "country",
+      },
+      {
+        sequence: 9,
+        text: "Phone Number",
+        answer: "phone_number",
+      },
+      {
+        sequence: 10,
+        text: "Email",
+        answer: "email",
+      },
+    ],
+    subQuestions2: [
+      {
+        header: "Who is the secondary point of contact for this study?",
+      },
+      {
+        sequence: 11,
+        text: "Name",
+        answer: "secondary_contact_name",
+      },
+      {
+        sequence: 12,
+        text: "Title",
+        answer: "secondary_contact_title",
+      },
+      {
+        sequence: 13,
+        text: "Phone Number",
+        answer: "secondary_contact_phone_number",
+      },
+      {
+        sequence: 14,
+        text: "Email",
+        answer: "secondary_contact_email",
+      },
+    ],
   },
   studyInformation: {
     title: "Study Information",
@@ -832,23 +851,29 @@ const multiSiteSponsorQuestions = {
       ],
       explanation: "no_consent_explain",
     },
-    question1: {
-      text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
-      answer: "include_icf",
-    },
-    question2: {
-      text: `Will the participants be compensated for participation in the study?`,
-      answer: "participation_compensated",
-    },
-    question3: {
-      text: `Will the consent forms be offered in languages other than English?`,
-      answer: "other_language_selection",
-    },
-    question4: {
-      text: `Have the dcument been translated by a professional translator?`,
-      answer: "professional_translator",
-      explanation: "professional_translator_explain",
-    },
+    subTexts: [
+      {
+        sequence: 1,
+        text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
+        answer: "include_icf",
+      },
+      {
+        sequence: 2,
+        text: `Will the participants be compensated for participation in the study?`,
+        answer: "participation_compensated",
+      },
+      {
+        sequence: 3,
+        text: `Will the consent forms be offered in languages other than English?`,
+        answer: "other_language_selection",
+      },
+      {
+        sequence: 4,
+        text: `Have the dcument been translated by a professional translator?`,
+        answer: "professional_translator",
+        explanation: "professional_translator_explain",
+      },
+    ],
     documentHeader: `Upload all consent document templates, including translated consents, if applicable,
 here (if applying for waiver of consent, document explaining reasoning must be uploaded here)`,
     documentName: "consent_file",
@@ -988,15 +1013,19 @@ here (if applying for waiver of consent, document explaining reasoning must be u
       ],
       explanation: "enrolled_group_explain",
     },
-    question1: {
-      text: `Will any subject populations be excluded from the study?`,
-      answer: "excluded_study_type",
-      explanation: "excluded_study_type_explain",
-    },
-    question2: {
-      text: `How many subjects will be enrolled in the study?`,
-      answer: "enrolled_subjects",
-    },
+    subTexts: [
+      {
+        sequence: 1,
+        text: `Will any subject populations be excluded from the study?`,
+        answer: "excluded_study_type",
+        explanation: "excluded_study_type_explain",
+      },
+      {
+        sequence: 2,
+        text: `How many subjects will be enrolled in the study?`,
+        answer: "enrolled_subjects",
+      },
+    ],
     checkboxes3: {
       header: "What recruitment methods will be used in the study?",
       answer: "recruitment_method",
@@ -1045,22 +1074,27 @@ here (if applying for waiver of consent, document explaining reasoning must be u
       ],
       explanation: "recruitment_method_explain",
     },
-    question3: {
-      text: `Will the sponsor require IRB approval of site-specific templates prior to use?`,
-      answer: "irb_approval",
-    },
-    question4: {
-      text: `What is the expected number of sites to participate in this study that will be submitted to this IRB?`,
-      answer: "expected_number_sites",
-    },
-    question5: {
-      text: `Will any samples or data collected in this study be retained for future research?`,
-      answer: "future_research",
-      explanation: {
-        header: `Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *`,
-        answer: "future_research_explain",
+    subTexts2: [
+      {
+        sequence: 3,
+        text: `Will the sponsor require IRB approval of site-specific templates prior to use?`,
+        answer: "irb_approval",
       },
-    },
+      {
+        sequence: 4,
+        text: `What is the expected number of sites to participate in this study that will be submitted to this IRB?`,
+        answer: "expected_number_sites",
+      },
+      {
+        sequence: 5,
+        text: `Will any samples or data collected in this study be retained for future research?`,
+        answer: "future_research",
+        explanation: {
+          header: `Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *`,
+          answer: "future_research_explain",
+        },
+      },
+    ],
     documentHeader: "Upload all recruitment and subject-facing materials *",
     documentName: "facing_materials",
     checkBox: {
@@ -1070,6 +1104,7 @@ here (if applying for waiver of consent, document explaining reasoning must be u
     },
   },
   submissinForm: {
+    title: "Submission Form",
     text: `<p>By submitting this application you attest to the following:</p>
             <ul>
               <li>Research will not commence prior to receiving the IRB approval letter.</li>
