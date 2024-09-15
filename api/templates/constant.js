@@ -1095,26 +1095,32 @@ const principalInvestigatorQuestions = {
     title: "Principal Investigator Information",
     subQuestions: [
       {
+        sequence: 1,
         text: "Investigator Name *",
         answer: "investigator_name",
       },
       {
+        sequence: 2,
         text: "Investigator Email *",
         answer: "investigator_email",
       },
       {
+        sequence: 3,
         text: "Sub-Investigator Name",
         answer: "sub_investigator_name",
       },
       {
+        sequence: 4,
         text: "Sub-Investigator Email",
         answer: "sub_investigator_email",
       },
       {
+        sequence: 5,
         text: "Additional Study personnel name",
         answer: "additional_study_name",
       },
       {
+        sequence: 6,
         text: "Additional Study personnel email address",
         answer: "additional_study_email",
       },
@@ -1123,91 +1129,111 @@ const principalInvestigatorQuestions = {
       text: "Investigational/Research Location:",
       subTexts: [
         {
+          sequence: 7,
           text: "Name of the site *",
           answer: "site_name",
         },
         {
+          sequence: 8,
           text: "Address of site *",
           answer: "site_address",
         },
         {
+          sequence: 9,
           text: "Do you have more than one site where research will be conducted?",
           answer: "more_site",
         },
         {
+          sequence: 10,
           text: "Full protocol title *",
           answer: "protocol_title",
         },
         {
+          sequence: 11,
           text: "Protocol number *",
           answer: "protocol_number",
         },
         {
+          sequence: 12,
           text: "Your initials below confirm that your site will only enroll subjects that meet criteria for inclusion in the study *",
           answer: "study_criteria",
         },
         {
+          sequence: 13,
           text: "How many subjects do you expect to enroll at your site(s) *",
           answer: "subject_number",
         },
         {
+          sequence: 14,
           text: "What is your site number assigned by the sponsor",
           answer: "site_number",
         },
         {
+          sequence: 15,
           text: "Has this study been disapproved or withdrawn from another IRB?",
           answer: "disapproved_or_withdrawn",
         },
         {
+          sequence: 16,
           text: "Are you transferring oversight from another IRB?",
           answer: "oversite",
         },
         {
+          sequence: 17,
           text: "Have any individuals or immediate family members at this site received compensation from the sponsor of this study in the past 12 months that amounts to $5,000 or greater?",
           answer: "immediate_family",
         },
         {
+          sequence: 18,
           text: "Do any individuals or immediate family members at this site own interest in the form of stock or other ownership in the sponsor company of this study in the last 12 months that amounts to $5,000 or greater?",
           answer: "stock_ownership",
         },
         {
+          sequence: 19,
           text: "Do any individuals at this site have proprietary interests being investigated in this study such as, but not limited to, patents, investigational products, or licensing agreements?",
           answer: "property_interest",
         },
         {
+          sequence: 20,
           text: "Do any individuals at this site have a financial agreement with the sponsor for which they will receive compensation that is linked to the outcome of the study?",
           answer: "financial_agreement",
         },
         {
+          sequence: 21,
           text: "Do any individuals at this site serve in any executive position or on a board of directors for the sponsor of this study?",
           answer: "server_position",
         },
         {
+          sequence: 22,
           text: "Do any individuals at this site have any interests that may influence the conduct, outcome, or safety of this study?",
           answer: "influence_conduct",
         },
         {
+          sequence: 23,
           text: "Is there a Conflict of Interest Committee that has made any determinations related to the potential conflicts and is there a management plan in place?",
           answer: "interest_conflict",
         },
         {
+          sequence: 24,
           text: "Has the investigator ever had an FDA audit?",
           answer: "fda_audit",
         },
         {
+          sequence: 25,
           text: "How long has the investigator been involved in research?",
           answer: "involved_years",
         },
         {
+          sequence: 26,
           text: "What is the investigator's NPI if applicable",
           answer: "investigators_npi",
         },
       ],
     },
     checkboxes: {
-      label:
+      header:
         "What training in the field of human subjects protection has the investigator completed?",
-      value: "training_completed",
+      answer: "training_completed",
       options: [
         {
           value: "1",
@@ -1245,10 +1271,12 @@ const principalInvestigatorQuestions = {
       explanation: "training_completed_explain",
     },
     question2: {
+      sequence: 28,
       text: "What is the current number of research studies supervised by the investigator?",
       answer: "investigator_research_number",
     },
     question3: {
+      sequence: 29,
       text: "Do you have any pending or active restrictions related to research or the practice of medicine?",
       answer: "pending_or_active_research",
       explanation: "pending_or_active_research_explain",
@@ -1276,58 +1304,65 @@ const principalInvestigatorQuestions = {
       text: `The IRB will provide your site with an informed consent form formatted with your information. Please answer the questions below so that we may include it in the document`,
       subTexts: [
         {
+          sequence: 1,
           text: "Principal Investigator name *",
           answer: "principal_investigator_name",
         },
         {
+          sequence: 2,
           text: "Site Name *",
           answer: "site_name",
         },
         {
+          sequence: 3,
           text: "Site Address *",
           answer: "site_address",
         },
         {
+          sequence: 4,
           text: "Additional Site Address",
           answer: "additional_site_address",
         },
         {
+          sequence: 5,
           text: "Primary phone number to be listed on the ICF (include the area code) *",
           answer: "primary_phone",
         },
         {
+          sequence: 6,
           text: "24-hour phone number to be listed on the ICF (include the area code) *",
           answer: "always_primary_phone",
         },
         {
+          sequence: 7,
           text: "Will your site(s) use electronic consent?",
           answer: "site_electronic_consent",
         },
       ],
-      declaration: {
-        header: `<p>Mandatory message to end users, must be initialed before moving on to the next step:</p>
-                <p>The informed consent process is a continuous process and the IRB expects that proper subject consent is ensured by the investigator throughout the research study. To comply with the terms set forth by this IRB, the investigator must ensure that:</p>
-                <ul>
-                    <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
-                    <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
-                    <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
-                    <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
-                    <li>Only the most current, IRB-approved consent forms may be used for enrollment.</li>
-                    <li>All efforts must be taken to ensure participant anonymity including:
-                     <ul style="margin-top: 0;">                                    
-                     <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
-                            <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
-                            <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
-                            <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
-                        </ul>
-                    </li>
-                </ul>`,
-      },
-      checkBox: {
-        label:
-          "Your initials below signify that you have read the terms and agree with them:",
-        value: "terms_selected",
-      },
+    },
+    declaration: {
+      header: `<p>Mandatory message to end users, must be initialed before moving on to the next step:</p>
+              <p>The informed consent process is a continuous process and the IRB expects that proper subject consent is ensured by the investigator throughout the research study. To comply with the terms set forth by this IRB, the investigator must ensure that:</p>
+              <ul>
+                  <li>No study procedures shall be conducted prior to completion of the informed consent forms which include subject or legally authorized representative (LAR) signatures and date, investigator or person obtaining consent signature and date, and providing a copy of the signed consent to the study participant.</li>
+                  <li>The identified research participant is given plenty of time to consider their participation in the study and all questions are answered. The identified research participant must be told that their participation in the study is voluntary and that they are under no obligation to participate. The potential participant must voice understanding before proceeding.</li>
+                  <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
+                  <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
+                  <li>Only the most current, IRB-approved consent forms may be used for enrollment.</li>
+                  <li>All efforts must be taken to ensure participant anonymity including:
+                   <ul style="margin-top: 0;">                                    
+                   <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
+                          <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
+                          <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
+                          <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
+                      </ul>
+                  </li>
+              </ul>`,
+    },
+    checkBox: {
+      label:
+        "Your initials below signify that you have read the terms and agree with them:",
+      value: "terms_selected",
     },
   },
   submissinForm: {

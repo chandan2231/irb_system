@@ -63,7 +63,7 @@ const RenderAnswer = (answerObject, answer) => {
 
 const RenderCheckboxAnswer = (answerObject, checkBoxObject) => {
   const { header, options, answer, explanation } = checkBoxObject;
-  const selectedAnswers = answerObject[answer]?.split(",") || [];
+  const selectedAnswers = answerObject?.[answer]?.split(",") || [];
   return `
     <div>
       <h4>${header}</h4>
@@ -90,7 +90,7 @@ const RenderElplanation = (answerObject, explanation) => {
         answerObject[explanation]
           ? `<h4>Explanation</h4>
              <p>${answerObject[explanation]}</p>`
-          : ``
+          : `N/A`
       }
     </div>`;
 };
@@ -742,6 +742,10 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
         <div style="page-break-after: always;">
         ${renderHeader(submissinForm)}
         ${RenderTextOnly(submissinForm.text)}
+        ${RenderSingleCheckboxAnswer(
+          protocol_procedure,
+          submissinForm.checkBox
+        )}
         </div>
     </main>`;
   return RenderBody(children);
@@ -778,8 +782,87 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
     investigator_protocol_information,
     consent_information,
   } = templateProps;
+  const { informedConsentForm, investigatorInformation, submissinForm } =
+    principalInvestigatorQuestions;
   const children = `<main>
-      <h1>Principal Investigator</h1>
+      <h1>${headerText} (${protocolId})</h1>
+      <div style="page-break-after: always;">
+        ${renderHeader(investigatorInformation)}
+        ${investigatorInformation.subQuestions
+          ?.map((subQuestion) => {
+            return `<div>
+          ${RenderQuestion(subQuestion.sequence, subQuestion.text)}
+          ${RenderAnswer(investigator_protocol_information, subQuestion.answer)}
+            </div>`;
+          })
+          .join("")}
+          ${RenderTextOnly(investigatorInformation.question1.text)}
+          ${investigatorInformation.question1.subTexts?.map((subText) => {
+            return `<div>
+            ${RenderQuestion(subText.sequence, subText.text)}
+            ${RenderAnswer(investigator_protocol_information, subText.answer)}
+            </div>`;
+          })}
+         
+          ${RenderQuestion(
+            investigatorInformation.question2.sequence,
+            investigatorInformation.question2.text
+          )}
+          ${RenderAnswer(
+            investigator_protocol_information,
+            investigatorInformation.question2.answer
+          )}
+          ${RenderQuestion(
+            investigatorInformation.question3.sequence,
+            investigatorInformation.question3.text
+          )}
+          ${RenderAnswer(
+            investigator_protocol_information,
+            investigatorInformation.question3.answer
+          )}
+          ${RenderElplanation(
+            investigator_protocol_information,
+            investigatorInformation.question3.explanation
+          )}
+
+          ${investigatorInformation.documentsUploadedList
+            ?.map((docListItem) => {
+              return `${RenderDocuments(
+                investigator_protocol_information,
+                docListItem.documentHeader,
+                docListItem.documentName
+              )}`;
+            })
+            .join("")}
+        </div>
+
+        <div style="page-break-after: always;">
+        ${renderHeader(informedConsentForm)}
+        ${RenderQuestion(1, informedConsentForm.question1.text)}
+        ${informedConsentForm.question1.subTexts
+          ?.map((subText) => {
+            return `<div>
+          ${RenderQuestion(subText.sequence, subText.text)}
+          ${RenderAnswer(consent_information, subText.answer)}
+          </div>`;
+          })
+          .join("")}
+          ${RenderTextOnly(informedConsentForm.declaration.header)}
+          ${RenderSingleCheckboxAnswer(
+            consent_information,
+            informedConsentForm.checkBox
+          )}
+        </div>
+
+        <div style="page-break-after: always;">
+        ${renderHeader(submissinForm)}
+        ${RenderTextOnly(submissinForm.text)}
+        ${RenderSingleCheckboxAnswer(
+          consent_information,
+          submissinForm.checkBox
+        )}
+       </div>
+          
     </main>`;
   return RenderBody(children);
 };
