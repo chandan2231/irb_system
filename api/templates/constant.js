@@ -272,79 +272,97 @@ const clinicalReviewQuestions = {
   },
   investigatorInformation: {
     title: "Investigator Information",
-    question1: {
-      text: `Investigator Name`,
-      answer: "investigator_name",
-    },
-    question2: {
-      text: `Investigator Email`,
-      answer: "investigator_email",
-    },
-    question3: {
-      text: `Sub Investigator Name`,
-      answer: "sub_investigator_name",
-    },
-    question3: {
-      text: `Sub Investigator Email`,
-      answer: "sub_investigator_email",
-    },
-    question4: {
-      text: `Primary point of contact if different from above`,
-      answer: "primary_contact",
-    },
-    question5: {
-      text: `Primary point of contact email address`,
-      answer: "primary_contact_email",
-    },
-    question6: {
-      text: `Has the investigator ever had an FDA audit?`,
-      answer: "fda_audit",
-      explanation: "fda_audit_explain",
-    },
-    question7: {
-      text: `How long has the investigator been involved in research?`,
-      answer: "involved_years",
-    },
-    question8: {
-      text: `What is the investigator's NPI if applicable`,
-      answer: "investigators_npi",
-    },
-    checkboxes: {
-      header:
-        "What training in the field of human subjects protection has the investigator completed?",
-      answer: "training_completed",
-      options: [
-        { label: "OHRP Human Subject Assurance Training", value: "1" },
-        { label: "CITI Program Training", value: "2" },
-        { label: "Certified Physician Investigator Training", value: "3" },
-        { label: "ACRP training (CCRC, CCRA)", value: "4" },
-        { label: "SOCRA (CCRP)", value: "5" },
-        {
-          label: "Graduate or undergraduate research studies or degrees",
-          value: "6",
+    subTexts: [
+      {
+        sequence: 1,
+        text: `Investigator Name`,
+        answer: "investigator_name",
+      },
+      {
+        sequence: 2,
+        text: `Investigator Email`,
+        answer: "investigator_email",
+      },
+      {
+        sequence: 3,
+        text: `Sub Investigator Name`,
+        answer: "sub_investigator_name",
+      },
+      {
+        sequence: 4,
+        text: `Sub Investigator Email`,
+        answer: "sub_investigator_email",
+      },
+      {
+        sequence: 5,
+        text: `Primary point of contact if different from above`,
+        answer: "primary_contact",
+      },
+      {
+        sequence: 6,
+        text: `Primary point of contact email address`,
+        answer: "primary_contact_email",
+      },
+      {
+        sequence: 7,
+        text: `Has the investigator ever had an FDA audit?`,
+        answer: "fda_audit",
+        explanation: "fda_audit_explain",
+      },
+      {
+        sequence: 8,
+        text: `How long has the investigator been involved in research?`,
+        answer: "involved_years",
+      },
+      {
+        sequence: 9,
+        text: `What is the investigator's NPI if applicable`,
+        answer: "investigators_npi",
+      },
+      {
+        sequence: 10,
+        checkboxes: {
+          header:
+            "What training in the field of human subjects protection has the investigator completed?",
+          answer: "training_completed",
+          options: [
+            { label: "OHRP Human Subject Assurance Training", value: "1" },
+            { label: "CITI Program Training", value: "2" },
+            { label: "Certified Physician Investigator Training", value: "3" },
+            { label: "ACRP training (CCRC, CCRA)", value: "4" },
+            { label: "SOCRA (CCRP)", value: "5" },
+            {
+              label: "Graduate or undergraduate research studies or degrees",
+              value: "6",
+            },
+            { label: "Academy of Physicians in Clinical Research", value: "7" },
+            { label: "Other", value: "8" },
+          ],
+          explanation: "training_completed_explain",
         },
-        { label: "Academy of Physicians in Clinical Research", value: "7" },
-        { label: "Other", value: "8" },
-      ],
-      explanation: "training_completed_explain",
-    },
-    question9: {
-      text: `What is the current number of research studies supervised by the investigator?`,
-      answer: "investigator_research_number",
-    },
-    question10: {
-      text: `Do you have any pending or active restrictions related to research or the practice of medicine?`,
-      answer: "pending_or_active_research",
-      explanation: "pending_or_active_research_explain",
-    },
-    question11: {
-      text: `Does your site have an FWA?`,
-      answer: "site_fwp",
-    },
-    question12: {
-      text: `Please provide FWA number`,
-      answer: "fwa_number",
-    },
+      },
+      {
+        sequence: 11,
+        text: `What is the current number of research studies supervised by the investigator?`,
+        answer: "investigator_research_number",
+      },
+      {
+        sequence: 12,
+        text: `Do you have any pending or active restrictions related to research or the practice of medicine?`,
+        answer: "pending_or_active_research",
+        explanation: "pending_or_active_research_explain",
+      },
+      {
+        sequence: 13,
+        text: `Does your site have an FWA?`,
+        answer: "site_fwp",
+      },
+      {
+        sequence: 14,
+        text: `Please provide FWA number`,
+        answer: "fwa_number",
+      },
+    ],
     documentsUploadedList: [
       {
         documentHeader: "Upload investigator and sub-investigator CV here",
@@ -396,23 +414,29 @@ const clinicalReviewQuestions = {
       ],
       explanation: "no_consent_explain",
     },
-    question1: {
-      text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
-      answer: "include_icf",
-    },
-    question2: {
-      text: `Will the participants be compensated for participation in the study?`,
-      answer: "participation_compensated",
-    },
-    question3: {
-      text: `Will the consent forms be offered in languages other than English?`,
-      answer: "other_language_selection",
-    },
-    question4: {
-      text: `Have the dcument been translated by a professional translator?`,
-      answer: "professional_translator",
-      explanation: "professional_translator_explain",
-    },
+    subTexts: [
+      {
+        sequence: 2,
+        text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
+        answer: "include_icf",
+      },
+      {
+        sequence: 3,
+        text: `Will the participants be compensated for participation in the study?`,
+        answer: "participation_compensated",
+      },
+      {
+        sequence: 4,
+        text: `Will the consent forms be offered in languages other than English?`,
+        answer: "other_language_selection",
+      },
+      {
+        sequence: 5,
+        text: `Have the dcument been translated by a professional translator?`,
+        answer: "professional_translator",
+        explanation: "professional_translator_explain",
+      },
+    ],
     documentsUploadedList: [
       {
         documentHeader: `Upload all consent documents, including translated consents, if applicable
@@ -433,7 +457,8 @@ const clinicalReviewQuestions = {
                             <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
                             <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
                             <li>All efforts must be taken to ensure participant anonymity including:
-                                <ul style={{ marginTop: 0 }}>
+                                  <ul style="margin-top: 0;"> 
+                                    <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                                     <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                                     <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
                                     <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
@@ -554,15 +579,19 @@ const clinicalReviewQuestions = {
       ],
       explanation: "enrolled_group_explain",
     },
-    question1: {
-      text: `Will any subject populations be excluded from the study?`,
-      answer: "excluded_study_type",
-      explanation: "excluded_study_type_explain",
-    },
-    question2: {
-      text: `How many subjects will be enrolled in the study?`,
-      answer: "enrolled_subjects",
-    },
+    subTexts: [
+      {
+        sequence: 1,
+        text: `Will any subject populations be excluded from the study?`,
+        answer: "excluded_study_type",
+        explanation: "excluded_study_type_explain",
+      },
+      {
+        sequence: 2,
+        text: `How many subjects will be enrolled in the study?`,
+        answer: "enrolled_subjects",
+      },
+    ],
     checkboxes3: {
       header: "What recruitment methods will be used in the study?",
       answer: "recruitment_method",
@@ -612,10 +641,12 @@ const clinicalReviewQuestions = {
       explanation: "recruitment_method_explain",
     },
     question3: {
+      sequence: 3,
       text: `What is the location(s) name and address where the research procedures will take place?`,
       answer: "research_place_name_address",
     },
     question4: {
+      sequence: 4,
       text: `Will any samples or data collected in this study be retained for future research?`,
       answer: "future_research",
       explanation: {
@@ -632,6 +663,7 @@ const clinicalReviewQuestions = {
     },
   },
   submissinForm: {
+    title: "Submission Form",
     text: `<p>By submitting this application you attest to the following:</p>
 						<ul>
 							<li>Research will not commence prior to receiving the IRB approval letter.</li>
@@ -833,7 +865,8 @@ here (if applying for waiver of consent, document explaining reasoning must be u
                             <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
                             <li>Only the most current, IRB-approved consent forms may be used for enrollment. </li>
                             <li>All efforts must be taken to ensure participant anonymity including:
-                                <ul style={{ marginTop: 0 }}>
+                                <ul style="margin-top: 0;">                                    
+                                <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                                     <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                                     <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
                                     <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
@@ -1281,7 +1314,8 @@ const principalInvestigatorQuestions = {
                     <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
                     <li>Only the most current, IRB-approved consent forms may be used for enrollment.</li>
                     <li>All efforts must be taken to ensure participant anonymity including:
-                        <ul style={{marginTop: 0}}>
+                     <ul style="margin-top: 0;">                                    
+                     <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                             <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified</li>
                             <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
                             <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>

@@ -62,7 +62,7 @@ const RenderAnswer = (answerObject, answer) => {
 };
 
 const RenderCheckboxAnswer = (answerObject, checkBoxObject) => {
-  const { header, options, answer } = checkBoxObject;
+  const { header, options, answer, explanation } = checkBoxObject;
   const selectedAnswers = answerObject[answer]?.split(",") || [];
   return `
     <div>
@@ -74,6 +74,9 @@ const RenderCheckboxAnswer = (answerObject, checkBoxObject) => {
             <div>
               <input type="checkbox" ${isChecked ? "checked" : "disabled"} />
               <label>${option.label}</label>
+               ${
+                 explanation ? RenderElplanation(answerObject, explanation) : ""
+               }
             </div>
           `;
         })
@@ -86,7 +89,7 @@ const RenderElplanation = (answerObject, explanation) => {
       ${
         answerObject[explanation]
           ? `<h4>Explanation</h4>
-         <span>${answerObject[explanation]}</span>`
+             <p>${answerObject[explanation]}</p>`
           : ``
       }
     </div>`;
@@ -106,6 +109,16 @@ const RenderDocuments = (answerObject, documentHeader, documentName) => {
           .join("")}`
           : `<h4>No Documents Uploaded</h4>`
       }
+    </div>`;
+};
+
+const RenderSingleCheckboxAnswer = (answerObject, checkBoxObject) => {
+  const { label, value } = checkBoxObject;
+  const isChecked = answerObject[value] === "Yes" ? true : false;
+  return `
+    <div>
+      <input type="checkbox" ${isChecked ? "checked" : "disabled"} />
+      <label>${label}</label>
     </div>`;
 };
 
@@ -332,7 +345,7 @@ const RenderResearchProgressInfoSecondQuestion = (
      ${RenderTextOnly(fourthSubText.text)}
      ${RenderSubTextAnswer(answerObject, fourthSubText.answer)}
     </div>`
-  } 
+  }
   </div>`;
 };
 
@@ -349,7 +362,7 @@ const RenderResearchProgressInfoThirdQuestion = (
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
-  
+
   ${RenderTextOnly(firstSubText.text)}
   ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
 
@@ -521,14 +534,214 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
     informed_consent,
     protocol_procedure,
   } = templateProps;
+  const {
+    informedConsentForm,
+    investigatorInformation,
+    protocolInformation,
+    protocolProcedure,
+    studyInformation,
+    submissinForm,
+  } = clinicalReviewQuestions;
   const children = `<main>
        <h1>
           ${headerText} (${protocolId})
         </h1>
          <div style="page-break-after: always;">
+         ${renderHeader(protocolInformation)}
+         ${RenderQuestion(1, protocolInformation.question1.text)}
+         ${RenderAnswer(
+           protocol_information,
+           protocolInformation.question1.answer
+         )}
+          ${protocolInformation.question1.subTexts
+            ?.map((subText, index) => {
+              return `<div>
+              ${subText?.text ? RenderQuestion(index + 2, subText.text) : ""}
+              ${
+                subText?.answer
+                  ? RenderAnswer(protocol_information, subText.answer)
+                  : ""
+              }
+              ${
+                subText?.explanation
+                  ? RenderElplanation(protocol_information, subText.explanation)
+                  : ""
+              }
+            </div>`;
+            })
+            .join("")}
+          ${RenderDocuments(
+            protocol_information,
+            protocolInformation.question1.documentHeader,
+            protocolInformation.question1.documentName
+          )}
         </div>
 
          <div style="page-break-after: always;">
+          ${renderHeader(investigatorInformation)}
+           ${investigatorInformation.subTexts
+             ?.map((subText) => {
+               return `<div>
+              ${
+                subText?.text
+                  ? RenderQuestion(subText.sequence, subText.text)
+                  : ""
+              }
+              ${
+                subText?.answer
+                  ? RenderAnswer(investigator_information, subText.answer)
+                  : ""
+              }
+              ${
+                subText?.explanation
+                  ? RenderElplanation(
+                      investigator_information,
+                      subText.explanation
+                    )
+                  : ""
+              }
+              ${
+                subText?.checkboxes
+                  ? RenderCheckboxAnswer(
+                      investigator_information,
+                      subText.checkboxes
+                    )
+                  : ""
+              }
+            </div>`;
+             })
+             .join("")}
+            ${investigatorInformation?.documentsUploadedList
+              ?.map((docListItem) => {
+                return `${RenderDocuments(
+                  investigator_information,
+                  docListItem.documentHeader,
+                  docListItem.documentName
+                )}`;
+              })
+              .join("")}
+        </div>
+
+        <div style="page-break-after: always;">
+          ${renderHeader(studyInformation)}
+          ${RenderQuestion(1, studyInformation.question1.text)}
+          ${RenderAnswer(study_information, studyInformation.question1.answer)}
+          ${RenderElplanation(
+            study_information,
+            studyInformation.question1.explanation
+          )}
+          ${RenderDocuments(
+            study_information,
+            studyInformation.documentsUploadedList[0].documentHeader,
+            studyInformation.documentsUploadedList[0].documentName
+          )}
+        </div>
+
+        <div style="page-break-after: always;">
+        ${renderHeader(informedConsentForm)}
+        ${RenderCheckboxAnswer(
+          informed_consent,
+          informedConsentForm.checkboxes
+        )}
+        ${informedConsentForm.subTexts
+          ?.map((subText) => {
+            return `<div>
+          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${
+            subText?.answer
+              ? RenderAnswer(informed_consent, subText.answer)
+              : ""
+          }
+          ${
+            subText?.explanation
+              ? RenderElplanation(informed_consent, subText.explanation)
+              : ""
+          }
+        </div>`;
+          })
+          .join("")}
+        ${informedConsentForm.documentsUploadedList
+          ?.map((docListItem) => {
+            return `${RenderDocuments(
+              informed_consent,
+              docListItem.documentHeader,
+              docListItem.documentName
+            )}`;
+          })
+          .join("")}
+          ${RenderTextOnly(informedConsentForm.declaration.header)}
+          ${RenderSingleCheckboxAnswer(
+            informed_consent,
+            informedConsentForm.declaration.checkBox
+          )}
+        </div>
+
+        <div style="page-break-after: always;">
+        ${renderHeader(protocolProcedure)}
+        ${RenderCheckboxAnswer(
+          protocol_procedure,
+          protocolProcedure.checkboxes
+        )}
+        ${RenderCheckboxAnswer(
+          protocol_procedure,
+          protocolProcedure.checkboxes2
+        )}
+        ${protocolProcedure.subTexts
+          ?.map((subText) => {
+            return `<div>
+          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${
+            subText?.answer
+              ? RenderAnswer(protocol_procedure, subText.answer)
+              : ""
+          }
+          ${
+            subText?.explanation
+              ? RenderElplanation(protocol_procedure, subText.explanation)
+              : ""
+          }
+            </div>`;
+          })
+          .join("")}
+          ${RenderCheckboxAnswer(
+            protocol_procedure,
+            protocolProcedure.checkboxes3
+          )}
+          ${RenderQuestion(
+            protocolProcedure.question3.sequence,
+            protocolProcedure.question3.text
+          )}
+          ${RenderAnswer(
+            protocol_procedure,
+            protocolProcedure.question3.answer
+          )}
+          ${RenderQuestion(
+            protocolProcedure.question4.sequence,
+            protocolProcedure.question4.text
+          )}
+          ${RenderAnswer(
+            protocol_procedure,
+            protocolProcedure.question4.answer
+          )}
+          ${RenderTextOnly(protocolProcedure.question4.explanation.header)}
+          ${RenderElplanation(
+            protocol_procedure,
+            protocolProcedure.question4.explanation.answer
+          )}
+          ${RenderDocuments(
+            protocol_procedure,
+            protocolProcedure.documentHeader,
+            protocolProcedure.documentName
+          )}
+          ${RenderSingleCheckboxAnswer(
+            protocol_procedure,
+            protocolProcedure.checkBox
+          )}
+        </div>
+
+        <div style="page-break-after: always;">
+        ${renderHeader(submissinForm)}
+        ${RenderTextOnly(submissinForm.text)}
         </div>
     </main>`;
   return RenderBody(children);
