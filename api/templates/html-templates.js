@@ -984,12 +984,14 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
           })
           .join("")}
           ${RenderTextOnly(investigatorInformation.question1.text)}
-          ${investigatorInformation.question1.subTexts?.map((subText) => {
-            return `<div>
+          ${investigatorInformation.question1.subTexts
+            ?.map((subText) => {
+              return `<div>
             ${RenderQuestion(subText.sequence, subText.text)}
             ${RenderAnswer(investigator_protocol_information, subText.answer)}
             </div>`;
-          })}
+            })
+            .join("")}
          
           ${RenderQuestion(
             investigatorInformation.question2.sequence,
