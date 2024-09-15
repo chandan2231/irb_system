@@ -21,11 +21,89 @@ const ContinuingReviewPdfTemplate = (
   return template;
 };
 
-const protocolAmendmentRequestPdfTemplate = () => {
+const ClinicalSitePdfTemplate = (clinicalSiteDetailObj, protocolIdObj) => {
+  const { protocolId, protocolType } = protocolIdObj;
+  const {
+    protocol_information,
+    investigator_information,
+    study_information,
+    informed_consent,
+    protocol_procedure,
+  } = clinicalSiteDetailObj;
+  const templatePayload = {
+    headerText: "Clinical Site Details",
+    protocolId,
+    protocolType,
+    protocol_information,
+    investigator_information,
+    study_information,
+    informed_consent,
+    protocol_procedure,
+  };
   const template = {
-    content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate()}`,
+    content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.ClinicalSiteHTMLTemplate(
+      templatePayload
+    )}`,
   };
   return template;
+};
+
+const MultiSiteSponsorPdfTemplate = (
+  multiSiteSponsorDetailObj,
+  protocolIdObj
+) => {
+  const { protocolId, protocolType } = protocolIdObj;
+  const {
+    protocol_information,
+    contact_information,
+    study_information,
+    informed_consent,
+    protocol_procedure,
+  } = multiSiteSponsorDetailObj;
+  const templatePayload = {
+    headerText: "Multi Site Sponsor Details",
+    protocolId,
+    protocolType,
+    protocol_information,
+    contact_information,
+    study_information,
+    informed_consent,
+    protocol_procedure,
+  };
+  const template = {
+    content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.MultiSiteSponsorHTMLTemplate(
+      templatePayload
+    )}`,
+  };
+  return template;
+};
+
+const PrincipalInvestigatorPdfTemplate = (
+  principalInvestigatorDetailObj,
+  protocolIdObj
+) => {
+  const { protocolId, protocolType } = protocolIdObj;
+  const { investigator_protocol_information, consent_information } =
+    principalInvestigatorDetailObj;
+  const templatePayload = {
+    headerText: "Principal Investigator Details",
+    protocolId,
+    protocolType,
+    investigator_protocol_information,
+    consent_information,
+  };
+  const template = {
+    content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.PrincipalInvestigatorHTMLTemplate(
+      templatePayload
+    )}`,
+  };
+  return template;
+};
+
+const protocolAmendmentRequestPdfTemplate = {
+  ClinicalSitePdfTemplate,
+  MultiSiteSponsorPdfTemplate,
+  PrincipalInvestigatorPdfTemplate,
 };
 
 const PdfTemplates = {
