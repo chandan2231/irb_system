@@ -9,7 +9,13 @@ import {
     saveContactInfo, 
     saveInvestigatorAndProtocolInformation, 
     saveClinicalInformedConsent, 
-    saveMultiSiteProtocolProceduresInfo 
+    saveMultiSiteProtocolProceduresInfo,
+    saveClinicalSiteSubmission,
+    getClinicalSiteSavedProtocolType,
+    saveMultiSiteSubmission,
+    getMultiSiteSavedProtocolType,
+    getPrincipalInvestigatorSavedProtocolType,
+    savePrincipalInvestigatorSubmission
 } from "../controllers/researchInfo.js";
 
 const router = express.Router()
@@ -23,6 +29,12 @@ router.post('/saveMultiSiteProtocolProceduresInfo', saveMultiSiteProtocolProcedu
 router.post('/saveContactInfo', saveContactInfo)
 router.post('/saveInvestigatorAndProtocolInformation', saveInvestigatorAndProtocolInformation)
 router.post('/saveClinicalInformedConsent', saveClinicalInformedConsent)
+router.post('/saveClinicalSiteSubmission', saveClinicalSiteSubmission)
+router.post('/getClinicalSiteSavedProtocolType', getClinicalSiteSavedProtocolType)
+router.post('/saveMultiSiteSubmission', saveMultiSiteSubmission)
+router.post('/getMultiSiteSavedProtocolType', getMultiSiteSavedProtocolType)
+router.post('/savePrincipalInvestigatorSubmission', savePrincipalInvestigatorSubmission)
+router.post('/getPrincipalInvestigatorSavedProtocolType', getPrincipalInvestigatorSavedProtocolType)
 
 
 export default router

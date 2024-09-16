@@ -77,3 +77,33 @@ export const createProtocolProcedures = createAsyncThunk("ProtocolType/createPro
     }
   }
 );
+
+export const createMultiSiteSubmission = createAsyncThunk("ProtocolType/createMultiSiteSubmission",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/saveMultiSiteSubmission`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getMultiSiteSavedProtocolType = createAsyncThunk("ProtocolType/getMultiSiteSavedProtocolType",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/getMultiSiteSavedProtocolType`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

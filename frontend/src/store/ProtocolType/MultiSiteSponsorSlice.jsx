@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createInformedConsent, createProtocolInformation, createContactInformation, createStudyInformation, createProtocolProcedures } from "../../services/ProtocolType/MultiSiteSponsorService";
+import { 
+  createInformedConsent, 
+  createProtocolInformation, 
+  createContactInformation, 
+  createStudyInformation, 
+  createProtocolProcedures,
+  createMultiSiteSubmission,
+  getMultiSiteSavedProtocolType
+} from "../../services/ProtocolType/MultiSiteSponsorService";
 const MultiSiteSponsorSlice = createSlice({
   name: "Multi-Site Sponsor",
   initialState: {
@@ -10,6 +18,8 @@ const MultiSiteSponsorSlice = createSlice({
     createdInformedConsent: null,
     createdStudyInformation: null,
     createdProtocolProcedures: null,
+    createdMultiSiteSubmission: null,
+    getAllMultiSiteSavedProtocolType: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -73,7 +83,32 @@ const MultiSiteSponsorSlice = createSlice({
       .addCase(createProtocolProcedures.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      });
+      })
+      .addCase(createMultiSiteSubmission.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createMultiSiteSubmission.fulfilled, (state, action) => {
+        state.loading = false;
+        state.createdMultiSiteSubmission = action.payload;
+      })
+      .addCase(createMultiSiteSubmission.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getMultiSiteSavedProtocolType.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMultiSiteSavedProtocolType.fulfilled, (state, action) => {
+        state.loading = false;
+        state.getAllMultiSiteSavedProtocolType = action.payload;
+      })
+      .addCase(getMultiSiteSavedProtocolType.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      ;
   },
 });
 

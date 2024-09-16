@@ -1,13 +1,7 @@
 import { db } from "../connect.js"
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-
-
 
 export const saveProtocolInfo = (req, res) => {
-    // console.log('req', req)
-    // console.log('res', res)
-    // return;
+    
     const que = 'insert into protocol_information (`protocol_id`,`protocol_title`, `protocol_number`, `study_duration`,  `sponsor`, `disapproved_or_withdrawn`, `disapproved_or_withdrawn_explain`, `first_time_protocol`,`funding_source`,`oversite`,`oversite_explain`, `created_by`) value (?)';
     const values = [
         req.body.protocol_id,
@@ -22,7 +16,6 @@ export const saveProtocolInfo = (req, res) => {
         req.body.oversite,
         req.body.oversite_explain,
         req.body.created_by,
-        // req.body.protocol_file
     ];
     db.query(que, [values], (err, data) =>{
         if (err) {
@@ -39,9 +32,6 @@ export const saveProtocolInfo = (req, res) => {
 
 
 export const saveInvestigatorInfo = (req, res) => {
-    // console.log('req', req)
-    // console.log('res', res)
-    // return;
     const que = 'insert into investigator_information (`protocol_id`,`fda_audit`,`fda_audit_explain`,`fwa_number`,`investigator_email`,`investigator_name`,`investigator_research_number`,`investigators_npi`,`involved_years`,`pending_or_active_research`,`pending_or_active_research_explain`,`primary_contact`,`primary_contact_email`,`site_fwp`,`sub_investigator_email`,`sub_investigator_name`,`training_completed`,`training_completed_explain`,`created_by`) value (?)';
     const values = [
         req.body.protocol_id,
@@ -248,9 +238,6 @@ export const saveInvestigatorAndProtocolInformation = (req, res) => {
 }
 
 export const saveClinicalInformedConsent = (req, res) => {
-    // console.log('req', req)
-    // console.log('res', res)
-    // return;
     var datetime = new Date();
     const que = 'insert into clinical_consent_information (`protocol_id`,`principal_investigator_name`, `site_address`, `additional_site_address`,  `primary_phone`, `always_primary_phone`, `site_electronic_consent`, `created_by`,`created_at`,`updated_at`) value (?)';
     const values = [
@@ -307,3 +294,163 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
         }
     })
 }
+
+export const saveClinicalSiteSubmission = (req, res) => {
+    var datetime = new Date();
+    const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
+    const values = [
+        req.body.protocol_id, 
+        req.body.protocol_type,
+        req.body.created_by, 
+        datetime.toISOString().slice(0,10),
+        datetime.toISOString().slice(0,10),
+    ];
+    db.query(que, [values], (err, data) =>{
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Clinical Site has been saved successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const getClinicalSiteSavedProtocolType = (req, res) => {
+    const protocolTypeObj = {}
+    if(req.body.protocolType === 'Clinical Site'){
+        const que1 = "select * from protocol_information where protocol_id = ?"
+        db.query(que1, [req.body.protocolId], (err, data) =>{
+            if (data.length >= 0 ) {
+                protocolTypeObj.protocol_information = data.length > 0 ? true : false
+                const que2 = "select * from investigator_information where protocol_id = ?"
+                db.query(que2, [req.body.protocolId], (err, data) =>{
+                    if (data.length >= 0 ) {
+                        protocolTypeObj.investigator_information = data.length > 0 ? true : false
+                        const que3 = "select * from study_information where protocol_id = ?"
+                        db.query(que3, [req.body.protocolId], (err, data) =>{
+                            if (data.length >= 0 ) {
+                                protocolTypeObj.study_information = data.length > 0 ? true : false
+                                const que4 = "select * from informed_consent where protocol_id = ?"
+                                db.query(que4, [req.body.protocolId], (err, data) => {
+                                    if (data.length >= 0 ) {
+                                        protocolTypeObj.informed_consent = data.length > 0 ? true : false
+                                        const que5 = "select * from protocol_procedure where protocol_id = ?"
+                                        db.query(que5, [req.body.protocolId], (err, data) => {
+                                            if (data.length >= 0 ) {
+                                                protocolTypeObj.protocol_procedure = data.length > 0 ? true : false
+                                                return res.status(200).json(protocolTypeObj)
+                                            }
+                                        })
+                                    }
+                                })
+                            } 
+                        })
+                    }
+                })
+            }
+        })
+    }
+}
+
+export const saveMultiSiteSubmission = (req, res) => {
+    var datetime = new Date();
+    const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
+    const values = [
+        req.body.protocol_id, 
+        req.body.protocol_type,
+        req.body.created_by, 
+        datetime.toISOString().slice(0,10),
+        datetime.toISOString().slice(0,10),
+    ];
+    db.query(que, [values], (err, data) =>{
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Multi Site Sponsor has been saved successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const getMultiSiteSavedProtocolType = (req, res) => {
+    const protocolTypeObj = {}
+    if (req.body.protocolType === 'Multi Site Sponsor') {
+        const que1 = "select * from protocol_information where protocol_id = ?"
+        db.query(que1, [req.body.protocolId], (err, data) =>{
+            if (data.length >= 0 ) {
+                protocolTypeObj.protocol_information = data.length > 0 ? true : false
+                const que2 = "select * from contact_information where protocol_id = ?"
+                db.query(que2, [req.body.protocolId], (err, data) =>{
+                    if (data.length >= 0 ) {
+                        protocolTypeObj.contact_information = data.length > 0 ? true : false
+                        const que3 = "select * from study_information where protocol_id = ?"
+                        db.query(que3, [req.body.protocolId], (err, data) =>{
+                            if (data.length >= 0 ) {
+                                protocolTypeObj.study_information = data.length > 0 ? true : false
+                                const que4 = "select * from informed_consent where protocol_id = ?"
+                                db.query(que4, [req.body.protocolId], (err, data) => {
+                                    if (data.length >= 0 ) {
+                                        protocolTypeObj.informed_consent = data.length > 0 ? true : false
+                                        const que5 = "select * from protocol_procedure where protocol_id = ?"
+                                        db.query(que5, [req.body.protocolId], (err, data) => {
+                                            if (data.length >= 0 ) {
+                                                protocolTypeObj.protocol_procedure = data.length > 0 ? true : false
+                                                return res.status(200).json(protocolTypeObj)
+                                            }
+                                        })
+                                    }
+                                })
+                            } 
+                        })
+                    }
+                })
+            }
+        })
+    } 
+}
+
+export const savePrincipalInvestigatorSubmission = (req, res) => {
+    var datetime = new Date();
+    const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
+    const values = [
+        req.body.protocol_id, 
+        req.body.protocol_type,
+        req.body.created_by, 
+        datetime.toISOString().slice(0,10),
+        datetime.toISOString().slice(0,10),
+    ];
+    db.query(que, [values], (err, data) => {
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Principal Investigator has been saved successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
+    const protocolTypeObj = {}
+    if (req.body.protocolType === 'Principal Investigator') {
+        const que1 = "select * from investigator_protocol_information where protocol_id = ?"
+        db.query(que1, [req.body.protocolId], (err, data) =>{
+            if (data.length >= 0 ) {
+                protocolTypeObj.investigator_protocol_information = data.length > 0 ? true : false
+                const que2 = "select * from clinical_consent_information where protocol_id = ?"
+                db.query(que2, [req.body.protocolId], (err, data) => {
+                    if (data.length >= 0 ) {
+                        protocolTypeObj.consent_information = data.length > 0 ? true : false
+                        return res.status(200).json(protocolTypeObj)
+                    }
+                })
+            }
+        })
+    }
+}
+

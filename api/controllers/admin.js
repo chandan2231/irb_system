@@ -1,9 +1,7 @@
 import { db } from "../connect.js"
 
 export const getProtocolList = (req, res) => {
-    // console.log('res', res)
-    // return;
-    const que = "select * from user_research"
+    const que = "select * from protocol_submission"
     db.query(que, {}, (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length >= 0 ) {

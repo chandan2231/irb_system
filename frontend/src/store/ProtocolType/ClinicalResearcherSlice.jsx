@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {createInvestigatorAndProtocolInformation, createInformedConsent  } from "../../services/ProtocolType/ClinicalResearcherService";
+import {
+  createInvestigatorAndProtocolInformation, 
+  createInformedConsent,
+  createPrincipalInvestigatorSubmission,
+  getPrincipalInvestigatorSavedProtocolType
+} from "../../services/ProtocolType/ClinicalResearcherService";
 const ClinicalResearcherSlice = createSlice({
   name: "Principal Investigator",
   initialState: {
@@ -7,6 +12,8 @@ const ClinicalResearcherSlice = createSlice({
     error: null,
     createdInformedConsent: null,
     createdInvestigatorAndProtocolInformation: null,
+    createdPrincipalInvestigatorSubmission: null,
+    getAllPrincipalInvestigatorSavedProtocolType: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -34,7 +41,32 @@ const ClinicalResearcherSlice = createSlice({
       .addCase(createInformedConsent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      });
+      })
+      .addCase(createPrincipalInvestigatorSubmission.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPrincipalInvestigatorSubmission.fulfilled, (state, action) => {
+        state.loading = false;
+        state.createdPrincipalInvestigatorSubmission = action.payload;
+      })
+      .addCase(createPrincipalInvestigatorSubmission.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getPrincipalInvestigatorSavedProtocolType.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getPrincipalInvestigatorSavedProtocolType.fulfilled, (state, action) => {
+        state.loading = false;
+        state.getAllPrincipalInvestigatorSavedProtocolType = action.payload;
+      })
+      .addCase(getPrincipalInvestigatorSavedProtocolType.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      ;
   },
 });
 

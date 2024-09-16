@@ -9,32 +9,23 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
+import { createMultiSiteSubmission, getMultiSiteSavedProtocolType } from '../../../../services/ProtocolType/MultiSiteSponsorService';
+import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-
-function SubmissionForm() {
+function SubmissionForm({protocolTypeDetails}) {
+    const dispatch = useDispatch();
+	const userDetails = JSON.parse(localStorage.getItem('user'));
     const [termsSelected, setTermsSelected] = React.useState(false);
-    const initialValues = {
-		notificationName: '',
-	}
-    
-	const handleSubmitData = values => {
-		let stopCall = false
-		console.log('stopCall', stopCall)
-		// return;
-		if (!stopCall) {
-			setTimeout(() => {
-				let isConfirmed = window.confirm(
-					'Are you sure you want to submit the notification?'
-				)
-				if (isConfirmed && !stopCall) {
-					//dispatch(submitNotificationDetails(formData))
-				}
-			}, 1000)
-		}
-	}
+    const [formData, setFormData] = useState({
+		protocol_id: protocolTypeDetails.protocolId,
+		protocol_type: protocolTypeDetails.researchType,
+        created_by: userDetails.id,
+	})
 
-    const handleFinalSubmissionTearmChecked = (event) => {
+	const handleFinalSubmissionTearmChecked = (event) => {
         const {checked} = event.target
         if(checked === true){
             setTermsSelected(true)
@@ -43,8 +34,42 @@ function SubmissionForm() {
         }
     }
 
+    
+	const handleSubmitData = async (e) => {
+        e.preventDefault();
+        try {
+            const isValid = true
+            if (isValid === true) {
+                dispatch(createMultiSiteSubmission({ ...formData }))
+                .then(data => {
+                    if (data.payload.status === 200) {
+                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                        setFormData({})
+                    }
+                })
+            }
+        } catch (error) {
+        }
+    }
+
+	useEffect(() => {
+        let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
+        dispatch(getMultiSiteSavedProtocolType(data));
+    }, [dispatch, userDetails.id]);
+
+    const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
+        state => ({
+            error: state.admin.error,
+            getAllMultiSiteSavedProtocolType: state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
+            loading: state.admin.loading,
+        })
+    );
+	console.log('getAllMultiSiteSavedProtocolType', getAllMultiSiteSavedProtocolType)
+
+    
 	return (
 		<>
+			<ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
 			<Row>
             	<form onSubmit={handleSubmitData}>
 					<Form.Group as={Col} controlId="validationFormik01" className='ul-list'>

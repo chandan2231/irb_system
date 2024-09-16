@@ -33,8 +33,6 @@ export const createInformedConsent = createAsyncThunk("ProtocolType/createInform
   }
 );
 
-
-
 export const createInvestigatorInformation = createAsyncThunk("ProtocolType/createInvestigatorInformation",
   async (data, { rejectWithValue }) => {
     try {
@@ -63,12 +61,43 @@ export const createStudyInformation = createAsyncThunk("ProtocolType/createStudy
     }
   }
 );
+
 export const createProtocolProcedures = createAsyncThunk("ProtocolType/createProtocolProcedures",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
         method: "POST",
         url: `${baseURL}/researchInfo/saveProtocolProceduresInfo`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const createClinicalSiteSubmission = createAsyncThunk("ProtocolType/createClinicalSiteSubmission",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/saveClinicalSiteSubmission`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getClinicalSiteSavedProtocolType = createAsyncThunk("ProtocolType/getClinicalSiteSavedProtocolType",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/getClinicalSiteSavedProtocolType`,
         data,
       });
       return response;

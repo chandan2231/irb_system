@@ -129,8 +129,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
-
-
+    
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
@@ -176,8 +175,6 @@ function InformedConsentForm({ protocolTypeDetails }) {
             setErrors(newErrors);
         }
     }
-
-
 
     return (
         <>

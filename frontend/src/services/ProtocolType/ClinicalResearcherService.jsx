@@ -32,6 +32,36 @@ export const createInformedConsent = createAsyncThunk("ProtocolType/createInform
   }
 );
 
+export const createPrincipalInvestigatorSubmission = createAsyncThunk("ProtocolType/createPrincipalInvestigatorSubmission",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/savePrincipalInvestigatorSubmission`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk("ProtocolType/getPrincipalInvestigatorSavedProtocolType",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/getPrincipalInvestigatorSavedProtocolType`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 
 
 
