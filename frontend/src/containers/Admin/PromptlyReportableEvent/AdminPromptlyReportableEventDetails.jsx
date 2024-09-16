@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
-import { createProtocolInformation } from '../../../services/ProtocolType/MultiSiteSponsorService';
+import { fetchPromptlyReportableEventById } from '../../../services/Admin/EventAndRequestService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
@@ -153,6 +153,19 @@ function AdminPromptlyReportableEventDetails() {
             }
         }
     }
+
+    const { promptlyReportableEventById, loading, error } = useSelector(
+        state => ({
+            error: state.admin.error,
+            promptlyReportableEventById: state.admin.promptlyReportableEventById,
+            loading: state.admin.loading,
+        })
+    );
+    useEffect(() => {
+        let data = {protocolId: protocolDetails.protocolId}
+        dispatch(fetchPromptlyReportableEventById(data));
+    }, [dispatch, userDetails.id]);
+
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>Promptly Reportable Event Details ({protocolDetails.protocolId})</h2>

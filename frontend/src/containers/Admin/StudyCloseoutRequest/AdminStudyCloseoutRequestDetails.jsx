@@ -9,52 +9,20 @@ import Form from 'react-bootstrap/Form';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
-import Checkbox from '@mui/material/Checkbox';
 import * as yup from 'yup'
-import { createProtocolInformation } from '../../../services/ProtocolType/MultiSiteSponsorService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
+import { fetchStudyCloseoutRequestDetailsById } from '../../../services/Admin/EventAndRequestService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-const studyCloseSchema = yup.object().shape({
-    protocol_number: yup.string().required("This is required"),
-    pi_name: yup.string().required("This is required"),
-    study_completion_date: yup.string().required("This is required"),
-    study_closeout_reason: yup.string().required("This is required"),
-    study_closeout_reason_other: yup.string().when('study_closeout_reason', {
-        is: 'other',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    subject_enrolled_number: yup.string().required("This is required"),
-    subject_withdrew_number: yup.string().required("This is required"),
-    subject_withdrew_by_other: yup.string().required("This is required"),
-    subject_fails: yup.string().required("This is required"),
-    subject_lost_followup: yup.string().required("This is required"),
-    subject_completed: yup.string().required("This is required"),
-    subject_complaints_review_explain: yup.string().when('subject_complaints_review', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    not_reported_irb_explain: yup.string().when('not_reported_irb', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    promptly_reportable_info: yup.string().required("This is required"),
-    adverse_event_info: yup.string().required("This is required"),
-    your_name: yup.string().required("This is required"),
-})
+   
 
 function AdminStudyCloseoutRequestDetails() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const location = useLocation();
     const protocolDetails = location.state.details
-    console.log('protocolDetails', protocolDetails)
     const userDetails = JSON.parse(localStorage.getItem('user'));
     const [showStudyCloseoutReason, setShowStudyCloseoutReason] = React.useState(false);
     const [showSubjectComplaintsReviewTextbox, setShowSubjectComplaintsReviewTextbox] = React.useState(false);
@@ -140,7 +108,6 @@ function AdminStudyCloseoutRequestDetails() {
         }
     }
 
-    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -149,9 +116,9 @@ function AdminStudyCloseoutRequestDetails() {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await studyCloseSchema.validate(formData, { abortEarly: false });
-            const isValid = await studyCloseSchema.isValid(getValidatedform)
-            // const isValid = true
+            // const getValidatedform = await studyCloseSchema.validate(formData, { abortEarly: false });
+            // const isValid = await studyCloseSchema.isValid(getValidatedform)
+            const isValid = true
             if (isValid === true) {
                 dispatch(createProtocolInformation({ ...formData }))
                 .then(data => {
@@ -175,6 +142,19 @@ function AdminStudyCloseoutRequestDetails() {
             }
         }
     }
+
+    const { studyCloseoutRequestDetailsById, loading, error } = useSelector(
+        state => ({
+            error: state.admin.error,
+            studyCloseoutRequestDetailsById: state.admin.studyCloseoutRequestDetailsById,
+            loading: state.admin.loading,
+        })
+    );
+    useEffect(() => {
+        let data = {protocolId: protocolDetails.protocolId}
+        dispatch(fetchStudyCloseoutRequestDetailsById(data));
+    }, [dispatch, userDetails.id]);
+    
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>Study Closeout Request Details ({protocolDetails.protocolId})</h2>

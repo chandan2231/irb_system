@@ -8,15 +8,9 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Form from 'react-bootstrap/Form';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import * as yup from 'yup'
-import Grid from '@mui/material/Grid';
-import { createProtocolInformation } from '../../../services/ProtocolType/MultiSiteSponsorService';
+import { fetchAdverseEventById } from '../../../services/Admin/EventAndRequestService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
@@ -190,6 +184,18 @@ function AdminAdverseEventsDetails() {
             }
         }
     }
+    const { adverseEventById, loading, error } = useSelector(
+        state => ({
+            error: state.admin.error,
+            adverseEventById: state.admin.adverseEventById,
+            loading: state.admin.loading,
+        })
+    );
+    useEffect(() => {
+        let data = {protocolId: protocolDetails.protocolId}
+        dispatch(fetchAdverseEventById(data));
+    }, [dispatch, userDetails.id]);
+
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>Adverse Events Details ({protocolDetails.protocolId})</h2>

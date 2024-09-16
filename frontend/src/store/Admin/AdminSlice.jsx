@@ -2,7 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 import { fetchProtocolList, fetchProtocolDetailsById } from "../../services/Admin/ProtocolListService";
 import { fetchContinuinReviewProtocolList, fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
 import { fetchUsersList } from "../../services/Admin/UsersListService";
-import { getStudyCloseoutRequest, getPromptlyReportableEvent, getProtocolAmendmentRequest, getAdverseEvent } from "../../services/Admin/EventAndRequestService";
+import { 
+    getStudyCloseoutRequest, 
+    getPromptlyReportableEvent, 
+    getProtocolAmendmentRequest, 
+    getAdverseEvent,
+    fetchStudyCloseoutRequestDetailsById,
+    fetchPromptlyReportableEventById,
+    fetchAdverseEventById,
+    fetchProtocolAmendmentRequestById
+} from "../../services/Admin/EventAndRequestService";
 
 
 
@@ -20,6 +29,10 @@ const AdminSlice = createSlice({
         promptlyReportableEventList: null,
         protocolAmendmentRequestList: null,
         adverseEventList: null,
+        studyCloseoutRequestDetailsById: null,
+        promptlyReportableEventById: null,
+        adverseEventById: null,
+        protocolAmendmentRequestById: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -131,7 +144,56 @@ const AdminSlice = createSlice({
         .addCase(getAdverseEvent.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
-        });
+        })
+        .addCase(fetchStudyCloseoutRequestDetailsById.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchStudyCloseoutRequestDetailsById.fulfilled, (state, action) => {
+            state.loading = false;
+            state.studyCloseoutRequestDetailsById = action.payload;
+        })
+        .addCase(fetchStudyCloseoutRequestDetailsById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(fetchPromptlyReportableEventById.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchPromptlyReportableEventById.fulfilled, (state, action) => {
+            state.loading = false;
+            state.promptlyReportableEventById = action.payload;
+        })
+        .addCase(fetchPromptlyReportableEventById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(fetchAdverseEventById.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchAdverseEventById.fulfilled, (state, action) => {
+            state.loading = false;
+            state.adverseEventById = action.payload;
+        })
+        .addCase(fetchAdverseEventById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(fetchProtocolAmendmentRequestById.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchProtocolAmendmentRequestById.fulfilled, (state, action) => {
+            state.loading = false;
+            state.protocolAmendmentRequestById = action.payload;
+        })
+        .addCase(fetchProtocolAmendmentRequestById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        ;
     },
 });
 

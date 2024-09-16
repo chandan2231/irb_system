@@ -66,3 +66,65 @@ export const getProtocolAmendmentRequest = createAsyncThunk("EventAndRequest/get
     }
   }
 );
+
+
+export const fetchStudyCloseoutRequestDetailsById = createAsyncThunk("EventAndRequest/fetchStudyCloseoutRequestDetailsById",
+    async (data, { rejectWithValue }) => {
+      try {
+        const response = await ApiCall({
+          method: "POST",
+          url: `${baseURL}/admin/studyCloseoutDetailsById`,
+          data,
+        });
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data || error.message);
+      }
+    }
+);
+
+export const fetchPromptlyReportableEventById = createAsyncThunk("EventAndRequest/fetchPromptlyReportableEventById",
+    async (data, { rejectWithValue }) => {
+      try {
+        const response = await ApiCall({
+          method: "POST",
+          url: `${baseURL}/admin/promptlyReportableEventById`,
+          data,
+        });
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data || error.message);
+      }
+    }
+);
+
+export const fetchAdverseEventById = createAsyncThunk("EventAndRequest/fetchAdverseEventById",
+    async (data, { rejectWithValue }) => {
+      try {
+        const response = await ApiCall({
+          method: "POST",
+          url: `${baseURL}/admin/adverseEventById`,
+          data,
+        });
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data || error.message);
+      }
+    }
+);
+
+
+export const fetchProtocolAmendmentRequestById = createAsyncThunk("EventAndRequest/fetchProtocolAmendmentRequestById",
+    async (data, { rejectWithValue }) => {
+      try {
+        const response = await ApiCall({
+          method: "POST",
+          url: `${baseURL}/admin/protocolAmendmentRequestById`,
+          data,
+        });
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data || error.message);
+      }
+    }
+);

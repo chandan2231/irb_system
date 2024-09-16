@@ -302,3 +302,54 @@ export const getProtocolAmendmentRequestList = (req, res) => {
         }
     })
 }
+
+export const getStudyCloseoutDetailsById = (req, res) => {
+    const que = "select * from study_closeout_request where protocol_id = ?"
+    db.query(que, [req.body.protocolId], (err, data) => {
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getPromptlyReportableEventById = (req, res) => {
+    const que = "select * from promptly_reportable_event where protocol_id = ?"
+    db.query(que, [req.body.protocolId], (err, data) => {
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getAdverseEventById = (req, res) => {
+    const que = "select * from adverse_event where protocol_id = ?"
+    db.query(que, [req.body.protocolId], (err, data) => {
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getProtocolAmendmentRequestById = (req, res) => {
+    const protocolAmendmentRequestDetailObj = {}
+    const que = "select * from protocol_amendment_request where protocol_id = ?"
+    db.query(que, [req.body.protocolId], (err, data) => {
+        if (data.length >= 0 ) {
+            protocolAmendmentRequestDetailObj.protocol_amendment_request = data[0] || {}
+            const docQue = "select * from protocol_documents where protocol_id = ? AND information_type = ?"
+            db.query(docQue, [req.body.protocolId, 'protocol_amendment'], (err, data) => {
+                if (data.length >= 0 ) {
+                    protocolAmendmentRequestDetailObj.protocol_amendment_request.documents = data || {}
+                } else {
+                    protocolAmendmentRequestDetailObj.protocol_amendment_request.documents = []
+                }
+                return res.status(200).json(protocolAmendmentRequestDetailObj)
+            })
+        }
+    })
+}
+            
+            
