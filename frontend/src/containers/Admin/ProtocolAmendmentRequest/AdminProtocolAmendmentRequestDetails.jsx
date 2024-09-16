@@ -33,8 +33,6 @@ function AdminProtocolAmendmentRequestDetails() {
     const location = useLocation();
     const protocolDetails = location.state.details
     const userDetails = JSON.parse(localStorage.getItem('user'));
-    const [showAdditionalQuestionAmendType, setShowAdditionalQuestionAmendType] = React.useState(false);
-    const [explainEnrolledTypeErrors, setExplainAmendDocumentErrors] = React.useState();
     const [formData, setFormData] = useState({
         protocol_number: '',
         amend_document: '',
@@ -92,7 +90,7 @@ function AdminProtocolAmendmentRequestDetails() {
                         protocolAmendmentRequestById && (
                             <>
                                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                                    <TextField fullWidth label="Protocol number" id="protocol_number" name="protocol_number" defaultValue={protocolAmendmentRequestById.protocol_amendment_request?.protocol_number} />
+                                    <TextField fullWidth disabled label="Protocol number" id="protocol_number" name="protocol_number" defaultValue={protocolAmendmentRequestById.protocol_amendment_request?.protocol_number} />
                                 </Form.Group>
                                 <Form.Group as={Col} controlId="validationFormik01">
                                     <FormControl>
