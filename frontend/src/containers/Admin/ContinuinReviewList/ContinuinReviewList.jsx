@@ -61,28 +61,34 @@ function ContinuinReviewList() {
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<RadioButtonUncheckedIcon />}
-                    label="View Report"
-                    onClick={() => handleChangeStatus(params)}
+                    label="View Pdf"
+                    onClick={() => handleViewPdf(params)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<EditNoteIcon />}
-                    label="Edit"
-                    onClick={handleItemEdit(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<SettingsSuggestIcon />}
-                    label="Details"
-                    onClick={handleItemDetail(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleItemDelete(params)}
-                    showInMenu
-                />,
+                // <GridActionsCellItem
+                //     icon={<RadioButtonUncheckedIcon />}
+                //     label="View Report"
+                //     onClick={() => handleChangeStatus(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<EditNoteIcon />}
+                //     label="Edit"
+                //     onClick={handleItemEdit(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<SettingsSuggestIcon />}
+                //     label="Details"
+                //     onClick={handleItemDetail(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<DeleteIcon />}
+                //     label="Delete"
+                //     onClick={handleItemDelete(params)}
+                //     showInMenu
+                // />,
             ],
         },
     ];
@@ -127,25 +133,36 @@ function ContinuinReviewList() {
         }
     }, [continuinReviewProtocolList]);
     
-    
+    const handleViewPdf = async (params) => {
+        const {row} = params
+        const {protocolId, researchType} = row
+        const protocolReportPayload = {
+            protocolId: protocolId,
+            protocolType: researchType
+        }
+        let pdfResponse = await continueinReviewReport(protocolReportPayload)
+        if(pdfResponse !== ''){
+            window.open(pdfResponse.pdfUrl, '_blank', 'noopener,noreferrer')
+        }
+    }
 
-    const handleChangeStatus = async (params) => {
-        let data = {}
-        data.protocolId = params.row.protocolId
-        data.researchType = params.row.researchType
-        let id = await continueinReviewReport(data)
-    }
-    const handleItemDelete = (params) => {
-        //console.log('Delete Item', params)
-    }
+    // const handleChangeStatus = async (params) => {
+    //     let data = {}
+    //     data.protocolId = params.row.protocolId
+    //     data.researchType = params.row.researchType
+    //     let id = await continueinReviewReport(data)
+    // }
+    // const handleItemDelete = (params) => {
+    //     //console.log('Delete Item', params)
+    // }
 
-    const handleItemDetail = (params) => {
-        //console.log('Details Item', params)
-    }
+    // const handleItemDetail = (params) => {
+    //     //console.log('Details Item', params)
+    // }
     
-    const handleItemEdit = (params) => {
-        //console.log('Edit Item', params)
-    }
+    // const handleItemEdit = (params) => {
+    //     //console.log('Edit Item', params)
+    // }
     return (
         <Box m={theme.layoutContainer.layoutSection}>
             <Box>

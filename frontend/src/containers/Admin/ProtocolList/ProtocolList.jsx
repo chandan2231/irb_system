@@ -13,6 +13,7 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
+import { protocolReport } from "../../../services/UserManagement/UserService";
 
 function ProtocolList() {
     const theme = useTheme();
@@ -60,28 +61,34 @@ function ProtocolList() {
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<RadioButtonUncheckedIcon />}
-                    label="Change Status"
-                    onClick={handleChangeStatus(params)}
+                    label="View Pdf"
+                    onClick={() => handleViewPdf(params)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<EditNoteIcon />}
-                    label="Edit"
-                    onClick={handleItemEdit(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<SettingsSuggestIcon />}
-                    label="Details"
-                    onClick={handleItemDetail(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleItemDelete(params)}
-                    showInMenu
-                />,
+                // <GridActionsCellItem
+                //     icon={<RadioButtonUncheckedIcon />}
+                //     label="Change Status"
+                //     onClick={handleChangeStatus(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<EditNoteIcon />}
+                //     label="Edit"
+                //     onClick={handleItemEdit(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<SettingsSuggestIcon />}
+                //     label="Details"
+                //     onClick={handleItemDetail(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<DeleteIcon />}
+                //     label="Delete"
+                //     onClick={handleItemDelete(params)}
+                //     showInMenu
+                // />,
             ],
         },
     ];
@@ -128,22 +135,36 @@ function ProtocolList() {
             setProtocolDataList(pListArr)
         }
     }, [protocolList]);
-    
-    
-    const handleChangeStatus = (status) => {
-        
-    }
-    const handleItemDelete = (params) => {
-        //console.log('Delete Item', params)
-    }
 
-    const handleItemDetail = (params) => {
-        //console.log('Details Item', params)
+
+    const handleViewPdf = async (params) => {
+        const {row} = params
+        const {protocolId, researchType} = row
+        const protocolReportPayload = {
+            protocolId: protocolId,
+            protocolType: researchType
+        }
+        let pdfResponse = await protocolReport(protocolReportPayload)
+        if(pdfResponse !== ''){
+            window.open(pdfResponse.pdfUrl, '_blank', 'noopener,noreferrer')
+        }
     }
     
-    const handleItemEdit = (params) => {
-        //console.log('Edit Item', params)
-    }
+    
+    // const handleChangeStatus = (status) => {
+        
+    // }
+    // const handleItemDelete = (params) => {
+    //     //console.log('Delete Item', params)
+    // }
+
+    // const handleItemDetail = (params) => {
+    //     //console.log('Details Item', params)
+    // }
+    
+    // const handleItemEdit = (params) => {
+    //     //console.log('Edit Item', params)
+    // }
     return (
         <Box m={theme.layoutContainer.layoutSection}>
             <Box>

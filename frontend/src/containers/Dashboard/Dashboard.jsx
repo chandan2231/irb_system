@@ -70,30 +70,30 @@ function Dashboard() {
                     onClick={() => handleViewPdf(params)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<RadioButtonUncheckedIcon />}
-                    label="Change Status"
-                    onClick={handleChangeStatus(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<EditNoteIcon />}
-                    label="Edit"
-                    onClick={handleItemEdit(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<SettingsSuggestIcon />}
-                    label="Details"
-                    onClick={handleItemDetail(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleItemDelete(params)}
-                    showInMenu
-                />,
+                // <GridActionsCellItem
+                //     icon={<RadioButtonUncheckedIcon />}
+                //     label="Change Status"
+                //     onClick={handleChangeStatus(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<EditNoteIcon />}
+                //     label="Edit"
+                //     onClick={handleItemEdit(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<SettingsSuggestIcon />}
+                //     label="Details"
+                //     onClick={handleItemDetail(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<DeleteIcon />}
+                //     label="Delete"
+                //     onClick={handleItemDelete(params)}
+                //     showInMenu
+                // />,
             ],
         },
     ];
@@ -174,27 +174,29 @@ function Dashboard() {
     }
 
     const handleViewPdf = async (params) => {
-        console.log('View Pdf', params)
         const {row} = params
         const {protocolId, researchType} = row
         const protocolReportPayload = {
             protocolId: protocolId,
             protocolType: researchType
         }
-        let id = await protocolReport(protocolReportPayload)
+        let pdfResponse = await protocolReport(protocolReportPayload)
+        if(pdfResponse !== ''){
+            window.open(pdfResponse.pdfUrl, '_blank', 'noopener,noreferrer')
+        }
     }
     
-    const handleItemDelete = (params) => {
-        //console.log('Delete Item', params)
-    }
+    // const handleItemDelete = (params) => {
+    //     //console.log('Delete Item', params)
+    // }
 
-    const handleItemDetail = (params) => {
-        //console.log('Details Item', params)
-    }
+    // const handleItemDetail = (params) => {
+    //     //console.log('Details Item', params)
+    // }
     
-    const handleItemEdit = (params) => {
-        //console.log('Edit Item', params)
-    }
+    // const handleItemEdit = (params) => {
+    //     //console.log('Edit Item', params)
+    // }
     return (
         <>
             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>

@@ -108,7 +108,7 @@ export const continueinReviewReport = async (protocolDetails) => {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-    return response.data?.id;
+    return response.data;
   } catch (error) {
 
   }
@@ -125,7 +125,8 @@ export const protocolReport = async (protocolDetails) => {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
-    return response.data?.id;
+    // console.log('response', response)
+    return response.data;
   } catch (error) {
 
   }

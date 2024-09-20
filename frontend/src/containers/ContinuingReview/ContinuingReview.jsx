@@ -11,6 +11,8 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useNavigate } from "react-router-dom";
 import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
+import {continueinReviewReport} from "../../services/UserManagement/UserService"
+
 
 function ContinuingReview() {
     const theme = useTheme();
@@ -58,28 +60,34 @@ function ContinuingReview() {
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<RadioButtonUncheckedIcon />}
-                    label="Change Status"
-                    onClick={handleChangeStatus(params)}
+                    label="View Pdf"
+                    onClick={() => handleViewPdf(params)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<EditNoteIcon />}
-                    label="Edit"
-                    onClick={handleItemEdit(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<SettingsSuggestIcon />}
-                    label="Details"
-                    onClick={handleItemDetail(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<DeleteIcon />}
-                    label="Delete"
-                    onClick={handleItemDelete(params)}
-                    showInMenu
-                />,
+                // <GridActionsCellItem
+                //     icon={<RadioButtonUncheckedIcon />}
+                //     label="Change Status"
+                //     onClick={handleChangeStatus(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<EditNoteIcon />}
+                //     label="Edit"
+                //     onClick={handleItemEdit(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<SettingsSuggestIcon />}
+                //     label="Details"
+                //     onClick={handleItemDetail(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<DeleteIcon />}
+                //     label="Delete"
+                //     onClick={handleItemDelete(params)}
+                //     showInMenu
+                // />,
             ],
         },
     ];
@@ -128,22 +136,33 @@ function ContinuingReview() {
         }
     }, [protocolList]);
     
-    
+    const handleViewPdf = async (params) => {
+        const {row} = params
+        const {protocolId, researchType} = row
+        const protocolReportPayload = {
+            protocolId: protocolId,
+            protocolType: researchType
+        }
+        let pdfResponse = await continueinReviewReport(protocolReportPayload)
+        if(pdfResponse !== ''){
+            window.open(pdfResponse.pdfUrl, '_blank', 'noopener,noreferrer')
+        }
+    }
 
-    const handleChangeStatus = (params) => {
-        //console.log('Status Item', params)
-    }
-    const handleItemDelete = (params) => {
-        //console.log('Delete Item', params)
-    }
+    // const handleChangeStatus = (params) => {
+    //     //console.log('Status Item', params)
+    // }
+    // const handleItemDelete = (params) => {
+    //     //console.log('Delete Item', params)
+    // }
 
-    const handleItemDetail = (params) => {
-        //console.log('Details Item', params)
-    }
+    // const handleItemDetail = (params) => {
+    //     //console.log('Details Item', params)
+    // }
     
-    const handleItemEdit = (params) => {
-        //console.log('Edit Item', params)
-    }
+    // const handleItemEdit = (params) => {
+    //     //console.log('Edit Item', params)
+    // }
     return (
         <Box m={theme.layoutContainer.layoutSection}>
             <Box>
@@ -162,7 +181,7 @@ function ContinuingReview() {
                     rowCount={rowCount}
                     loading={loading}
                     paginationMode="server"
-                    onCellClick={(param) => handleChangeStatus(param)}
+                    // onCellClick={(param) => handleChangeStatus(param)}
                     // onRowClick={(param) => handleChangeStatus(param)}
                 />
             </Box>

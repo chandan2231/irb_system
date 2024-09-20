@@ -146,7 +146,6 @@ export const saveFile = async (req, res) => {
 };
 
 export const continueinReviewGeneratePdf = async (req, res) => {
-  console.log("reqreqreq", req.body);
   const continuinReviewDetailObj = {};
   const que = "select * from risk_assessment where protocol_id = ?";
   db.query(que, [req.body.protocolId], (err, data) => {
@@ -225,30 +224,21 @@ export const continueinReviewGeneratePdf = async (req, res) => {
                         continuinReviewDetailObj.research_progress_info.documents =
                           [];
                       }
-                      console.log(
-                        "continuinReviewDetailObj",
-                        continuinReviewDetailObj
-                      );
+                      
                       try {
                         const protocolId = req.body;
-                        const template =
-                          await PdfTemplates.ContinuingReviewPdfTemplate(
-                            continuinReviewDetailObj,
-                            protocolId
-                          );
+                        const template = await PdfTemplates.ContinuingReviewPdfTemplate(continuinReviewDetailObj,protocolId);
                         let filePath = await generatePdfFromHTML(template);
                         console.log("filePath", filePath);
                         let sRL = await s3Service.uploadFile(filePath);
                         console.log("sRL", sRL);
                         let pdfUrl = sRL.cdnUrl;
                         // Remove the file from the local server
-                        // fs.unlinkSync(filePath);
+                        fs.unlinkSync(filePath);
                         return res.status(200).json({ pdfUrl });
                       } catch (error) {
                         console.log(error);
-                        return res
-                          .status(500)
-                          .json({ message: "Internal Server Error" });
+                        return res.status(500).json({ message: "Internal Server Error" });
                       }
                     }
                   );
@@ -357,39 +347,20 @@ export const protocolGeneratePdf = async (req, res) => {
                               protocolDetailsObj.protocol_procedure.documents =
                                 [];
                             }
-                            console.log(
-                              "Clinical Site",
-                              protocolDetailsObj,
-                              req.body.protocolId
-                            );
-                            // return res.status(200).json(protocolDetailsObj)
                             try {
                               const protocolId = req.body;
-                              const template =
-                                await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
-                                  protocolDetailsObj,
-                                  protocolId
-                                );
-                              let filePath = await generatePdfFromHTML(
-                                template
-                              );
+                              const template = await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(protocolDetailsObj, protocolId);
+                              let filePath = await generatePdfFromHTML(template);
                               console.log("filePath", filePath);
                               let sRL = await s3Service.uploadFile(filePath);
                               console.log("sRL", sRL);
                               let pdfUrl = sRL.cdnUrl;
                               // Remove the file from the local server
-                              // fs.unlinkSync(filePath);
-                              return res
-                                .status(200)
-                                .json({ pdfUrl, protocolDetailsObj });
-                              // console.log("Clinical Site", {
-                              //   protocolDetailsObj
-                              // });
+                              fs.unlinkSync(filePath);
+                              return res.status(200).json({ pdfUrl });
                             } catch (error) {
                               console.log(error);
-                              return res
-                                .status(500)
-                                .json({ message: "Internal Server Error" });
+                              return res.status(500).json({ message: "Internal Server Error" });
                             }
                           }
                         );
@@ -495,31 +466,18 @@ export const protocolGeneratePdf = async (req, res) => {
                             // return res.status(200).json(protocolDetailsObj);
                             try {
                               const protocolId = req.body;
-                              const template =
-                                await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
-                                  protocolDetailsObj,
-                                  protocolId
-                                );
-                              let filePath = await generatePdfFromHTML(
-                                template
-                              );
+                              const template = await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(protocolDetailsObj,protocolId);
+                              let filePath = await generatePdfFromHTML(template);
                               console.log("filePath", filePath);
                               let sRL = await s3Service.uploadFile(filePath);
                               console.log("sRL", sRL);
                               let pdfUrl = sRL.cdnUrl;
                               // Remove the file from the local server
-                              // fs.unlinkSync(filePath);
-                              // console.log("Multi Site Sponser", {
-                              //   protocolDetailsObj,
-                              // });
-                              return res
-                                .status(200)
-                                .json({ pdfUrl, protocolDetailsObj });
+                              fs.unlinkSync(filePath);
+                              return res.status(200).json({ pdfUrl });
                             } catch (error) {
                               console.log(error);
-                              return res
-                                .status(500)
-                                .json({ message: "Internal Server Error" });
+                              return res.status(500).json({ message: "Internal Server Error" });
                             }
                           }
                         );
@@ -573,27 +531,18 @@ export const protocolGeneratePdf = async (req, res) => {
                 // return res.status(200).json(protocolDetailsObj);
                 try {
                   const protocolId = req.body;
-                  const template =
-                    await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
-                      protocolDetailsObj,
-                      protocolId
-                    );
+                  const template = await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(protocolDetailsObj,protocolId);
                   let filePath = await generatePdfFromHTML(template);
                   console.log("filePath", filePath);
                   let sRL = await s3Service.uploadFile(filePath);
                   console.log("sRL", sRL);
                   let pdfUrl = sRL.cdnUrl;
                   // Remove the file from the local server
-                  // fs.unlinkSync(filePath);
-                  // console.log("Principal Investigator", {
-                  //   protocolDetailsObj,
-                  // });
-                  return res.status(200).json({ pdfUrl, protocolDetailsObj });
+                  fs.unlinkSync(filePath);
+                  return res.status(200).json({ pdfUrl });
                 } catch (error) {
                   console.log(error);
-                  return res
-                    .status(500)
-                    .json({ message: "Internal Server Error" });
+                  return res.status(500).json({ message: "Internal Server Error" });
                 }
               }
             );

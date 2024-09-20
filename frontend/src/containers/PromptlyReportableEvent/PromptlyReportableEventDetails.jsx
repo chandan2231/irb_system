@@ -73,6 +73,7 @@ function PromptlyReportableEventDetails() {
         your_name: '',
         protocol_id: protocolDetails.protocolId,
         created_by: userDetails.id,
+        protocol_type: protocolDetails.researchType,
     });
     const [errors, setErrors] = useState({});
 

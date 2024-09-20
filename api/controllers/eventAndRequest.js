@@ -4,9 +4,10 @@ export const saveStudyCloseoutRequest = (req, res) => {
     // console.log('req.body', req.body)
     // return;
     var datetime = new Date();
-    const que = 'insert into study_closeout_request (`protocol_id`, `protocol_number`, `pi_name`,  `study_completion_date`, `study_closeout_reason`,`study_closeout_reason_other`,`subject_enrolled_number`,`subject_withdrew_number`,`subject_withdrew_by_other`,`subject_fails`,`subject_lost_followup`,`subject_completed`,`subject_complaints_review`,`subject_complaints_review_explain`,`not_reported_irb`,`not_reported_irb_explain`,`promptly_reportable_info`,`adverse_event_info`,`your_name`,`created_by`,`created_at`,`updated_at`) value (?)';
+    const que = 'insert into study_closeout_request (`protocol_id`, `protocol_type`, `protocol_number`, `pi_name`,  `study_completion_date`, `study_closeout_reason`,`study_closeout_reason_other`,`subject_enrolled_number`,`subject_withdrew_number`,`subject_withdrew_by_other`,`subject_fails`,`subject_lost_followup`,`subject_completed`,`subject_complaints_review`,`subject_complaints_review_explain`,`not_reported_irb`,`not_reported_irb_explain`,`promptly_reportable_info`,`adverse_event_info`,`your_name`,`created_by`,`created_at`,`updated_at`) value (?)';
     const values = [
         req.body.protocol_id, 
+        req.body.protocol_type, 
         req.body.protocol_number, 
         req.body.pi_name, 
         req.body.study_completion_date, 
@@ -49,9 +50,10 @@ export const savePromptlyReportableEvent = (req, res) => {
     // console.log(req.body)
     // return
     var datetime = new Date();
-    const que = 'insert into promptly_reportable_event (`protocol_id`, `submitter_type`, `irb_protocol_number`, `sponsor_name`, `described_category`, `described_category_explain`, `involved_subject`, `date_problem_discovered`,`date_of_occurrence`, `date_reported_to_sponsor`, `describe_problem`, `action_taken`, `plan_action_taken`, `subject_harmed`, `protocol_change`,`question_not_covered`,`person_name`,`email`,`phone`,`your_name`,`created_by`, `created_at`, `updated_at`) value (?)';
+    const que = 'insert into promptly_reportable_event (`protocol_id`, `protocol_type`, `submitter_type`, `irb_protocol_number`, `sponsor_name`, `described_category`, `described_category_explain`, `involved_subject`, `date_problem_discovered`,`date_of_occurrence`, `date_reported_to_sponsor`, `describe_problem`, `action_taken`, `plan_action_taken`, `subject_harmed`, `protocol_change`,`question_not_covered`,`person_name`,`email`,`phone`,`your_name`,`created_by`, `created_at`, `updated_at`) value (?)';
     const values = [
         req.body.protocol_id, 
+        req.body.protocol_type, 
         req.body.submitter_type, 
         req.body.irb_protocol_number,
         req.body.sponsor_name, 
@@ -93,9 +95,10 @@ export const savePromptlyReportableEvent = (req, res) => {
 
 export const saveProtocolAmendmentRequest = (req, res) => {
     var datetime = new Date();
-    const que = 'insert into protocol_amendment_request (`protocol_id`, `protocol_number`, `amend_document`, `amend_document_explain`, `describe_change_request`, `describe_reasoning`, `person_name`, `email`, `phone`,  `your_name`, `updated_at`, `created_at`, `created_by`) value (?)';
+    const que = 'insert into protocol_amendment_request (`protocol_id`, `protocol_type`, `protocol_number`, `amend_document`, `amend_document_explain`, `describe_change_request`, `describe_reasoning`, `person_name`, `email`, `phone`,  `your_name`, `updated_at`, `created_at`, `created_by`) value (?)';
     const values = [
         req.body.protocol_id, 
+        req.body.protocol_type, 
         req.body.protocol_number, 
         req.body.amend_document.toString(), 
         req.body.amend_document_explain, 
@@ -127,9 +130,10 @@ export const saveAdverseEvent = (req, res) => {
     console.log(req.body)
     // return
     var datetime = new Date();
-    const que = 'insert into adverse_event (`protocol_id`, `protocol_number`, `adverse_event_criteria`, `participant_id_number`, `event_start_date`, `event_end_date`, `event_aware_date`, `irb_report_date`,`severity_level`, `unexpected_event`, `unexpected_event_explain`, `event_nature`, `date_of_death`, `event_nature_explain`, `event_description`,`event_study_relationship`,`study_discontinued`,`study_discontinued_explain`,`person_name`,`email`,`phone`,`your_name`,`created_by`,`created_at`,`updated_at`) value (?)';
+    const que = 'insert into adverse_event (`protocol_id`, `protocol_type`, `protocol_number`, `adverse_event_criteria`, `participant_id_number`, `event_start_date`, `event_end_date`, `event_aware_date`, `irb_report_date`,`severity_level`, `unexpected_event`, `unexpected_event_explain`, `event_nature`, `date_of_death`, `event_nature_explain`, `event_description`,`event_study_relationship`,`study_discontinued`,`study_discontinued_explain`,`person_name`,`email`,`phone`,`your_name`,`created_by`,`created_at`,`updated_at`) value (?)';
     const values = [
         req.body.protocol_id, 
+        req.body.protocol_type, 
         req.body.protocol_number, 
         req.body.adverse_event_criteria, 
         req.body.participant_id_number, 
