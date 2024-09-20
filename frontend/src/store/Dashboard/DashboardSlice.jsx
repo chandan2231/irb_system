@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProtocolList, createProtocol } from "../../services/Dashboard/DashboardService";
+import { fetchProtocolList, createProtocol, approvedProtocolListCheck, fetchApprovedProtocolList } from "../../services/Dashboard/DashboardService";
 const DashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
@@ -7,6 +7,8 @@ const DashboardSlice = createSlice({
     error: null,
     protocolList: null,
     createdProtocol: null,
+    approvedProtocolListCount: null,
+    approvedProtocolList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -35,6 +37,31 @@ const DashboardSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
+      .addCase(approvedProtocolListCheck.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(approvedProtocolListCheck.fulfilled, (state, action) => {
+        state.loading = false;
+        state.approvedProtocolListCount = action.payload;
+      })
+      .addCase(approvedProtocolListCheck.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchApprovedProtocolList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchApprovedProtocolList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.approvedProtocolList = action.payload;
+      })
+      .addCase(fetchApprovedProtocolList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      ;
   },
 });
 

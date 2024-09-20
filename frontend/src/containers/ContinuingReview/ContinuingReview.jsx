@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useNavigate } from "react-router-dom";
 import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
 import {continueinReviewReport} from "../../services/UserManagement/UserService"
@@ -59,7 +60,7 @@ function ContinuingReview() {
             width: 80,
             getActions: (params) => [
                 <GridActionsCellItem
-                    icon={<RadioButtonUncheckedIcon />}
+                    icon={<PictureAsPdfIcon />}
                     label="View Pdf"
                     onClick={() => handleViewPdf(params)}
                     showInMenu

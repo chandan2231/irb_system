@@ -36,7 +36,7 @@ function UsersList() {
             field: "name",
             headerName: "Name",
             flex: 1,
-            renderCell: (params) => <a className="link-tag" onClick={() => navigateProtocolDetails(params)}>{params.value}</a>,
+            // renderCell: (params) => <a className="link-tag" onClick={() => navigateProtocolDetails(params)}>{params.value}</a>,
         },
         {
             field: "email",

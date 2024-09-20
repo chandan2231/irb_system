@@ -12,11 +12,13 @@ import {
     getPromptlyReportableEventById,
     getAdverseEventById,
     getProtocolAmendmentRequestById,
+    allowProtocolEditByAdmin,
 } from "../controllers/admin.js";
 
 const router = express.Router()
 
 router.get('/protocol/list', getProtocolList)
+router.post('/protocol/allowEdit', allowProtocolEditByAdmin)
 router.get('/users/list', getAllUsers)
 router.post('/continuinDetailsById', getContinuinDetailsById)
 router.post('/protocolDetailsById', getProtocolDetailsById)

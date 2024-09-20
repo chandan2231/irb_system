@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProtocolList } from "../../../services/Admin/ProtocolListService";
+import { fetchProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -10,16 +10,18 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import { ToastContainer, toast } from 'react-toastify';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import { protocolReport } from "../../../services/UserManagement/UserService";
+import ToggleStatus from "../../../components/ToggleStatus";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ProtocolList() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
     const [protocolDataList, setProtocolDataList] = React.useState([]);
     const [user, setUser] = useState([]);
     useEffect(() => {
@@ -43,7 +45,30 @@ function ProtocolList() {
             headerName: "Research Type",
             flex: 1,
         },
-        
+        {
+            field: "username",
+            headerName: "Username",
+            flex: 1,
+        },
+        {
+            field: "email",
+            headerName: "Email",
+            flex: 1,
+        },
+        {
+            field: "allowEdit",
+            headerName: "Allow Edit",
+            flex: 1,
+            renderCell: (params) => (
+                <ToggleStatus status={params.row.allowEdit}  />
+            )
+        },
+        {
+            field: "status",
+            headerName: "Status",
+            flex: 1,
+            
+        },
         {
             field: "createdDate",
             headerName: "Created Date",
@@ -60,7 +85,7 @@ function ProtocolList() {
             width: 80,
             getActions: (params) => [
                 <GridActionsCellItem
-                    icon={<RadioButtonUncheckedIcon />}
+                    icon={<PictureAsPdfIcon />}
                     label="View Pdf"
                     onClick={() => handleViewPdf(params)}
                     showInMenu
@@ -115,9 +140,6 @@ function ProtocolList() {
         return rowCountRef.current;
     }, [totalElements]);
 
-    const addNew = () => {
-        setOpen(true);
-    };
 
     useEffect(() => {
         const pListArr = []
@@ -127,6 +149,10 @@ function ProtocolList() {
                     id: pList.id,
                     protocolId: pList.protocol_id,
                     researchType:  pList.protocol_type,
+                    username: pList.name,
+                    email: pList.email,
+                    allowEdit: pList.allow_edit,
+                    status: pList.status === '1' ? 'Submitted by User' : pList.status === '2' ? 'Inprogress' : pList.status === '3' ? 'Approved' : 'Rejected',
                     createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
                     updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
                 }
@@ -150,10 +176,28 @@ function ProtocolList() {
         }
     }
     
+    // console.log('protocolList', protocolList)
     
-    // const handleChangeStatus = (status) => {
-        
-    // }
+    const handleChangeStatus = (status) => {
+        if(status.value === '1' || status.value === '2'){
+            let allowEditvalue = ''
+            if(status.value === '1') {
+                allowEditvalue = 2
+            } else if(status.value === '2'){
+                allowEditvalue = 1
+            }
+            let data = {id: status.id, status: allowEditvalue}
+            dispatch(allowProtocolEdit(data))
+            .then(data => {
+                if (data.payload.status === 200) {
+                    toast.success(data.payload.data, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                    setFormData({})
+                } else {
+                    toast.error(data.payload.data, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                }
+            })
+        }
+    }
     // const handleItemDelete = (params) => {
     //     //console.log('Delete Item', params)
     // }
@@ -166,29 +210,31 @@ function ProtocolList() {
     //     //console.log('Edit Item', params)
     // }
     return (
-        <Box m={theme.layoutContainer.layoutSection}>
-            <Box>
-                <Grid container spacing={2}>
-                    <Grid item xs={5} sm={5} md={8} lg={8}>
-                        <Typography variant="h5" mb={2}>
-                            Protocol List
-                        </Typography>
+        <>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <Box m={theme.layoutContainer.layoutSection}>
+                <Box>
+                    <Grid container spacing={2}>
+                        <Grid item xs={5} sm={5} md={8} lg={8}>
+                            <Typography variant="h5" mb={2}>
+                                Protocol List
+                            </Typography>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Box>
+                
+                <Box sx={{ mt: 5 }}>
+                    <DataGrid
+                        rows={protocolDataList}
+                        columns={columns}
+                        rowCount={rowCount}
+                        loading={loading}
+                        paginationMode="server"
+                        onCellClick={(param) => handleChangeStatus(param)}
+                    />
+                </Box>
             </Box>
-            
-            <Box sx={{ mt: 5 }}>
-                <DataGrid
-                    rows={protocolDataList}
-                    columns={columns}
-                    rowCount={rowCount}
-                    loading={loading}
-                    paginationMode="server"
-                    // onCellClick={(param) => handleChangeStatus(param)}
-                    // onRowClick={(param) => handleChangeStatus(param)}
-                />
-            </Box>
-        </Box>
+        </>
     );
 }
 

@@ -16,6 +16,29 @@ export const getProtocolList = (req, res) => {
   });
 };
 
+export const getApprovedProtocolCheck = (req, res) => {
+  const que = "SELECT * from protocol_submission WHERE created_by=? AND status=?";
+  db.query(que, [req.body.userId, 3], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length >= 0) {
+      return res.status(200).json(data.length);
+    }
+  });
+};
+
+
+export const getApprovedProtocolList = (req, res) => {
+  const que = "SELECT * from protocol_submission WHERE created_by=? AND status=?";
+  db.query(que, [req.body.login_id, 3], (err, data) => {
+    if (err) return res.status(500).json(err);
+    if (data.length >= 0) {
+      return res.status(200).json(data);
+    }
+  });
+};
+
+
+
 // export const createProtocol = (req, res) => {
 //     // CHECK RESEARCH TYPE IF EXIST
 //     const que = "select * from user_research where research_type = ? AND added_by = ?"

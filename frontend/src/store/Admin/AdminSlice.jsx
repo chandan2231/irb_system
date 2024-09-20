@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProtocolList, fetchProtocolDetailsById } from "../../services/Admin/ProtocolListService";
+import { fetchProtocolList, fetchProtocolDetailsById, allowProtocolEdit } from "../../services/Admin/ProtocolListService";
 import { fetchContinuinReviewProtocolList, fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
 import { fetchUsersList } from "../../services/Admin/UsersListService";
 import { 
@@ -33,6 +33,7 @@ const AdminSlice = createSlice({
         promptlyReportableEventById: null,
         adverseEventById: null,
         protocolAmendmentRequestById: null,
+        allowEditStatus: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -190,6 +191,18 @@ const AdminSlice = createSlice({
             state.protocolAmendmentRequestById = action.payload;
         })
         .addCase(fetchProtocolAmendmentRequestById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(allowProtocolEdit.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(allowProtocolEdit.fulfilled, (state, action) => {
+            state.loading = false;
+            state.allowEditStatus = action.payload;
+        })
+        .addCase(allowProtocolEdit.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
         })

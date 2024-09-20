@@ -1,21 +1,35 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import * as React from "react";
+import { useState, useEffect } from "react";
+import { Typography, useTheme } from "@mui/material";
 import {Sidebar, Menu, MenuItem, SubMenu} from 'react-pro-sidebar';
 import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
-import LayersOutlinedIcon from '@mui/icons-material/LayersOutlined';
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SourceOutlinedIcon from '@mui/icons-material/SourceOutlined';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import {Link, useLocation} from 'react-router-dom';
-
+import { useDispatch, useSelector } from "react-redux";
+import { approvedProtocolListCheck } from "../services/Dashboard/DashboardService";
 
 function SideNav (){
     const theme = useTheme();
     const loaction = useLocation();
+    const dispatch = useDispatch();
     const userDetails = JSON.parse(localStorage.getItem('user'));
+    console.log('userDetails.id', userDetails)
+    const { approvedProtocolListCount, loading, error } = useSelector(
+        state => ({
+            error: state.dashboard.error,
+            approvedProtocolListCount: state.dashboard.approvedProtocolListCount,
+            loading: state.dashboard.loading,
+        })
+    );
+    useEffect(() => {
+        if(userDetails){
+            let data = {userId: userDetails.id}
+            dispatch(approvedProtocolListCheck(data));
+        }
+    }, [dispatch, userDetails && userDetails?.id !== null]);
+    
+
     return (
         (loaction.pathname === "/reset-password" || loaction.pathname === "/forget-password" || loaction.pathname === "/signin" || loaction.pathname === "/signup" ) ? (
             <></>
@@ -68,23 +82,29 @@ function SideNav (){
                         ) : (
                             <>
                                 <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Dashboard</Typography>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol List</Typography>
                                 </MenuItem>
-                                <MenuItem active={location.pathname === '/continuin-review' || location.pathname === '/continuin-review-details' ? true : false} component={<Link to ='/continuin-review' />} icon={<GroupAddOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review</Typography>
-                                </MenuItem>
-                                <MenuItem active={location.pathname === '/protocol-amendment-request' || location.pathname === '/protocol-amendment-request-details' ? true : false} component={<Link to ='/protocol-amendment-request' />} icon={<AddBusinessOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
-                                </MenuItem>
-                                <MenuItem active={location.pathname === '/adverse-events' || location.pathname === '/adverse-events-details' ? true : false} component={<Link to ='/adverse-events' />} icon={<AddBusinessOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
-                                </MenuItem>
-                                <MenuItem active={location.pathname === '/promptly-reportable-event' || location.pathname === '/promptly-reportable-event-details' ? true : false} component={<Link to ='/promptly-reportable-event' />} icon={<AddBusinessOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event</Typography>
-                                </MenuItem>
-                                <MenuItem active={location.pathname === '/study-close-request' || location.pathname === '/study-close-request-details' ? true : false} component={<Link to ='/study-close-request' />} icon={<AddBusinessOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Study Closeout Request</Typography>
-                                </MenuItem>
+                                {
+                                    approvedProtocolListCount !== null && approvedProtocolListCount > 0 && (
+                                        <>
+                                            <MenuItem active={location.pathname === '/continuin-review' || location.pathname === '/continuin-review-details' ? true : false} component={<Link to ='/continuin-review' />} icon={<GroupAddOutlinedIcon />}>
+                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review</Typography>
+                                            </MenuItem>
+                                            <MenuItem active={location.pathname === '/protocol-amendment-request' || location.pathname === '/protocol-amendment-request-details' ? true : false} component={<Link to ='/protocol-amendment-request' />} icon={<AddBusinessOutlinedIcon />}>
+                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
+                                            </MenuItem>
+                                            <MenuItem active={location.pathname === '/adverse-events' || location.pathname === '/adverse-events-details' ? true : false} component={<Link to ='/adverse-events' />} icon={<AddBusinessOutlinedIcon />}>
+                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
+                                            </MenuItem>
+                                            <MenuItem active={location.pathname === '/promptly-reportable-event' || location.pathname === '/promptly-reportable-event-details' ? true : false} component={<Link to ='/promptly-reportable-event' />} icon={<AddBusinessOutlinedIcon />}>
+                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event</Typography>
+                                            </MenuItem>
+                                            <MenuItem active={location.pathname === '/study-close-request' || location.pathname === '/study-close-request-details' ? true : false} component={<Link to ='/study-close-request' />} icon={<AddBusinessOutlinedIcon />}>
+                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Study Closeout Request</Typography>
+                                            </MenuItem>
+                                        </>
+                                    )
+                                }
                             </>
                         )
                     }

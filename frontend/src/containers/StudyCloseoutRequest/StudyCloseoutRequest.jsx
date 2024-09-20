@@ -10,7 +10,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import { useNavigate } from "react-router-dom";
-import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
+import { fetchApprovedProtocolList } from "../../services/Dashboard/DashboardService";
 
 function StudyCloseoutRequest() {
     const theme = useTheme();
@@ -85,19 +85,19 @@ function StudyCloseoutRequest() {
     ];
     
     var totalElements = 0;
-    const { protocolList, loading, error } = useSelector(
+    const { approvedProtocolList, loading, error } = useSelector(
         state => ({
             error: state.dashboard.error,
-            protocolList: state.dashboard.protocolList,
+            approvedProtocolList: state.dashboard.approvedProtocolList,
             loading: state.dashboard.loading,
         })
     );
     useEffect(() => {
         const data = { login_id: user.id };
-        dispatch(fetchProtocolList(data));
+        dispatch(fetchApprovedProtocolList(data));
     }, [dispatch, user.id]);
-    if(protocolList !== '' && protocolList?.length > 0){
-        totalElements = protocolList.length;
+    if(approvedProtocolList !== '' && approvedProtocolList?.length > 0){
+        totalElements = approvedProtocolList.length;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -113,12 +113,12 @@ function StudyCloseoutRequest() {
 
     useEffect(() => {
         const pListArr = []
-        if(protocolList && protocolList?.length > 0) {
-            protocolList.map((pList, index) => {
+        if(approvedProtocolList && approvedProtocolList?.length > 0) {
+            approvedProtocolList.map((pList, index) => {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
-                    researchType:  pList.research_type === 'clinical_site' ? 'Clinical Site' :  pList.research_type === 'multi_site_sponsor' ? 'Multi Site Sponsor' : 'Principal Investigator',
+                    researchType:  pList.protocol_type,
                     createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
                     updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
                 }
@@ -126,7 +126,7 @@ function StudyCloseoutRequest() {
             })
             setProtocolDataList(pListArr)
         }
-    }, [protocolList]);
+    }, [approvedProtocolList]);
     
     
 

@@ -13,6 +13,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import AddResearch from "./AddResearch";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -65,7 +66,7 @@ function Dashboard() {
             width: 80,
             getActions: (params) => [
                 <GridActionsCellItem
-                    icon={<RadioButtonUncheckedIcon />}
+                    icon={<PictureAsPdfIcon />}
                     label="View Pdf"
                     onClick={() => handleViewPdf(params)}
                     showInMenu
@@ -205,7 +206,7 @@ function Dashboard() {
                     <Grid container spacing={2}>
                     <Grid item xs={5} sm={5} md={8} lg={8}>
                         <Typography variant="h5" mb={2}>
-                        Dashboard
+                        Protocol List
                         </Typography>
                     </Grid>
                     <Grid item xs={7} sm={7} md={4} lg={4}>

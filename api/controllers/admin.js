@@ -1,7 +1,19 @@
 import { db } from "../connect.js"
 
+
+
+export const allowProtocolEditByAdmin = (req, res) => {
+    const que = "UPDATE protocol_submission SET allow_edit=? WHERE id=?"
+    db.query(que,[req.body.status, req.body.id], (err, data) => {
+        if (err){
+            return res.status(500).json(err)
+        } else {
+            return res.status(200).json('Allow Protocol Edit Successfull')
+        }
+    })
+}
 export const getProtocolList = (req, res) => {
-    const que = "select * from protocol_submission"
+    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocol_submission as ps JOIN users ON ps.created_by = users.id"
     db.query(que, {}, (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length >= 0 ) {

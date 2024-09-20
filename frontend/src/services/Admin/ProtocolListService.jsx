@@ -31,3 +31,19 @@ export const fetchProtocolDetailsById = createAsyncThunk("ProtocolList/fetchProt
     }
   }
 );
+
+export const allowProtocolEdit = createAsyncThunk("ProtocolList/allowProtocolEdit",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/admin/protocol/allowEdit`,
+        data,
+      });
+      console.log('response', response)
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
