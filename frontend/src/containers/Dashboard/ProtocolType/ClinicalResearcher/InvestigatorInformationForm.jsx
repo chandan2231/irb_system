@@ -100,7 +100,6 @@ const investigatorAndProtocolInfoSchema = yup.object().shape({
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),
-    
     pending_or_active_research_explain: yup.string().when('pending_or_active_research', {
         is: 'Yes',
         then: (schema) => schema.required("This is required"),
@@ -376,6 +375,12 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 newErrors[err.path] = err.message;
             });
             setErrors(newErrors);
+            if (Object.keys(newErrors).length > 0) {
+                const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
+                if (firstErrorField) {
+                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
     };
     return (

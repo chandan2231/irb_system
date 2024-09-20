@@ -174,6 +174,12 @@ function InformedConsentForm({ protocolTypeDetails }) {
                 newErrors[err.path] = err.message;
             });
             setErrors(newErrors);
+            if (Object.keys(newErrors).length > 0) {
+                const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
+                if (firstErrorField) {
+                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
         }
     }
 
