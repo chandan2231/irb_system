@@ -340,7 +340,8 @@ export const getClinicalSiteSavedProtocolType = (req, res) => {
                                         db.query(que5, [req.body.protocolId], (err, data) => {
                                             if (data.length >= 0 ) {
                                                 protocolTypeObj.protocol_procedure = data.length > 0 ? true : false
-                                                return res.status(200).json(protocolTypeObj)
+                                                let result = Object.keys(protocolTypeObj).map(key => ({form: key, filled: protocolTypeObj[key]}));
+                                                return res.status(200).json(result)
                                             }
                                         })
                                     }
@@ -399,7 +400,8 @@ export const getMultiSiteSavedProtocolType = (req, res) => {
                                         db.query(que5, [req.body.protocolId], (err, data) => {
                                             if (data.length >= 0 ) {
                                                 protocolTypeObj.protocol_procedure = data.length > 0 ? true : false
-                                                return res.status(200).json(protocolTypeObj)
+                                                let result = Object.keys(protocolTypeObj).map(key => ({form: key, filled: protocolTypeObj[key]}));
+                                                return res.status(200).json(result)
                                             }
                                         })
                                     }
@@ -446,7 +448,8 @@ export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
                 db.query(que2, [req.body.protocolId], (err, data) => {
                     if (data.length >= 0 ) {
                         protocolTypeObj.consent_information = data.length > 0 ? true : false
-                        return res.status(200).json(protocolTypeObj)
+                        let result = Object.keys(protocolTypeObj).map(key => ({form: key, filled: protocolTypeObj[key]}));
+                        return res.status(200).json(result)
                     }
                 })
             }

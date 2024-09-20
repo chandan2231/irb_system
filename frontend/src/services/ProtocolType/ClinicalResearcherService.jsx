@@ -55,7 +55,7 @@ export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk("Proto
         url: `${baseURL}/researchInfo/getPrincipalInvestigatorSavedProtocolType`,
         data,
       });
-      return response;
+      return response?.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

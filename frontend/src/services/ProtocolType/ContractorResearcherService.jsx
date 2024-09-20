@@ -100,7 +100,7 @@ export const getClinicalSiteSavedProtocolType = createAsyncThunk("ProtocolType/g
         url: `${baseURL}/researchInfo/getClinicalSiteSavedProtocolType`,
         data,
       });
-      return response;
+      return response?.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

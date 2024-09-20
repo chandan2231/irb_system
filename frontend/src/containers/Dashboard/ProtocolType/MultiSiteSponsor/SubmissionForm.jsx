@@ -13,6 +13,12 @@ import { createMultiSiteSubmission, getMultiSiteSavedProtocolType } from '../../
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ListSubheader from '@mui/material/ListSubheader';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import StarBorder from '@mui/icons-material/StarBorder';
 
 
 function SubmissionForm({protocolTypeDetails}) {
@@ -25,6 +31,25 @@ function SubmissionForm({protocolTypeDetails}) {
         created_by: userDetails.id,
 	})
 
+    useEffect(() => {
+        let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
+        dispatch(getMultiSiteSavedProtocolType(data));
+    }, [dispatch, userDetails.id]);
+
+    const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
+        state => ({
+            error: state.multiSiteSponsor.error,
+            getAllMultiSiteSavedProtocolType: state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
+            loading: state.multiSiteSponsor.loading,
+        })
+    );
+	const notSavedForm = []
+    getAllMultiSiteSavedProtocolType && getAllMultiSiteSavedProtocolType.map((formList) => {
+        if(formList.filled === false){
+            notSavedForm.push(formList.form)
+        }
+    });
+    
 	const handleFinalSubmissionTearmChecked = (event) => {
         const {checked} = event.target
         if(checked === true){
@@ -34,45 +59,63 @@ function SubmissionForm({protocolTypeDetails}) {
         }
     }
 
-    
-	const handleSubmitData = async (e) => {
+    const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const isValid = true
-            if (isValid === true) {
-                dispatch(createMultiSiteSubmission({ ...formData }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
+            if(notSavedForm.length >= 0){
+                toast.error('Befor final submission you have to fill protocol information', {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+            }else if(notSavedForm.length <= 0){
+                const isValid = true
+                if (isValid === true) {
+                    dispatch(createMultiSiteSubmission({ ...formData }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                            setFormData({})
+                        }
+                    })
+                }
             }
         } catch (error) {
         }
     }
-
-	useEffect(() => {
-        let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
-        dispatch(getMultiSiteSavedProtocolType(data));
-    }, [dispatch, userDetails.id]);
-
-    const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
-        state => ({
-            error: state.admin.error,
-            getAllMultiSiteSavedProtocolType: state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
-            loading: state.admin.loading,
-        })
-    );
-	console.log('getAllMultiSiteSavedProtocolType', getAllMultiSiteSavedProtocolType)
-
-    
+	
+    const titleCase = (str) => {
+        var splitStr = str.toLowerCase().split(' ');
+        for (var i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        }
+        return splitStr.join(' '); 
+    }
+	
 	return (
 		<>
 			<ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
 			<Row>
+                {
+                    notSavedForm.length > 0 && (
+                        <List
+                            sx={{ width: '100%', maxWidth: '50%', bgcolor: 'background.paper' }}
+                            component="nav"
+                            aria-labelledby="nested-list-subheader"
+                            subheader={<ListSubheader component="div" id="nested-list-subheader" style={{fontSize: '18px', color: 'red'}}>Befor final submission you have to fill the below forms</ListSubheader>}
+                        >
+                            {notSavedForm.map((showForm) => {
+                                return(
+                                    <ListItemButton>
+                                        <ListItemIcon>
+                                            <StarBorder />
+                                        </ListItemIcon>
+                                        <ListItemText primary={titleCase(showForm.replaceAll("_", ' '))} />
+                                    </ListItemButton>
+                                ) 
+                            })}
+                        </List>
+                    )
+                }
             	<form onSubmit={handleSubmitData}>
 					<Form.Group as={Col} controlId="validationFormik01" className='ul-list'>
+                        
 						<p>By submitting this application you attest to the following:</p>
 						<ul>
 							<li>Research will not commence prior to receiving the IRB approval letter.</li>

@@ -101,7 +101,7 @@ export const getMultiSiteSavedProtocolType = createAsyncThunk("ProtocolType/getM
         url: `${baseURL}/researchInfo/getMultiSiteSavedProtocolType`,
         data,
       });
-      return response;
+      return response?.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

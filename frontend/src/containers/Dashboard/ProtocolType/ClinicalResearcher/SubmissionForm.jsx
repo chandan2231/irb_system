@@ -13,7 +13,12 @@ import { createPrincipalInvestigatorSubmission, getPrincipalInvestigatorSavedPro
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import ListSubheader from '@mui/material/ListSubheader';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import StarBorder from '@mui/icons-material/StarBorder';
 
 function SubmissionForm({protocolTypeDetails}) {
     const dispatch = useDispatch();
@@ -33,23 +38,6 @@ function SubmissionForm({protocolTypeDetails}) {
             setTermsSelected(false)
         }
     }
-    
-	const handleSubmitData = async (e) => {
-        e.preventDefault();
-        try {
-            const isValid = true
-            if (isValid === true) {
-                dispatch(createPrincipalInvestigatorSubmission({ ...formData }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
-            }
-        } catch (error) {
-        }
-    }
 
     useEffect(() => {
         let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
@@ -58,17 +46,72 @@ function SubmissionForm({protocolTypeDetails}) {
 
     const { getAllPrincipalInvestigatorSavedProtocolType, loading, error } = useSelector(
         state => ({
-            error: state.admin.error,
+            error: state.clinicalResearcher.error,
             getAllPrincipalInvestigatorSavedProtocolType: state.clinicalResearcher.getAllPrincipalInvestigatorSavedProtocolType,
-            loading: state.admin.loading,
+            loading: state.clinicalResearcher.loading,
         })
     );
-	console.log('getAllPrincipalInvestigatorSavedProtocolType', getAllPrincipalInvestigatorSavedProtocolType)
+
+    const notSavedForm = []
+    getAllPrincipalInvestigatorSavedProtocolType && getAllPrincipalInvestigatorSavedProtocolType.map((formList) => {
+        if(formList.filled === false){
+            notSavedForm.push(formList.form)
+        }
+    });
+
+    const handleSubmitData = async (e) => {
+        e.preventDefault();
+        try {
+            if(notSavedForm.length >= 0){
+                toast.error('Befor final submission you have to fill protocol information', {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+            }else if(notSavedForm.length <= 0){
+                const isValid = true
+                if (isValid === true) {
+                    dispatch(createPrincipalInvestigatorSubmission({ ...formData }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                            setFormData({})
+                        }
+                    })
+                }
+            }
+        } catch (error) {
+        }
+    }
+    const titleCase = (str) => {
+        var splitStr = str.toLowerCase().split(' ');
+        for (var i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        }
+        return splitStr.join(' '); 
+    }
 
 	return (
 		<>
 			<ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
-			<Row>
+			{
+                notSavedForm.length > 0 && (
+                    <List
+                        sx={{ width: '100%', maxWidth: '50%', bgcolor: 'background.paper' }}
+                        component="nav"
+                        aria-labelledby="nested-list-subheader"
+                        subheader={<ListSubheader component="div" id="nested-list-subheader" style={{fontSize: '18px', color: 'red'}}>Befor final submission you have to fill the below forms</ListSubheader>}
+                    >
+                        {notSavedForm.map((showForm) => {
+                            return(
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <StarBorder />
+                                    </ListItemIcon>
+                                    <ListItemText primary={titleCase(showForm.replaceAll("_", ' '))} />
+                                </ListItemButton>
+                            ) 
+                        })}
+                    </List>
+                )
+            }
+            <Row>
             	<form onSubmit={handleSubmitData}>
 					<Form.Group as={Col} controlId="validationFormik01" className='ul-list'>
 						<p>By submitting this application you attest to the following:</p>
