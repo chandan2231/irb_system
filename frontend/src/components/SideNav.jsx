@@ -79,7 +79,7 @@ function SideNav (){
                                     <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
                                 </MenuItem>
                                 <MenuItem active={location.pathname === '/members' ? true : false} component={<Link to ='/members' />} icon={<PersonAddAltOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '1rem'}}>Members List</Typography>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Members List</Typography>
                                 </MenuItem>
                             </>
                         ) : (
