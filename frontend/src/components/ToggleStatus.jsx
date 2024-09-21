@@ -58,7 +58,7 @@ export default function ToggleStatus({status}) {
   return (
       <FormControlLabel
         control={<IOSSwitch sx={{ m: 1 }} 
-        defaultChecked = {status === '2' ? true : false} 
+        defaultChecked = {status === '2' || status === 2 ? true : false} 
       />}
     />
   );

@@ -12,7 +12,6 @@ import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useNavigate } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
 import { protocolReport } from "../../../services/UserManagement/UserService";
 import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from 'react-toastify';
@@ -191,7 +190,6 @@ function ProtocolList() {
             .then(data => {
                 if (data.payload.status === 200) {
                     toast.success(data.payload.data, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                    setFormData({})
                 } else {
                     toast.error(data.payload.data, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                 }

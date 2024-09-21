@@ -37,18 +37,16 @@ import ContinuinReviewList from "./containers/Admin/ContinuinReviewList/Continui
 import UsersList from "./containers/Admin/UsersList/UsersList";
 import AdminProtocolDetails from "./containers/Admin/ProtocolList/AdminProtocolDetails";
 import AdminContinuingReviewDetails from "./containers/Admin/ContinuinReviewList/AdminContinuingReviewDetails";
-
 import AdminPromptlyReportableEvent from "./containers/Admin/PromptlyReportableEvent/PromptlyReportableEvent.jsx";
 import AdminPromptlyReportableEventDetails from "./containers/Admin/PromptlyReportableEvent/AdminPromptlyReportableEventDetails";
-
 import AdminStudyCloseoutRequest from "./containers/Admin/StudyCloseoutRequest/StudyCloseoutRequest";
 import AdminStudyCloseoutRequestDetails from "./containers/Admin/StudyCloseoutRequest/AdminStudyCloseoutRequestDetails";
-
 import AdminAdverseEvents from "./containers/Admin/AdverseEvents/AdverseEvents";
 import AdminAdverseEventsDetails from "./containers/Admin/AdverseEvents/AdminAdverseEventsDetails";
-
 import AdminProtocolAmendmentRequest from "./containers/Admin/ProtocolAmendmentRequest/ProtocolAmendmentRequest.jsx";
 import AdminProtocolAmendmentRequestDetails from "./containers/Admin/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
+import Members from "./containers/Admin/Members/Members";
+
 
 function App() {
   const [loader, setLoader] = useState(true)
@@ -140,7 +138,7 @@ function App() {
                         <Route path='/admin/promptly-reportable-event-details' element={<AdminPromptlyReportableEventDetails/>} />
                         <Route path='/admin/study-close-request' element={<AdminStudyCloseoutRequest/>} />
                         <Route path='/admin/study-close-request-details' element={<AdminStudyCloseoutRequestDetails/>} />
-                      
+                        <Route path='/members' element={<Members/>} />
                       {/* </Route> */}
                       <Route path="/signin" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />

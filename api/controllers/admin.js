@@ -1,6 +1,55 @@
 import { db } from "../connect.js"
+import bcrypt from 'bcryptjs'
 
 
+export const changeMemberStatus = (req, res) => {
+    const que = "UPDATE users SET status=? WHERE id=?"
+    db.query(que,[req.body.status, req.body.id], (err, data) => {
+        if (err){
+            return res.status(500).json(err)
+        } else {
+            return res.status(200).json('Member Status Changed Successfully')
+        }
+    })
+}
+
+export const createMemberByAdmin = (req, res) => {
+    // CHECK MEMBER IF EXIST
+    const que = "select * from users where email = ?"
+    db.query(que, [req.body.email], (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length > 0 ) {
+            return res.status(409).json('Email already exist try with other email')
+        }
+        // CREATE A NEW MEMBER
+        // hash the password
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+        const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`) value (?)';
+        const values = [
+            req.body.name, 
+            req.body.phone, 
+            req.body.email, 
+            hashedPassword, 
+            'member',
+        ];
+        db.query(que, [values], (err, data) =>{
+            if (err) return res.status(500).json(err)
+            return res.status(200).json('Member has been created Successfully.')
+        }) 
+    })
+    
+}
+
+export const getMemberList = (req, res) => {
+    const que = "select * from users where researcher_type=?"
+    db.query(que, ['member'], (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
 
 export const allowProtocolEditByAdmin = (req, res) => {
     const que = "UPDATE protocol_submission SET allow_edit=? WHERE id=?"
@@ -21,6 +70,9 @@ export const getProtocolList = (req, res) => {
         }
     })
 }
+
+
+
 export const getAllUsers = (req, res) => {
     const que = "select * from users where researcher_type != ?"
     db.query(que, ['admin'], (err, data) =>{

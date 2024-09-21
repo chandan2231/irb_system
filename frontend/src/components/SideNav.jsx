@@ -8,13 +8,13 @@ import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import {Link, useLocation} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { approvedProtocolListCheck } from "../services/Dashboard/DashboardService";
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 
 function SideNav (){
     const theme = useTheme();
     const loaction = useLocation();
     const dispatch = useDispatch();
     const userDetails = JSON.parse(localStorage.getItem('user'));
-    console.log('userDetails.id', userDetails)
     const { approvedProtocolListCount, loading, error } = useSelector(
         state => ({
             error: state.dashboard.error,
@@ -77,6 +77,9 @@ function SideNav (){
                                 </MenuItem>
                                 <MenuItem active={location.pathname === '/admin/users-list' ? true : false} component={<Link to ='/admin/users-list' />} icon={<SourceOutlinedIcon />}>
                                     <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
+                                </MenuItem>
+                                <MenuItem active={location.pathname === '/members' ? true : false} component={<Link to ='/members' />} icon={<PersonAddAltOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '1rem'}}>Members List</Typography>
                                 </MenuItem>
                             </>
                         ) : (

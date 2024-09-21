@@ -13,10 +13,17 @@ import {
     getAdverseEventById,
     getProtocolAmendmentRequestById,
     allowProtocolEditByAdmin,
+    getMemberList,
+    createMemberByAdmin,
+    changeMemberStatus
 } from "../controllers/admin.js";
 
 const router = express.Router()
 
+
+router.post('/member/status/change', changeMemberStatus)
+router.post('/member/create', createMemberByAdmin)
+router.get('/member/list', getMemberList)
 router.get('/protocol/list', getProtocolList)
 router.post('/protocol/allowEdit', allowProtocolEditByAdmin)
 router.get('/users/list', getAllUsers)
