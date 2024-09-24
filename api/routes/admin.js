@@ -1,6 +1,6 @@
 import express from "express";
 import { 
-    getProtocolList, 
+    getApprovedProtocolList, 
     getAllUsers, 
     getContinuinDetailsById, 
     getProtocolDetailsById,
@@ -15,16 +15,24 @@ import {
     allowProtocolEditByAdmin,
     getMemberList,
     createMemberByAdmin,
-    changeMemberStatus
+    changeMemberStatus,
+    changeMemberPassword,
+    changeUserStatus,
+    changeUserPassword,
+    getUnderReviewProtocolList,
 } from "../controllers/admin.js";
 
 const router = express.Router()
 
 
+router.post('/user/reset/password', changeUserPassword)
+router.post('/member/reset/password', changeMemberPassword)
+router.post('/user/status/change', changeUserStatus)
 router.post('/member/status/change', changeMemberStatus)
 router.post('/member/create', createMemberByAdmin)
 router.get('/member/list', getMemberList)
-router.get('/protocol/list', getProtocolList)
+router.get('/approved-protocol/list', getApprovedProtocolList)
+router.get('/under-review/protocol/list', getUnderReviewProtocolList)
 router.post('/protocol/allowEdit', allowProtocolEditByAdmin)
 router.get('/users/list', getAllUsers)
 router.post('/continuinDetailsById', getContinuinDetailsById)

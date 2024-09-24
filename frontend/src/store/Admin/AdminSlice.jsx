@@ -1,7 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProtocolList, fetchProtocolDetailsById, allowProtocolEdit } from "../../services/Admin/ProtocolListService";
-import { fetchContinuinReviewProtocolList, fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
-import { fetchUsersList } from "../../services/Admin/UsersListService";
+import { 
+    fetchApprovedProtocolList, 
+    fetchProtocolDetailsById, 
+    allowProtocolEdit,
+    fetchUnderReviewProtocolList
+} from "../../services/Admin/ProtocolListService";
+import { 
+    fetchContinuinReviewProtocolList, 
+    fetchContinuinReviewDetailsById 
+} from "../../services/Admin/ContinuinReviewListService";
+import { 
+    fetchUsersList,
+    changeUserStatus,
+    resetUserPassword
+} from "../../services/Admin/UsersListService";
 import { 
     getStudyCloseoutRequest, 
     getPromptlyReportableEvent, 
@@ -20,7 +32,7 @@ const AdminSlice = createSlice({
     initialState: {
         loading: false,
         error: null,
-        protocolList: null,
+        approvedProtocolList: null,
         continuinReviewProtocolList: null,
         usersList: null,
         continuinReviewDetailsById: null,
@@ -34,19 +46,23 @@ const AdminSlice = createSlice({
         adverseEventById: null,
         protocolAmendmentRequestById: null,
         allowEditStatus: null,
+        userStatusChanged: null,
+        memberPasswordChanged: null,
+        userPasswordChanged: null,
+        underReviewProtocolList: null,
     },
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(fetchProtocolList.pending, (state) => {
+        .addCase(fetchApprovedProtocolList.pending, (state) => {
             state.loading = true;
             state.error = null;
         })
-        .addCase(fetchProtocolList.fulfilled, (state, action) => {
+        .addCase(fetchApprovedProtocolList.fulfilled, (state, action) => {
             state.loading = false;
-            state.protocolList = action.payload;
+            state.approvedProtocolList = action.payload;
         })
-        .addCase(fetchProtocolList.rejected, (state, action) => {
+        .addCase(fetchApprovedProtocolList.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
         })
@@ -203,6 +219,46 @@ const AdminSlice = createSlice({
             state.allowEditStatus = action.payload;
         })
         .addCase(allowProtocolEdit.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(changeUserStatus.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(changeUserStatus.fulfilled, (state, action) => {
+            state.loading = false;
+            let updateUserList = state.usersList.map((element, index) => 
+              element.id === action.payload.id ? {...element, status: action.payload.status} : element
+            );
+            state.usersList = updateUserList
+            state.userStatusChanged = action.payload;
+        })
+        .addCase(changeUserStatus.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(resetUserPassword.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(resetUserPassword.fulfilled, (state, action) => {
+            state.loading = false;
+            state.userPasswordChanged = action.payload;
+        })
+        .addCase(resetUserPassword.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(fetchUnderReviewProtocolList.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchUnderReviewProtocolList.fulfilled, (state, action) => {
+            state.loading = false;
+            state.underReviewProtocolList = action.payload;
+        })
+        .addCase(fetchUnderReviewProtocolList.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
         })

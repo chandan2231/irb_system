@@ -2,12 +2,27 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
-export const fetchProtocolList = createAsyncThunk("ProtocolList/fetchProtocolList",
+export const fetchApprovedProtocolList = createAsyncThunk("ProtocolList/fetchApprovedProtocolList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
         method: "GET",
-        url: `${baseURL}/admin/protocol/list`,
+        url: `${baseURL}/admin/approved-protocol/list`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchUnderReviewProtocolList = createAsyncThunk("ProtocolList/fetchUnderReviewProtocolList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/admin/under-review/protocol/list`,
         data,
       });
       return response.data;

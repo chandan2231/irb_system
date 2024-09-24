@@ -49,15 +49,15 @@ export const changeStatus = createAsyncThunk("Members/changeStatus",
   }
 );
 
-export const fetchActiveUsersList = createAsyncThunk("Members/fetchActiveUsersList",
+export const resetMemberPassword = createAsyncThunk("Members/resetMemberPassword",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
-        method: "GET",
-        url: `${baseURL}/user/list`,
+        method: "POST",
+        url: `${baseURL}/admin/member/reset/password`,
         data,
       });
-      return response.data;
+      return response;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

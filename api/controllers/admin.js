@@ -2,6 +2,43 @@ import { db } from "../connect.js"
 import bcrypt from 'bcryptjs'
 
 
+export const changeUserPassword = (req, res) => {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+    const que = "UPDATE users SET password=? WHERE id=?"
+    db.query(que,[hashedPassword, req.body.id], (err, data) => {
+        if (err){
+            return res.status(500).json(err)
+        } else {
+            return res.status(200).json('User Password Reset Successfully')
+        }
+    })
+}
+
+export const changeMemberPassword = (req, res) => {
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+    const que = "UPDATE users SET password=? WHERE id=?"
+    db.query(que,[hashedPassword, req.body.id], (err, data) => {
+        if (err){
+            return res.status(500).json(err)
+        } else {
+            return res.status(200).json('Member Password Reset Successfully')
+        }
+    })
+}
+
+export const changeUserStatus = (req, res) => {
+    const que = "UPDATE users SET status=? WHERE id=?"
+    db.query(que,[req.body.status, req.body.id], (err, data) => {
+        if (err){
+            return res.status(500).json(err)
+        } else {
+            return res.status(200).json('User Status Changed Successfully')
+        }
+    })
+}
+
 export const changeMemberStatus = (req, res) => {
     const que = "UPDATE users SET status=? WHERE id=?"
     db.query(que,[req.body.status, req.body.id], (err, data) => {
@@ -25,13 +62,14 @@ export const createMemberByAdmin = (req, res) => {
         // hash the password
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-        const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`) value (?)';
+        const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`) value (?)';
         const values = [
             req.body.name, 
             req.body.phone, 
             req.body.email, 
             hashedPassword, 
             'member',
+            req.body.user_type,
         ];
         db.query(que, [values], (err, data) =>{
             if (err) return res.status(500).json(err)
@@ -40,6 +78,8 @@ export const createMemberByAdmin = (req, res) => {
     })
     
 }
+
+
 
 export const getMemberList = (req, res) => {
     const que = "select * from users where researcher_type=?"
@@ -61,8 +101,19 @@ export const allowProtocolEditByAdmin = (req, res) => {
         }
     })
 }
-export const getProtocolList = (req, res) => {
-    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocol_submission as ps JOIN users ON ps.created_by = users.id"
+
+export const getApprovedProtocolList = (req, res) => {
+    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocol_submission as ps JOIN users ON ps.created_by = users.id AND ps.status=3"
+    db.query(que, {}, (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getUnderReviewProtocolList = (req, res) => {
+    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocol_submission as ps JOIN users ON ps.created_by = users.id AND ps.status=2"
     db.query(que, {}, (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length >= 0 ) {
@@ -74,8 +125,8 @@ export const getProtocolList = (req, res) => {
 
 
 export const getAllUsers = (req, res) => {
-    const que = "select * from users where researcher_type != ?"
-    db.query(que, ['admin'], (err, data) =>{
+    const que = "select * from users where researcher_type != ? AND researcher_type!=?"
+    db.query(que, ['admin', 'member'], (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length >= 0 ) {
             return res.status(200).json(data)

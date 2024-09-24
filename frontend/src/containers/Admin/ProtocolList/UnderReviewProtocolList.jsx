@@ -1,15 +1,11 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
+import { fetchUnderReviewProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
 import moment from "moment";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
@@ -17,7 +13,7 @@ import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function ProtocolList() {
+function UnderReviewProtocolList() {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -118,18 +114,18 @@ function ProtocolList() {
     ];
     
     var totalElements = 0;
-    const { protocolList, loading, error } = useSelector(
+    const { underReviewProtocolList, loading, error } = useSelector(
         state => ({
             error: state.admin.error,
-            protocolList: state.admin.protocolList,
+            underReviewProtocolList: state.admin.underReviewProtocolList,
             loading: state.admin.loading,
         })
     );
     useEffect(() => {
-        dispatch(fetchProtocolList());
+        dispatch(fetchUnderReviewProtocolList());
     }, [dispatch, user.id]);
-    if(protocolList !== '' && protocolList?.length > 0){
-        totalElements = protocolList.length;
+    if(underReviewProtocolList !== '' && underReviewProtocolList?.length > 0){
+        totalElements = underReviewProtocolList.length;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -142,8 +138,8 @@ function ProtocolList() {
 
     useEffect(() => {
         const pListArr = []
-        if(protocolList && protocolList?.length > 0) {
-            protocolList.map((pList, index) => {
+        if(underReviewProtocolList && underReviewProtocolList?.length > 0) {
+            underReviewProtocolList.map((pList, index) => {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
@@ -151,7 +147,7 @@ function ProtocolList() {
                     username: pList.name,
                     email: pList.email,
                     allowEdit: pList.allow_edit,
-                    status: pList.status === '1' ? 'Submitted by User' : pList.status === '2' ? 'Inprogress' : pList.status === '3' ? 'Approved' : 'Rejected',
+                    status: pList.status === '1' ? 'Submitted by User' : pList.status === '2' ? 'Under Review' : pList.status === '3' ? 'Approved' : 'Rejected',
                     createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
                     updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
                 }
@@ -159,7 +155,7 @@ function ProtocolList() {
             })
             setProtocolDataList(pListArr)
         }
-    }, [protocolList]);
+    }, [underReviewProtocolList]);
 
 
     const handleViewPdf = async (params) => {
@@ -215,7 +211,7 @@ function ProtocolList() {
                     <Grid container spacing={2}>
                         <Grid item xs={5} sm={5} md={8} lg={8}>
                             <Typography variant="h5" mb={2}>
-                                Protocol List
+                                Under Review Protocol List
                             </Typography>
                         </Grid>
                     </Grid>
@@ -236,4 +232,4 @@ function ProtocolList() {
     );
 }
 
-export default ProtocolList;
+export default UnderReviewProtocolList;

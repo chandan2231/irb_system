@@ -32,7 +32,8 @@ import PromptlyReportableEvent from "./containers/PromptlyReportableEvent/Prompt
 import PromptlyReportableEventDetails from "./containers/PromptlyReportableEvent/PromptlyReportableEventDetails";
 import StudyCloseoutRequest from "./containers/StudyCloseoutRequest/StudyCloseoutRequest";
 import StudyCloseoutRequestDetails from "./containers/StudyCloseoutRequest/StudyCloseoutRequestDetails";
-import ProtocolList from "./containers/Admin/ProtocolList/ProtocolList";
+import ApprovedProtocolList from "./containers/Admin/ProtocolList/ApprovedProtocolList";
+import UnderReviewProtocolList from "./containers/Admin/ProtocolList/UnderReviewProtocolList";
 import ContinuinReviewList from "./containers/Admin/ContinuinReviewList/ContinuinReviewList";
 import UsersList from "./containers/Admin/UsersList/UsersList";
 import AdminProtocolDetails from "./containers/Admin/ProtocolList/AdminProtocolDetails";
@@ -125,7 +126,8 @@ function App() {
                         <Route path='/promptly-reportable-event-details' element={<PromptlyReportableEventDetails/>} />
                         <Route path='/study-close-request' element={<StudyCloseoutRequest/>} />
                         <Route path='/study-close-request-details' element={<StudyCloseoutRequestDetails/>} />
-                        <Route path='/admin/protocol-list' element={<ProtocolList/>} />
+                        <Route path='/admin/approved-protocol-list' element={<ApprovedProtocolList/>} />
+                        <Route path='/admin/under-review-protocols' element={<UnderReviewProtocolList/>} />
                         <Route path='/admin/protocol-details' element={<AdminProtocolDetails/>} />
                         <Route path='/admin/continuin-review-list' element={<ContinuinReviewList/>} />
                         <Route path='/admin/continuin-review-details' element={<AdminContinuingReviewDetails/>} />
@@ -138,7 +140,7 @@ function App() {
                         <Route path='/admin/promptly-reportable-event-details' element={<AdminPromptlyReportableEventDetails/>} />
                         <Route path='/admin/study-close-request' element={<AdminStudyCloseoutRequest/>} />
                         <Route path='/admin/study-close-request-details' element={<AdminStudyCloseoutRequestDetails/>} />
-                        <Route path='/members' element={<Members/>} />
+                        <Route path='/admin/members' element={<Members/>} />
                       {/* </Route> */}
                       <Route path="/signin" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />

@@ -48,7 +48,7 @@ function AppHeader () {
                             <MenuTwoToneIcon sx={styles.iconColor} />
                         </IconButton>
                         <h2>IRB System</h2>
-                        <Box className="center-card"><h2>{userDetails.researcher_type === 'admin' ? 'Admin Portal' : ''}</h2></Box>
+                        <Box className="center-card"><h2>{userDetails.researcher_type === 'admin' ? 'Super Admin Portal' : ''}</h2></Box>
                         {/* <Box
                             component='img'
                             sx={styles.appLogo}

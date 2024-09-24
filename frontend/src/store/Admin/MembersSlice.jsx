@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchMemberList, createMember, changeStatus, fetchActiveUsersList } from "../../services/Admin/MembersService";
+import { fetchMemberList, createMember, changeStatus, resetMemberPassword } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
   name: "members",
@@ -12,7 +12,7 @@ const MembersSlice = createSlice({
     changeUserStatus: null,
     userActiveList: null,
     loadingActiveUser: null,
-    errorActiveUser: null,
+    memberPasswordChanged: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -57,18 +57,19 @@ const MembersSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-      .addCase(fetchActiveUsersList.pending, (state) => {
-        state.loadingActiveUser = true;
-        state.errorActiveUser = null;
+      .addCase(resetMemberPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(fetchActiveUsersList.fulfilled, (state, action) => {
-        state.loadingActiveUser = false;
-        state.userActiveList = action.payload;
+      .addCase(resetMemberPassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberPasswordChanged = action.payload;
       })
-      .addCase(fetchActiveUsersList.rejected, (state, action) => {
-        state.loadingActiveUser = false;
-        state.errorActiveUser = action.payload || action.error.message;
-      });
+      .addCase(resetMemberPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      ;
   },
 });
 

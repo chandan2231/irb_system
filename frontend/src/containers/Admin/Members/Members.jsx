@@ -1,19 +1,18 @@
 import * as React from 'react';
-import { Box, Tab, Tabs, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CommonButton from '../../../components/CommonButton';
 import AddMember from './AddMember';
+import ChangePassword from './ChangePassword';
 import moment from "moment";
 import ToggleStatus from '../../../components/ToggleStatus';
-import { fetchMemberList, createMember, changeStatus } from '../../../services/Admin/MembersService';
+import { fetchMemberList, createMember, changeStatus, resetMemberPassword } from '../../../services/Admin/MembersService';
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import LockResetIcon from '@mui/icons-material/LockReset';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,6 +20,8 @@ function Members(){
     const theme = useTheme();
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
+    const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
+    const [userId, setUserId] = useState();
     const [userDataList, setUserDataList] = useState([]);
     
     const columns = [
@@ -40,8 +41,8 @@ function Members(){
             flex: 1,
         },
         { 
-            field: 'password', 
-            headerName: 'Password', 
+            field: 'userType', 
+            headerName: 'User Type', 
             flex: 1,
         },
         {
@@ -68,21 +69,9 @@ function Members(){
             width: 80,
             getActions: (params) => [
                 <GridActionsCellItem
-                    icon={<RadioButtonUncheckedIcon />}
-                    label="Change Status"
-                    onClick={handleChangeStatus(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<EditNoteIcon />}
-                    label="Edit"
-                    onClick={handleItemEdit(params)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<SettingsSuggestIcon />}
-                    label="Details"
-                    onClick={handleItemDetail(params)}
+                    icon={<LockResetIcon />}
+                    label="Change Password"
+                    onClick={() => handleChangePassword(params)}
                     showInMenu
                 />,
                 <GridActionsCellItem
@@ -91,6 +80,18 @@ function Members(){
                     onClick={handleItemDelete(params)}
                     showInMenu
                 />,
+                // <GridActionsCellItem
+                //     icon={<EditNoteIcon />}
+                //     label="Edit"
+                //     onClick={handleItemEdit(params)}
+                //     showInMenu
+                // />,
+                // <GridActionsCellItem
+                //     icon={<SettingsSuggestIcon />}
+                //     label="Details"
+                //     onClick={handleItemDetail(params)}
+                //     showInMenu
+                // />,
             ],
         },
     ];
@@ -124,7 +125,7 @@ function Members(){
                     name:  uList.name,
                     email:  uList.email,
                     phone:  uList.mobile,
-                    password:  '*********',
+                    userType:  uList.user_type,
                     status:  uList.status,
                     createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
                     updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
@@ -173,7 +174,6 @@ function Members(){
             let data = {id: status.id, status: statusValue}
             dispatch(changeStatus(data))
             .then(data => {
-                
                 if (data.payload.status === 200) {
                     toast.success(data.payload.data, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                 } else {
@@ -187,17 +187,47 @@ function Members(){
         setOpen(true);
     };
 
+    const handleChangePassword = (params) => {
+        if(params.row.userType){
+            setUserId(params.row.id)
+            setPasswordChangeOpen(true)
+        }
+    }
+
+    const resetPasswordData = (data) => {
+        const {password} = data
+        let dataObject = {
+            password: password,
+            id: userId,
+        }
+        dispatch(resetMemberPassword(dataObject))
+        .then(data => {
+            console.log('data', data)
+            if (data.payload.status === 200) {
+                setPasswordChangeOpen(false);
+                setUserId('');
+                toast.success(data.payload.data, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                setFo
+            } else {
+                setPasswordChangeOpen(false);
+                setUserId('');
+                toast.error(data.payload, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+            }
+        })
+        
+    };
+
     const handleItemDelete = (params) => {
         //console.log('Delete Item', params)
     }
 
-    const handleItemDetail = (params) => {
-        //console.log('Details Item', params)
-    }
+    // const handleItemDetail = (params) => {
+    //     //console.log('Details Item', params)
+    // }
     
-    const handleItemEdit = (params) => {
-        //console.log('Edit Item', params)
-    }
+    // const handleItemEdit = (params) => {
+    //     //console.log('Edit Item', params)
+    // }
 
     return(
         <>
@@ -223,6 +253,9 @@ function Members(){
                 </Box>
                 <Box>
                     <AddMember open={open} onClose={() => setOpen(false)} addNewData={addNewData}/>
+                </Box>
+                <Box>
+                    <ChangePassword open={passwordChangeOpen} onClose={() => setPasswordChangeOpen(false)} addNewData={resetPasswordData} title='Reset Member Password'/>
                 </Box>
                 <Box sx={{mt: 5}}>
                 <DataGrid
