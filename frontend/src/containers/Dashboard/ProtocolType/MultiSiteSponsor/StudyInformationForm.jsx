@@ -36,7 +36,7 @@ const studyInfoSchema = yup.object().shape({
     research_type: yup.string().required("This is required"),
 })
 
-function StudyInformationForm({ protocolTypeDetails }) {
+function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -83,17 +83,17 @@ function StudyInformationForm({ protocolTypeDetails }) {
                 let ingredient_list = []
                 if (formData.ingredient_list) {
                     for (let file of formData.ingredient_list) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'study_information', documentName: 'ingredient_list'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'study_information', documentName: 'ingredient_list' })
                         ingredient_list.push(id)
                     }
                 }
                 dispatch(createStudyInformation({ ...formData, ingredient_list }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -104,7 +104,7 @@ function StudyInformationForm({ protocolTypeDetails }) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
@@ -112,7 +112,7 @@ function StudyInformationForm({ protocolTypeDetails }) {
 
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>

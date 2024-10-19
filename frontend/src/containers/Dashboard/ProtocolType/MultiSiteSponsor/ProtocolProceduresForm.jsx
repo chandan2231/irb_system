@@ -50,12 +50,12 @@ const protocolProcedureInfoSchema = yup.object().shape({
         otherwise: (schema) => schema,
     }),
     expected_number_sites: yup.string().required("This is required"),
-    
+
 })
 
 
 
-function ProtocolProceduresForm({protocolTypeDetails}) {
+function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -93,7 +93,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
         setFormData({ ...formData, [name]: value });
     };
 
-    
+
 
     const handleSbujectStudyChecked = (event) => {
         const { value, checked } = event.target
@@ -204,7 +204,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
             } else {
                 setExplainRecurementMethodErrors('')
             }
-            
+
             const getValidatedform = await protocolProcedureInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocolProcedureInfoSchema.isValid(getValidatedform)
             if (isValid === true) {
@@ -213,18 +213,18 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
                     return setErrors({ ...errors, ['facing_materials']: 'This is required' });
                 } else {
                     for (let file of formData.facing_materials) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_procedure', documentName: 'subject_facing_materials'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'protocol_procedure', documentName: 'subject_facing_materials' })
                         facing_materials.push(id)
                     }
                 }
                 dispatch(createProtocolProcedures(formData))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                        e.target.reset();
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                            e.target.reset();
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -235,7 +235,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
@@ -243,7 +243,7 @@ function ProtocolProceduresForm({protocolTypeDetails}) {
 
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <Form.Group as={Col} controlId="validationFormik01">

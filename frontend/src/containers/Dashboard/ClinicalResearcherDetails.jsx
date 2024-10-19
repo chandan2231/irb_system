@@ -12,6 +12,8 @@ import { useLocation } from "react-router-dom";
 
 
 const ClinicalResearcherDetails = ({ protocolTypeDetails, protocolDetailsById }) => {
+    const [protocolDetailsByIdState, setProtocolDetailsByIdState] = React.useState(protocolDetailsById);
+
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -49,7 +51,18 @@ const ClinicalResearcherDetails = ({ protocolTypeDetails, protocolDetailsById })
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    console.log('protocolTypeDetails', protocolTypeDetails)
+
+    React.useEffect(() => {
+        if (protocolDetailsById) {
+            setProtocolDetailsByIdState(protocolDetailsById)
+        }
+    }, [protocolDetailsById])
+
+
+    console.log('protocolTypeDetails', {
+        protocolTypeDetails,
+        protocolDetailsById
+    })
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
@@ -61,13 +74,19 @@ const ClinicalResearcherDetails = ({ protocolTypeDetails, protocolDetailsById })
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-                <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} />
+                <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails}
+                    investigatorInformation={protocolDetailsById?.investigator_protocol_information}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+                <InformedConsentForm protocolTypeDetails={protocolTypeDetails}
+                    informedConsent={protocolDetailsById?.consent_information}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <SubmissionForm protocolTypeDetails={protocolTypeDetails} />
+                <SubmissionForm protocolTypeDetails={protocolTypeDetails}
+                    protocolDetailsById={protocolDetailsById}
+                />
             </CustomTabPanel>
         </Box>
     )

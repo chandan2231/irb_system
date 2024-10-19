@@ -35,7 +35,7 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-function InformedConsentForm({ protocolTypeDetails }) {
+function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -155,17 +155,17 @@ function InformedConsentForm({ protocolTypeDetails }) {
                     return setErrors({ ...errors, ['consent_file']: 'This is required' });
                 } else {
                     for (let file of formData.consent_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'informed_consent', documentName: 'consent_files'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'informed_consent', documentName: 'consent_files' })
                         consent_file.push(id)
                     }
                 }
                 dispatch(createInformedConsent({ ...formData, consent_file }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                        }
+                    })
             }
         } catch (error) {
             console.log('error', error)
@@ -177,7 +177,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
@@ -187,7 +187,7 @@ function InformedConsentForm({ protocolTypeDetails }) {
 
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <Form.Group as={Col} controlId="validationFormik01">

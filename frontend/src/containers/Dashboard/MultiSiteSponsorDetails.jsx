@@ -14,6 +14,8 @@ import SubmissionForm from '../Dashboard/ProtocolType/MultiSiteSponsor/Submissio
 import { useLocation } from "react-router-dom";
 
 const MultiSiteSponsorDetails = ({ protocolTypeDetails, protocolDetailsById }) => {
+    const [protocolDetailsByIdState, setProtocolDetailsByIdState] = React.useState(protocolDetailsById);
+
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
@@ -51,6 +53,17 @@ const MultiSiteSponsorDetails = ({ protocolTypeDetails, protocolDetailsById }) =
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    React.useEffect(() => {
+        if (protocolDetailsById) {
+            setProtocolDetailsByIdState(protocolDetailsById)
+        }
+    }, [protocolDetailsById])
+
+    console.log('protocolTypeDetails', {
+        protocolTypeDetails,
+        protocolDetailsById
+    })
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
@@ -65,22 +78,34 @@ const MultiSiteSponsorDetails = ({ protocolTypeDetails, protocolDetailsById }) =
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-                <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} />
+                <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails}
+                    protocolInformation={protocolDetailsById?.protocol_information}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <ContactInformationForm protocolTypeDetails={protocolTypeDetails} />
+                <ContactInformationForm protocolTypeDetails={protocolTypeDetails}
+                    contactInformation={protocolDetailsById?.contact_information}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <StudyInformationForm protocolTypeDetails={protocolTypeDetails} />
+                <StudyInformationForm protocolTypeDetails={protocolTypeDetails}
+                    studyInformation={protocolDetailsById?.study_information}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-                <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
+                <InformedConsentForm protocolTypeDetails={protocolTypeDetails}
+                    informedConsent={protocolDetailsById?.informed_consent}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
-                <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails} />
+                <ProtocolProceduresForm protocolTypeDetails={protocolTypeDetails}
+                    protocolProcedures={protocolDetailsById?.protocol_procedure}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
-                <SubmissionForm protocolTypeDetails={protocolTypeDetails} />
+                <SubmissionForm protocolTypeDetails={protocolTypeDetails}
+                    protocolDetailsById={protocolDetailsById}
+                />
             </CustomTabPanel>
         </Box>
     )

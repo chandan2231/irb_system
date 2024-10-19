@@ -68,7 +68,6 @@ const ContractorResearcherDetails = ({ protocolTypeDetails, protocolDetailsById 
         protocolDetailsByIdState
     })
 
-
     return (
         <Box sx={{ width: '100%' }}>
             <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
