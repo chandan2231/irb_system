@@ -19,7 +19,7 @@ import Grid from '@mui/material/Grid';
 import { createProtocolInformation } from '../../../../../services/ProtocolType/ContractorResearcherService';
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {useSearchParams, useNavigate, Link} from 'react-router-dom';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -35,15 +35,15 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const fundingSource = [
-    {label: 'Self/Investigator-Sponsor/Internally', value: 'Self/Investigator-Sponsor/Internally'},
-    {label: 'Industry', value: 'Industry'},
-    {label: 'Non-profit organization', value: 'Non-profit organization'},
-    {label: 'U.S. Federal Grant', value: 'U.S. Federal Grant'},
-    {label: 'State or local Government', value: 'State or local Government'},
-    {label: 'No funding', value: 'No funding'},
+    { label: 'Self/Investigator-Sponsor/Internally', value: 'Self/Investigator-Sponsor/Internally' },
+    { label: 'Industry', value: 'Industry' },
+    { label: 'Non-profit organization', value: 'Non-profit organization' },
+    { label: 'U.S. Federal Grant', value: 'U.S. Federal Grant' },
+    { label: 'State or local Government', value: 'State or local Government' },
+    { label: 'No funding', value: 'No funding' },
 ]
 
-function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
+function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -64,36 +64,37 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
     });
     const [errors, setErrors] = useState({});
 
-	
-    
+
+
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await protocoalInfoSchema.validate(formData, {abortEarly: false});
+            const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocoalInfoSchema.isValid(getValidatedform)
             console.log('formData', formData)
-            if(isValid === true){
+            if (isValid === true) {
                 dispatch(createProtocolInformation(formData))
-                .then(data=> {
-                    if(data.payload.status === 200){
-                    } else {   
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                        } else {
+                        }
+                    })
             }
         } catch (error) {
         }
     }
 
-	return (
+    return (
         <Row>
             <form onSubmit={handleSubmitData}>
                 <Form.Group as={Col} controlId="validationFormik01">
                     <FormControl>
+                        {/* here admin have details by id */}
                         <FormLabel id="demo-row-radio-buttons-group-label">Are you submitting this protocol for the first time? *</FormLabel>
                         <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="first_time_protocol">
                             <FormControlLabel value="Yes" control={<Radio />} label="Yes" checked={protocolInformation?.first_time_protocol === 'Yes'} />
@@ -103,7 +104,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                 </Form.Group>
                 {
                     protocolInformation?.first_time_protocol === 'No' && (
-                        <>                                    
+                        <>
                             <Form.Group as={Col} controlId="validationFormik02">
                                 <FormControl>
                                     <FormLabel id="demo-row-radio-buttons-group-label"> Has this study been disapproved or withdrawn from another IRB?</FormLabel>
@@ -142,22 +143,22 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                     )
                 }
                 <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Title of Protocol *" id="protocol_title" name="protocol_title" value={protocolInformation?.protocol_title} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Protocol number *" id="protocol_number" name="protocol_number" value={protocolInformation?.protocol_number} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Sponsor *" id="sponsor" name="sponsor" value={protocolInformation?.sponsor} />
                     </Box>
                 </Form.Group>
                 <Form.Group as={Col} controlId="validationFormik09" className='mt-mb-20'>
-                    <Box sx={{width: '100%', maxWidth: '100%'}}>
+                    <Box sx={{ width: '100%', maxWidth: '100%' }}>
                         <TextField fullWidth label="Approximate duration of study *" id="study_duration" name="study_duration" value={protocolInformation?.study_duration} />
                     </Box>
                 </Form.Group>
@@ -166,7 +167,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                     <Select labelId="demo-simple-select-autowidth-label" id="demo-simple-select-autowidth" autoWidth label="Funding source" name="funding_source" value={protocolInformation?.funding_source}>
                         {
                             fundingSource.map((source, index) => {
-                                return(<MenuItem key={index} value={source.value}>{source.label}</MenuItem>)
+                                return (<MenuItem key={index} value={source.value}>{source.label}</MenuItem>)
                             })
                         }
                     </Select>
@@ -176,8 +177,8 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                         <InputLabel id="demo-simple-select-autowidth-label">Uploaded Protocol </InputLabel>
                         {
                             protocolInformation?.documents?.length > 0 && protocolInformation?.documents?.map((docList, index) => {
-                                if(docList.document_name === 'protocol'){
-                                    return(
+                                if (docList.document_name === 'protocol') {
+                                    return (
                                         <div><a href={docList.file_url} target='_blank' className='no_underline'>{docList.file_name}</a></div>
                                     )
                                 }
@@ -185,7 +186,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                         }
                     </Form.Group>
                 </Box>
-                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{textAlign: 'right'}}>
+                <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20' style={{ textAlign: 'right' }}>
                     <Button
                         // disabled={!dirty || !isValid}
                         variant="contained"
@@ -197,7 +198,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                 </Form.Group>
             </form>
         </Row>
-	)
+    )
 }
 
 export default ProtocolInformationForm

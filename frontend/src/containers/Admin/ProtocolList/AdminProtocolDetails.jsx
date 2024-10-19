@@ -21,7 +21,7 @@ const AdminProtocolDetails = () => {
     }, []);
 
     useEffect(() => {
-        let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
+        let data = { protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType }
         dispatch(fetchProtocolDetailsById(data));
     }, [dispatch, user.id]);
 
@@ -32,18 +32,17 @@ const AdminProtocolDetails = () => {
             loading: state.admin.loading,
         })
     );
-    
     return (
         <>
-        {
-            protocolTypeDetails.researchType === 'Clinical Site' ? (
-                <ContractorResearcherDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />
-            ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor' ) ? (
-                <MultiSiteSponsorDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />
-            ) : (
-                <ClinicalResearcherDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />
-            )
-        }
+            {
+                protocolTypeDetails.researchType === 'Clinical Site' ? (
+                    <ContractorResearcherDetails protocolTypeDetails={protocolTypeDetails} protocolDetailsById={protocolDetailsById} />
+                ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor') ? (
+                    <MultiSiteSponsorDetails protocolTypeDetails={protocolTypeDetails} protocolDetailsById={protocolDetailsById} />
+                ) : (
+                    <ClinicalResearcherDetails protocolTypeDetails={protocolTypeDetails} protocolDetailsById={protocolDetailsById} />
+                )
+            }
         </>
     )
 }

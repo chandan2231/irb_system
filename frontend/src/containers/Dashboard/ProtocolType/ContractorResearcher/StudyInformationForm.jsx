@@ -33,10 +33,16 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const studyInfoSchema = yup.object().shape({
-    research_type: yup.string().required("This is required"),
-})
+    research_type: yup.string().required("Research type is required"),
+    research_type_explain: yup.string().when('research_type', {
+        is: 'Other',
+        then: yup.string().required("Please provide an explanation for 'Other' research type"),
+    }),
+    ingredient_list: yup.mixed().required("You must upload the relevant file"),
+});
 
-function StudyInformationForm({ protocolTypeDetails }) {
+
+function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -44,15 +50,20 @@ function StudyInformationForm({ protocolTypeDetails }) {
     const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
     const [errors, setErrors] = useState({});
     const [explainErrors, setExplainErrors] = useState();
-
     const [formData, setFormData] = useState({
         research_type: '',
         research_type_explain: '',
-        protocol_id: protocolTypeDetails.protocolId,
-        created_by: userDetails.id,
+        protocol_id: protocolTypeDetails?.protocolId,
+        created_by: JSON.parse(localStorage.getItem('user')).id,
+        ingredient_list: studyInformation?.documents?.map(doc => {
+            if (doc.document_name === 'ingredient_list') {
+                return {
+                    name: doc.file_name,
+                    type: doc.protocol_type,
+                };
+            }
+        }) || [],
     });
-
-
     const handleSelectResearchType = (event, select_name) => {
         if (event.target.value === 'Other' && select_name === 'research_type') {
             setShowOtherQuestion(true)
@@ -71,29 +82,35 @@ function StudyInformationForm({ protocolTypeDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if (formData.research_type !== '' && formData.research_type === 'Other' && formData.research_type_explain === "") {
-                setExplainErrors('This is required')
-                return
+            if (formData.research_type === 'Other' && formData.research_type_explain === "") {
+                setExplainErrors('This is required');
+                return;
             } else {
-                setExplainErrors('')
+                setExplainErrors('');
             }
             const getValidatedform = await studyInfoSchema.validate(formData, { abortEarly: false });
-            const isValid = await studyInfoSchema.isValid(getValidatedform)
+            const isValid = await studyInfoSchema.isValid(getValidatedform);
             if (isValid === true) {
                 let ingredient_list = []
                 if (formData.ingredient_list) {
                     for (let file of formData.ingredient_list) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'study_information', documentName: 'ingredient_list'})
+                        let id = await uploadFile(file, {
+                            protocolId: formData.protocol_id,
+                            createdBy: formData.created_by,
+                            protocolType: protocolTypeDetails.researchType,
+                            informationType: 'study_information',
+                            documentName: 'ingredient_list'
+                        })
                         ingredient_list.push(id)
                     }
                 }
                 dispatch(createStudyInformation({ ...formData, ingredient_list }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -104,15 +121,42 @@ function StudyInformationForm({ protocolTypeDetails }) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
     };
 
+    useEffect(() => {
+        if (studyInformation) {
+            setFormData({
+                research_type: studyInformation.research_type || '',
+                research_type_explain: studyInformation.research_type_explain || '',
+                protocol_id: protocolTypeDetails.protocolId,
+                created_by: JSON.parse(localStorage.getItem('user')).id,
+                ingredient_list: studyInformation.documents.map(doc => {
+                    if (doc.document_name === 'ingredient_list') {
+                        return {
+                            name: doc.file_name,
+                            type: doc.protocol_type,
+                        };
+                    }
+                }) || [],
+            });
+            setShowOtherQuestion(studyInformation.research_type === 'Other');
+        }
+    }, [studyInformation, protocolTypeDetails]);
+
+
+    console.log('studyInformation', {
+        formData,
+        errors,
+        studyInformation,
+    })
+
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>
