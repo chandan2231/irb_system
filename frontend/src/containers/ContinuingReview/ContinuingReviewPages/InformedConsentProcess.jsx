@@ -34,30 +34,31 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const investigatorInfoSchema = yup.object().shape({
-    icf_version: yup.string().required("This is required"),
-    performing_consent: yup.string().required("This is required"),
-    challenges_faced: yup.string().required("This is required"),
+    icf_version: yup.string().required("ICF version is required"),
+    performing_consent: yup.string().required("This field is required"),
+    challenges_faced: yup.string().required("Please select an option"),
     challenges_faced_explain: yup.string().when('challenges_faced', {
         is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        then: yup.string().required('Please explain the challenges'),
+        otherwise: yup.string().nullable()
     }),
-    changes_consent: yup.string().required("This is required"),
+    changes_consent: yup.string().required("Please select an option"),
     changes_consent_explain: yup.string().when('changes_consent', {
         is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        then: yup.string().required('Please explain the changes'),
+        otherwise: yup.string().nullable()
     }),
-    ensuring_list: yup.string().required("This is required"),
+    ensuring_list: yup.string().required("Please select an option"),
     ensuring_list_explain: yup.string().when('ensuring_list', {
         is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        then: yup.string().required('Please explain'),
+        otherwise: yup.string().nullable()
     }),
+    icf_file: yup.array().min(1, "At least one ICF file is required"),
+    consent_form: yup.array().min(1, "At least one consent form is required"),
+});
 
-})
-
-function InformedConsentProcess({ continuinReviewDetails }) {
+function InformedConsentProcess({ continuinReviewDetails, informedConsentProcess }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -74,6 +75,8 @@ function InformedConsentProcess({ continuinReviewDetails }) {
         changes_consent_explain: '',
         ensuring_list: '',
         ensuring_list_explain: '',
+        icf_file: [],
+        consent_form: [],
         protocol_id: continuinReviewDetails.protocolId,
         created_by: userDetails.id,
     });
@@ -133,22 +136,28 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                 }
                 else {
                     for (let file of formData.icf_file) {
-                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'informed_consent_process', documentName: 'icf_file'})
-                        icf_file.push(id)
+                        let id = await uploadFile(file, {
+                            protocolId: formData.protocol_id,
+                            createdBy: formData.created_by,
+                            protocolType: 'continuein_review',
+                            informationType: 'informed_consent_process',
+                            documentName: 'icf_file'
+                        });
+                        icf_file.push(id);
                     }
                     for (let file of formData.consent_form) {
-                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: 'continuein_review', informationType: 'informed_consent_process', documentName: 'consent_form'})
+                        let id = uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: 'continuein_review', informationType: 'informed_consent_process', documentName: 'consent_form' })
                         consent_form.push(id)
                     }
                 }
-                dispatch(informedConsentSave({ ...formData}))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                        e.target.reset();
-                    }
-                })
+                dispatch(informedConsentSave({ ...formData }))
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                            e.target.reset();
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -159,20 +168,61 @@ function InformedConsentProcess({ continuinReviewDetails }) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
     };
+
+    useEffect(() => {
+        if (informedConsentProcess) {
+            setFormData({
+                icf_version: informedConsentProcess.icf_version,
+                performing_consent: informedConsentProcess.performing_consent,
+                challenges_faced: informedConsentProcess.challenges_faced,
+                challenges_faced_explain: informedConsentProcess.challenges_faced_explain,
+                changes_consent: informedConsentProcess.changes_consent,
+                changes_consent_explain: informedConsentProcess.changes_consent_explain,
+                ensuring_list: informedConsentProcess.ensuring_list,
+                ensuring_list_explain: informedConsentProcess.ensuring_list_explain,
+                protocol_id: continuinReviewDetails.protocolId,
+                created_by: userDetails.id,
+                icf_file: informedConsentProcess.documents.map(doc => {
+                    if (doc.document_name === 'icf_file') {
+                        return {
+                            name: doc.file_name,
+                            url: doc.file_url
+                        }
+                    }
+                }) || [],
+                consent_form: informedConsentProcess.documents.map(doc => {
+                    if (doc.document_name === 'consent_form') {
+                        return {
+                            name: doc.file_name,
+                            url: doc.file_url
+                        }
+                    }
+                }) || []
+            })
+        }
+    }, [informedConsentProcess, continuinReviewDetails]);
+
+    console.log("informedConsentProcess", {
+        informedConsentProcess,
+        formData
+    })
+
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <h4>Question 1</h4>
                     <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Which version of the ICF are you currently using? *" id="icf_version" name="icf_version" onChange={handleChange} />
+                            <TextField fullWidth label="Which version of the ICF are you currently using? *" id="icf_version" name="icf_version"
+                                value={formData.icf_version}
+                                onChange={handleChange} />
                         </Box>
                         {errors.icf_version && <div className="error">{errors.icf_version}</div>}
                     </Form.Group>
@@ -202,7 +252,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                     <h4>Question 2</h4>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Who is performing the informed consent at your site? *" id="performing_consent" name="performing_consent" onChange={handleChange} />
+                            <TextField fullWidth label="Who is performing the informed consent at your site? *" id="performing_consent" name="performing_consent"
+                                value={formData.performing_consent}
+                                onChange={handleChange} />
                         </Box>
                         {errors.performing_consent && <div className="error">{errors.performing_consent}</div>}
                     </Form.Group>
@@ -210,7 +262,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Have there been any challenges faced to the consenting process?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="challenges_faced" onChange={(event) => handleChallengesFaced(event, 'challenges_faced')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="challenges_faced"
+                                value={formData.challenges_faced}
+                                onChange={(event) => handleChallengesFaced(event, 'challenges_faced')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -221,7 +275,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                         showAdditionalQuestionChallengesFaced === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="challenges_faced_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="challenges_faced_explain" id='explain' rows={3} multiline
+                                        value={formData.challenges_faced_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.challenges_faced_explain && <div className="error">{errors.challenges_faced_explain}</div>}
                             </Form.Group>
@@ -231,7 +287,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Have there been any changes to the consent form that have not been reported to the IRB?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_consent" onChange={(event) => handleChangeConsent(event, 'changes_consent')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="changes_consent"
+                                value={formData.changes_consent}
+                                onChange={(event) => handleChangeConsent(event, 'changes_consent')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -242,7 +300,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                         showAdditionalQuestionChangeConsent === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="changes_consent_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="changes_consent_explain" id='explain' rows={3} multiline
+                                        value={formData.changes_consent_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.changes_consent_explain && <div className="error">{errors.changes_consent_explain}</div>}
                             </Form.Group>
@@ -280,7 +340,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                             <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>3. The participants are provided with the most up-to-date contact information for study staff?</FormLabel>
                             <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>4. The investigator is providing the most current information regarding the study that may affect the participants’ willingness to participate in the study? </FormLabel>
                             <FormLabel id="demo-row-radio-buttons-group-label" style={{ marginTop: '15px' }}>5. All participants have been consented or re-consented, where necessary, with the most current approved informed consent form?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="ensuring_list" onChange={(event) => handleRadioButtonEnsuringList(event, 'ensuring_list')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="ensuring_list"
+                                value={formData.ensuring_list}
+                                onChange={(event) => handleRadioButtonEnsuringList(event, 'ensuring_list')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -291,7 +353,9 @@ function InformedConsentProcess({ continuinReviewDetails }) {
                         showAdditionalQuestionEnsuringList === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="ensuring_list_explain" id='explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth name="ensuring_list_explain" id='explain' rows={3} multiline
+                                        value={formData.ensuring_list_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.ensuring_list_explain && <div className="error">{errors.ensuring_list_explain}</div>}
                             </Form.Group>
