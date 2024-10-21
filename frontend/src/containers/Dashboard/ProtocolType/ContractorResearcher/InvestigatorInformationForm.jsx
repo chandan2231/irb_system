@@ -49,7 +49,7 @@ const investigatorInfoSchema = yup.object().shape({
     }),
     involved_years: yup.string().required("Involvement duration is required"),
     investigators_npi: yup.string(),
-    training_completed: yup.array().min(1, "At least one training option must be selected"),
+    training_completed: yup.string().required("Please specify the training completed"),
     training_completed_explain: yup.string().when('training_completed', {
         is: (value) => value.includes('8'),
         then: () => yup.string().required("Explanation for 'Other' training is required"),
@@ -101,30 +101,24 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
         fwa_number: investigatorInformation?.fwa_number || '',
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
-        cv_files: investigatorInformation?.documents?.map(doc => {
-            if (doc.document_name === 'investigator_cv') {
-                return {
-                    name: doc.file_name,
-                    type: doc.protocol_type,
-                };
-            }
-        }) || [],
-        medical_license: investigatorInformation?.documents?.map(doc => {
-            if (doc.document_name === 'medical_license') {
-                return {
-                    name: doc.file_name,
-                    type: doc.protocol_type,
-                };
-            }
-        }) || [],
-        training_certificates: investigatorInformation?.documents?.map(doc => {
-            if (doc.document_name === 'training_certificates') {
-                return {
-                    name: doc.file_name,
-                    type: doc.protocol_type,
-                };
-            }
-        }) || []
+        cv_files: investigatorInformation?.documents
+            ?.filter(doc => doc.document_name === 'investigator_cv')
+            ?.map(doc => ({
+                name: doc.file_name,
+                type: doc.protocol_type,
+            })) || [],
+        medical_license: investigatorInformation?.documents
+            ?.filter(doc => doc.document_name === 'medical_license')
+            ?.map(doc => ({
+                name: doc.file_name,
+                type: doc.protocol_type,
+            })) || [],
+        training_certificates: investigatorInformation?.documents
+            ?.filter(doc => doc.document_name === 'training_certificates')
+            ?.map(doc => ({
+                name: doc.file_name,
+                type: doc.protocol_type,
+            })) || []
     });
 
     const [errors, setErrors] = useState({});
@@ -151,31 +145,25 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
                 fwa_number: investigatorInformation.fwa_number || '',
                 protocol_id: protocolTypeDetails.protocolId,
                 created_by: userDetails.id,
-                cv_files: investigatorInformation.documents.map(doc => {
-                    if (doc.document_name === 'investigator_cv') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-                        };
-                    }
-                }) || [],
-                medical_license: investigatorInformation.documents.map(doc => {
-                    if (doc.document_name === 'medical_license') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-                        };
-                    }
-                }) || [],
-                training_certificates: investigatorInformation.documents.map(doc => {
-                    if (doc.document_name === 'training_certificates') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-                        };
-                    }
-                }) || []
-            });
+                cv_files: investigatorInformation?.documents
+                    ?.filter(doc => doc.document_name === 'investigator_cv')
+                    ?.map(doc => ({
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    })) || [],
+                medical_license: investigatorInformation?.documents
+                    ?.filter(doc => doc.document_name === 'medical_license')
+                    ?.map(doc => ({
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    })) || [],
+                training_certificates: investigatorInformation?.documents
+                    ?.filter(doc => doc.document_name === 'training_certificates')
+                    ?.map(doc => ({
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    })) || []
+            })
             setShowAdditionalQuestion(investigatorInformation.fda_audit === 'Yes' ? true : false)
             setShowAdditionalQuestionPendingOrActive(investigatorInformation.pending_or_active_research === 'Yes' ? true : false)
             setShowAdditionalQuestionSiteFWP(investigatorInformation.site_fwp === 'Yes' ? true : false)
@@ -293,11 +281,11 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
             error.inner.forEach((err) => {
                 newErrors[err.path] = err.message;
             });
-            if (otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === "") {
-                newErrors['training_completed_explain_error'] = 'This is required';
-            } else {
-                newErrors['training_completed_explain_error'] = '';
-            }
+            // if (otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === "") {
+            //     newErrors['training_completed_explain_error'] = 'This is required';
+            // } else {
+            //     newErrors['training_completed_explain_error'] = '';
+            // }
             setErrors(newErrors);
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
@@ -308,8 +296,9 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
         }
     };
 
-    console.log('investigatorInformation', {
+    console.log("investigatorInformationFormData", {
         formData,
+        errors,
         investigatorInformation
     })
 
@@ -368,6 +357,7 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
                                 onChange={handleChange}
                             />
                         </Box>
+                        {errors.sub_investigator_email && <div className="error">{errors.sub_investigator_email}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
@@ -392,6 +382,9 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
                                 onChange={handleChange}
                             />
                         </Box>
+                        {
+                            errors.primary_contact_email && <div className="error">{errors.primary_contact_email}</div>
+                        }
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
@@ -463,15 +456,32 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">What training in the field of human subjects protection has the investigator completed?</FormLabel>
                             <FormGroup onChange={(event) => handleTrainingCompletedChecked(event)} name="training_completed">
-                                <FormControlLabel control={<Checkbox />} label="OHRP Human Subject Assurance Training" value='1' />
-                                <FormControlLabel control={<Checkbox />} label="CITI Program Training" value='2' />
-                                <FormControlLabel control={<Checkbox />} label="Certified Physician Investigator Training" value='3' />
-                                <FormControlLabel control={<Checkbox />} label="ACRP training (CCRC, CCRA)" value='4' />
-                                <FormControlLabel control={<Checkbox />} label="SOCRA (CCRP)" value='5' />
-                                <FormControlLabel control={<Checkbox />} label="Graduate or undergraduate research studies or degrees" value='6' />
-                                <FormControlLabel control={<Checkbox />} label="Academy of Physicians in Clinical Research" value='7' />
-                                <FormControlLabel control={<Checkbox />} label="Other" value='8' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('1')}
+                                />} label="OHRP Human Subject Assurance Training" value='1' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('2')}
+                                />} label="CITI Program Training" value='2' />
+                                <FormControlLabel control={<Checkbox
+                                    hecked={formData.training_completed.includes('3')}
+                                />} label="Certified Physician Investigator Training" value='3' />
+                                <FormControlLabel control={<Checkbox
+                                    hecked={formData.training_completed.includes('4')}
+                                />} label="ACRP training (CCRC, CCRA)" value='4' />
+                                <FormControlLabel control={<Checkbox
+                                    hecked={formData.training_completed.includes('5')}
+                                />} label="SOCRA (CCRP)" value='5' />
+                                <FormControlLabel control={<Checkbox
+                                    hecked={formData.training_completed.includes('6')}
+                                />} label="Graduate or undergraduate research studies or degrees" value='6' />
+                                <FormControlLabel control={<Checkbox
+                                    hecked={formData.training_completed.includes('7')}
+                                />} label="Academy of Physicians in Clinical Research" value='7' />
+                                <FormControlLabel control={<Checkbox
+                                    hecked={formData.training_completed.includes('8')}
+                                />} label="Other" value='8' />
                             </FormGroup>
+                            {errors.training_completed && <div className="error">{errors.training_completed}</div>}
                         </FormControl>
                     </Form.Group>
                     {

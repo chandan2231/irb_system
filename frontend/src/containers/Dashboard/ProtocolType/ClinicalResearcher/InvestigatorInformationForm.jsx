@@ -384,127 +384,10 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
         }
     };
 
-    console.log("investigatorInformation", {
-        investigatorInformation,
-        formData
-    })
-
-    // const investigatorInformation ={
-    //     "id": 1,
-    //         "protocol_id": "IRB756179",
-    //             "investigator_name": "Test2",
-    //                 "investigator_email": "Test2",
-    //                     "sub_investigator_name": "Test2",
-    //                         "sub_investigator_email": "Test2",
-    //                             "additional_study_name": "Test2",
-    //                                 "additional_study_email": "Test2",
-    //                                     "site_name": "Test2",
-    //                                         "site_address": "Test2",
-    //                                             "more_site": "Yes",
-    //                                                 "site_name_address": "Test2",
-    //                                                     "protocol_title": "Test2",
-    //                                                         "protocol_number": "Test2",
-    //                                                             "study_criteria": "Test2",
-    //                                                                 "subject_number": "Test2",
-    //                                                                     "site_number": "Test2",
-    //                                                                         "disapproved_or_withdrawn": "Yes",
-    //                                                                             "disapproved_or_withdrawn_explain": "Test2",
-    //                                                                                 "oversite": "Yes",
-    //                                                                                     "oversite_explain": "Test2",
-    //                                                                                         "immediate_family": "Yes",
-    //                                                                                             "immediate_family_explain": "Test2",
-    //                                                                                                 "stock_ownership": "Yes",
-    //                                                                                                     "stock_ownership_explain": "Test2",
-    //                                                                                                         "property_interest": "Yes",
-    //                                                                                                             "property_interest_explain": "Test2",
-    //                                                                                                                 "financial_agreement": "Yes",
-    //                                                                                                                     "financial_agreement_explain": "Test2",
-    //                                                                                                                         "server_position": "Yes",
-    //                                                                                                                             "server_position_explain": "Test2",
-    //                                                                                                                                 "influence_conduct": "Yes",
-    //                                                                                                                                     "influence_conduct_explain": "Test2",
-    //                                                                                                                                         "interest_conflict": "Yes",
-    //                                                                                                                                             "interest_conflict_explain": "Test2",
-    //                                                                                                                                                 "fda_audit": "Yes",
-    //                                                                                                                                                     "fda_audit_explain": "Test2",
-    //                                                                                                                                                         "involved_years": "New to research-1 year",
-    //                                                                                                                                                             "investigators_npi": "Test2",
-    //                                                                                                                                                                 "training_completed": "1,2,8",
-    //                                                                                                                                                                     "training_completed_explain": "Test2",
-    //                                                                                                                                                                         "investigator_research_number": "Test2",
-    //                                                                                                                                                                             "pending_or_active_research": "Yes",
-    //                                                                                                                                                                                 "pending_or_active_research_explain": "Test2",
-    //                                                                                                                                                                                     "created_by": "2",
-    //                                                                                                                                                                                         "created_at": "2024-08-27T18:30:00.000Z",
-    //                                                                                                                                                                                             "updated_at": "2024-08-27T18:30:00.000Z",
-    //                                                                                                                                                                                                 "documents": [
-    //                                                                                                                                                                                                     {
-    //                                                                                                                                                                                                         "id": 15,
-    //                                                                                                                                                                                                         "protocol_id": "IRB756179",
-    //                                                                                                                                                                                                         "protocol_type": "Clinical Researcher",
-    //                                                                                                                                                                                                         "information_type": "investigator_protocol_information",
-    //                                                                                                                                                                                                         "document_name": "investigator_cv",
-    //                                                                                                                                                                                                         "file_name": "1725000645256-925-1724934887079-704-1705563391376-ReferredTo (2).pdf",
-    //                                                                                                                                                                                                         "file_url": "https://dev-patient-reports.s3.us-east-2.amazonaws.com/public/images/1725000645256-925-1724934887079-704-1705563391376-ReferredTo%20%282%29.pdf",
-    //                                                                                                                                                                                                         "created_by": 2,
-    //                                                                                                                                                                                                         "created_at": "2024-08-29T18:30:00.000Z",
-    //                                                                                                                                                                                                         "updated_at": "2024-08-29T18:30:00.000Z"
-    //                                                                                                                                                                                                     },
-    //                                                                                                                                                                                                     {
-    //                                                                                                                                                                                                         "id": 16,
-    //                                                                                                                                                                                                         "protocol_id": "IRB756179",
-    //                                                                                                                                                                                                         "protocol_type": "Clinical Researcher",
-    //                                                                                                                                                                                                         "information_type": "investigator_protocol_information",
-    //                                                                                                                                                                                                         "document_name": "investigator_cv",
-    //                                                                                                                                                                                                         "file_name": "1725000646641-432-A screenshot of a phone__Description automatically generated.jpeg",
-    //                                                                                                                                                                                                         "file_url": "https://dev-patient-reports.s3.us-east-2.amazonaws.com/public/images/1725000646641-432-A%20screenshot%20of%20a%20phone__Description%20automatically%20generated.jpeg",
-    //                                                                                                                                                                                                         "created_by": 2,
-    //                                                                                                                                                                                                         "created_at": "2024-08-29T18:30:00.000Z",
-    //                                                                                                                                                                                                         "updated_at": "2024-08-29T18:30:00.000Z"
-    //                                                                                                                                                                                                     },
-    //                                                                                                                                                                                                     {
-    //                                                                                                                                                                                                         "id": 17,
-    //                                                                                                                                                                                                         "protocol_id": "IRB756179",
-    //                                                                                                                                                                                                         "protocol_type": "Clinical Researcher",
-    //                                                                                                                                                                                                         "information_type": "investigator_protocol_information",
-    //                                                                                                                                                                                                         "document_name": "investigator_cv",
-    //                                                                                                                                                                                                         "file_name": "1725000763288-632-A screenshot of a phone__Description automatically generated.jpeg",
-    //                                                                                                                                                                                                         "file_url": "https://dev-patient-reports.s3.us-east-2.amazonaws.com/public/images/1725000763288-632-A%20screenshot%20of%20a%20phone__Description%20automatically%20generated.jpeg",
-    //                                                                                                                                                                                                         "created_by": 2,
-    //                                                                                                                                                                                                         "created_at": "2024-08-29T18:30:00.000Z",
-    //                                                                                                                                                                                                         "updated_at": "2024-08-29T18:30:00.000Z"
-    //                                                                                                                                                                                                     },
-    //                                                                                                                                                                                                     {
-    //                                                                                                                                                                                                         "id": 18,
-    //                                                                                                                                                                                                         "protocol_id": "IRB756179",
-    //                                                                                                                                                                                                         "protocol_type": "Clinical Researcher",
-    //                                                                                                                                                                                                         "information_type": "investigator_protocol_information",
-    //                                                                                                                                                                                                         "document_name": "medical_license",
-    //                                                                                                                                                                                                         "file_name": "1725000764259-547-1724934887079-704-1705563391376-ReferredTo (2).pdf",
-    //                                                                                                                                                                                                         "file_url": "https://dev-patient-reports.s3.us-east-2.amazonaws.com/public/images/1725000764259-547-1724934887079-704-1705563391376-ReferredTo%20%282%29.pdf",
-    //                                                                                                                                                                                                         "created_by": 2,
-    //                                                                                                                                                                                                         "created_at": "2024-08-29T18:30:00.000Z",
-    //                                                                                                                                                                                                         "updated_at": "2024-08-29T18:30:00.000Z"
-    //                                                                                                                                                                                                     },
-    //                                                                                                                                                                                                     {
-    //                                                                                                                                                                                                         "id": 19,
-    //                                                                                                                                                                                                         "protocol_id": "IRB756179",
-    //                                                                                                                                                                                                         "protocol_type": "Clinical Researcher",
-    //                                                                                                                                                                                                         "information_type": "investigator_protocol_information",
-    //                                                                                                                                                                                                         "document_name": "training_certificates",
-    //                                                                                                                                                                                                         "file_name": "1725000765568-490-360_F_770290178_BwtN1NmmYkHKCITzw5nkMDQhkX6z5ME2.png",
-    //                                                                                                                                                                                                         "file_url": "https://dev-patient-reports.s3.us-east-2.amazonaws.com/public/images/1725000765568-490-360_F_770290178_BwtN1NmmYkHKCITzw5nkMDQhkX6z5ME2.png",
-    //                                                                                                                                                                                                         "created_by": 2,
-    //                                                                                                                                                                                                         "created_at": "2024-08-29T18:30:00.000Z",
-    //                                                                                                                                                                                                         "updated_at": "2024-08-29T18:30:00.000Z"
-    //                                                                                                                                                                                                     }
-    //                                                                                                                                                                                                 ]
-    // }
-
     useEffect(() => {
         if (investigatorInformation) {
             setFormData({
-                training_completed: investigatorInformation?.training_completed.split(',') || [], // Use split to convert string to array
+                training_completed: investigatorInformation?.training_completed.split(',') || [],
                 investigator_name: investigatorInformation?.investigator_name,
                 investigator_email: investigatorInformation?.investigator_email,
                 sub_investigator_name: investigatorInformation?.sub_investigator_name,
@@ -546,31 +429,22 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
                 investigator_research_number: investigatorInformation?.investigator_research_number,
                 pending_or_active_research: investigatorInformation?.pending_or_active_research,
                 pending_or_active_research_explain: investigatorInformation?.pending_or_active_research_explain,
-                cv_files: investigatorInformation?.documents?.map((doc) => {
-                    if (doc.document_name === 'investigator_cv') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-
-                        }
+                cv_files: investigatorInformation?.documents?.filter((doc) => doc.document_name === 'investigator_cv').map((doc) => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
                     }
                 }) || [],
-                training_certificates: investigatorInformation?.documents?.map((doc) => {
-                    if (doc.document_name === 'training_certificates') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-
-                        }
+                training_certificates: investigatorInformation?.documents?.filter((doc) => doc.document_name === 'training_certificates').map((doc) => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
                     }
                 }) || [],
-                medical_license: investigatorInformation?.documents?.map((doc) => {
-                    if (doc.document_name === 'medical_license') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-
-                        }
+                medical_license: investigatorInformation?.documents?.filter((doc) => doc.document_name === 'medical_license').map((doc) => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
                     }
                 }) || [],
             });
@@ -591,6 +465,11 @@ function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformat
         }
     }, [investigatorInformation]);
 
+    console.log("investigatorInformationFormData", {
+        formData,
+        investigatorInformation,
+        errors
+    })
 
     return (
         <>

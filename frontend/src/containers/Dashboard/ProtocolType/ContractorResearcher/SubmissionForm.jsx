@@ -86,9 +86,9 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
         return splitStr.join(' ');
     }
 
-    console.log("submissionForm", {
+    console.log("submissionFormData", {
         protocolDetailsById,
-        formData
+        formData,
     })
 
 

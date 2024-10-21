@@ -55,13 +55,11 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
         research_type_explain: '',
         protocol_id: protocolTypeDetails?.protocolId,
         created_by: JSON.parse(localStorage.getItem('user')).id,
-        ingredient_list: studyInformation?.documents?.map(doc => {
-            if (doc.document_name === 'ingredient_list') {
-                return {
-                    name: doc.file_name,
-                    type: doc.protocol_type,
-                };
-            }
+        ingredient_list: studyInformation?.documents?.filter(doc => doc.document_name === 'ingredient_list')?.map(doc => {
+            return {
+                name: doc.file_name,
+                type: doc.protocol_type,
+            };
         }) || [],
     });
     const handleSelectResearchType = (event, select_name) => {
@@ -134,13 +132,11 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                 research_type_explain: studyInformation.research_type_explain || '',
                 protocol_id: protocolTypeDetails.protocolId,
                 created_by: JSON.parse(localStorage.getItem('user')).id,
-                ingredient_list: studyInformation.documents.map(doc => {
-                    if (doc.document_name === 'ingredient_list') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-                        };
-                    }
+                ingredient_list: studyInformation?.documents?.filter(doc => doc.document_name === 'ingredient_list')?.map(doc => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    };
                 }) || [],
             });
             setShowOtherQuestion(studyInformation.research_type === 'Other');
@@ -148,7 +144,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     }, [studyInformation, protocolTypeDetails]);
 
 
-    console.log('studyInformation', {
+    console.log('studyInformationFormData', {
         formData,
         errors,
         studyInformation,
@@ -186,7 +182,9 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                         showOtherQuestion === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline
+                                        value={formData.research_type_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {explainErrors && <div className="error">{explainErrors}</div>}
                             </Form.Group>

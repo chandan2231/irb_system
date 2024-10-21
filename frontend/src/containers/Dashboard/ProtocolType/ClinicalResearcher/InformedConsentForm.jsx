@@ -108,9 +108,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
         }
     };
 
-    console.log('informedConsent', {
+    console.log('informedConsentFormData', {
         informedConsent,
         formData,
+        errors
     });
 
     return (

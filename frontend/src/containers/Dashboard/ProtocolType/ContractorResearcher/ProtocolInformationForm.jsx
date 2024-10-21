@@ -41,14 +41,12 @@ const protocoalInfoSchema = yup.object().shape({
 
     disapproved_or_withdrawn: yup.string().when('first_time_protocol', {
         is: (value) => value === 'No', // Explicit condition check
-        then: () => yup.string().required("This is required when the protocol is not submitted for the first time"),
-        otherwise: () => yup.string(), // Ensure it's nullable if condition isn't met
+        then: () => yup.string().notRequired("This is required when the protocol is not submitted for the first time"),
     }),
 
     disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
         is: (value) => value === 'Yes', // Explicit condition check
-        then: () => yup.string().required("Explanation is required if disapproved or withdrawn"),
-        otherwise: () => yup.string(),
+        then: () => yup.string().notRequired("Explanation is required if disapproved or withdrawn"),
     }),
 
     oversite: yup.string(),
@@ -56,7 +54,6 @@ const protocoalInfoSchema = yup.object().shape({
     oversite_explain: yup.string().when('oversite', {
         is: (value) => value === 'Yes', // Explicit condition check
         then: () => yup.string().required("This is required if oversight is transferred from another IRB"),
-        otherwise: () => yup.string(),
     }),
 
     protocol_title: yup.string().required("Protocol title is required"),
@@ -92,13 +89,11 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         oversite_explain: protocolInformation?.oversite_explain || '',
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
-        protocol_file: protocolInformation?.documents?.map(doc => {
-            if (doc.document_name === 'protocol') {
-                return {
-                    name: doc.file_name,
-                    type: doc.protocol_type,
-                };
-            }
+        protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+            return {
+                name: doc.file_name,
+                type: doc.protocol_type,
+            };
         }) || []
     })
 
@@ -120,13 +115,11 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                 oversite_explain: protocolInformation.oversite_explain || '',
                 protocol_id: protocolTypeDetails.protocolId,
                 created_by: userDetails.id,
-                protocol_file: protocolInformation.documents.map(doc => {
-                    if (doc.document_name === 'protocol') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-                        };
-                    }
+                protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    };
                 }) || []
             });
             setShowAdditionalQuestion(protocolInformation.first_time_protocol === 'No');
@@ -218,9 +211,14 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         }
     };
 
-    console.log('formData', {
+    console.log('protocolInformation form', {
         formData,
         protocolInformation
+    });
+
+    console.log('protocolInformationFormData', {
+        formData,
+        errors
     });
 
     // here on the client side

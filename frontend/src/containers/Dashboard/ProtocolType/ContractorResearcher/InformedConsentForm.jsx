@@ -214,13 +214,11 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 professional_translator_explain: informedConsent?.professional_translator_explain || '',
                 protocol_id: protocolTypeDetails.protocolId,
                 created_by: JSON.parse(localStorage.getItem('user')).id,
-                consent_file: informedConsent?.documents?.map(doc => {
-                    if (doc.document_name === 'consent_files') {
-                        return {
-                            name: doc.file_name,
-                            type: doc.protocol_type,
-                        };
-                    }
+                consent_file: informedConsent?.documents?.filter(doc => doc.document_name === 'consent_files').map(doc => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    };
                 }) || []
             });
             setShowOtherQuestion(informedConsent?.consent_type?.includes('1'));
@@ -230,9 +228,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
         }
     }, [informedConsent, protocolTypeDetails]);
 
-    console.log("informedConsent", {
+    console.log("informedConsentFormData", {
         informedConsent,
-        formData
+        formData,
+        errors
     })
 
     return (
@@ -269,6 +268,9 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                                     checked={formData.consent_type.includes('5')}
                                 />} value="5" label="Written, signed assent by minor" />
                             </FormGroup>
+                            {
+                                errors.consent_type && <div className="error">{errors.consent_type}</div>
+                            }
                         </FormControl>
                     </Form.Group>
                     {
@@ -279,7 +281,8 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                                         value={formData.no_consent_explain}
                                     />
                                 </Box>
-                                {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>}
+                                {/* {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>} */}
+                                {errors.no_consent_explain && <div className="error">{errors.no_consent_explain}</div>}
                             </Form.Group>
                         )
                     }
@@ -347,7 +350,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                                         value={formData.professional_translator_explain}
                                         name="professional_translator_explain" id="professional_translator_explain" fullWidth rows={3} multiline onChange={handleChange} />
                                 </Box>
-                                {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>}
+                                {/* {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>} */}
+                                {
+                                    errors.professional_translator_explain && <div className="error">{errors.professional_translator_explain}</div>
+                                }
                             </Form.Group>
                         )
                     }
