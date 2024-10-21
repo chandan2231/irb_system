@@ -38,21 +38,21 @@ const investigatorInfoSchema = yup.object().shape({
     performing_consent: yup.string().required("This field is required"),
     challenges_faced: yup.string().required("Please select an option"),
     challenges_faced_explain: yup.string().when('challenges_faced', {
-        is: 'Yes',
-        then: yup.string().required('Please explain the challenges'),
-        otherwise: yup.string().nullable()
+        is: () => 'Yes',
+        then: () => yup.string().required('Please explain the challenges'),
+        otherwise: () => yup.string().nullable()
     }),
     changes_consent: yup.string().required("Please select an option"),
     changes_consent_explain: yup.string().when('changes_consent', {
-        is: 'Yes',
-        then: yup.string().required('Please explain the changes'),
-        otherwise: yup.string().nullable()
+        is: () => 'Yes',
+        then: () => yup.string().required('Please explain the changes'),
+        otherwise: () => yup.string().nullable()
     }),
     ensuring_list: yup.string().required("Please select an option"),
     ensuring_list_explain: yup.string().when('ensuring_list', {
-        is: 'Yes',
-        then: yup.string().required('Please explain'),
-        otherwise: yup.string().nullable()
+        is: () => 'Yes',
+        then: () => yup.string().required('Please explain'),
+        otherwise: () => yup.string().nullable()
     }),
     icf_file: yup.array().min(1, "At least one ICF file is required"),
     consent_form: yup.array().min(1, "At least one consent form is required"),

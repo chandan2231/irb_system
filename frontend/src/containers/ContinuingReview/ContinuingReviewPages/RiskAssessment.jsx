@@ -36,13 +36,13 @@ const VisuallyHiddenInput = styled('input')({
 const riskAssessmentSchema = yup.object().shape({
     irb_report: yup.string().required("This is required"),
     irb_report_explain: yup.string().when('irb_report', {
-        is: 'Yes',
+        is: () => 'Yes',
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),
     criteria_report: yup.string().required("This is required"),
     criteria_report_explain: yup.string().when('criteria_report', {
-        is: 'Yes',
+        is: () => 'Yes',
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),

@@ -38,23 +38,23 @@ const VisuallyHiddenInput = styled('input')({
 const investigatorInfoSchema = yup.object().shape({
     inv_sit_quali: yup.string().required("This is required"),
     inv_or_comp_explain: yup.string().when('inv_or_comp', {
-        is: 'Yes',
+        is: () => 'Yes',
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),
     changes_explain: yup.string().required("This is required"),
     changes_reported_explain: yup.string().when('changes_reported', {
-        is: 'No',
+        is: () => 'No',
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),
     facility_any_changes_explain: yup.string().when('facility_any_changes', {
-        is: 'Yes',
+        is: () => 'Yes',
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),
     changes_law_explain: yup.string().when('changes_law', {
-        is: 'Yes',
+        is: () => 'Yes',
         then: (schema) => schema.required("This is required"),
         otherwise: (schema) => schema,
     }),

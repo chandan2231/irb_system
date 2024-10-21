@@ -38,26 +38,38 @@ const VisuallyHiddenInput = styled('input')({
 
 const protocoalInfoSchema = yup.object().shape({
     first_time_protocol: yup.string().required("This is required"),
+
     disapproved_or_withdrawn: yup.string().when('first_time_protocol', {
-        is: 'No',
-        then: yup.string().required("This is required when the protocol is not submitted for the first time"),
+        is: (value) => value === 'No', // Explicit condition check
+        then: () => yup.string().required("This is required when the protocol is not submitted for the first time"),
+        otherwise: () => yup.string(), // Ensure it's nullable if condition isn't met
     }),
+
     disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
-        is: 'Yes',
-        then: yup.string().required("Explanation is required if disapproved or withdrawn"),
+        is: (value) => value === 'Yes', // Explicit condition check
+        then: () => yup.string().required("Explanation is required if disapproved or withdrawn"),
+        otherwise: () => yup.string(),
     }),
+
     oversite: yup.string(),
+
     oversite_explain: yup.string().when('oversite', {
-        is: 'Yes',
-        then: yup.string().required("This is required if oversight is transferred from another IRB"),
+        is: (value) => value === 'Yes', // Explicit condition check
+        then: () => yup.string().required("This is required if oversight is transferred from another IRB"),
+        otherwise: () => yup.string(),
     }),
+
     protocol_title: yup.string().required("Protocol title is required"),
     protocol_number: yup.string().required("Protocol number is required"),
     sponsor: yup.string().required("Sponsor is required"),
     study_duration: yup.string().required("Approximate duration of the study is required"),
     funding_source: yup.string().required("Funding source is required"),
-    protocol_file: yup.mixed().required("You must upload a protocol file"),
+
+    protocol_file: yup.mixed().test('required', 'You must upload a protocol file', (value) => {
+        return value && value.length > 0;
+    }),
 });
+
 
 function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     const theme = useTheme();
@@ -117,6 +129,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                     }
                 }) || []
             });
+            setShowAdditionalQuestion(protocolInformation.first_time_protocol === 'No');
+            setShowDisapproveAdditionTextArea(protocolInformation.disapproved_or_withdrawn === 'Yes');
+            setShowOversiteAdditionTextArea(protocolInformation.oversite === 'Yes');
         }
     }, [protocolInformation, protocolTypeDetails]);
 
@@ -187,6 +202,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             }
         } catch (validationError) {
             const newErrors = {};
+            console.log('validationError', validationError);
             validationError.inner.forEach(err => {
                 newErrors[err.path] = err.message;
             });
@@ -216,7 +232,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Are you submitting this protocol for the first time? *</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="first_time_protocol" onChange={(event) => handleRadioButtonSelectFirstTime(event, 'first_time_protocol')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="first_time_protocol"
+                                value={formData.first_time_protocol}
+                                onChange={(event) => handleRadioButtonSelectFirstTime(event, 'first_time_protocol')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>

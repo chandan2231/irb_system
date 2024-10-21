@@ -44,16 +44,16 @@ const protocoalInfoSchema = yup.object().shape({
   disapproved_or_withdrawn_explain: yup
     .string()
     .when("disapproved_or_withdrawn", {
-      is: "Yes",
-      then: yup
+      is: () => "Yes",
+      then: () => yup
         .string()
         .required("Explanation for disapproved or withdrawn is required"),
-      otherwise: yup.string().nullable(),
+      otherwise: () => yup.string().nullable(),
     }),
   oversite_explain: yup.string().when("oversite", {
-    is: "Yes",
-    then: yup.string().required("Oversight explanation is required"),
-    otherwise: yup.string().nullable(),
+    is: () => "Yes",
+    then: () => yup.string().required("Oversight explanation is required"),
+    otherwise: () => yup.string().nullable(),
   }),
 });
 

@@ -35,8 +35,8 @@ const VisuallyHiddenInput = styled('input')({
 const studyInfoSchema = yup.object().shape({
     research_type: yup.string().required("Research type is required"),
     research_type_explain: yup.string().when('research_type', {
-        is: 'Other',
-        then: yup.string().required("Please provide an explanation for 'Other' research type"),
+        is: () => 'Other',
+        then: () => yup.string().required("Please provide an explanation for 'Other' research type"),
     }),
     ingredient_list: yup.mixed().required("You must upload the relevant file"),
 });
