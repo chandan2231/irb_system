@@ -38,76 +38,77 @@ const VisuallyHiddenInput = styled('input')({
 
 const investigatorAndProtocolInfoSchema = yup.object().shape({
     investigator_name: yup.string().required("This is required"),
-    investigator_email: yup.string().required("This is required"),
+    investigator_email: yup.string().email("Invalid email format").required("This is required"),
     site_name: yup.string().required("This is required"),
     site_address: yup.string().required("This is required"),
     site_name_address: yup.string().when('more_site', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     protocol_title: yup.string().required("This is required"),
     protocol_number: yup.string().required("This is required"),
     study_criteria: yup.string().required("This is required"),
     subject_number: yup.string().required("This is required"),
     disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     oversite_explain: yup.string().when('oversite', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     immediate_family_explain: yup.string().when('immediate_family', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     stock_ownership_explain: yup.string().when('stock_ownership', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     property_interest_explain: yup.string().when('property_interest', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     financial_agreement_explain: yup.string().when('financial_agreement', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     server_position_explain: yup.string().when('server_position', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     influence_conduct_explain: yup.string().when('influence_conduct', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     interest_conflict_explain: yup.string().when('interest_conflict', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     fda_audit_explain: yup.string().when('fda_audit', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
     pending_or_active_research_explain: yup.string().when('pending_or_active_research', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("This is required"),
+        otherwise: () => yup.string().nullable(),
     }),
-})
+    cv_files: yup.array().min(1, "At least one CV file is required").required("This is required"),
+});
 
-function InvestigatorInformationForm({protocolTypeDetails}) {
+function InvestigatorInformationForm({ protocolTypeDetails, investigatorInformation }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -169,8 +170,7 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
         investigator_research_number: '',
         pending_or_active_research: '',
         pending_or_active_research_explain: '',
-        protocol_id: protocolTypeDetails.protocolId,
-        created_by: userDetails.id,
+        cv_files: [],
     });
     const [errors, setErrors] = useState({});
 
@@ -344,30 +344,30 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                 }
                 else {
                     for (let file of formData.cv_files) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'investigator_cv'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'investigator_cv' })
                         cv_files.push(id)
                     }
                     if (formData.medical_license) {
                         for (let file of formData.medical_license) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'medical_license'})
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'medical_license' })
                             medical_license.push(id)
                         }
                     }
                     if (formData.training_certificates) {
                         for (let file of formData.training_certificates) {
-                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'training_certificates'})
+                            let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'investigator_protocol_information', documentName: 'training_certificates' })
                             training_certificates.push(id)
                         }
                     }
                 }
                 dispatch(createInvestigatorAndProtocolInformation(formData))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                        e.target.reset();
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                            e.target.reset();
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -378,67 +378,173 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
     };
+
+    useEffect(() => {
+        if (investigatorInformation) {
+            setFormData({
+                training_completed: investigatorInformation?.training_completed.split(',') || [],
+                investigator_name: investigatorInformation?.investigator_name,
+                investigator_email: investigatorInformation?.investigator_email,
+                sub_investigator_name: investigatorInformation?.sub_investigator_name,
+                sub_investigator_email: investigatorInformation?.sub_investigator_email,
+                additional_study_name: investigatorInformation?.additional_study_name,
+                additional_study_email: investigatorInformation?.additional_study_email,
+                site_name: investigatorInformation?.site_name,
+                site_address: investigatorInformation?.site_address,
+                more_site: investigatorInformation?.more_site,
+                site_name_address: investigatorInformation?.site_name_address,
+                protocol_title: investigatorInformation?.protocol_title,
+                protocol_number: investigatorInformation?.protocol_number,
+                study_criteria: investigatorInformation?.study_criteria,
+                subject_number: investigatorInformation?.subject_number,
+                site_number: investigatorInformation?.site_number,
+                disapproved_or_withdrawn: investigatorInformation?.disapproved_or_withdrawn,
+                disapproved_or_withdrawn_explain: investigatorInformation?.disapproved_or_withdrawn_explain,
+                oversite: investigatorInformation?.oversite,
+                oversite_explain: investigatorInformation?.oversite_explain,
+                immediate_family: investigatorInformation?.immediate_family,
+                immediate_family_explain: investigatorInformation?.immediate_family_explain,
+                stock_ownership: investigatorInformation?.stock_ownership,
+                stock_ownership_explain: investigatorInformation?.stock_ownership_explain,
+                property_interest: investigatorInformation?.property_interest,
+                property_interest_explain: investigatorInformation?.property_interest_explain,
+                financial_agreement: investigatorInformation?.financial_agreement,
+                financial_agreement_explain: investigatorInformation?.financial_agreement_explain,
+                server_position: investigatorInformation?.server_position,
+                server_position_explain: investigatorInformation?.server_position_explain,
+                influence_conduct: investigatorInformation?.influence_conduct,
+                influence_conduct_explain: investigatorInformation?.influence_conduct_explain,
+                interest_conflict: investigatorInformation?.interest_conflict,
+                interest_conflict_explain: investigatorInformation?.interest_conflict_explain,
+                fda_audit: investigatorInformation?.fda_audit,
+                fda_audit_explain: investigatorInformation?.fda_audit_explain,
+                involved_years: investigatorInformation?.involved_years,
+                investigators_npi: investigatorInformation?.investigators_npi,
+                training_completed_explain: investigatorInformation?.training_completed_explain,
+                investigator_research_number: investigatorInformation?.investigator_research_number,
+                pending_or_active_research: investigatorInformation?.pending_or_active_research,
+                pending_or_active_research_explain: investigatorInformation?.pending_or_active_research_explain,
+                cv_files: investigatorInformation?.documents?.filter((doc) => doc.document_name === 'investigator_cv').map((doc) => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    }
+                }) || [],
+                training_certificates: investigatorInformation?.documents?.filter((doc) => doc.document_name === 'training_certificates').map((doc) => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    }
+                }) || [],
+                medical_license: investigatorInformation?.documents?.filter((doc) => doc.document_name === 'medical_license').map((doc) => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    }
+                }) || [],
+            });
+
+            setShowAdditionalQuestion(investigatorInformation?.more_site === 'Yes');
+            setShowDisapproveAdditionTextArea(investigatorInformation?.disapproved_or_withdrawn === 'Yes');
+            setShowOversiteAdditionTextArea(investigatorInformation?.oversite === 'Yes');
+            setShowImmediateFamilyAdditionTextArea(investigatorInformation?.immediate_family === 'Yes');
+            setShowStockOwnershipAdditionTextArea(investigatorInformation?.stock_ownership === 'Yes');
+            setShowPropertyInterestAdditionTextArea(investigatorInformation?.property_interest === 'Yes');
+            setShowFinancialAgreementAdditionTextArea(investigatorInformation?.financial_agreement === 'Yes');
+            setShowServePositionAdditionTextArea(investigatorInformation?.server_position === 'Yes');
+            setShowInfluenceConductAdditionTextArea(investigatorInformation?.influence_conduct === 'Yes');
+            setShowInterestConflictsAdditionTextArea(investigatorInformation?.interest_conflict === 'Yes');
+            setShowFdaAuditAdditionTextArea(investigatorInformation?.fda_audit === 'Yes');
+            setShowAdditionalQuestionPendingOrActive(investigatorInformation?.pending_or_active_research === 'Yes');
+
+        }
+    }, [investigatorInformation]);
+
+    console.log("investigatorInformationFormData", {
+        formData,
+        investigatorInformation,
+        errors
+    })
+
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name" onChange={handleChange} />
+                            <TextField fullWidth label="Investigator Name *" id="investigator_name" name="investigator_name"
+                                value={formData.investigator_name}
+                                onChange={handleChange} />
                         </Box>
                         {errors.investigator_name && <div className="error">{errors.investigator_name}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email" onChange={handleChange} />
+                            <TextField fullWidth label="Investigator Email *" id="investigator_email" name="investigator_email"
+                                value={formData.investigator_email}
+                                onChange={handleChange} />
                         </Box>
                         {errors.investigator_email && <div className="error">{errors.investigator_email}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Sub-Investigator Name" id="sub_investigator_name" name="sub_investigator_name" onChange={handleChange} />
+                            <TextField fullWidth label="Sub-Investigator Name" id="sub_investigator_name" name="sub_investigator_name"
+                                value={formData.sub_investigator_name}
+                                onChange={handleChange} />
                         </Box>
                         {errors.sub_investigator_name && <div className="error">{errors.sub_investigator_name}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" onChange={handleChange} />
+                            <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email"
+                                value={formData.sub_investigator_email}
+                                onChange={handleChange} />
                         </Box>
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Additional Study personnel name" id="additional_study_name" name="additional_study_name" onChange={handleChange} />
+                            <TextField fullWidth label="Additional Study personnel name" id="additional_study_name" name="additional_study_name"
+                                value={formData.additional_study_name}
+                                onChange={handleChange} />
                         </Box>
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Additional Study personnel email address" id="additional_study_email" name="additional_study_email" onChange={handleChange} />
+                            <TextField fullWidth label="Additional Study personnel email address" id="additional_study_email" name="additional_study_email"
+                                value={formData.additional_study_email}
+                                onChange={handleChange} />
                         </Box>
                     </Form.Group>
                     <h3>Investigational/Research Location:</h3>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Name of site *" id="site_name" name="site_name" onChange={handleChange} />
+                            <TextField fullWidth label="Name of site *" id="site_name" name="site_name"
+                                value={formData.site_name}
+                                onChange={handleChange} />
                         </Box>
                         {errors.site_name && <div className="error">{errors.site_name}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Address of site *" id="site_address" name="site_address" onChange={handleChange} />
+                            <TextField fullWidth label="Address of site *" id="site_address" name="site_address"
+                                value={formData.site_address}
+                                onChange={handleChange} />
                         </Box>
                         {errors.site_address && <div className="error">{errors.site_address}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do you have more than one site where research will be conducted?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="more_site" onChange={(event) => handleRadioButtonMoreSite(event, 'more_site')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="more_site"
+                                value={formData.more_site}
+                                onChange={(event) => handleRadioButtonMoreSite(event, 'more_site')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -448,7 +554,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         showAdditionalQuestion === true && (
                             <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField fullWidth label="Name and address of site *" id="site_name_address" name="site_name_address" onChange={handleChange} />
+                                    <TextField fullWidth label="Name and address of site *" id="site_name_address" name="site_name_address"
+                                        value={formData.site_name_address}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.site_name_address && <div className="error">{errors.site_name_address}</div>}
                             </Form.Group>
@@ -456,38 +564,50 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     }
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Full protocol title *" id="protocol_title" name="protocol_title" onChange={handleChange} />
+                            <TextField fullWidth label="Full protocol title *" id="protocol_title" name="protocol_title"
+                                value={formData.protocol_title}
+                                onChange={handleChange} />
                         </Box>
                         {errors.protocol_title && <div className="error">{errors.protocol_title}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Protocol Number *" id="protocol_number" name="protocol_number" onChange={handleChange} />
+                            <TextField fullWidth label="Protocol Number *" id="protocol_number" name="protocol_number"
+                                value={formData.protocol_number}
+                                onChange={handleChange} />
                         </Box>
                         {errors.protocol_number && <div className="error">{errors.protocol_number}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="Your initials below confirm that your site will only enroll subjects that meet criteria for inclusion in the study *" name="study_criteria" id='study_criteria' onChange={handleChange} />
+                            <TextField fullWidth label="Your initials below confirm that your site will only enroll subjects that meet criteria for inclusion in the study *" name="study_criteria" id='study_criteria'
+                                value={formData.study_criteria}
+                                onChange={handleChange} />
                         </Box>
                         {errors.study_criteria && <div className="error">{errors.study_criteria}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="How many subjects do you expect to enroll at your site(s) *" name="subject_number" id='subject_number' onChange={handleChange} />
+                            <TextField fullWidth label="How many subjects do you expect to enroll at your site(s) *" name="subject_number" id='subject_number'
+                                value={formData.subject_number}
+                                onChange={handleChange} />
                         </Box>
                         {errors.subject_number && <div className="error">{errors.subject_number}</div>}
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="What is your site number assigned by the sponsor" name="site_number" id='site_number' onChange={handleChange} />
+                            <TextField fullWidth label="What is your site number assigned by the sponsor" name="site_number" id='site_number'
+                                value={formData.site_number}
+                                onChange={handleChange} />
                         </Box>
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik02" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label"> Has this study been disapproved or withdrawn from another IRB?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="disapproved_or_withdrawn" onChange={(event) => handleRadioButtonSelectDisapproved(event, 'disapproved_or_withdrawn')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="disapproved_or_withdrawn"
+                                value={formData.disapproved_or_withdrawn}
+                                onChange={(event) => handleRadioButtonSelectDisapproved(event, 'disapproved_or_withdrawn')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -497,7 +617,8 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         showDisapproveAdditionTextArea === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="disapproved_or_withdrawn_explain" id='disapproved_or_withdrawn_explain' rows={3} multiline onChange={handleChange} value={formData.disapproved_or_withdrawn_explain} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="disapproved_or_withdrawn_explain" id='disapproved_or_withdrawn_explain' rows={3} multiline onChange={handleChange}
+                                        value={formData.disapproved_or_withdrawn_explain} />
                                 </Box>
                                 {errors.disapproved_or_withdrawn_explain && <div className="error">{errors.disapproved_or_withdrawn_explain}</div>}
                             </Form.Group>
@@ -506,7 +627,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label"> Are you transferring oversight from another IRB?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="oversite" onChange={(event) => handleRadioButtonSelectOversite(event, 'oversite')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="oversite"
+                                value={formData.oversite}
+                                onChange={(event) => handleRadioButtonSelectOversite(event, 'oversite')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -516,7 +639,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         showOversiteAdditionTextArea === true && (
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="oversite_explain" id='oversite_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="oversite_explain" id='oversite_explain' rows={3} multiline
+                                        value={formData.oversite_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.oversite_explain && <div className="error">{errors.oversite_explain}</div>}
                             </Form.Group>
@@ -525,7 +650,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Have any individuals or immediate family members at this site received compensation from the sponsor of this study in the past 12 months that amounts to $5,000 or greater?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="immediate_family" onChange={(event) => handleRadioButtonImmediateFamily(event, 'immediate_family')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="immediate_family"
+                                value={formData.immediate_family}
+                                onChange={(event) => handleRadioButtonImmediateFamily(event, 'immediate_family')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -536,7 +663,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please explain the compensation in great detail including amount received, services rendered, and name and title or relationship of the individual with the conflict *</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="immediate_family_explain" id='immediate_family_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="immediate_family_explain" id='immediate_family_explain' rows={3} multiline
+                                        value={formData.immediate_family_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.immediate_family_explain && <div className="error">{errors.immediate_family_explain}</div>}
                             </Form.Group>
@@ -545,7 +674,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do any individuals or immediate family members at this site own interest in the form of stock or other ownership in the sponsor company of this study in the last 12 months that amounts to $5,000 or greater?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="stock_ownership" onChange={(event) => handleRadioButtonStockOwnerShip(event, 'stock_ownership')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="stock_ownership"
+                                value={formData.stock_ownership}
+                                onChange={(event) => handleRadioButtonStockOwnerShip(event, 'stock_ownership')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -556,7 +687,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please describe the monetary interest in detail including the estimated value, percentage of ownership, and name and role of the individual *</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="stock_ownership_explain" id='stock_ownership_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="stock_ownership_explain" id='stock_ownership_explain' rows={3} multiline
+                                        value={formData.stock_ownership_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.stock_ownership_explain && <div className="error">{errors.stock_ownership_explain}</div>}
                             </Form.Group>
@@ -565,7 +698,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do any individuals at this site have proprietary interests being investigated in this study such as, but not limited to, patents, investigational products, or licensing agreements?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="property_interest" onChange={(event) => handleRadioButtonPropertyInterest(event, 'property_interest')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="property_interest"
+                                value={formData.property_interest}
+                                onChange={(event) => handleRadioButtonPropertyInterest(event, 'property_interest')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -576,7 +711,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the estimated value, ownership, patent information/investigational product information (if applicable), and name and role of the individual*</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="property_interest_explain" id='property_interest_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="property_interest_explain" id='property_interest_explain' rows={3} multiline
+                                        value={formData.property_interest_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.property_interest_explain && <div className="error">{errors.property_interest_explain}</div>}
                             </Form.Group>
@@ -586,7 +723,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do any individuals at this site have a financial agreement with the sponsor for which they will receive compensation that is linked to the outcome of the study?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="financial_agreement" onChange={(event) => handleRadioButtonFinancialAgreement(event, 'financial_agreement')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="financial_agreement"
+                                value={formData.financial_agreement}
+                                onChange={(event) => handleRadioButtonFinancialAgreement(event, 'financial_agreement')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -597,7 +736,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the estimated value, ownership, patent information/investigational product information (if applicable), and name and role of the individual*</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="financial_agreement_explain" id='financial_agreement_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="financial_agreement_explain" id='financial_agreement_explain' rows={3} multiline
+                                        value={formData.financial_agreement_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.financial_agreement_explain && <div className="error">{errors.financial_agreement_explain}</div>}
                             </Form.Group>
@@ -607,7 +748,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do any individuals at this site serve in any executive position or on a board of directors for the sponsor of this study?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="server_position" onChange={(event) => handleRadioButtonServePosition(event, 'server_position')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="server_position"
+                                value={formData.server_position}
+                                onChange={(event) => handleRadioButtonServePosition(event, 'server_position')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -618,7 +761,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please describe the position in detail including the estimated value of compensation, types of services rendered, duration that the individual has served in this capacity and name and role of the individual *</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="server_position_explain" id='server_position_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="server_position_explain" id='server_position_explain' rows={3} multiline
+                                        value={formData.server_position_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.server_position_explain && <div className="error">{errors.server_position_explain}</div>}
                             </Form.Group>
@@ -628,7 +773,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do any individuals at this site have any interests that may influence the conduct, outcome, or safety of this study?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="influence_conduct" onChange={(event) => handleRadioButtonInfluenceConduct(event, 'influence_conduct')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="influence_conduct"
+                                value={formData.influence_conduct}
+                                onChange={(event) => handleRadioButtonInfluenceConduct(event, 'influence_conduct')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -639,7 +786,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please describe the interest in detail including the potential conflicts and how they may interfere with the study, and name and role of the individual *</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="influence_conduct_explain" id='influence_conduct_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="influence_conduct_explain" id='influence_conduct_explain' rows={3} multiline
+                                        value={formData.influence_conduct_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.influence_conduct_explain && <div className="error">{errors.influence_conduct_explain}</div>}
                             </Form.Group>
@@ -648,7 +797,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Is there a Conflict of Interest Committee that has made any determinations related to the potential conflicts and is there a management plan in place?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="interest_conflict" onChange={(event) => handleRadioButtonInterestConflicts(event, 'interest_conflict')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="interest_conflict"
+                                value={formData.interest_conflict}
+                                onChange={(event) => handleRadioButtonInterestConflicts(event, 'interest_conflict')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                                 <FormControlLabel value="N/A" control={<Radio />} label="N/A" />
@@ -660,7 +811,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please describe the COI committee findings in detail including the name of the COI committee, the determinations, and describe the management plan *</FormLabel>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="interest_conflict_explain" id='interest_conflict_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain" name="interest_conflict_explain" id='interest_conflict_explain' rows={3} multiline
+                                        value={formData.interest_conflict_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.interest_conflict_explain && <div className="error">{errors.interest_conflict_explain}</div>}
                             </Form.Group>
@@ -669,7 +822,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik04" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Has the investigator ever had an FDA audit? </FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="fda_audit" onChange={(event) => handleRadioButtonFdaAudit(event, 'fda_audit')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="fda_audit"
+                                value={formData.fda_audit}
+                                onChange={(event) => handleRadioButtonFdaAudit(event, 'fda_audit')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -679,7 +834,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         showFdaAuditAdditionTextArea === true && (
                             <Form.Group as={Col} controlId="validationFormik05" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField fullWidth variant="outlined" placeholder="Explain *" name="fda_audit_explain" id='fda_audit_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField fullWidth variant="outlined" placeholder="Explain *" name="fda_audit_explain" id='fda_audit_explain' rows={3} multiline
+                                        value={formData.fda_audit_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.fda_audit_explain && <div className="error">{errors.fda_audit_explain}</div>}
                             </Form.Group>
@@ -688,7 +845,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">How long has the investigator been involved in research?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="involved_years" onChange={(event) => handleInvestigatorsInvolvedYears(event, 'involved_years')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="involved_years"
+                                value={formData.involved_years}
+                                onChange={(event) => handleInvestigatorsInvolvedYears(event, 'involved_years')}>
                                 <FormControlLabel value="New to research-1 year" control={<Radio />} label="New to research-&lt;1 year" />
                                 <FormControlLabel value="1-5 years" control={<Radio />} label="1-5 years" />
                                 <FormControlLabel value="6 years or more" control={<Radio />} label="6 years or more" />
@@ -698,21 +857,39 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
 
                     <Form.Group as={Col} controlId="validationFormik08" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi" onChange={handleChange} />
+                            <TextField fullWidth label="What is the investigator's NPI if applicable" id="investigators_npi" name="investigators_npi"
+                                value={formData.investigators_npi}
+                                onChange={handleChange} />
                         </Box>
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">What training in the field of human subjects protection has the investigator completed?</FormLabel>
                             <FormGroup onChange={(event) => handleTrainingCompletedChecked(event)} name="training_completed">
-                                <FormControlLabel control={<Checkbox />} label="OHRP Human Subject Assurance Training" value='1' />
-                                <FormControlLabel control={<Checkbox />} label="CITI Program Training" value='2' />
-                                <FormControlLabel control={<Checkbox />} label="Certified Physician Investigator Training" value='3' />
-                                <FormControlLabel control={<Checkbox />} label="ACRP training (CCRC, CCRA)" value='4' />
-                                <FormControlLabel control={<Checkbox />} label="SOCRA (CCRP)" value='5' />
-                                <FormControlLabel control={<Checkbox />} label="Graduate or undergraduate research studies or degrees" value='6' />
-                                <FormControlLabel control={<Checkbox />} label="Academy of Physicians in Clinical Research" value='7' />
-                                <FormControlLabel control={<Checkbox />} label="Other" value='8' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('1')}
+                                />} label="OHRP Human Subject Assurance Training" value='1' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('2')}
+                                />} label="CITI Program Training" value='2' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('3')}
+                                />} label="Certified Physician Investigator Training" value='3' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('4')}
+                                />} label="ACRP training (CCRC, CCRA)" value='4' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('5')}
+                                />} label="SOCRA (CCRP)" value='5' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('6')}
+                                />} label="Graduate or undergraduate research studies or degrees" value='6' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('7')}
+                                />} label="Academy of Physicians in Clinical Research" value='7' />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.training_completed.includes('8')}
+                                />} label="Other" value='8' />
                             </FormGroup>
                         </FormControl>
                     </Form.Group>
@@ -720,7 +897,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         showOtherQuestion === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='training_completed_explain' name="training_completed_explain" rows={3} multiline
+                                        value={formData.training_completed_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.training_completed_explain && <div className="error">{errors.training_completed_explain}</div>}
                             </Form.Group>
@@ -728,13 +907,17 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                     }
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number" onChange={handleChange} />
+                            <TextField fullWidth label="What is the current number of research studies supervised by the investigator?" id="investigator_research_number" name="investigator_research_number"
+                                value={formData.investigator_research_number}
+                                onChange={handleChange} />
                         </Box>
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik01" className='mt-mb-20'>
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Do you have any pending or active restrictions related to research or the practice of medicine?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="pending_or_active_research" onChange={(event) => handlePendingOrInactiveresearch(event, 'pending_or_active_research')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="pending_or_active_research"
+                                value={formData.pending_or_active_research}
+                                onChange={(event) => handlePendingOrInactiveresearch(event, 'pending_or_active_research')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -744,7 +927,9 @@ function InvestigatorInformationForm({protocolTypeDetails}) {
                         showAdditionalQuestionPendingOrActive === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='explain' name='pending_or_active_research_explain' rows={3} multiline
+                                        value={formData.pending_or_active_research_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.pending_or_active_research_explain && <div className="error">{errors.pending_or_active_research_explain}</div>}
                             </Form.Group>

@@ -38,25 +38,37 @@ const VisuallyHiddenInput = styled('input')({
 
 const protocoalInfoSchema = yup.object().shape({
     first_time_protocol: yup.string().required("This is required"),
-    disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    oversite_explain: yup.string().when('oversite', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
-    }),
-    protocol_title: yup.string().required("This is required"),
-    protocol_number: yup.string().required("This is required"),
-    sponsor: yup.string().required("This is required"),
-    study_duration: yup.string().required("This is required"),
-    funding_source: yup.string().required("This is required"),
-    
-})
 
-function ProtocolInformationForm({ protocolTypeDetails }) {
+    disapproved_or_withdrawn: yup.string().when('first_time_protocol', {
+        is: (value) => value === 'No', // Explicit condition check
+        then: () => yup.string().notRequired("This is required when the protocol is not submitted for the first time"),
+    }),
+
+    disapproved_or_withdrawn_explain: yup.string().when('disapproved_or_withdrawn', {
+        is: (value) => value === 'Yes', // Explicit condition check
+        then: () => yup.string().notRequired("Explanation is required if disapproved or withdrawn"),
+    }),
+
+    oversite: yup.string(),
+
+    oversite_explain: yup.string().when('oversite', {
+        is: (value) => value === 'Yes', // Explicit condition check
+        then: () => yup.string().required("This is required if oversight is transferred from another IRB"),
+    }),
+
+    protocol_title: yup.string().required("Protocol title is required"),
+    protocol_number: yup.string().required("Protocol number is required"),
+    sponsor: yup.string().required("Sponsor is required"),
+    study_duration: yup.string().required("Approximate duration of the study is required"),
+    funding_source: yup.string().required("Funding source is required"),
+
+    protocol_file: yup.mixed().test('required', 'You must upload a protocol file', (value) => {
+        return value && value.length > 0;
+    }),
+});
+
+
+function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -65,20 +77,56 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
     const [showDisapproveAdditionTextArea, setShowDisapproveAdditionTextArea] = React.useState(false);
     const [showOversiteAdditionTextArea, setShowOversiteAdditionTextArea] = React.useState(false);
     const [formData, setFormData] = useState({
-        first_time_protocol: '',
-        protocol_title: '',
-        protocol_number: '',
-        sponsor: '',
-        study_duration: '',
-        funding_source: '',
-        disapproved_or_withdrawn: '',
-        disapproved_or_withdrawn_explain: '',
-        oversite: '',
-        oversite_explain: '',
+        first_time_protocol: protocolInformation?.first_time_protocol || '',
+        protocol_title: protocolInformation?.protocol_title || '',
+        protocol_number: protocolInformation?.protocol_number || '',
+        sponsor: protocolInformation?.sponsor || '',
+        study_duration: protocolInformation?.study_duration || '',
+        funding_source: protocolInformation?.funding_source || '',
+        disapproved_or_withdrawn: protocolInformation?.disapproved_or_withdrawn || '',
+        disapproved_or_withdrawn_explain: protocolInformation?.disapproved_or_withdrawn_explain || '',
+        oversite: protocolInformation?.oversite || '',
+        oversite_explain: protocolInformation?.oversite_explain || '',
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
-    });
+        protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+            return {
+                name: doc.file_name,
+                type: doc.protocol_type,
+            };
+        }) || []
+    })
+
     const [errors, setErrors] = useState({});
+
+    // Populate form data when protocolInformation changes
+    useEffect(() => {
+        if (protocolInformation) {
+            setFormData({
+                first_time_protocol: protocolInformation.first_time_protocol || '',
+                protocol_title: protocolInformation.protocol_title || '',
+                protocol_number: protocolInformation.protocol_number || '',
+                sponsor: protocolInformation.sponsor || '',
+                study_duration: protocolInformation.study_duration || '',
+                funding_source: protocolInformation.funding_source || '',
+                disapproved_or_withdrawn: protocolInformation.disapproved_or_withdrawn || '',
+                disapproved_or_withdrawn_explain: protocolInformation.disapproved_or_withdrawn_explain || '',
+                oversite: protocolInformation.oversite || '',
+                oversite_explain: protocolInformation.oversite_explain || '',
+                protocol_id: protocolTypeDetails.protocolId,
+                created_by: userDetails.id,
+                protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+                    return {
+                        name: doc.file_name,
+                        type: doc.protocol_type,
+                    };
+                }) || []
+            });
+            setShowAdditionalQuestion(protocolInformation.first_time_protocol === 'No');
+            setShowDisapproveAdditionTextArea(protocolInformation.disapproved_or_withdrawn === 'Yes');
+            setShowOversiteAdditionTextArea(protocolInformation.oversite === 'Yes');
+        }
+    }, [protocolInformation, protocolTypeDetails]);
 
     const handleRadioButtonSelectFirstTime = (event, radio_name) => {
         if (radio_name === 'first_time_protocol' && event.target.value === 'No') {
@@ -119,51 +167,72 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            const getValidatedform = await protocoalInfoSchema.validate(formData, { abortEarly: false });
-            const isValid = await protocoalInfoSchema.isValid(getValidatedform)
-            // const isValid = true
-            if (isValid === true) {
-                let protocol_file = []
-                if (!formData.protocol_file) {
-                    return setErrors({ ...errors, ['protocol_file']: 'This is required' });
-                }
-                else {
+            const validatedFormData = await protocoalInfoSchema.validate(formData, { abortEarly: false });
+            const isValid = await protocoalInfoSchema.isValid(validatedFormData);
+
+            if (isValid) {
+                let protocol_file = [];
+                if (formData.protocol_file) {
                     for (let file of formData.protocol_file) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_information', documentName: 'protocol'  })
-                        protocol_file.push(id)
+                        let id = await uploadFile(file, {
+                            protocolId: formData.protocol_id,
+                            createdBy: formData.created_by,
+                            protocolType: protocolTypeDetails.researchType,
+                            informationType: 'protocol_information',
+                            documentName: 'protocol'
+                        });
+                        protocol_file.push(id);
                     }
                 }
+
                 dispatch(createProtocolInformation({ ...formData, protocol_file }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right" });
+                            setFormData({});
+                        }
+                    });
             }
-        } catch (error) {
+        } catch (validationError) {
             const newErrors = {};
-            error.inner.forEach((err) => {
+            console.log('validationError', validationError);
+            validationError.inner.forEach(err => {
                 newErrors[err.path] = err.message;
             });
             setErrors(newErrors);
+
+            // Scroll to the first error field if there are validation errors
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
-    }
+    };
+
+    console.log('protocolInformation form', {
+        formData,
+        protocolInformation
+    });
+
+    console.log('protocolInformationFormData', {
+        formData,
+        errors
+    });
+
+    // here on the client side
     return (
         <Row>
             <>
-                <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+                <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
                 <form onSubmit={handleSubmitData} id="protocol_information">
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Are you submitting this protocol for the first time? *</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="first_time_protocol" onChange={(event) => handleRadioButtonSelectFirstTime(event, 'first_time_protocol')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="first_time_protocol"
+                                value={formData.first_time_protocol}
+                                onChange={(event) => handleRadioButtonSelectFirstTime(event, 'first_time_protocol')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -286,7 +355,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                                         />
                                     </Button>
                                     {errors.protocol_file && <div className="error">{errors.protocol_file}</div>}
-                                    {formData?.protocol_file !== undefined && Array.from(formData?.protocol_file).map((file, i) => <div key={i}>{file?.name}</div>)}
+                                    {formData?.protocol_file && Array.from(formData?.protocol_file).map((file, i) => <div key={i}>{file?.name}</div>)}
                                 </Grid>
                             </Grid>
                         </Form.Group>
@@ -303,7 +372,7 @@ function ProtocolInformationForm({ protocolTypeDetails }) {
                     </Form.Group>
                 </form>
             </>
-            
+
         </Row>
     )
 }

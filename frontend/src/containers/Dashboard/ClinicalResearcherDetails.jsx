@@ -11,23 +11,25 @@ import SubmissionForm from '../Dashboard/ProtocolType/ClinicalResearcher/Submiss
 import { useLocation } from "react-router-dom";
 
 
-const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
+const ClinicalResearcherDetails = ({ protocolTypeDetails, protocolDetailsById }) => {
+    const [protocolDetailsByIdState, setProtocolDetailsByIdState] = React.useState(protocolDetailsById);
+
     function CustomTabPanel(props) {
         const { children, value, index, ...other } = props;
         return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-            <Box sx={{ p: 3 }}>
-                <Typography>{children}</Typography>
-            </Box>
-            )}
-        </div>
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                id={`simple-tabpanel-${index}`}
+                aria-labelledby={`simple-tab-${index}`}
+                {...other}
+            >
+                {value === index && (
+                    <Box sx={{ p: 3 }}>
+                        <Typography>{children}</Typography>
+                    </Box>
+                )}
+            </div>
         );
     }
 
@@ -39,8 +41,8 @@ const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
 
     function a11yProps(index) {
         return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
         };
     }
     const location = useLocation();
@@ -49,26 +51,43 @@ const ClinicalResearcherDetails = ({protocolTypeDetails}) => {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    console.log('protocolTypeDetails', protocolTypeDetails)
+
+    React.useEffect(() => {
+        if (protocolDetailsById) {
+            setProtocolDetailsByIdState(protocolDetailsById)
+        }
+    }, [protocolDetailsById])
+
+
+    console.log('protocolTypeDetails', {
+        protocolTypeDetails,
+        protocolDetailsById
+    })
     return (
         <Box sx={{ width: '100%' }}>
-        <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
-        <Box className='ml-20' sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
-                <Tab label="Investigator and Protocol Information" {...a11yProps(0)} />
-                <Tab label="Informed Consent Document Information" {...a11yProps(1)} />
-                <Tab label="Submission" {...a11yProps(5)} />
-            </Tabs>
-        </Box>
-        <CustomTabPanel value={value} index={0}>
-            <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-            <InformedConsentForm protocolTypeDetails={protocolTypeDetails} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-            <SubmissionForm protocolTypeDetails={protocolTypeDetails} />
-        </CustomTabPanel>
+            <h2 className='ml-20'>{protocolTypeDetails.researchType}&nbsp;({protocolTypeDetails.protocolId})</h2>
+            <Box className='ml-20' sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto">
+                    <Tab label="Investigator and Protocol Information" {...a11yProps(0)} />
+                    <Tab label="Informed Consent Document Information" {...a11yProps(1)} />
+                    <Tab label="Submission" {...a11yProps(5)} />
+                </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+                <InvestigatorInformationForm protocolTypeDetails={protocolTypeDetails}
+                    investigatorInformation={protocolDetailsById?.investigator_protocol_information}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+                <InformedConsentForm protocolTypeDetails={protocolTypeDetails}
+                    informedConsent={protocolDetailsById?.consent_information}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
+                <SubmissionForm protocolTypeDetails={protocolTypeDetails}
+                    protocolDetailsById={protocolDetailsById}
+                />
+            </CustomTabPanel>
         </Box>
     )
 }

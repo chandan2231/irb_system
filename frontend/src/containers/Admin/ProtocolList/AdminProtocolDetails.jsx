@@ -21,7 +21,7 @@ const AdminProtocolDetails = () => {
     }, []);
 
     useEffect(() => {
-        let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
+        let data = { protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType }
         dispatch(fetchProtocolDetailsById(data));
     }, [dispatch, user.id]);
 
@@ -32,7 +32,6 @@ const AdminProtocolDetails = () => {
             loading: state.admin.loading,
         })
     );
-    
     return (
         <>
         {

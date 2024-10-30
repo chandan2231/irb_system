@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { riskAssessmentSave, informedConsentSave, investigatorAndinstuationSave, researchProcessSave } from "../../services/ContinuinReview/ContinuinReviewService";
+import { fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
 
 const ContinuinReviewSlice = createSlice({
   name: "continuin review",
   initialState: {
     loading: false,
     error: null,
+    continuinReviewDetailsById: null,
     createdRiskAssessment: null,
     createdInformedConsent: null,
     createdInvestigatorAndinstuation: null,
@@ -59,6 +61,18 @@ const ContinuinReviewSlice = createSlice({
         state.createdResearchProcess = action.payload;
       })
       .addCase(researchProcessSave.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchContinuinReviewDetailsById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchContinuinReviewDetailsById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.continuinReviewDetailsById = action.payload;
+      })
+      .addCase(fetchContinuinReviewDetailsById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

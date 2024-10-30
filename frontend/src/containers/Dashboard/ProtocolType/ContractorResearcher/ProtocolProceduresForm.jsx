@@ -36,24 +36,43 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const protocolProcedureInfoSchema = yup.object().shape({
-    enrolled_subject: yup.string().required("This is required"),
-    research_place_name_address: yup.string().required("This is required"),
-    future_research_explain: yup.string().when('future_research', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+    enrolled_study_type: yup.array().min(1, "At least one study type must be selected"),
+    enrolled_type_explain: yup.string().when('enrolled_study_type', {
+        is: (val) => val.includes('20'),
+        then: () => yup.string().required("Explanation for 'Other' study type is required"),
+        otherwise: () => yup.string().nullable(),
     }),
+    enrolled_group: yup.array().min(1, "At least one race/ethnic group must be selected"),
+    enrolled_group_explain: yup.string().when('enrolled_group', {
+        is: (val) => val.includes('9'),
+        then: () => yup.string().required("Explanation for 'Other' race/ethnic group is required"),
+        otherwise: () => yup.string().nullable(),
+    }),
+    study_excluded: yup.string().required("This field is required"),
     study_excluded_explain: yup.string().when('study_excluded', {
-        is: 'Yes',
-        then: (schema) => schema.required("This is required"),
-        otherwise: (schema) => schema,
+        is: () => 'Yes',
+        then: () => yup.string().required("Explanation for excluded populations is required"),
+        otherwise: () => yup.string().nullable(),
     }),
-    
-})
+    enrolled_subject: yup.string().required("Please specify how many subjects will be enrolled"),
+    recurement_method: yup.array().min(1, "At least one recruitment method must be selected"),
+    recurement_method_explain: yup.string().when('recurement_method', {
+        is: (val) => val.includes('10'),
+        then: () => yup.string().required("Explanation for 'Other' recruitment method is required"),
+        otherwise: () => yup.string().nullable(),
+    }),
+    research_place_name_address: yup.string().required("Research place name and address is required"),
+    future_research: yup.string().required("This field is required"),
+    future_research_explain: yup.string().when('future_research', {
+        is: () => 'Yes',
+        then: () => yup.string().required("Explanation for future research data handling is required"),
+        otherwise: () => yup.string().nullable(),
+    }),
+    facing_materials: yup.mixed().required("Please upload subject-facing materials"),
+});
 
 
-
-function ProtocolProceduresForm({ protocolTypeDetails }) {
+function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -90,7 +109,7 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    
+
 
     const handleSbujectStudyChecked = (event) => {
         const { value, checked } = event.target
@@ -100,6 +119,7 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
             setShowAdditionalQuestionStudyType(false)
         }
         let updatedStudyTypeChecked = [...formData.enrolled_study_type];
+
         if (checked) {
             updatedStudyTypeChecked.push(value);
         } else {
@@ -178,25 +198,24 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
-                setExplainEnrolledTypeErrors('This is required')
-                return
-            } else {
-                setExplainEnrolledTypeErrors('')
-            }
-            if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
-                setExplainEnrolledGroupErrors('This is required')
-                return
-            } else {
-                setExplainEnrolledGroupErrors('')
-            }
-            if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
-                setExplainRecurementMethodErrors('This is required')
-                return
-            } else {
-                setExplainRecurementMethodErrors('')
-            }
-            
+            // if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
+            //     setExplainEnrolledTypeErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainEnrolledTypeErrors('')
+            // }
+            // if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
+            //     setExplainEnrolledGroupErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainEnrolledGroupErrors('')
+            // }
+            // if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
+            //     setExplainRecurementMethodErrors('This is required')
+            //     return
+            // } else {
+            //     setExplainRecurementMethodErrors('')
+            // }
             const getValidatedform = await protocolProcedureInfoSchema.validate(formData, { abortEarly: false });
             const isValid = await protocolProcedureInfoSchema.isValid(getValidatedform)
             if (isValid === true) {
@@ -205,18 +224,18 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                     return setErrors({ ...errors, ['facing_materials']: 'This is required' });
                 } else {
                     for (let file of formData.facing_materials) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'protocol_procedure', documentName: 'subject_facing_materials'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'protocol_procedure', documentName: 'subject_facing_materials' })
                         facing_materials.push(id)
                     }
                 }
                 dispatch(createProtocolProcedures({ ...formData, facing_materials }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                        e.target.reset();
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                            e.target.reset();
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -227,51 +246,179 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
     };
 
+    useEffect(() => {
+        if (protocolProcedure) {
+            setFormData({
+                enrolled_study_type: protocolProcedure?.enrolled_study_type?.split(',') || [],
+                enrolled_type_explain: protocolProcedure?.enrolled_type_explain || '',
+                enrolled_group: protocolProcedure?.enrolled_group?.split(',') || [],
+                enrolled_group_explain: protocolProcedure?.enrolled_group_explain || '',
+                study_excluded: protocolProcedure?.study_excluded || '',
+                study_excluded_explain: protocolProcedure?.study_excluded_explain || '',
+                enrolled_subject: protocolProcedure?.enrolled_subject || '',
+                recurement_method: protocolProcedure?.recurement_method?.split(',') || [],
+                recurement_method_explain: protocolProcedure?.recurement_method_explain || '',
+                research_place_name_address: protocolProcedure?.research_place_name_address || '',
+                future_research: protocolProcedure?.future_research || '',
+                future_research_explain: protocolProcedure?.future_research_explain || '',
+                protocol_id: protocolTypeDetails?.protocol_id || '',
+                created_by: userDetails.id || '',
+                facing_materials: protocolProcedure?.documents?.map(doc => ({
+                    name: doc.file_name,
+                    type: doc.protocol_type,
+                })) || [],
+            });
+
+            setShowAdditionalQuestionStudyType(protocolProcedure?.enrolled_study_type?.includes('20') || false);
+            setShowAdditionalQuestionRaceAndEthnic(protocolProcedure?.enrolled_group?.includes('9') || false);
+            setShowStudyExcludedAdditionTextArea(protocolProcedure?.study_excluded === 'Yes' || false);
+            setShowAdditionalQuestionRecuritmentMethod(protocolProcedure?.recurement_method?.includes('10') || false);
+            setShowFutureResearchAdditionTextArea(protocolProcedure?.future_research === 'Yes' || false);
+        }
+    }, [protocolProcedure, protocolTypeDetails]);
+
+
+    console.log("protocolProcedureFormData", {
+        protocolProcedure,
+        formData,
+        errors
+    })
+
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Which subject populations will be enrolled in the study?</FormLabel>
-                            <FormGroup onChange={(event) => handleSbujectStudyChecked(event)} name="enrolled_study_type">
-                                <FormControlLabel control={<Checkbox />} value="1" label="Adults" />
-                                <FormControlLabel control={<Checkbox />} value="2" label="Children (17 years and under)" />
-                                <FormControlLabel control={<Checkbox />} value="3" label="Blind/Visually Impaired" />
-                                <FormControlLabel control={<Checkbox />} value="4" label="Deaf/Hard of Hearing (including sign language communicators)" />
-                                <FormControlLabel control={<Checkbox />} value="5" label="Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)" />
-                                <FormControlLabel control={<Checkbox />} value="6" label="Educationally Disadvantaged/Impaired or no reading skills" />
-                                <FormControlLabel control={<Checkbox />} value="7" label="Economically disadvantaged" />
-                                <FormControlLabel control={<Checkbox />} value="8" label="Healthy individuals" />
-                                <FormControlLabel control={<Checkbox />} value="9" label="Terminally ill individuals" />
-                                <FormControlLabel control={<Checkbox />} value="10" label="HIV positive" />
-                                <FormControlLabel control={<Checkbox />} value="11" label="Hospitalized" />
-                                <FormControlLabel control={<Checkbox />} value="12" label="Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)" />
-                                <FormControlLabel control={<Checkbox />} value="13" label="Prisoners" />
-                                <FormControlLabel control={<Checkbox />} value="14" label="Military Personnel" />
-                                <FormControlLabel control={<Checkbox />} value="15" label="Pregnant women" />
-                                <FormControlLabel control={<Checkbox />} value="16" label="Human fetuses/neonates" />
-                                <FormControlLabel control={<Checkbox />} value="17" label="Non-English speakers" />
-                                <FormControlLabel control={<Checkbox />} value="18" label="Women only" />
-                                <FormControlLabel control={<Checkbox />} value="19" label="Men only" />
-                                <FormControlLabel control={<Checkbox />} value="20" label="Other" />
+                            <FormGroup name="enrolled_study_type">
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={formData.enrolled_study_type.includes('1')}
+                                            onChange={(event) => handleSbujectStudyChecked(event)}
+                                        />}
+                                    value="1" label="Adults" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('2')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="2" label="Children (17 years and under)" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('3')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="3" label="Blind/Visually Impaired" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('4')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="4" label="Deaf/Hard of Hearing (including sign language communicators)" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('5')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="5" label="Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('6')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="6" label="Educationally Disadvantaged/Impaired or no reading skills" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('7')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="7" label="Economically disadvantaged" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('8')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="8" label="Healthy individuals" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('9')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="9" label="Terminally ill individuals" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('10')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="10" label="HIV positive" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('11')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="11" label="Hospitalized" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('12')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="12" label="Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('13')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="13" label="Prisoners" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('14')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="14" label="Military Personnel" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('15')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="15" label="Pregnant women" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('16')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="16" label="Human fetuses/neonates" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('17')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="17" label="Non-English speakers" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('18')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="18" label="Women only" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('19')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="19" label="Men only" />
+                                <FormControlLabel control={
+                                    <Checkbox
+                                        checked={formData.enrolled_study_type.includes('20')}
+                                        onChange={(event) => handleSbujectStudyChecked(event)}
+                                    />} value="20" label="Other" />
                             </FormGroup>
+                            {
+                                errors.enrolled_study_type && <div className="error">{errors.enrolled_study_type}</div>
+                            }
                         </FormControl>
                     </Form.Group>
                     {
                         showAdditionalQuestionStudyType === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='enrolled_type_explain' name="enrolled_type_explain" rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='enrolled_type_explain' name="enrolled_type_explain" rows={3}
+                                        value={formData.enrolled_type_explain}
+                                        multiline onChange={handleChange} />
                                 </Box>
-                                {explainEnrolledTypeErrors && <div className="error">{explainEnrolledTypeErrors}</div>}
+                                {/* {explainEnrolledTypeErrors && <div className="error">{explainEnrolledTypeErrors}</div>} */}
+                                {
+                                    errors.enrolled_type_explain && <div className="error">{errors.enrolled_type_explain}</div>
+                                }
                             </Form.Group>
                         )
                     }
@@ -279,33 +426,65 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Which race and ethnic groups will be enrolled in the study?</FormLabel>
-                            <FormGroup onChange={(event) => handleRaceAndEthnicChecked(event)} name="enrolled_group"  >
-                                <FormControlLabel control={<Checkbox />} value="1" label="White, not of Hispanic origin" />
-                                <FormControlLabel control={<Checkbox />} value="2" label="White, of Hispanic origin" />
-                                <FormControlLabel control={<Checkbox />} value="3" label="Black, not of Hispanic origin" />
-                                <FormControlLabel control={<Checkbox />} value="4" label="Black, of Hispanic origin" />
-                                <FormControlLabel control={<Checkbox />} value="5" label="American Indian/Alaskan Native" />
-                                <FormControlLabel control={<Checkbox />} value="6" label="Asian" />
-                                <FormControlLabel control={<Checkbox />} value="7" label="Native Hawaiian/Pacific Islander" />
-                                <FormControlLabel control={<Checkbox />} value="8" label="Multiracial" />
-                                <FormControlLabel control={<Checkbox />} value="9" label="Other" />
+                            <FormGroup
+                                // onChange={(event) => handleRaceAndEthnicChecked(event)} 
+                                name="enrolled_group"  >
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('1')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)}
+                                />} value="1" label="White, not of Hispanic origin" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('2')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)}
+                                />} value="2" label="White, of Hispanic origin" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('3')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="3" label="Black, not of Hispanic origin" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('4')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="4" label="Black, of Hispanic origin" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('5')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="5" label="American Indian/Alaskan Native" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('6')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="6" label="Asian" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('7')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="7" label="Native Hawaiian/Pacific Islander" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('8')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="8" label="Multiracial" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.enrolled_group.includes('9')}
+                                    onChange={(event) => handleRaceAndEthnicChecked(event)} />} value="9" label="Other" />
                             </FormGroup>
+                            {
+                                errors.enrolled_group && <div className="error">{errors.enrolled_group}</div>
+                            }
                         </FormControl>
                     </Form.Group>
                     {
                         showAdditionalQuestionRaceAndEthnic === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='enrolled_group_explain' name="enrolled_group_explain" rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='enrolled_group_explain' name="enrolled_group_explain" rows={3} multiline
+                                        value={formData.enrolled_group_explain}
+                                        onChange={handleChange} />
                                 </Box>
-                                {explainEnrolledGroupErrors && <div className="error">{explainEnrolledGroupErrors}</div>}
+                                {/* {explainEnrolledGroupErrors && <div className="error">{explainEnrolledGroupErrors}</div>} */}
+                                {
+                                    errors.enrolled_group_explain && <div className="error">{errors.enrolled_group_explain}</div>
+                                }
                             </Form.Group>
                         )
                     }
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Will any subject populations be excluded from the study?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="study_excluded" onChange={(event) => handleRadioButtonStudyExcluded(event, 'study_excluded')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="study_excluded"
+                                value={formData.study_excluded}
+                                onChange={(event) => handleRadioButtonStudyExcluded(event, 'study_excluded')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -315,7 +494,9 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                         showStudyExcludedAdditionTextArea === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='study_excluded_explain' name="study_excluded_explain" rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='study_excluded_explain' name="study_excluded_explain" rows={3} multiline
+                                        value={formData.study_excluded_explain}
+                                        onChange={handleChange} />
                                 </Box>
                                 {errors.study_excluded_explain && <div className="error">{errors.study_excluded_explain}</div>}
                             </Form.Group>
@@ -323,7 +504,9 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                     }
                     <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label="How many subjects will be enrolled in the study? *" id="enrolled_subject" name="enrolled_subject" onChange={handleChange} />
+                            <TextField fullWidth label="How many subjects will be enrolled in the study? *" id="enrolled_subject" name="enrolled_subject"
+                                value={formData.enrolled_subject}
+                                onChange={handleChange} />
                         </Box>
                         {errors.enrolled_subject && <div className="error">{errors.enrolled_subject}</div>}
                     </Form.Group>
@@ -331,16 +514,27 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">What recruitment methods will be used in the study?</FormLabel>
                             <FormGroup onChange={event => handleRecuritmentMethodChecked(event)} name="recurement_method" >
-                                <FormControlLabel control={<Checkbox />} value="1" label="In-person conversation during routine office visits" />
-                                <FormControlLabel control={<Checkbox />} value="2" label="Recruiting participants from previous research studies" />
-                                <FormControlLabel control={<Checkbox />} value="3" label="Mass print advertisements such as a newspaper, magazine, or billboard" />
-                                <FormControlLabel control={<Checkbox />} value="4" label="Flyer, poster, or bulletin board in office" />
-                                <FormControlLabel control={<Checkbox />} value="5" label="Radio or television ads" />
-                                <FormControlLabel control={<Checkbox />} value="6" label="Direct mail to potential subjects" />
-                                <FormControlLabel control={<Checkbox />} value="7" label="Internet including social media recruiting" />
-                                <FormControlLabel control={<Checkbox />} value="8" label="Chart review" />
-                                <FormControlLabel control={<Checkbox />} value="9" label="Telephone screening" />
-                                <FormControlLabel control={<Checkbox />} value="10" label="Other" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('1')}
+                                />} value="1" label="In-person conversation during routine office visits" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('2')} />} value="2" label="Recruiting participants from previous research studies" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('3')} />} value="3" label="Mass print advertisements such as a newspaper, magazine, or billboard" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('4')} />} value="4" label="Flyer, poster, or bulletin board in office" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('5')} />} value="5" label="Radio or television ads" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('6')} />} value="6" label="Direct mail to potential subjects" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('7')} />} value="7" label="Internet including social media recruiting" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('8')} />} value="8" label="Chart review" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('9')} />} value="9" label="Telephone screening" />
+                                <FormControlLabel control={<Checkbox
+                                    checked={formData.recurement_method.includes('10')} />} value="10" label="Other" />
                             </FormGroup>
                         </FormControl>
                     </Form.Group>
@@ -348,23 +542,32 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                         showAdditionalQuestionRecuritmentMethod === true && (
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='recurement_method_explain' name="recurement_method_explain" rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain *" fullWidth id='recurement_method_explain' name="recurement_method_explain" rows={3} multiline
+                                        value={formData.recurement_method_explain}
+                                        onChange={handleChange} />
                                 </Box>
-                                {explainRecurementMethodErrors && <div className="error">{explainRecurementMethodErrors}</div>}
+                                {/* {explainRecurementMethodErrors && <div className="error">{explainRecurementMethodErrors}</div>} */}
+                                {
+                                    errors.recurement_method_explain && <div className="error">{errors.recurement_method_explain}</div>
+                                }
                             </Form.Group>
                         )
                     }
 
                     <Form.Group as={Col} controlId="validationFormik06" className='mt-mb-20'>
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                            <TextField fullWidth label=" What is the location(s) name and address where the research procedures will take place? *" id="research_place_name_address" name="research_place_name_address" onChange={handleChange} />
+                            <TextField fullWidth label=" What is the location(s) name and address where the research procedures will take place? *" id="research_place_name_address" name="research_place_name_address"
+                                value={formData.research_place_name_address}
+                                onChange={handleChange} />
                         </Box>
                         {errors.research_place_name_address && <div className="error">{errors.research_place_name_address}</div>}
                     </Form.Group>
                     <Form.Group as={Col} controlId="validationFormik01">
                         <FormControl>
                             <FormLabel id="demo-row-radio-buttons-group-label">Will any samples or data collected in this study be retained for future research?</FormLabel>
-                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="future_research" onChange={(event) => handleRadioButtonSelectFutureResearch(event, 'future_research')}>
+                            <RadioGroup row aria-labelledby="demo-row-radio-buttons-group-label" name="future_research"
+                                value={formData.future_research}
+                                onChange={(event) => handleRadioButtonSelectFutureResearch(event, 'future_research')}>
                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                             </RadioGroup>
@@ -375,7 +578,9 @@ function ProtocolProceduresForm({ protocolTypeDetails }) {
                             <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
                                 <Box sx={{ width: '100%', maxWidth: '100%' }}>
                                     <FormLabel id="demo-row-radio-buttons-group-label">Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research * </FormLabel>
-                                    <TextField variant="outlined" placeholder="Explain" fullWidth id='future_research_explain' name="future_research_explain" rows={3} multiline onChange={handleChange} />
+                                    <TextField variant="outlined" placeholder="Explain" fullWidth id='future_research_explain' name="future_research_explain" rows={3}
+                                        value={formData.future_research_explain}
+                                        multiline onChange={handleChange} />
                                 </Box>
                                 {errors.future_research_explain && <div className="error">{errors.future_research_explain}</div>}
                             </Form.Group>

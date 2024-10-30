@@ -34,9 +34,10 @@ const VisuallyHiddenInput = styled('input')({
 
 const studyInfoSchema = yup.object().shape({
     research_type: yup.string().required("This is required"),
-})
+});
 
-function StudyInformationForm({ protocolTypeDetails }) {
+
+function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     const theme = useTheme();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -50,14 +51,14 @@ function StudyInformationForm({ protocolTypeDetails }) {
         research_type_explain: '',
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
+        ingredient_list: [],
     });
-
 
     const handleSelectResearchType = (event, select_name) => {
         if (event.target.value === 'Other' && select_name === 'research_type') {
-            setShowOtherQuestion(true)
+            setShowOtherQuestion(true);
         } else {
-            setShowOtherQuestion(false)
+            setShowOtherQuestion(false);
         }
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -83,17 +84,17 @@ function StudyInformationForm({ protocolTypeDetails }) {
                 let ingredient_list = []
                 if (formData.ingredient_list) {
                     for (let file of formData.ingredient_list) {
-                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by,  protocolType: protocolTypeDetails.researchType, informationType: 'study_information', documentName: 'ingredient_list'})
+                        let id = await uploadFile(file, { protocolId: formData.protocol_id, createdBy: formData.created_by, protocolType: protocolTypeDetails.researchType, informationType: 'study_information', documentName: 'ingredient_list' })
                         ingredient_list.push(id)
                     }
                 }
                 dispatch(createStudyInformation({ ...formData, ingredient_list }))
-                .then(data => {
-                    if (data.payload.status === 200) {
-                        toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                        setFormData({})
-                    }
-                })
+                    .then(data => {
+                        if (data.payload.status === 200) {
+                            toast.success(data.payload.data.msg, { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+                            setFormData({})
+                        }
+                    })
             }
         } catch (error) {
             const newErrors = {};
@@ -104,15 +105,37 @@ function StudyInformationForm({ protocolTypeDetails }) {
             if (Object.keys(newErrors).length > 0) {
                 const firstErrorField = document.querySelector(`[name="${Object.keys(newErrors)[0]}"]`);
                 if (firstErrorField) {
-                  firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
         }
     };
 
+    useEffect(() => {
+        if (studyInformation) {
+            setFormData({
+                research_type: studyInformation?.research_type || '',
+                research_type_explain: studyInformation?.research_type_explain || '',
+                protocol_id: protocolTypeDetails?.protocolId || '',
+                created_by: userDetails?.id || '',
+                ingredient_list: studyInformation?.documents?.map(doc => ({
+                    name: doc.file_name,
+                    url: doc.file_url,
+                    type: doc.protocol_type,
+                })) || [],
+            });
+            setShowOtherQuestion(studyInformation?.research_type === 'Other');
+        }
+    }, [studyInformation, protocolTypeDetails]);
+
+    console.log("studyInformation", {
+        studyInformation,
+        formData
+    })
+
     return (
         <>
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark"/>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
             <Row>
                 <form onSubmit={handleSubmitData}>
                     <FormControl sx={{ minWidth: '100%' }} className='mt-mb-20'>
@@ -138,16 +161,15 @@ function StudyInformationForm({ protocolTypeDetails }) {
                         </Select>
                         {errors.research_type && <div className="error">{errors.research_type}</div>}
                     </FormControl>
-                    {
-                        showOtherQuestion === true && (
-                            <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
-                                <Box sx={{ width: '100%', maxWidth: '100%' }}>
-                                    <TextField variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline onChange={handleChange} />
-                                </Box>
-                                {explainErrors && <div className="error">{explainErrors}</div>}
-                            </Form.Group>
-                        )
-                    }
+                    {showOtherQuestion && (
+                        <Form.Group as={Col} controlId="validationFormik03" className='mt-mb-20'>
+                            <Box sx={{ width: '100%', maxWidth: '100%' }}>
+                                <TextField variant="outlined" placeholder="Explain *" name='research_type_explain' fullWidth id='research_type_explain' rows={3} multiline
+                                    value={formData.research_type_explain} onChange={handleChange} />
+                            </Box>
+                            {explainErrors && <div className="error">{explainErrors}</div>}
+                        </Form.Group>
+                    )}
                     <Form.Group as={Col} controlId="validationFormik010" className='mt-mb-20'>
                         <InputLabel id="demo-simple-select-autowidth-label">Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list</InputLabel>
                         <Button

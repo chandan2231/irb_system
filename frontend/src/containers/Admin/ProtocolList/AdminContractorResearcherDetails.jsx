@@ -64,6 +64,7 @@ const ContractorResearcherDetails = ({protocolTypeDetails, protocolDetailsById})
             <Tab label="Submission" {...a11yProps(5)} />
             </Tabs>
         </Box>
+        {/* here */}
         <CustomTabPanel value={value} index={0}>
             <ProtocolInformationForm protocolTypeDetails={protocolTypeDetails} protocolInformation = {protocolDetailsById?.protocol_information} />
         </CustomTabPanel>
