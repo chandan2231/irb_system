@@ -143,11 +143,11 @@ function ApprovedProtocolList() {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
-                    researchType:  pList.protocol_type,
+                    researchType:  pList.research_type,
                     username: pList.name,
                     email: pList.email,
                     allowEdit: pList.allow_edit,
-                    status: pList.status === '1' ? 'Submitted by User' : pList.status === '2' ? 'Inprogress' : pList.status === '3' ? 'Approved' : 'Rejected',
+                    status: pList.status === '1' ? 'Created' : pList.status === '2' ? 'Under Review' : pList.status === '3' ? 'Approved' : 'Rejected',
                     createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
                     updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
                 }

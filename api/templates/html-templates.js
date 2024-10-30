@@ -749,7 +749,7 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
   return RenderBody(children);
 };
 
-// Multi Site Sponsor
+// Multi-Site Sponsor
 const MultiSiteSponsorHTMLTemplate = (templateProps) => {
   const { protocolDetails } = questionsToRender;
   const { multiSiteSponsorQuestions } = protocolDetails;

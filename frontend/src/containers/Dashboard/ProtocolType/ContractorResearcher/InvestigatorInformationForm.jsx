@@ -34,15 +34,11 @@ const VisuallyHiddenInput = styled('input')({
     whiteSpace: 'nowrap',
     width: 1,
 });
-
+const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 const investigatorInfoSchema = yup.object().shape({
-    investigator_name: yup.string().required("Investigator name is required"),
-    investigator_email: yup.string().email("Invalid email format").required("Investigator email is required"),
-    sub_investigator_name: yup.string().required("Sub-Investigator name is required"),
-    sub_investigator_email: yup.string().email("Invalid email format").required("Sub-Investigator email is required"),
-    primary_contact: yup.string(),
-    primary_contact_email: yup.string().email("Invalid email format"),
-    fda_audit: yup.string().required("Please specify if FDA audit occurred"),
+    investigator_name: yup.string().required("This is required"),
+    investigator_email: yup.string().required("This is required"),
+    sub_investigator_name: yup.string().required("This is required"),
     fda_audit_explain: yup.string().when('fda_audit', {
         is: () => 'Yes',
         then: () => yup.string().required("Explanation is required if FDA audit occurred"),

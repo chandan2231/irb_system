@@ -32,6 +32,21 @@ export const fetchUnderReviewProtocolList = createAsyncThunk("ProtocolList/fetch
   }
 );
 
+export const fetchCreatedProtocolList = createAsyncThunk("ProtocolList/fetchCreatedProtocolList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/admin/created/protocol/list`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const fetchProtocolDetailsById = createAsyncThunk("ProtocolList/fetchProtocolDetailsById",
   async (data, { rejectWithValue }) => {
     try {
@@ -56,6 +71,21 @@ export const allowProtocolEdit = createAsyncThunk("ProtocolList/allowProtocolEdi
         data,
       });
       console.log('response', response)
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const allowProtocolWaiveFee = createAsyncThunk("ProtocolList/allowProtocolWaiveFee",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/admin/protocol/waiveFee`,
+        data,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

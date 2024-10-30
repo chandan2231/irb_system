@@ -9,6 +9,7 @@ import MultiSiteSponsorReducer from "./ProtocolType/MultiSiteSponsorSlice";
 import ContractorResearcherReducer from "./ProtocolType/ContractorResearcherSlice";
 import AdminReducer from "./Admin/AdminSlice";
 import MembersSlice from "./Admin/MembersSlice";
+import EventPriceSlice from "./Admin/EventPriceSlice";
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   contractorResearcher: ContractorResearcherReducer,
   admin: AdminReducer,
   member: MembersSlice,
+  eventPrice: EventPriceSlice,
 });
 
 const persistConfig = {

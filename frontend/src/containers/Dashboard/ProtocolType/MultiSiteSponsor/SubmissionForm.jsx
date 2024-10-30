@@ -62,9 +62,9 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if (notSavedForm.length >= 0) {
-                toast.error('Befor final submission you have to fill protocol information', { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
-            } else if (notSavedForm.length <= 0) {
+            if(notSavedForm.length > 0){
+                toast.error('Befor final submission you have to fill protocol information', {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+            }else if(notSavedForm.length <= 0){
                 const isValid = true
                 if (isValid === true) {
                     dispatch(createMultiSiteSubmission({ ...formData }))

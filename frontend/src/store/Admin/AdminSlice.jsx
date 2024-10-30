@@ -3,7 +3,9 @@ import {
     fetchApprovedProtocolList, 
     fetchProtocolDetailsById, 
     allowProtocolEdit,
-    fetchUnderReviewProtocolList
+    fetchUnderReviewProtocolList,
+    fetchCreatedProtocolList,
+    allowProtocolWaiveFee
 } from "../../services/Admin/ProtocolListService";
 import { 
     fetchContinuinReviewProtocolList, 
@@ -50,6 +52,8 @@ const AdminSlice = createSlice({
         memberPasswordChanged: null,
         userPasswordChanged: null,
         underReviewProtocolList: null,
+        createdProtocolList: null,
+        protocolWaiveFee: null,
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -216,6 +220,10 @@ const AdminSlice = createSlice({
         })
         .addCase(allowProtocolEdit.fulfilled, (state, action) => {
             state.loading = false;
+            let updateUnderReviewProtocolList = state.underReviewProtocolList.map((element, index) => 
+              element.id === action.payload.id ? {...element, allow_edit: action.payload.allow_edit} : element
+            );
+            state.underReviewProtocolList = updateUnderReviewProtocolList
             state.allowEditStatus = action.payload;
         })
         .addCase(allowProtocolEdit.rejected, (state, action) => {
@@ -259,6 +267,34 @@ const AdminSlice = createSlice({
             state.underReviewProtocolList = action.payload;
         })
         .addCase(fetchUnderReviewProtocolList.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(fetchCreatedProtocolList.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(fetchCreatedProtocolList.fulfilled, (state, action) => {
+            state.loading = false;
+            state.createdProtocolList = action.payload;
+        })
+        .addCase(fetchCreatedProtocolList.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || action.error.message;
+        })
+        .addCase(allowProtocolWaiveFee.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(allowProtocolWaiveFee.fulfilled, (state, action) => {
+            state.loading = false;
+            let updateCreatedProtocolList = state.createdProtocolList.map((element, index) => 
+              element.id === action.payload.id ? {...element, waive_fee: action.payload.waive_fee} : element
+            );
+            state.createdProtocolList = updateCreatedProtocolList
+            state.protocolWaiveFee = action.payload;
+        })
+        .addCase(allowProtocolWaiveFee.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload || action.error.message;
         })

@@ -61,7 +61,7 @@ const MultiSiteSponsorPdfTemplate = (
     protocol_procedure,
   } = multiSiteSponsorDetailObj;
   const templatePayload = {
-    headerText: "Multi Site Sponsor Details",
+    headerText: "Multi-Site Sponsor Details",
     protocolId,
     protocolType,
     protocol_information,

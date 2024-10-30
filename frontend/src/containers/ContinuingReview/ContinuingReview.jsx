@@ -127,7 +127,7 @@ function ContinuingReview() {
                 let protocolObject = {
                     id: pList.id,
                     protocolId: pList.protocol_id,
-                    researchType:  pList.research_type === 'clinical_site' ? 'Clinical Site' :  pList.research_type === 'multi_site_sponsor' ? 'Multi Site Sponsor' : 'Principal Investigator',
+                    researchType:  pList.research_type,
                     createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
                     updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
                 }

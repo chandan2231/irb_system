@@ -3,7 +3,7 @@ import { InputLabel, FormControl, Select, TextField, ListSubheader, InputAdornme
 import SearchIcon from "@mui/icons-material/Search";
 
 const containsText = (text, searchText) => text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
-export default function DropdownWithSearch({title, name, label, error, helpertext, value, onChange, labelId, Id, activeListArr, setOption, multiple, ...others }) {
+export default function DropdownWithSearch({title, name, label, error, helperText, value, onChange, labelId, Id, activeListArr, setOption, multiple, ...others }) {
     const [searchText, setSearchText] = useState("");
     const activeOptions = useMemo(
         () => activeListArr.filter((option) => containsText(option.name, searchText)),
@@ -17,7 +17,7 @@ export default function DropdownWithSearch({title, name, label, error, helpertex
                     name={name}
                     label={label}
                     error={error}
-                    helpertext={helpertext}
+                    helperText={helperText}
                     value={value}
                     labelId={labelId}
                     id={Id}
@@ -55,8 +55,8 @@ export default function DropdownWithSearch({title, name, label, error, helpertex
                         </MenuItem>
                     )) : null}
                 </Select>
-                {helpertext !== undefined ? (
-                    <FormHelperText style={{color: 'red'}}>{helpertext}</FormHelperText>
+                {helperText !== undefined ? (
+                    <FormHelperText style={{color: 'red'}}>{helperText}</FormHelperText>
                 ) : null}
         </FormControl>
     );
