@@ -4,15 +4,12 @@ import jwt from 'jsonwebtoken'
 
 
 export const register = (req, res) => {
-    // CHECK USER IF EXIST
     const que = "select * from users where email = ?"
     db.query(que, [req.body.email], (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length > 0 ) {
             return res.status(409).json('Email already exist try with other email')
         }
-        // CREATE A NEW USER
-        // hash the password
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(req.body.password, salt);
         const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `city`) value (?)';
@@ -26,22 +23,9 @@ export const register = (req, res) => {
         ];
         db.query(que, [values], (err, data) =>{
             if (err) return res.status(500).json(err)
-            const protocolNumber = "IRB"+Math.floor(Math.random()*899999+100000);
-            const que2 = 'insert into user_research (`protocol_id`, `research_type`, `added_by`, `added_timestamp`, `updated_timestamp`) value (?)';
-            const protocolValue = [
-                protocolNumber, 
-                req.body.researcherType, 
-                data.insertId,
-                new Date().getTime(),
-                new Date().getTime(),
-            ]
-            db.query(que2, [protocolValue], (err2, data) => {
-                if (err2) return res.status(500).json(err2)
-                return res.status(200).json('User has been created.')
-            })
+            return res.status(200).json('User has been created.')
         }) 
     })
-    
 }
 
 export const login = (req, res) => {

@@ -34,11 +34,12 @@ const VisuallyHiddenInput = styled('input')({
     whiteSpace: 'nowrap',
     width: 1,
 });
-
+const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
 const investigatorInfoSchema = yup.object().shape({
     investigator_name: yup.string().required("This is required"),
-    investigator_email: yup.string().required("This is required"),
+    investigator_email: yup.string().trim().required("This is required").email("Enter valid email").matches(emailRegex,"Enter valid email"),
     sub_investigator_name: yup.string().required("This is required"),
+    // sub_investigator_email: yup.string().nullable().notRequired().matches(emailRegex, 'Enter valid email'),
     fda_audit_explain: yup.string().when('fda_audit', {
         is: 'Yes',
         then: (schema) => schema.required("This is required"),
@@ -238,6 +239,7 @@ function InvestigatorInformationForm({ protocolTypeDetails }) {
                         <Box sx={{ width: '100%', maxWidth: '100%' }}>
                             <TextField fullWidth label="Sub-Investigator Email" id="sub_investigator_email" name="sub_investigator_email" onChange={handleChange} />
                         </Box>
+                        {/* {errors.sub_investigator_email && <div className="error">{errors.sub_investigator_email}</div>} */}
                     </Form.Group>
 
                     <Form.Group as={Col} controlId="validationFormik07" className='mt-mb-20'>

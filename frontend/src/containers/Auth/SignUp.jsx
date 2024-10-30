@@ -26,9 +26,9 @@
         researcherType: "",
     }
     const options = [
-        { label: "Clinical Site", value: "clinical_site" },
-        { label: "Multi-Site Sponsor", value: "multi_site_sponsor" },
-        { label: "Principal Investigator", value: "principal_investigator" },
+        { label: "Clinical Site", value: "Clinical Site" },
+        { label: "Multi-Site Sponsor", value: "Multi-Site Sponsor" },
+        { label: "Principal Investigator", value: "Principal Investigator" },
     ]
     //password validation
     const lowercaseRegEx = /(?=.*[a-z])/

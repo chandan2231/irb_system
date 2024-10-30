@@ -295,18 +295,11 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
     })
 }
 
+
 export const saveClinicalSiteSubmission = (req, res) => {
-    var datetime = new Date();
-    const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-    const values = [
-        req.body.protocol_id, 
-        req.body.protocol_type,
-        req.body.created_by, 
-        datetime.toISOString().slice(0,10),
-        datetime.toISOString().slice(0,10),
-    ];
-    db.query(que, [values], (err, data) =>{
-        if (err) {
+    const que = "UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?"
+    db.query(que,[req.body.protocol_id], (err, data) => {
+        if (err){
             return res.status(500).json(err)
         } else {
             let result = {}
@@ -316,6 +309,28 @@ export const saveClinicalSiteSubmission = (req, res) => {
         }
     })
 }
+
+// export const saveClinicalSiteSubmission = (req, res) => {
+//     var datetime = new Date();
+//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
+//     const values = [
+//         req.body.protocol_id, 
+//         req.body.protocol_type,
+//         req.body.created_by, 
+//         datetime.toISOString().slice(0,10),
+//         datetime.toISOString().slice(0,10),
+//     ];
+//     db.query(que, [values], (err, data) =>{
+//         if (err) {
+//             return res.status(500).json(err)
+//         } else {
+//             let result = {}
+//             result.status = 200
+//             result.msg = 'Clinical Site has been saved successfully'
+//             return res.json(result)
+//         }
+//     })
+// }
 
 export const getClinicalSiteSavedProtocolType = (req, res) => {
     const protocolTypeObj = {}
@@ -356,30 +371,44 @@ export const getClinicalSiteSavedProtocolType = (req, res) => {
 }
 
 export const saveMultiSiteSubmission = (req, res) => {
-    var datetime = new Date();
-    const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-    const values = [
-        req.body.protocol_id, 
-        req.body.protocol_type,
-        req.body.created_by, 
-        datetime.toISOString().slice(0,10),
-        datetime.toISOString().slice(0,10),
-    ];
-    db.query(que, [values], (err, data) =>{
-        if (err) {
+    const que = "UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?"
+    db.query(que,[req.body.protocol_id], (err, data) => {
+        if (err){
             return res.status(500).json(err)
         } else {
             let result = {}
             result.status = 200
-            result.msg = 'Multi Site Sponsor has been saved successfully'
+            result.msg = 'Multi-Site Sponsor has been saved successfully'
             return res.json(result)
         }
     })
 }
 
+// export const saveMultiSiteSubmission = (req, res) => {
+//     var datetime = new Date();
+//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
+//     const values = [
+//         req.body.protocol_id, 
+//         req.body.protocol_type,
+//         req.body.created_by, 
+//         datetime.toISOString().slice(0,10),
+//         datetime.toISOString().slice(0,10),
+//     ];
+//     db.query(que, [values], (err, data) =>{
+//         if (err) {
+//             return res.status(500).json(err)
+//         } else {
+//             let result = {}
+//             result.status = 200
+//             result.msg = 'Multi-Site Sponsor has been saved successfully'
+//             return res.json(result)
+//         }
+//     })
+// }
+
 export const getMultiSiteSavedProtocolType = (req, res) => {
     const protocolTypeObj = {}
-    if (req.body.protocolType === 'Multi Site Sponsor') {
+    if (req.body.protocolType === 'Multi-Site Sponsor') {
         const que1 = "select * from protocol_information where protocol_id = ?"
         db.query(que1, [req.body.protocolId], (err, data) =>{
             if (data.length >= 0 ) {
@@ -416,17 +445,9 @@ export const getMultiSiteSavedProtocolType = (req, res) => {
 }
 
 export const savePrincipalInvestigatorSubmission = (req, res) => {
-    var datetime = new Date();
-    const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-    const values = [
-        req.body.protocol_id, 
-        req.body.protocol_type,
-        req.body.created_by, 
-        datetime.toISOString().slice(0,10),
-        datetime.toISOString().slice(0,10),
-    ];
-    db.query(que, [values], (err, data) => {
-        if (err) {
+    const que = "UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?"
+    db.query(que,[req.body.protocol_id], (err, data) => {
+        if (err){
             return res.status(500).json(err)
         } else {
             let result = {}
@@ -436,6 +457,28 @@ export const savePrincipalInvestigatorSubmission = (req, res) => {
         }
     })
 }
+
+// export const savePrincipalInvestigatorSubmission = (req, res) => {
+//     var datetime = new Date();
+//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
+//     const values = [
+//         req.body.protocol_id, 
+//         req.body.protocol_type,
+//         req.body.created_by, 
+//         datetime.toISOString().slice(0,10),
+//         datetime.toISOString().slice(0,10),
+//     ];
+//     db.query(que, [values], (err, data) => {
+//         if (err) {
+//             return res.status(500).json(err)
+//         } else {
+//             let result = {}
+//             result.status = 200
+//             result.msg = 'Principal Investigator has been saved successfully'
+//             return res.json(result)
+//         }
+//     })
+// }
 
 export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
     const protocolTypeObj = {}

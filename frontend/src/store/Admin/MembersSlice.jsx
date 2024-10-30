@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchMemberList, createMember, changeStatus, resetMemberPassword } from "../../services/Admin/MembersService";
+import { fetchMemberList, createMember, changeStatus, resetMemberPassword, fetchActiveVotingMemberList } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
   name: "members",
@@ -13,6 +13,7 @@ const MembersSlice = createSlice({
     userActiveList: null,
     loadingActiveUser: null,
     memberPasswordChanged: null,
+    activeVotingMemberList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -66,6 +67,18 @@ const MembersSlice = createSlice({
         state.memberPasswordChanged = action.payload;
       })
       .addCase(resetMemberPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchActiveVotingMemberList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchActiveVotingMemberList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.activeVotingMemberList = action.payload;
+      })
+      .addCase(fetchActiveVotingMemberList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })

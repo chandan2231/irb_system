@@ -1,6 +1,54 @@
 import { db } from "../connect.js"
 import bcrypt from 'bcryptjs'
 
+export const getActiveVotingMemberList = (req, res) => {
+    const que = "select * from users WHERE user_type=? AND status=?"
+    db.query(que, ['Voting Member', 1], (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const changeEventPriceStatus = (req, res) => {
+    const que = "UPDATE event_price SET status=? WHERE id=?"
+    db.query(que,[req.body.status, req.body.id], (err, data) => {
+        if (err){
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Event Price Status Changed Successfully'
+            return res.json(result)
+        }
+    })
+}
+
+export const createEventPrice = (req, res) => {
+    const que = 'insert into event_price (`event_type`, `price`) value (?)';
+    const values = [
+        req.body.event_type, 
+        req.body.price
+    ];
+    db.query(que, [values], (err, data) =>{
+        if (err) return res.status(500).json(err)
+        return res.status(200).json('Event Price has been created Successfully.')
+    })
+}
+
+export const getEventPriceList = (req, res) => {
+    const que = "select * from event_price"
+    db.query(que, [], (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+
+
 
 export const changeUserPassword = (req, res) => {
     const salt = bcrypt.genSaltSync(10);
@@ -34,7 +82,12 @@ export const changeUserStatus = (req, res) => {
         if (err){
             return res.status(500).json(err)
         } else {
-            return res.status(200).json('User Status Changed Successfully')
+            let result = {}
+            result.status = 200
+            result.msg = 'User Status Changed Successfully'
+            result.id=req.body.id
+            result.status=req.body.status
+            return res.json(result)
         }
     })
 }
@@ -45,12 +98,17 @@ export const changeMemberStatus = (req, res) => {
         if (err){
             return res.status(500).json(err)
         } else {
-            return res.status(200).json('Member Status Changed Successfully')
+            let result = {}
+            result.status = 200
+            result.msg = 'Member Status Changed Successfully'
+            result.id=req.body.id
+            result.status=req.body.status
+            return res.json(result)
         }
     })
 }
 
-export const createMemberByAdmin = (req, res) => {
+export const createMember = (req, res) => {
     // CHECK MEMBER IF EXIST
     const que = "select * from users where email = ?"
     db.query(que, [req.body.email], (err, data) =>{
@@ -79,8 +137,6 @@ export const createMemberByAdmin = (req, res) => {
     
 }
 
-
-
 export const getMemberList = (req, res) => {
     const que = "select * from users where researcher_type=?"
     db.query(que, ['member'], (err, data) =>{
@@ -91,19 +147,40 @@ export const getMemberList = (req, res) => {
     })
 }
 
-export const allowProtocolEditByAdmin = (req, res) => {
-    const que = "UPDATE protocol_submission SET allow_edit=? WHERE id=?"
-    db.query(que,[req.body.status, req.body.id], (err, data) => {
-        if (err){
+export const allowProtocolEdit = (req, res) => {
+    const que = "UPDATE protocols SET allow_edit=? WHERE id=?"
+    db.query(que,[req.body.allow_edit, req.body.id], (err, data) => {
+        if (err) {
             return res.status(500).json(err)
         } else {
-            return res.status(200).json('Allow Protocol Edit Successfull')
+            let result = {}
+            result.status = 200
+            result.msg = 'Protocol Edit Status Changed Successfully'
+            result.id=req.body.id
+            result.allow_edit=req.body.allow_edit
+            return res.json(result)
+        }
+    })
+}
+
+export const allowProtocolWaiveFee = (req, res) => {
+    const que = "UPDATE protocols SET waive_fee=? WHERE id=?"
+    db.query(que,[req.body.waive_fee, req.body.id], (err, data) => {
+        if (err) {
+            return res.status(500).json(err)
+        } else {
+            let result = {}
+            result.status = 200
+            result.msg = 'Protocol Fee Waive Status Changed Successfully'
+            result.id=req.body.id
+            result.waive_fee=req.body.waive_fee
+            return res.json(result)
         }
     })
 }
 
 export const getApprovedProtocolList = (req, res) => {
-    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocol_submission as ps JOIN users ON ps.created_by = users.id AND ps.status=3"
+    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=3"
     db.query(que, {}, (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length >= 0 ) {
@@ -113,7 +190,17 @@ export const getApprovedProtocolList = (req, res) => {
 }
 
 export const getUnderReviewProtocolList = (req, res) => {
-    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocol_submission as ps JOIN users ON ps.created_by = users.id AND ps.status=2"
+    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=2"
+    db.query(que, {}, (err, data) =>{
+        if (err) return res.status(500).json(err)
+        if (data.length >= 0 ) {
+            return res.status(200).json(data)
+        }
+    })
+}
+
+export const getCreatedProtocolList = (req, res) => {
+    const que = "SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=1"
     db.query(que, {}, (err, data) =>{
         if (err) return res.status(500).json(err)
         if (data.length >= 0 ) {
@@ -271,7 +358,7 @@ export const getProtocolDetailsById = (req, res) => {
                 })
             }
         })
-    } else if (req.body.protocolType === 'Multi Site Sponsor') {
+    } else if (req.body.protocolType === 'Multi-Site Sponsor') {
         const que1 = "select * from protocol_information where protocol_id = ?"
         db.query(que1, [req.body.protocolId], (err, data) =>{
             if (data.length >= 0 ) {

@@ -166,7 +166,7 @@ function ProtocolInformationForm({protocolTypeDetails, protocolInformation}) {
                     <Select labelId="demo-simple-select-autowidth-label" id="demo-simple-select-autowidth" autoWidth label="Funding source" name="funding_source" value={protocolInformation?.funding_source}>
                         {
                             fundingSource.map((source, index) => {
-                                return(<MenuItem key={index} value={source.value}>{source.label}</MenuItem>)
+                                return(<MenuItem key={index} value={protocolInformation?.funding_source === source.value ? 'selected' : ''}>{source.label}</MenuItem>)
                             })
                         }
                     </Select>

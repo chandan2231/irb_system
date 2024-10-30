@@ -38,7 +38,7 @@ const AdminProtocolDetails = () => {
         {
             protocolTypeDetails.researchType === 'Clinical Site' ? (
                 <ContractorResearcherDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />
-            ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor' ) ? (
+            ) : (protocolTypeDetails.researchType === 'Multi-Site Sponsor' ) ? (
                 <MultiSiteSponsorDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />
             ) : (
                 <ClinicalResearcherDetails protocolTypeDetails = {protocolTypeDetails} protocolDetailsById = {protocolDetailsById} />

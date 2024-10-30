@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import DropdownWithSearch from '../../../components/DropdownWithSearch';
+import { FormHelperText } from '@mui/material';
 
 const defaultInputValues = {
     name: '',
@@ -24,7 +25,7 @@ const defaultInputValues = {
 const AddMember = ({ open, onClose, addNewData }) => {
     const [values, setValues] = useState(defaultInputValues);
     const [showPassword, setShowPassword] = React.useState(false);
-    const [userTypeList, setUserTypeList] = React.useState([{name: 'Role Voting', id: 'Role Voting'}, {name: 'Non Voting', id: 'Non Voting'}, {name: 'Office Staff', id: 'Office Staff'}, {name: 'Committee Chair', id: 'Committee Chair'}]);
+    const [userTypeList, setUserTypeList] = React.useState([{name: 'Voting Member', id: 'Voting Member'}, {name: 'Non Voting Member', id: 'Non Voting Member'}, {name: 'Office Staff', id: 'Office Staff'}, {name: 'Committee Chair', id: 'Committee Chair'}]);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
@@ -52,7 +53,6 @@ const AddMember = ({ open, onClose, addNewData }) => {
     });
 
     const {register, handleSubmit, formState: { errors }} = useForm({resolver: yupResolver(validationSchema)});
-
     const addNew = (data) => {
         addNewData(data);
     };
@@ -127,6 +127,9 @@ const AddMember = ({ open, onClose, addNewData }) => {
                         </InputAdornment>
                     }
                 />
+                {errors.password?.message !== undefined ? (
+                    <FormHelperText style={{color: 'red'}}>{errors.password?.message}</FormHelperText>
+                ) : null}
             </FormControl>
             <DropdownWithSearch 
                 title={'User Type'}

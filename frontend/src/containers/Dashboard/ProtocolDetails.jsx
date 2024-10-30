@@ -13,7 +13,7 @@
             {
                 protocolTypeDetails.researchType === 'Clinical Site' ? (
                     <ContractorResearcherDetails protocolTypeDetails = {protocolTypeDetails} />
-                ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor' ) ? (
+                ) : (protocolTypeDetails.researchType === 'Multi-Site Sponsor' ) ? (
                     <MultiSiteSponsorDetails protocolTypeDetails = {protocolTypeDetails} />
                 ) : (
                     <ClinicalResearcherDetails protocolTypeDetails = {protocolTypeDetails} />

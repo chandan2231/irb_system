@@ -19,6 +19,9 @@ export const fetchMemberList = createAsyncThunk("Members/fetchMemberList",
   }
 );
 
+
+
+
 export const createMember = createAsyncThunk("Members/createMember",
   async (data, { rejectWithValue }) => {
     try {
@@ -58,6 +61,21 @@ export const resetMemberPassword = createAsyncThunk("Members/resetMemberPassword
         data,
       });
       return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchActiveVotingMemberList = createAsyncThunk("Members/fetchActiveVotingMemberList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/admin/active/votingmember/list`,
+        data,
+      });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

@@ -7,7 +7,7 @@ import * as s3Service from "../utils/s3Service.js";
 import PdfTemplates from "../templates/generate-pdf.js";
 
 export const getProtocolList = (req, res) => {
-  const que = "select * from user_research where added_by = ?";
+  const que = "select * from protocols where added_by = ?";
   db.query(que, [req.body.login_id], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length >= 0) {
@@ -41,7 +41,7 @@ export const getApprovedProtocolList = (req, res) => {
 
 // export const createProtocol = (req, res) => {
 //     // CHECK RESEARCH TYPE IF EXIST
-//     const que = "select * from user_research where research_type = ? AND added_by = ?"
+//     const que = "select * from protocols where research_type = ? AND added_by = ?"
 //     db.query(que, [req.body.research_type_id, req.body.login_id], (err, data) => {
 //         if (err) return res.status(500).json(err)
 //         if (data.length > 0) {
@@ -49,7 +49,7 @@ export const getApprovedProtocolList = (req, res) => {
 //         }
 //         // CREATE A NEW Entry
 //         const protocolNumber = "IRB" + Math.floor(Math.random() * 899999 + 100000);
-//         const que2 = 'insert into user_research (`protocol_id`, `research_type`, `added_by`, `added_timestamp`, `updated_timestamp`) value (?)';
+//         const que2 = 'insert into protocols (`protocol_id`, `research_type`, `added_by`, `added_timestamp`, `updated_timestamp`) value (?)';
 //         const protocolValue = [
 //             protocolNumber,
 //             req.body.research_type_id,
@@ -66,16 +66,12 @@ export const getApprovedProtocolList = (req, res) => {
 // }
 
 export const createProtocol = (req, res) => {
-  // CREATE A NEW Entry
   const protocolNumber = "IRB" + Math.floor(Math.random() * 899999 + 100000);
-  const que2 =
-    "insert into user_research (`protocol_id`, `research_type`, `added_by`, `added_timestamp`, `updated_timestamp`) value (?)";
+  const que2 = "insert into protocols (`protocol_id`, `research_type`, `added_by`) value (?)";
   const protocolValue = [
     protocolNumber,
     req.body.research_type_id,
     req.body.login_id,
-    new Date().getTime(),
-    new Date().getTime(),
   ];
   db.query(que2, [protocolValue], (err2, data) => {
     if (err2) {
@@ -397,7 +393,7 @@ export const protocolGeneratePdf = async (req, res) => {
         });
       }
     });
-  } else if (req.body.protocolType === "Multi Site Sponsor") {
+  } else if (req.body.protocolType === "Multi-Site Sponsor") {
     const que1 = "select * from protocol_information where protocol_id = ?";
     db.query(que1, [req.body.protocolId], (err, data) => {
       if (data.length >= 0) {
