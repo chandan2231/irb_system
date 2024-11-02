@@ -228,6 +228,8 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
                         facing_materials.push(id)
                     }
                 }
+                console.log('formData', formData)
+                return
                 dispatch(createProtocolProcedures({ ...formData, facing_materials }))
                     .then(data => {
                         if (data.payload.status === 200) {
