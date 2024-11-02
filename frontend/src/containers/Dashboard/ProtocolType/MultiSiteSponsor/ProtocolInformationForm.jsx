@@ -21,6 +21,7 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { uploadFile } from "../../../../services/UserManagement/UserService"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -43,18 +44,21 @@ const protocoalInfoSchema = yup.object().shape({
   funding_source: yup.string().required("This is required"),
   disapproved_or_withdrawn_explain: yup
     .string()
+    .nullable()
     .when("disapproved_or_withdrawn", {
-      is: () => "Yes",
-      then: () => yup
-        .string()
-        .required("Explanation for disapproved or withdrawn is required"),
+      is: (value) => value === "Yes",
+      then: () => yup.string().required("This is required"),
       otherwise: () => yup.string().nullable(),
     }),
-  oversite_explain: yup.string().when("oversite", {
-    is: () => "Yes",
-    then: () => yup.string().required("Oversight explanation is required"),
-    otherwise: () => yup.string().nullable(),
-  }),
+  oversite: yup.string(),
+  oversite_explain: yup
+    .string()
+    .nullable()
+    .when("oversite", {
+      is: (value) => value === "Yes",
+      then: () => yup.string().required("This is required"),
+      otherwise: () => yup.string().nullable(),
+    }),
 });
 
 function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
@@ -120,8 +124,30 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       console.log('formData', formData)
       if (isValid) {
         let protocol_file = [];
-        if (!formData.protocol_file) {
+        if (!formData.uploaded_files && formData.protocol_file.length === 0) {
           return setErrors({ ...errors, protocol_file: "This is required" });
+        } else if (!formData.uploaded_files && formData.protocol_file.length > 0) {
+          for (let file of formData.protocol_file) {
+            let id = await uploadFile(file, {
+              protocolId: formData.protocol_id,
+              createdBy: formData.created_by,
+              protocolType: protocolTypeDetails.researchType,
+              informationType: "protocol_information",
+              documentName: "protocol",
+            });
+            protocol_file.push(id);
+          }
+          dispatch(
+            createProtocolInformation({ ...formData, protocol_file })
+          ).then((data) => {
+            if (data.payload.status === 200) {
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+              });
+              e.target.reset();
+            }
+          });
         } else {
           for (let file of formData.protocol_file) {
             let id = await uploadFile(file, {
@@ -133,25 +159,28 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             });
             protocol_file.push(id);
           }
+          dispatch(
+            createProtocolInformation({ ...formData, protocol_file })
+          ).then((data) => {
+            if (data.payload.status === 200) {
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+              });
+              e.target.reset();
+            }
+          });
         }
-        
-        dispatch(
-          createProtocolInformation({ ...formData, protocol_file })
-        ).then((data) => {
-          if (data.payload.status === 200) {
-            toast.success(data.payload.data.msg, {
-              position: "top-right",
-              autoClose: 5000,
-            });
-            setFormData({});
-            e.target.reset();
-          }
-        });
       }
     } catch (error) {
       const newErrors = {};
+      console.log("error", error);
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
+      });
+      console.log("newErrors", {
+        newErrors,
+        formData
       });
       setErrors(newErrors);
     }
@@ -172,11 +201,12 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         oversite_explain: protocolInformation?.oversite_explain || "",
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
-        protocol_file: protocolInformation?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type,
-          })) || [],
+        protocol_file: [],
+        uploaded_files: protocolInformation?.documents?.map((doc) => ({
+          name: doc.file_name,
+          url: doc.file_url,
+          type: doc.protocol_type,
+        })) || [],
       });
       setShowAdditionalQuestion(protocolInformation?.first_time_protocol === "No");
       setShowDisapproveAdditionTextArea(protocolInformation?.disapproved_or_withdrawn === "Yes");
@@ -236,6 +266,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
+              {errors.disapproved_or_withdrawn && (
+                <div className="error">{errors.disapproved_or_withdrawn}</div>
+              )}
             </Form.Group>
 
             {showDisapproveAdditionTextArea && (
@@ -458,6 +491,25 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
               )}
               {formData.protocol_file &&
                 Array.from(formData.protocol_file).map((file, i) => (
+                  <div key={i}>{file.name}</div>
+                ))}
+            </Grid>
+          </Grid>
+        </Form.Group>
+
+
+        <Form.Group
+          as={Col}
+          controlId="validationFormik010"
+          className="mt-mb-20"
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={2}>
+              <InputLabel>Uploaded Documents</InputLabel>
+            </Grid>
+            <Grid item xs={10}>
+              {formData.uploaded_files &&
+                Array.from(formData.uploaded_files).map((file, i) => (
                   <div key={i}>{file.name}</div>
                 ))}
             </Grid>
