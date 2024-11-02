@@ -20,7 +20,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import StarBorder from '@mui/icons-material/StarBorder';
 
-function SubmissionForm({ protocolTypeDetails }) {
+function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
     const dispatch = useDispatch();
     const userDetails = JSON.parse(localStorage.getItem('user'));
     const [termsSelected, setTermsSelected] = React.useState(false);
@@ -59,12 +59,36 @@ function SubmissionForm({ protocolTypeDetails }) {
     // });
     const notSavedForm = []
 
+    const getAllMultiSiteSavedProtocolType = Object.keys(protocolDetailsById).map((key) => {
+        const value = protocolDetailsById[key];
+        const valueKeys = Object.keys(value);
+        const isDocumentIncluded = valueKeys.includes('documents');
+        return {
+            form: key,
+            filled: (valueKeys.length - (isDocumentIncluded ? 1 : 0)) !== 0,
+            length: valueKeys.length,
+            filledLength: (valueKeys.length - (isDocumentIncluded ? 1 : 0))
+        }
+    });
+
+    getAllMultiSiteSavedProtocolType && getAllMultiSiteSavedProtocolType.map((formList) => {
+        if (formList.filled === false) {
+            notSavedForm.push(formList.form)
+        }
+    });
+
+    console.log('notSavedForm', {
+        protocolDetailsById,
+        protocolTypeDetails,
+        getAllMultiSiteSavedProtocolType
+    })
+
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(notSavedForm.length > 0){
-                toast.error('Befor final submission you have to fill protocol information', {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            }else if(notSavedForm.length <= 0){
+            if (notSavedForm.length > 0) {
+                toast.error('Befor final submission you have to fill protocol information', { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+            } else if (notSavedForm.length <= 0) {
                 const isValid = true
                 if (isValid === true) {
                     dispatch(createPrincipalInvestigatorSubmission({ ...formData }))
