@@ -30,25 +30,25 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
         protocol_type: protocolTypeDetails.researchType,
         created_by: userDetails.id,
     })
-
-    // useEffect(() => {
-    //     let data = { protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType }
-    //     dispatch(getMultiSiteSavedProtocolType(data));
-    // }, [dispatch, userDetails.id]);
-
-    // const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
-    //     state => ({
-    //         error: state.multiSiteSponsor.error,
-    //         getAllMultiSiteSavedProtocolType: state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
-    //         loading: state.multiSiteSponsor.loading,
-    //     })
-    // );
-    // getAllMultiSiteSavedProtocolType && getAllMultiSiteSavedProtocolType.map((formList) => {
-    //     if (formList.filled === false) {
-    //         notSavedForm.push(formList.form)
-    //     }
-    // });
     const notSavedForm = []
+    useEffect(() => {
+        let data = { protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType }
+        dispatch(getMultiSiteSavedProtocolType(data));
+    }, [dispatch, userDetails.id]);
+
+    const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
+        state => ({
+            error: state.multiSiteSponsor.error,
+            getAllMultiSiteSavedProtocolType: state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
+            loading: state.multiSiteSponsor.loading,
+        })
+    );
+    getAllMultiSiteSavedProtocolType && getAllMultiSiteSavedProtocolType.map((formList) => {
+        if (formList.filled === false) {
+            notSavedForm.push(formList.form)
+        }
+    });
+    
 
     const handleFinalSubmissionTearmChecked = (event) => {
         const { checked } = event.target

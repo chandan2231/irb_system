@@ -62,15 +62,9 @@ function SubmissionForm({ protocolTypeDetails }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-<<<<<<< HEAD
             if(notSavedForm.length > 0){
                 toast.error('Befor final submission you have to fill protocol information', {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
             }else if(notSavedForm.length <= 0){
-=======
-            if (notSavedForm.length >= 0) {
-                toast.error('Befor final submission you have to fill protocol information', { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
-            } else if (notSavedForm.length <= 0) {
->>>>>>> 73fd603ee171688d810e6d163a8f9ccfdb613344
                 const isValid = true
                 if (isValid === true) {
                     dispatch(createPrincipalInvestigatorSubmission({ ...formData }))

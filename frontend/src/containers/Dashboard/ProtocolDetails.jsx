@@ -35,15 +35,9 @@ const ProtocolDetails = () => {
         <>
             {
                 protocolTypeDetails.researchType === 'Clinical Site' ? (
-<<<<<<< HEAD
-                    <ContractorResearcherDetails protocolTypeDetails = {protocolTypeDetails} />
-                ) : (protocolTypeDetails.researchType === 'Multi-Site Sponsor' ) ? (
-                    <MultiSiteSponsorDetails protocolTypeDetails = {protocolTypeDetails} />
-=======
                     <ContractorResearcherDetails protocolTypeDetails={protocolTypeDetails} protocolDetailsById={protocolDetailsById} />
-                ) : (protocolTypeDetails.researchType === 'Multi Site Sponsor') ? (
+                ) : (protocolTypeDetails.researchType === 'Multi-Site Sponsor') ? (
                     <MultiSiteSponsorDetails protocolTypeDetails={protocolTypeDetails} protocolDetailsById={protocolDetailsById} />
->>>>>>> 73fd603ee171688d810e6d163a8f9ccfdb613344
                 ) : (
                     <ClinicalResearcherDetails protocolTypeDetails={protocolTypeDetails} protocolDetailsById={protocolDetailsById} />
                 )

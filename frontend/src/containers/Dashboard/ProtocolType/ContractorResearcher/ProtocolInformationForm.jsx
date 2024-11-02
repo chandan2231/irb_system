@@ -89,7 +89,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         oversite_explain: protocolInformation?.oversite_explain || '',
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
-        protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+        protocol_file: protocolInformation?.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
             return {
                 name: doc.file_name,
                 type: doc.protocol_type,
