@@ -87,9 +87,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         disapproved_or_withdrawn_explain: protocolInformation?.disapproved_or_withdrawn_explain || '',
         oversite: protocolInformation?.oversite || '',
         oversite_explain: protocolInformation?.oversite_explain || '',
-        protocol_id: protocolTypeDetails.protocolId,
+        protocol_id: protocolTypeDetails?.protocolId,
         created_by: userDetails.id,
-        protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+        protocol_file: protocolInformation?.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
             return {
                 name: doc.file_name,
                 type: doc.protocol_type,
@@ -103,19 +103,19 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     useEffect(() => {
         if (protocolInformation) {
             setFormData({
-                first_time_protocol: protocolInformation.first_time_protocol || '',
-                protocol_title: protocolInformation.protocol_title || '',
-                protocol_number: protocolInformation.protocol_number || '',
-                sponsor: protocolInformation.sponsor || '',
-                study_duration: protocolInformation.study_duration || '',
-                funding_source: protocolInformation.funding_source || '',
-                disapproved_or_withdrawn: protocolInformation.disapproved_or_withdrawn || '',
-                disapproved_or_withdrawn_explain: protocolInformation.disapproved_or_withdrawn_explain || '',
-                oversite: protocolInformation.oversite || '',
-                oversite_explain: protocolInformation.oversite_explain || '',
+                first_time_protocol: protocolInformation?.first_time_protocol || '',
+                protocol_title: protocolInformation?.protocol_title || '',
+                protocol_number: protocolInformation?.protocol_number || '',
+                sponsor: protocolInformation?.sponsor || '',
+                study_duration: protocolInformation?.study_duration || '',
+                funding_source: protocolInformation?.funding_source || '',
+                disapproved_or_withdrawn: protocolInformation?.disapproved_or_withdrawn || '',
+                disapproved_or_withdrawn_explain: protocolInformation?.disapproved_or_withdrawn_explain || '',
+                oversite: protocolInformation?.oversite || '',
+                oversite_explain: protocolInformation?.oversite_explain || '',
                 protocol_id: protocolTypeDetails.protocolId,
                 created_by: userDetails.id,
-                protocol_file: protocolInformation.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
+                protocol_file: protocolInformation?.documents?.filter(doc => doc.document_name === 'protocol').map(doc => {
                     return {
                         name: doc.file_name,
                         type: doc.protocol_type,
