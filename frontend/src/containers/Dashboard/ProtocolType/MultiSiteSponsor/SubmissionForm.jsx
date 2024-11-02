@@ -31,24 +31,30 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
         created_by: userDetails.id,
     })
     const notSavedForm = []
-    useEffect(() => {
-        let data = { protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType }
-        dispatch(getMultiSiteSavedProtocolType(data));
-    }, [dispatch, userDetails.id]);
 
-    const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
-        state => ({
-            error: state.multiSiteSponsor.error,
-            getAllMultiSiteSavedProtocolType: state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
-            loading: state.multiSiteSponsor.loading,
-        })
-    );
+    const getAllMultiSiteSavedProtocolType = Object.keys(protocolDetailsById).map((key) => {
+        const value = protocolDetailsById[key];
+        const valueKeys = Object.keys(value);
+        const isDocumentIncluded = valueKeys.includes('documents');
+        return {
+            form: key,
+            filled: (valueKeys.length - (isDocumentIncluded ? 1 : 0)) !== 0,
+            length: valueKeys.length,
+            filledLength: (valueKeys.length - (isDocumentIncluded ? 1 : 0))
+        }
+    });
+
     getAllMultiSiteSavedProtocolType && getAllMultiSiteSavedProtocolType.map((formList) => {
         if (formList.filled === false) {
             notSavedForm.push(formList.form)
         }
     });
-    
+
+    console.log('notSavedForm', {
+        protocolDetailsById,
+        protocolTypeDetails,
+        getAllMultiSiteSavedProtocolType
+    })
 
     const handleFinalSubmissionTearmChecked = (event) => {
         const { checked } = event.target
@@ -62,9 +68,9 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
     const handleSubmitData = async (e) => {
         e.preventDefault();
         try {
-            if(notSavedForm.length > 0){
-                toast.error('Befor final submission you have to fill protocol information', {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            }else if(notSavedForm.length <= 0){
+            if (notSavedForm.length > 0) {
+                toast.error('Befor final submission you have to fill protocol information', { position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark" });
+            } else if (notSavedForm.length <= 0) {
                 const isValid = true
                 if (isValid === true) {
                     dispatch(createMultiSiteSubmission({ ...formData }))
