@@ -1,218 +1,228 @@
-import React, { useEffect, useState } from "react";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import * as yup from "yup";
-import Grid from "@mui/material/Grid";
-import { createProtocolInformation } from "../../../../services/ProtocolType/MultiSiteSponsorService";
-import { Box, useTheme } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { uploadFile } from "../../../../services/UserManagement/UserService"
+import React, { useEffect, useState } from 'react'
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormControl from '@mui/material/FormControl'
+import FormLabel from '@mui/material/FormLabel'
+import Form from 'react-bootstrap/Form'
+import TextField from '@mui/material/TextField'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { styled } from '@mui/material/styles'
+import Button from '@mui/material/Button'
+import * as yup from 'yup'
+import Grid from '@mui/material/Grid'
+import { createProtocolInformation } from '../../../../services/ProtocolType/MultiSiteSponsorService'
+import { Box, useTheme } from '@mui/material'
+import { useDispatch } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { uploadFile } from '../../../../services/UserManagement/UserService'
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
   height: 1,
-  overflow: "hidden",
-  position: "absolute",
+  overflow: 'hidden',
+  position: 'absolute',
   bottom: 0,
   left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
+  whiteSpace: 'nowrap',
+  width: 1
+})
 
 const protocoalInfoSchema = yup.object().shape({
-  first_time_protocol: yup.string().required("This is required"),
-  protocol_title: yup.string().required("This is required"),
-  protocol_number: yup.string().required("This is required"),
-  sponsor: yup.string().required("This is required"),
-  study_duration: yup.string().required("This is required"),
-  funding_source: yup.string().required("This is required"),
+  first_time_protocol: yup.string().required('This is required'),
+  protocol_title: yup.string().required('This is required'),
+  protocol_number: yup.string().required('This is required'),
+  sponsor: yup.string().required('This is required'),
+  study_duration: yup.string().required('This is required'),
+  funding_source: yup.string().required('This is required'),
   disapproved_or_withdrawn_explain: yup
     .string()
     .nullable()
-    .when("disapproved_or_withdrawn", {
-      is: (value) => value === "Yes",
-      then: () => yup.string().required("This is required"),
-      otherwise: () => yup.string().nullable(),
+    .when('disapproved_or_withdrawn', {
+      is: (value) => value === 'Yes',
+      then: () => yup.string().required('This is required'),
+      otherwise: () => yup.string().nullable()
     }),
   oversite: yup.string(),
   oversite_explain: yup
     .string()
     .nullable()
-    .when("oversite", {
-      is: (value) => value === "Yes",
-      then: () => yup.string().required("This is required"),
-      otherwise: () => yup.string().nullable(),
-    }),
-});
+    .when('oversite', {
+      is: (value) => value === 'Yes',
+      then: () => yup.string().required('This is required'),
+      otherwise: () => yup.string().nullable()
+    })
+})
 
 function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
-  const dispatch = useDispatch();
-  const userDetails = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch()
+  const userDetails = JSON.parse(localStorage.getItem('user'))
   const [showAdditionalQuestion, setShowAdditionalQuestion] =
-    React.useState(false);
+    React.useState(false)
   const [showDisapproveAdditionTextArea, setShowDisapproveAdditionTextArea] =
-    React.useState(false);
+    React.useState(false)
   const [showOversiteAdditionTextArea, setShowOversiteAdditionTextArea] =
-    React.useState(false);
+    React.useState(false)
   const [formData, setFormData] = useState({
-    first_time_protocol: "",
-    protocol_title: "",
-    protocol_number: "",
-    sponsor: "",
-    study_duration: "",
-    funding_source: "",
-    disapproved_or_withdrawn: "",
-    disapproved_or_withdrawn_explain: "",
-    oversite: "",
-    oversite_explain: "",
+    first_time_protocol: '',
+    protocol_title: '',
+    protocol_number: '',
+    sponsor: '',
+    study_duration: '',
+    funding_source: '',
+    disapproved_or_withdrawn: '',
+    disapproved_or_withdrawn_explain: '',
+    oversite: '',
+    oversite_explain: '',
     protocol_id: protocolTypeDetails.protocolId,
-    created_by: userDetails.id,
-  });
-  const [errors, setErrors] = useState({});
+    created_by: userDetails.id
+  })
+  const [errors, setErrors] = useState({})
 
   const handleRadioButtonSelectFirstTime = (event, radio_name) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-    if (radio_name === "first_time_protocol" && value === "No") {
-      setShowAdditionalQuestion(true);
-    } else if (radio_name === "first_time_protocol" && value === "Yes") {
-      setShowAdditionalQuestion(false);
-      setShowDisapproveAdditionTextArea(false);
+    const { name, value } = event.target
+    setFormData({ ...formData, [name]: value })
+    if (radio_name === 'first_time_protocol' && value === 'No') {
+      setShowAdditionalQuestion(true)
+    } else if (radio_name === 'first_time_protocol' && value === 'Yes') {
+      setShowAdditionalQuestion(false)
+      setShowDisapproveAdditionTextArea(false)
     }
-  };
+  }
 
   const handleRadioButtonSelectDisapproved = (event, radio_name) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-    setShowDisapproveAdditionTextArea(value === "Yes");
-  };
+    const { name, value } = event.target
+    setFormData({ ...formData, [name]: value })
+    setShowDisapproveAdditionTextArea(value === 'Yes')
+  }
 
   const handleRadioButtonSelectOversite = (event, radio_name) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-    setShowOversiteAdditionTextArea(value === "Yes");
-  };
+    const { name, value } = event.target
+    setFormData({ ...formData, [name]: value })
+    setShowOversiteAdditionTextArea(value === 'Yes')
+  }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
 
   const handleSubmitData = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       const getValidatedform = await protocoalInfoSchema.validate(formData, {
-        abortEarly: false,
-      });
-      const isValid = await protocoalInfoSchema.isValid(getValidatedform);
+        abortEarly: false
+      })
+      const isValid = await protocoalInfoSchema.isValid(getValidatedform)
       console.log('formData', formData)
       if (isValid) {
-        let protocol_file = [];
+        let protocol_file = []
         if (!formData.uploaded_files && formData.protocol_file.length === 0) {
-          return setErrors({ ...errors, protocol_file: "This is required" });
-        } else if (!formData.uploaded_files && formData.protocol_file.length > 0) {
+          return setErrors({ ...errors, protocol_file: 'This is required' })
+        } else if (
+          !formData.uploaded_files &&
+          formData.protocol_file.length > 0
+        ) {
           for (let file of formData.protocol_file) {
             let id = await uploadFile(file, {
               protocolId: formData.protocol_id,
               createdBy: formData.created_by,
               protocolType: protocolTypeDetails.researchType,
-              informationType: "protocol_information",
-              documentName: "protocol",
-            });
-            protocol_file.push(id);
+              informationType: 'protocol_information',
+              documentName: 'protocol'
+            })
+            protocol_file.push(id)
           }
           dispatch(
             createProtocolInformation({ ...formData, protocol_file })
           ).then((data) => {
             if (data.payload.status === 200) {
               toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-              });
-              e.target.reset();
+                position: 'top-right',
+                autoClose: 5000
+              })
+              e.target.reset()
             }
-          });
+          })
         } else {
           for (let file of formData.protocol_file) {
             let id = await uploadFile(file, {
               protocolId: formData.protocol_id,
               createdBy: formData.created_by,
               protocolType: protocolTypeDetails.researchType,
-              informationType: "protocol_information",
-              documentName: "protocol",
-            });
-            protocol_file.push(id);
+              informationType: 'protocol_information',
+              documentName: 'protocol'
+            })
+            protocol_file.push(id)
           }
           dispatch(
             createProtocolInformation({ ...formData, protocol_file })
           ).then((data) => {
             if (data.payload.status === 200) {
               toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-              });
-              e.target.reset();
+                position: 'top-right',
+                autoClose: 5000
+              })
+              e.target.reset()
             }
-          });
+          })
         }
       }
     } catch (error) {
-      const newErrors = {};
-      console.log("error", error);
+      const newErrors = {}
+      console.log('error', error)
       error.inner.forEach((err) => {
-        newErrors[err.path] = err.message;
-      });
-      console.log("newErrors", {
+        newErrors[err.path] = err.message
+      })
+      console.log('newErrors', {
         newErrors,
         formData
-      });
-      setErrors(newErrors);
+      })
+      setErrors(newErrors)
     }
-  };
+  }
 
   useEffect(() => {
     if (protocolInformation) {
       setFormData({
-        first_time_protocol: protocolInformation?.first_time_protocol || "",
-        protocol_title: protocolInformation?.protocol_title || "",
-        protocol_number: protocolInformation?.protocol_number || "",
-        sponsor: protocolInformation?.sponsor || "",
-        study_duration: protocolInformation?.study_duration || "",
-        funding_source: protocolInformation?.funding_source || "",
-        disapproved_or_withdrawn: protocolInformation?.disapproved_or_withdrawn || "",
-        disapproved_or_withdrawn_explain: protocolInformation?.disapproved_or_withdrawn_explain || "",
-        oversite: protocolInformation?.oversite || "",
-        oversite_explain: protocolInformation?.oversite_explain || "",
+        first_time_protocol: protocolInformation?.first_time_protocol || '',
+        protocol_title: protocolInformation?.protocol_title || '',
+        protocol_number: protocolInformation?.protocol_number || '',
+        sponsor: protocolInformation?.sponsor || '',
+        study_duration: protocolInformation?.study_duration || '',
+        funding_source: protocolInformation?.funding_source || '',
+        disapproved_or_withdrawn:
+          protocolInformation?.disapproved_or_withdrawn || '',
+        disapproved_or_withdrawn_explain:
+          protocolInformation?.disapproved_or_withdrawn_explain || '',
+        oversite: protocolInformation?.oversite || '',
+        oversite_explain: protocolInformation?.oversite_explain || '',
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
         protocol_file: [],
-        uploaded_files: protocolInformation?.documents?.map((doc) => ({
-          name: doc.file_name,
-          url: doc.file_url,
-          type: doc.protocol_type,
-        })) || [],
-      });
-      setShowAdditionalQuestion(protocolInformation?.first_time_protocol === "No");
-      setShowDisapproveAdditionTextArea(protocolInformation?.disapproved_or_withdrawn === "Yes");
-      setShowOversiteAdditionTextArea(protocolInformation?.oversite === "Yes");
+        uploaded_files:
+          protocolInformation?.documents?.map((doc) => ({
+            name: doc.file_name,
+            url: doc.file_url,
+            type: doc.protocol_type
+          })) || []
+      })
+      setShowAdditionalQuestion(
+        protocolInformation?.first_time_protocol === 'No'
+      )
+      setShowDisapproveAdditionTextArea(
+        protocolInformation?.disapproved_or_withdrawn === 'Yes'
+      )
+      setShowOversiteAdditionTextArea(protocolInformation?.oversite === 'Yes')
     }
-  }, [protocolInformation, protocolTypeDetails]);
+  }, [protocolInformation, protocolTypeDetails])
 
   return (
     <Row>
@@ -228,7 +238,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
               name="first_time_protocol"
               value={formData.first_time_protocol}
               onChange={(event) =>
-                handleRadioButtonSelectFirstTime(event, "first_time_protocol")
+                handleRadioButtonSelectFirstTime(event, 'first_time_protocol')
               }
             >
               <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
@@ -254,7 +264,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                   onChange={(event) =>
                     handleRadioButtonSelectDisapproved(
                       event,
-                      "disapproved_or_withdrawn"
+                      'disapproved_or_withdrawn'
                     )
                   }
                 >
@@ -277,7 +287,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                 controlId="validationFormik03"
                 className="mt-mb-20"
               >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                <Box sx={{ width: '100%', maxWidth: '100%' }}>
                   <TextField
                     variant="outlined"
                     placeholder="Explain *"
@@ -308,7 +318,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                   name="oversite"
                   value={formData.oversite}
                   onChange={(event) =>
-                    handleRadioButtonSelectOversite(event, "oversite")
+                    handleRadioButtonSelectOversite(event, 'oversite')
                   }
                 >
                   <FormControlLabel
@@ -327,7 +337,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                 controlId="validationFormik05"
                 className="mt-mb-20"
               >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                <Box sx={{ width: '100%', maxWidth: '100%' }}>
                   <TextField
                     variant="outlined"
                     placeholder="Explain *"
@@ -354,7 +364,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           controlId="validationFormik06"
           className="mt-mb-20"
         >
-          <Box sx={{ width: "100%", maxWidth: "100%" }}>
+          <Box sx={{ width: '100%', maxWidth: '100%' }}>
             <TextField
               fullWidth
               label="Title of Protocol *"
@@ -374,7 +384,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           controlId="validationFormik07"
           className="mt-mb-20"
         >
-          <Box sx={{ width: "100%", maxWidth: "100%" }}>
+          <Box sx={{ width: '100%', maxWidth: '100%' }}>
             <TextField
               fullWidth
               label="Protocol number *"
@@ -394,7 +404,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           controlId="validationFormik08"
           className="mt-mb-20"
         >
-          <Box sx={{ width: "100%", maxWidth: "100%" }}>
+          <Box sx={{ width: '100%', maxWidth: '100%' }}>
             <TextField
               fullWidth
               label="Sponsor *"
@@ -412,7 +422,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           controlId="validationFormik09"
           className="mt-mb-20"
         >
-          <Box sx={{ width: "100%", maxWidth: "100%" }}>
+          <Box sx={{ width: '100%', maxWidth: '100%' }}>
             <TextField
               fullWidth
               label="Approximate duration of study *"
@@ -427,7 +437,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           )}
         </Form.Group>
 
-        <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
+        <FormControl sx={{ minWidth: '100%' }} className="mt-mb-20">
           <InputLabel>Funding source *</InputLabel>
           <Select
             label="Funding source"
@@ -480,8 +490,8 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                     if (e.target.files && e.target.files.length) {
                       setFormData({
                         ...formData,
-                        protocol_file: e.target.files,
-                      });
+                        protocol_file: e.target.files
+                      })
                     }
                   }}
                 />
@@ -496,7 +506,6 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             </Grid>
           </Grid>
         </Form.Group>
-
 
         <Form.Group
           as={Col}
@@ -520,7 +529,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           as={Col}
           controlId="validationFormik010"
           className="mt-mb-20"
-          style={{ textAlign: "right" }}
+          style={{ textAlign: 'right' }}
         >
           <Button variant="contained" color="primary" type="Submit">
             SAVE AND CONTINUE
@@ -528,7 +537,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         </Form.Group>
       </form>
     </Row>
-  );
+  )
 }
 
-export default ProtocolInformationForm;
+export default ProtocolInformationForm

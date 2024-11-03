@@ -1,20 +1,20 @@
-import questionsToRender from "./constant.js";
+import questionsToRender from './constant.js'
 
 // base template
 const renderHeader = (props) => {
-  const { title } = props;
-  return `<div><h3>${title}</h3></div>`;
-};
+  const { title } = props
+  return `<div><h3>${title}</h3></div>`
+}
 
 const RenderBody = (children) => {
-  return `<body style="padding:25">${children}</body>`;
-};
+  return `<body style="padding:25">${children}</body>`
+}
 
 const RenderTextOnly = (text) => {
   return `<div>
       <p>${text}</p>
-    </div>`;
-};
+    </div>`
+}
 
 const RenderSubTextAnswer = (answer, answerObject) => {
   return `<div>
@@ -23,14 +23,14 @@ const RenderSubTextAnswer = (answer, answerObject) => {
               ? `<span>${answerObject[answer]}</span>`
               : `<h4>N/A</h4>`
           }
-      </div>`;
-};
+      </div>`
+}
 
 const RenderQuestion = (sequence, text) => {
   return `<div>
       <h3>Question ${sequence}</h3>${text ? `<span>${text}</span>` : ``}
-    </div>`;
-};
+    </div>`
+}
 
 const RenderSubOptions = (subOptions) => {
   return `<div>
@@ -39,14 +39,14 @@ const RenderSubOptions = (subOptions) => {
           ? `<ul>
         ${Object.keys(subOptions)
           .map((key) => {
-            return `<li>${subOptions[key]}</li>`;
+            return `<li>${subOptions[key]}</li>`
           })
-          .join("")}
+          .join('')}
       </ul>`
-          : ""
+          : ''
       }
-    </div>`;
-};
+    </div>`
+}
 
 const RenderAnswer = (answerObject, answer) => {
   return `<div>
@@ -58,29 +58,29 @@ const RenderAnswer = (answerObject, answer) => {
             : `<h4>N/A</h4>`
         }
       </div>
-    </div>`;
-};
+    </div>`
+}
 
 const RenderCheckboxAnswer = (answerObject, checkBoxObject) => {
-  const { header, options, answer, explanation } = checkBoxObject;
-  const selectedAnswers = answerObject?.[answer]?.split(",") || [];
+  const { header, options, answer, explanation } = checkBoxObject
+  const selectedAnswers = answerObject?.[answer]?.split(',') || []
   return `
     <div>
       <h4>${header}</h4>
       ${options
         ?.map((option) => {
-          const isChecked = selectedAnswers.includes(option.value);
+          const isChecked = selectedAnswers.includes(option.value)
           return `
             <div>
-              <input type="checkbox" ${isChecked ? "checked" : "disabled"} />
+              <input type="checkbox" ${isChecked ? 'checked' : 'disabled'} />
               <label>${option.label}</label>
             </div>
-          `;
+          `
         })
-        .join("")}
-          ${explanation ? RenderElplanation(answerObject, explanation) : ""}
-    </div>`;
-};
+        .join('')}
+          ${explanation ? RenderElplanation(answerObject, explanation) : ''}
+    </div>`
+}
 
 const RenderElplanation = (answerObject, explanation) => {
   return `<div>
@@ -90,173 +90,173 @@ const RenderElplanation = (answerObject, explanation) => {
           ? `<p>${answerObject[explanation]}</p>`
           : `N/A`
       }
-    </div>`;
-};
+    </div>`
+}
 
 const RenderDocuments = (answerObject, documentHeader, documentName) => {
   return `<div>
       ${
-        documentHeader && answerObject["documents"]?.length > 0
+        documentHeader && answerObject['documents']?.length > 0
           ? `<h4>${documentHeader}</h4>
-        ${answerObject["documents"]
+        ${answerObject['documents']
           ?.map((docListItem) => {
-            if (docListItem["document_name"] === documentName) {
-              return `<div><a href=${docListItem[documentName]} target='_blank'>${docListItem["file_name"]}</a></div>`;
+            if (docListItem['document_name'] === documentName) {
+              return `<div><a href=${docListItem[documentName]} target='_blank'>${docListItem['file_name']}</a></div>`
             }
           })
-          .join("")}`
+          .join('')}`
           : `<h4>No Documents Uploaded</h4>`
       }
-    </div>`;
-};
+    </div>`
+}
 
 const RenderSingleCheckboxAnswer = (answerObject, checkBoxObject) => {
-  const { label, value } = checkBoxObject;
-  const isChecked = answerObject[value] === "Yes" ? true : false;
+  const { label, value } = checkBoxObject
+  const isChecked = answerObject[value] === 'Yes' ? true : false
   return `
     <div>
-      <input type="checkbox" ${isChecked ? "checked" : "disabled"} />
+      <input type="checkbox" ${isChecked ? 'checked' : 'disabled'} />
       <label>${label}</label>
-    </div>`;
-};
+    </div>`
+}
 
 // Render functions for each question
 const RenderRiskAssessmentFirstQuestion = (questionObject, answerObject) => {
-  const { question1 } = questionObject;
-  const { text, answer, explanation, documentHeader, documentName } = question1;
-  const sequence = 1;
+  const { question1 } = questionObject
+  const { text, answer, explanation, documentHeader, documentName } = question1
+  const sequence = 1
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderRiskAssessmentSecondQuestion = (questionObject, answerObject) => {
-  const { question2 } = questionObject;
-  const { text, answer, subOptions, explanation } = question2;
-  const sequence = 2;
+  const { question2 } = questionObject
+  const { text, answer, subOptions, explanation } = question2
+  const sequence = 2
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderSubOptions(subOptions)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInformedConsentProcessFirstQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question1 } = questionObject;
-  const { text, answer, documentHeader, documentName } = question1;
-  const sequence = 1;
+  const { question1 } = questionObject
+  const { text, answer, documentHeader, documentName } = question1
+  const sequence = 1
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInformedConsentProcessSecondQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question2 } = questionObject;
-  const { text, answer } = question2;
-  const sequence = 2;
+  const { question2 } = questionObject
+  const { text, answer } = question2
+  const sequence = 2
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInformedConsentThirdQuestion = (questionObject, answerObject) => {
-  const { question3 } = questionObject;
-  const { text, answer, explanation } = question3;
-  const sequence = 3;
+  const { question3 } = questionObject
+  const { text, answer, explanation } = question3
+  const sequence = 3
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInformedConsentProcessFourthQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question4 } = questionObject;
-  const { text, answer, explanation } = question4;
-  const sequence = 4;
+  const { question4 } = questionObject
+  const { text, answer, explanation } = question4
+  const sequence = 4
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInformedConsentFifthQuestion = (questionObject, answerObject) => {
-  const { question5 } = questionObject;
+  const { question5 } = questionObject
   const {
     text,
     subOptions,
     answer,
     explanation,
     documentHeader,
-    documentName,
-  } = question5;
-  const sequence = 5;
+    documentName
+  } = question5
+  const sequence = 5
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderSubOptions(subOptions)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInvestigatorInstuationInfoFirstQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question1 } = questionObject;
-  const { text, answer, checkboxes, documentHeader, documentName } = question1;
-  const sequence = 1;
+  const { question1 } = questionObject
+  const { text, answer, checkboxes, documentHeader, documentName } = question1
+  const sequence = 1
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderCheckboxAnswer(answerObject, checkboxes)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInvestigatorInstuationInfoSecondQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question2 } = questionObject;
-  const { text, answer, explanation, documentHeader, documentName } = question2;
-  const sequence = 2;
+  const { question2 } = questionObject
+  const { text, answer, explanation, documentHeader, documentName } = question2
+  const sequence = 2
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInvestigatorInstuationInfoThirdQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question3 } = questionObject;
+  const { question3 } = questionObject
   const { text, answer, documentHeader, documentName, subTexts, checkboxes } =
-    question3;
-  const firstSubText = subTexts[0];
-  const secoundSubText = subTexts[1];
-  const sequence = 3;
+    question3
+  const firstSubText = subTexts[0]
+  const secoundSubText = subTexts[1]
+  const sequence = 3
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
@@ -267,69 +267,69 @@ const RenderInvestigatorInstuationInfoThirdQuestion = (
   ${RenderTextOnly(firstSubText.text)}
   ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
   ${RenderElplanation(answerObject, firstSubText.explanation)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInvestigatorInstuationInfoFourthQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question4 } = questionObject;
-  const { text, answer, explanation, documentHeader, documentName } = question4;
-  const sequence = 4;
+  const { question4 } = questionObject
+  const { text, answer, explanation, documentHeader, documentName } = question4
+  const sequence = 4
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
   ${RenderDocuments(answerObject, documentHeader, documentName)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderInvestigatorInstuationInfoFifthQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question5 } = questionObject;
-  const { text, answer, explanation } = question5;
-  const sequence = 5;
+  const { question5 } = questionObject
+  const { text, answer, explanation } = question5
+  const sequence = 5
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderElplanation(answerObject, explanation)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderResearchProgressInfoFirstQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question1 } = questionObject;
-  const { text, answer } = question1;
-  const sequence = 1;
+  const { question1 } = questionObject
+  const { text, answer } = question1
+  const sequence = 1
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderResearchProgressInfoSecondQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question2 } = questionObject;
-  const { text, answer, subTexts } = question2;
-  const firstSubText = subTexts[0];
-  const secoundSubText = subTexts[1];
-  const thirstSubtext = subTexts[2];
-  const fourthSubText = subTexts[3];
-  const sequence = 2;
+  const { question2 } = questionObject
+  const { text, answer, subTexts } = question2
+  const firstSubText = subTexts[0]
+  const secoundSubText = subTexts[1]
+  const thirstSubtext = subTexts[2]
+  const fourthSubText = subTexts[3]
+  const sequence = 2
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${RenderTextOnly(firstSubText.text)}
   ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
   ${
-    answerObject["sub_withdrew"] >= 1 &&
+    answerObject['sub_withdrew'] >= 1 &&
     `<div>
      ${RenderTextOnly(secoundSubText.text)}
      ${RenderSubTextAnswer(answerObject, secoundSubText.answer)}
@@ -338,25 +338,25 @@ const RenderResearchProgressInfoSecondQuestion = (
   ${RenderTextOnly(thirstSubtext.text)}
   ${RenderSubTextAnswer(answerObject, thirstSubtext.answer)}
   ${
-    answerObject["sub_terminated_before_completion"] >= 1 &&
+    answerObject['sub_terminated_before_completion'] >= 1 &&
     `<div>
      ${RenderTextOnly(fourthSubText.text)}
      ${RenderSubTextAnswer(answerObject, fourthSubText.answer)}
     </div>`
   }
-  </div>`;
-};
+  </div>`
+}
 
 const RenderResearchProgressInfoThirdQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question3 } = questionObject;
-  const { text, answer, subTexts, documentHeader, documentName } = question3;
-  const sequence = 3;
-  const firstSubText = subTexts[0];
-  const secoundSubText = subTexts[1];
-  const thirdSubText = subTexts[2];
+  const { question3 } = questionObject
+  const { text, answer, subTexts, documentHeader, documentName } = question3
+  const sequence = 3
+  const firstSubText = subTexts[0]
+  const secoundSubText = subTexts[1]
+  const thirdSubText = subTexts[2]
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
@@ -365,7 +365,7 @@ const RenderResearchProgressInfoThirdQuestion = (
   ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
 
   ${
-    answerObject["adverse_event_submission"] === "No" &&
+    answerObject['adverse_event_submission'] === 'No' &&
     `<div>
     ${RenderTextOnly(secoundSubText.text)}
     ${RenderSubTextAnswer(answerObject, secoundSubText.answer)}
@@ -377,58 +377,58 @@ const RenderResearchProgressInfoThirdQuestion = (
   </div>`
   }
 
-  </div>`;
-};
+  </div>`
+}
 
 const RenderResearchProgressInfoFourthQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question4 } = questionObject;
-  const { text, answer } = question4;
-  const sequence = 4;
+  const { question4 } = questionObject
+  const { text, answer } = question4
+  const sequence = 4
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
-  </div>`;
-};
+  </div>`
+}
 
 const RenderResearchProgressInfoFifthQuestion = (
   questionObject,
   answerObject
 ) => {
-  const { question5 } = questionObject;
-  const { text, answer, explanation, subTexts } = question5;
-  const firstSubText = subTexts[0];
-  const sequence = 5;
+  const { question5 } = questionObject
+  const { text, answer, explanation, subTexts } = question5
+  const firstSubText = subTexts[0]
+  const sequence = 5
   return `<div>
   ${RenderQuestion(sequence, text)}
   ${RenderAnswer(answerObject, answer)}
   ${
-    answerObject["last_approval_change"] === "Yes" &&
+    answerObject['last_approval_change'] === 'Yes' &&
     `<div>
      ${RenderTextOnly(firstSubText.text)}
      ${RenderSubTextAnswer(answerObject, firstSubText.answer)}
     </div>`
   }
   ${RenderElplanation(answerObject, explanation)}
-  </div>`;
-};
+  </div>`
+}
 
 const continuingReviewHTMLTemplate = (templateProps) => {
-  const { continuingReviewQuestions } = questionsToRender;
+  const { continuingReviewQuestions } = questionsToRender
   const {
     riskAssessment,
     informedConsentProcess,
     investigatorInstuationInfo,
-    researchProgressInfo,
-  } = continuingReviewQuestions;
+    researchProgressInfo
+  } = continuingReviewQuestions
   const {
     risk_assessment,
     informed_consent_process,
     investigator_instuation_info,
-    research_progress_info,
-  } = templateProps;
+    research_progress_info
+  } = templateProps
   const children = `
       <main>
         <h1>
@@ -512,16 +512,16 @@ const continuingReviewHTMLTemplate = (templateProps) => {
           )}
         </div>
       </main>
-   `;
-  return RenderBody(children);
-};
+   `
+  return RenderBody(children)
+}
 
 // Protocol Amendment Request
 
 // Clinical Site
 const ClinicalSiteHTMLTemplate = (templateProps) => {
-  const { protocolDetails } = questionsToRender;
-  const { clinicalReviewQuestions } = protocolDetails;
+  const { protocolDetails } = questionsToRender
+  const { clinicalReviewQuestions } = protocolDetails
   const {
     headerText,
     protocolId,
@@ -530,16 +530,16 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
     investigator_information,
     study_information,
     informed_consent,
-    protocol_procedure,
-  } = templateProps;
+    protocol_procedure
+  } = templateProps
   const {
     informedConsentForm,
     investigatorInformation,
     protocolInformation,
     protocolProcedure,
     studyInformation,
-    submissinForm,
-  } = clinicalReviewQuestions;
+    submissinForm
+  } = clinicalReviewQuestions
   const children = `<main>
        <h1>
           ${headerText} (${protocolId})
@@ -554,20 +554,20 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
           ${protocolInformation.question1.subTexts
             ?.map((subText, index) => {
               return `<div>
-              ${subText?.text ? RenderQuestion(index + 2, subText.text) : ""}
+              ${subText?.text ? RenderQuestion(index + 2, subText.text) : ''}
               ${
                 subText?.answer
                   ? RenderAnswer(protocol_information, subText.answer)
-                  : ""
+                  : ''
               }
               ${
                 subText?.explanation
                   ? RenderElplanation(protocol_information, subText.explanation)
-                  : ""
+                  : ''
               }
-            </div>`;
+            </div>`
             })
-            .join("")}
+            .join('')}
           ${RenderDocuments(
             protocol_information,
             protocolInformation.question1.documentHeader,
@@ -583,12 +583,12 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
               ${
                 subText?.text
                   ? RenderQuestion(subText.sequence, subText.text)
-                  : ""
+                  : ''
               }
               ${
                 subText?.answer
                   ? RenderAnswer(investigator_information, subText.answer)
-                  : ""
+                  : ''
               }
               ${
                 subText?.explanation
@@ -596,7 +596,7 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
                       investigator_information,
                       subText.explanation
                     )
-                  : ""
+                  : ''
               }
               ${
                 subText?.checkboxes
@@ -604,20 +604,20 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
                       investigator_information,
                       subText.checkboxes
                     )
-                  : ""
+                  : ''
               }
-            </div>`;
+            </div>`
              })
-             .join("")}
+             .join('')}
             ${investigatorInformation?.documentsUploadedList
               ?.map((docListItem) => {
                 return `${RenderDocuments(
                   investigator_information,
                   docListItem.documentHeader,
                   docListItem.documentName
-                )}`;
+                )}`
               })
-              .join("")}
+              .join('')}
         </div>
 
         <div style="page-break-after: always;">
@@ -644,29 +644,29 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
         ${informedConsentForm.subTexts
           ?.map((subText) => {
             return `<div>
-          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ''}
           ${
             subText?.answer
               ? RenderAnswer(informed_consent, subText.answer)
-              : ""
+              : ''
           }
           ${
             subText?.explanation
               ? RenderElplanation(informed_consent, subText.explanation)
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
           })
-          .join("")}
+          .join('')}
         ${informedConsentForm.documentsUploadedList
           ?.map((docListItem) => {
             return `${RenderDocuments(
               informed_consent,
               docListItem.documentHeader,
               docListItem.documentName
-            )}`;
+            )}`
           })
-          .join("")}
+          .join('')}
           ${RenderTextOnly(informedConsentForm.declaration.header)}
           ${RenderSingleCheckboxAnswer(
             informed_consent,
@@ -687,20 +687,20 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
         ${protocolProcedure.subTexts
           ?.map((subText) => {
             return `<div>
-          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ''}
           ${
             subText?.answer
               ? RenderAnswer(protocol_procedure, subText.answer)
-              : ""
+              : ''
           }
           ${
             subText?.explanation
               ? RenderElplanation(protocol_procedure, subText.explanation)
-              : ""
+              : ''
           }
-            </div>`;
+            </div>`
           })
-          .join("")}
+          .join('')}
           ${RenderCheckboxAnswer(
             protocol_procedure,
             protocolProcedure.checkboxes3
@@ -745,14 +745,14 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
           submissinForm.checkBox
         )}
         </div>
-    </main>`;
-  return RenderBody(children);
-};
+    </main>`
+  return RenderBody(children)
+}
 
 // Multi-Site Sponsor
 const MultiSiteSponsorHTMLTemplate = (templateProps) => {
-  const { protocolDetails } = questionsToRender;
-  const { multiSiteSponsorQuestions } = protocolDetails;
+  const { protocolDetails } = questionsToRender
+  const { multiSiteSponsorQuestions } = protocolDetails
   const {
     headerText,
     protocolId,
@@ -761,16 +761,16 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
     contact_information,
     study_information,
     informed_consent,
-    protocol_procedure,
-  } = templateProps;
+    protocol_procedure
+  } = templateProps
   const {
     contactInformation,
     informedConsentForm,
     protocolInformation,
     protocolProcedure,
     studyInformation,
-    submissinForm,
-  } = multiSiteSponsorQuestions;
+    submissinForm
+  } = multiSiteSponsorQuestions
   const children = `<main>
        <h1>${headerText} (${protocolId})</h1>
       <div style="page-break-after: always;">
@@ -788,11 +788,11 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
           ${
             subText.explanation
               ? RenderElplanation(protocol_information, subText.explanation)
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
           })
-          .join("")}
+          .join('')}
         ${RenderDocuments(
           protocol_information,
           protocolInformation.documentHeader,
@@ -805,33 +805,33 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
         ${contactInformation.subQuestions
           ?.map((subTexts) => {
             return `<div> 
-          ${subTexts.header ? RenderTextOnly(subTexts.header) : ""}
+          ${subTexts.header ? RenderTextOnly(subTexts.header) : ''}
           ${
             subTexts.text
               ? RenderQuestion(subTexts.sequence, subTexts.text)
-              : ""
+              : ''
           }
           ${
             subTexts.answer
               ? RenderAnswer(contact_information, subTexts.answer)
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
           })
-          .join("")}
+          .join('')}
        ${contactInformation.subQuestions2
          ?.map((subText) => {
            return `<div> 
-          ${subText.header ? RenderTextOnly(subText.header) : ""}
-          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${subText.header ? RenderTextOnly(subText.header) : ''}
+          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ''}
           ${
             subText.answer
               ? RenderAnswer(contact_information, subText.answer)
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
          })
-         .join("")}
+         .join('')}
       </div>
 
        <div style="page-break-after: always;">
@@ -858,18 +858,18 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
         ${informedConsentForm.subTexts
           ?.map((subText) => {
             return `<div>
-          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ''}
           ${
-            subText.answer ? RenderAnswer(informed_consent, subText.answer) : ""
+            subText.answer ? RenderAnswer(informed_consent, subText.answer) : ''
           }
           ${
             subText.explanation
               ? RenderElplanation(informed_consent, subText.explanation)
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
           })
-          .join("")}
+          .join('')}
         ${RenderDocuments(
           informed_consent,
           informedConsentForm.documentHeader,
@@ -895,20 +895,20 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
         ${protocolProcedure.subTexts
           ?.map((subText) => {
             return `<div>
-          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ''}
           ${
             subText.answer
               ? RenderAnswer(protocol_procedure, subText.answer)
-              : ""
+              : ''
           }
           ${
             subText.explanation
               ? RenderElplanation(protocol_procedure, subText.explanation)
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
           })
-          .join("")}
+          .join('')}
         ${RenderCheckboxAnswer(
           protocol_procedure,
           protocolProcedure.checkboxes3
@@ -916,11 +916,11 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
          ${protocolProcedure.subTexts2
            ?.map((subText) => {
              return `<div>
-          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ""}
+          ${subText.text ? RenderQuestion(subText.sequence, subText.text) : ''}
           ${
             subText.answer
               ? RenderAnswer(protocol_procedure, subText.answer)
-              : ""
+              : ''
           }
           ${
             subText.explanation
@@ -929,11 +929,11 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
                 protocol_procedure,
                 subText.explanation.answer
               )}`
-              : ""
+              : ''
           }
-        </div>`;
+        </div>`
            })
-           .join("")}
+           .join('')}
         ${RenderDocuments(
           protocol_procedure,
           protocolProcedure.documentHeader,
@@ -954,23 +954,23 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
           submissinForm.checkBox
         )}
       </div>
-    </main>`;
-  return RenderBody(children);
-};
+    </main>`
+  return RenderBody(children)
+}
 
 // Principal Investigator
 const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
-  const { protocolDetails } = questionsToRender;
-  const { principalInvestigatorQuestions } = protocolDetails;
+  const { protocolDetails } = questionsToRender
+  const { principalInvestigatorQuestions } = protocolDetails
   const {
     headerText,
     protocolId,
     protocolType,
     investigator_protocol_information,
-    consent_information,
-  } = templateProps;
+    consent_information
+  } = templateProps
   const { informedConsentForm, investigatorInformation, submissinForm } =
-    principalInvestigatorQuestions;
+    principalInvestigatorQuestions
   const children = `<main>
       <h1>${headerText} (${protocolId})</h1>
       <div style="page-break-after: always;">
@@ -980,18 +980,18 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
             return `<div>
           ${RenderQuestion(subQuestion.sequence, subQuestion.text)}
           ${RenderAnswer(investigator_protocol_information, subQuestion.answer)}
-            </div>`;
+            </div>`
           })
-          .join("")}
+          .join('')}
           ${RenderTextOnly(investigatorInformation.question1.text)}
           ${investigatorInformation.question1.subTexts
             ?.map((subText) => {
               return `<div>
             ${RenderQuestion(subText.sequence, subText.text)}
             ${RenderAnswer(investigator_protocol_information, subText.answer)}
-            </div>`;
+            </div>`
             })
-            .join("")}
+            .join('')}
          
           ${RenderQuestion(
             investigatorInformation.question2.sequence,
@@ -1020,9 +1020,9 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
                 investigator_protocol_information,
                 docListItem.documentHeader,
                 docListItem.documentName
-              )}`;
+              )}`
             })
-            .join("")}
+            .join('')}
         </div>
 
         <div style="page-break-after: always;">
@@ -1033,9 +1033,9 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
             return `<div>
           ${RenderQuestion(subText.sequence, subText.text)}
           ${RenderAnswer(consent_information, subText.answer)}
-          </div>`;
+          </div>`
           })
-          .join("")}
+          .join('')}
           ${RenderTextOnly(informedConsentForm.declaration.header)}
           ${RenderSingleCheckboxAnswer(
             consent_information,
@@ -1052,19 +1052,19 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
         )}
        </div>
           
-    </main>`;
-  return RenderBody(children);
-};
+    </main>`
+  return RenderBody(children)
+}
 
 const protocolAmendmentRequestHTMLTemplate = {
   ClinicalSiteHTMLTemplate,
   MultiSiteSponsorHTMLTemplate,
-  PrincipalInvestigatorHTMLTemplate,
-};
+  PrincipalInvestigatorHTMLTemplate
+}
 
 const htmlTemplates = {
   continuingReviewHTMLTemplate,
-  protocolAmendmentRequestHTMLTemplate,
-};
+  protocolAmendmentRequestHTMLTemplate
+}
 
-export default htmlTemplates;
+export default htmlTemplates

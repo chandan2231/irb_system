@@ -1,15 +1,17 @@
-html, body, #root{
+html,
+body,
+#root {
   height: 100%;
 }
-.error_msg{
+.error_msg {
   color: red;
 }
 
-.success_msg{
+.success_msg {
   color: green;
 }
 
-.center-card{
+.center-card {
   justify-content: center;
   position: absolute;
   left: 50%;
@@ -18,15 +20,15 @@ html, body, #root{
   transform: translate(-50%, -50%);
 }
 
-.mt-mb-20{
+.mt-mb-20 {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.mt-mb-10{
+.mt-mb-10 {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.fullwidth{
+.fullwidth {
   width: 100%;
 }
 .ul-list ul {
@@ -42,32 +44,34 @@ html, body, #root{
 .error {
   color: red;
 }
-.astric{
+.astric {
   color: red;
 }
-.mt-mb-ml-mr-25{
+.mt-mb-ml-mr-25 {
   margin-top: 25px;
   margin-bottom: 25px;
   margin-left: 25px;
   margin-right: 25px;
 }
-.link-tag{
+.link-tag {
   cursor: pointer;
-  color: #0000EE;
+  color: #0000ee;
 }
-.link-tag:hover{ color: #551A8B; }
-.ml-20{
+.link-tag:hover {
+  color: #551a8b;
+}
+.ml-20 {
   margin-left: 20px;
 }
-.explain_text{
+.explain_text {
   color: #000000;
 }
-.no_underline{
+.no_underline {
   text-decoration: none;
 }
-.pd-25{
+.pd-25 {
   padding: 0px 25px;
 }
-.highlight-text{
+.highlight-text {
   color: rgb(255, 115, 0);
 }

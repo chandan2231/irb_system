@@ -1,4 +1,4 @@
-import {Route, Routes} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom'
 // import Market from '../containers/Market/Market';
 // import MarketDetails from '../containers/Market/MarketDetails';
 // import Application from '../containers/Application/Application';
@@ -16,9 +16,9 @@ import {Route, Routes} from 'react-router-dom';
 // import Dashboard from '../containers/Dashboard/Dashboard';
 
 function AppRoutes() {
-    return(
-        <Routes>
-            {/*<Route path='/dashboard' element={<Dashboard/>} />
+  return (
+    <Routes>
+      {/*<Route path='/dashboard' element={<Dashboard/>} />
             <Route path='/market-details' element={<MarketDetails/>} />
             <Route path='/market' element={<Market/>} />
             <Route path='/application' element={<Application/>} />
@@ -34,9 +34,8 @@ function AppRoutes() {
             <Route path='/signin' element={<SignIn/>} />
             <Route path='/signup' element={<SignUp/>} />
             <Route path='/reset-password?token=9f87b49edde4a81ddc8f4b3544464f6a40eb188a5d4cef4bf28f0da8f50b2b6f&app_id=666add7011ae622856e30732&redirect_url=https://ghclaims.milvik.io' element={<ResetPassword/>} /> */}
-            
-        </Routes>
-    )
+    </Routes>
+  )
 }
 
-export default AppRoutes;
+export default AppRoutes

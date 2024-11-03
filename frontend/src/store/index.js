@@ -1,15 +1,24 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import storage from "redux-persist/lib/storage";
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from "redux-persist";
-import AuthReducer from "./Auth/AuthSlice";
-import DashboardReducer from "./Dashboard/DashboardSlice";
-import ContinuinReviewReducer from "./ContinuinReview/ContinuinReviewSlice";
-import ClinicalResearcherReducer from "./ProtocolType/ClinicalResearcherSlice";
-import MultiSiteSponsorReducer from "./ProtocolType/MultiSiteSponsorSlice";
-import ContractorResearcherReducer from "./ProtocolType/ContractorResearcherSlice";
-import AdminReducer from "./Admin/AdminSlice";
-import MembersSlice from "./Admin/MembersSlice";
-import EventPriceSlice from "./Admin/EventPriceSlice";
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import storage from 'redux-persist/lib/storage'
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER
+} from 'redux-persist'
+import AuthReducer from './Auth/AuthSlice'
+import DashboardReducer from './Dashboard/DashboardSlice'
+import ContinuinReviewReducer from './ContinuinReview/ContinuinReviewSlice'
+import ClinicalResearcherReducer from './ProtocolType/ClinicalResearcherSlice'
+import MultiSiteSponsorReducer from './ProtocolType/MultiSiteSponsorSlice'
+import ContractorResearcherReducer from './ProtocolType/ContractorResearcherSlice'
+import AdminReducer from './Admin/AdminSlice'
+import MembersSlice from './Admin/MembersSlice'
+import EventPriceSlice from './Admin/EventPriceSlice'
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -20,20 +29,18 @@ const rootReducer = combineReducers({
   contractorResearcher: ContractorResearcherReducer,
   admin: AdminReducer,
   member: MembersSlice,
-  eventPrice: EventPriceSlice,
-});
+  eventPrice: EventPriceSlice
+})
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   version: 1,
   storage,
-  whitelist: ['auth'], // Specify which slices you want to persist
+  whitelist: ['auth'] // Specify which slices you want to persist
   //whitelist: ["market", "application", "user", 'role', 'privilege', 'UserApplicationRole', 'team', 'hierarchy'], // Specify which slices you want to persist
-};
+}
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 // const store = configureStore({
 //   reducer: persistedReducer,
@@ -50,9 +57,9 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false
-    }),
-});
+    })
+})
 
-const persistor = persistStore(store);
+const persistor = persistStore(store)
 
-export { store, persistor };
+export { store, persistor }

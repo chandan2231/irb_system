@@ -1,32 +1,32 @@
-import express from "express";
-import { 
-    getApprovedProtocolList, 
-    getAllUsers, 
-    getContinuinDetailsById, 
-    getProtocolDetailsById,
-    getStudyCloseoutRequestList,
-    getPromptlyReportableEventList,
-    getAdverseEventList,
-    getProtocolAmendmentRequestList,
-    getStudyCloseoutDetailsById,
-    getPromptlyReportableEventById,
-    getAdverseEventById,
-    getProtocolAmendmentRequestById,
-    allowProtocolEdit,
-    getMemberList,
-    createMember,
-    changeMemberStatus,
-    changeMemberPassword,
-    changeUserStatus,
-    changeUserPassword,
-    getUnderReviewProtocolList,
-    getCreatedProtocolList,
-    allowProtocolWaiveFee,
-    getEventPriceList,
-    createEventPrice,
-    changeEventPriceStatus,
-    getActiveVotingMemberList
-} from "../controllers/admin.js";
+import express from 'express'
+import {
+  getApprovedProtocolList,
+  getAllUsers,
+  getContinuinDetailsById,
+  getProtocolDetailsById,
+  getStudyCloseoutRequestList,
+  getPromptlyReportableEventList,
+  getAdverseEventList,
+  getProtocolAmendmentRequestList,
+  getStudyCloseoutDetailsById,
+  getPromptlyReportableEventById,
+  getAdverseEventById,
+  getProtocolAmendmentRequestById,
+  allowProtocolEdit,
+  getMemberList,
+  createMember,
+  changeMemberStatus,
+  changeMemberPassword,
+  changeUserStatus,
+  changeUserPassword,
+  getUnderReviewProtocolList,
+  getCreatedProtocolList,
+  allowProtocolWaiveFee,
+  getEventPriceList,
+  createEventPrice,
+  changeEventPriceStatus,
+  getActiveVotingMemberList
+} from '../controllers/admin.js'
 
 const router = express.Router()
 
@@ -48,13 +48,22 @@ router.post('/protocol/waiveFee', allowProtocolWaiveFee)
 router.get('/users/list', getAllUsers)
 router.post('/continuinDetailsById', getContinuinDetailsById)
 router.post('/protocolDetailsById', getProtocolDetailsById)
-router.post('/eventAndRequest/getStudyCloseoutRequest', getStudyCloseoutRequestList)
+router.post(
+  '/eventAndRequest/getStudyCloseoutRequest',
+  getStudyCloseoutRequestList
+)
 router.post('/studyCloseoutDetailsById', getStudyCloseoutDetailsById)
-router.post('/eventAndRequest/getPromptlyReportableEvent', getPromptlyReportableEventList)
+router.post(
+  '/eventAndRequest/getPromptlyReportableEvent',
+  getPromptlyReportableEventList
+)
 router.post('/promptlyReportableEventById', getPromptlyReportableEventById)
 router.post('/eventAndRequest/getAdverseEvent', getAdverseEventList)
 router.post('/adverseEventById', getAdverseEventById)
-router.post('/eventAndRequest/getProtocolAmendmentRequest', getProtocolAmendmentRequestList)
+router.post(
+  '/eventAndRequest/getProtocolAmendmentRequest',
+  getProtocolAmendmentRequestList
+)
 router.post('/protocolAmendmentRequestById', getProtocolAmendmentRequestById)
 
 export default router

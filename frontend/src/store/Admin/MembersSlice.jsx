@@ -1,8 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { fetchMemberList, createMember, changeStatus, resetMemberPassword, fetchActiveVotingMemberList } from "../../services/Admin/MembersService";
+import { createSlice } from '@reduxjs/toolkit'
+import {
+  fetchMemberList,
+  createMember,
+  changeStatus,
+  resetMemberPassword,
+  fetchActiveVotingMemberList
+} from '../../services/Admin/MembersService'
 
 const MembersSlice = createSlice({
-  name: "members",
+  name: 'members',
   initialState: {
     loading: false,
     error: null,
@@ -13,77 +19,78 @@ const MembersSlice = createSlice({
     userActiveList: null,
     loadingActiveUser: null,
     memberPasswordChanged: null,
-    activeVotingMemberList: null,
+    activeVotingMemberList: null
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchMemberList.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(fetchMemberList.fulfilled, (state, action) => {
-        state.loading = false;
-        state.memberList = action.payload;
+        state.loading = false
+        state.memberList = action.payload
       })
       .addCase(fetchMemberList.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
+        state.loading = false
+        state.error = action.payload || action.error.message
       })
       .addCase(createMember.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(createMember.fulfilled, (state, action) => {
-        state.loading = false;
-        state.memberCreated = action.payload;
+        state.loading = false
+        state.memberCreated = action.payload
       })
       .addCase(createMember.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
+        state.loading = false
+        state.error = action.payload || action.error.message
       })
       .addCase(changeStatus.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(changeStatus.fulfilled, (state, action) => {
-        state.loading = false;
-        let updateMemberList = state.memberList.map((element, index) => 
-          element.id === action.payload.id ? {...element, status: action.payload.status} : element
-        );
+        state.loading = false
+        let updateMemberList = state.memberList.map((element, index) =>
+          element.id === action.payload.id
+            ? { ...element, status: action.payload.status }
+            : element
+        )
         state.memberList = updateMemberList
-        state.changeUserStatus = action.payload;
+        state.changeUserStatus = action.payload
       })
       .addCase(changeStatus.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
+        state.loading = false
+        state.error = action.payload || action.error.message
       })
       .addCase(resetMemberPassword.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(resetMemberPassword.fulfilled, (state, action) => {
-        state.loading = false;
-        state.memberPasswordChanged = action.payload;
+        state.loading = false
+        state.memberPasswordChanged = action.payload
       })
       .addCase(resetMemberPassword.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
+        state.loading = false
+        state.error = action.payload || action.error.message
       })
       .addCase(fetchActiveVotingMemberList.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loading = true
+        state.error = null
       })
       .addCase(fetchActiveVotingMemberList.fulfilled, (state, action) => {
-        state.loading = false;
-        state.activeVotingMemberList = action.payload;
+        state.loading = false
+        state.activeVotingMemberList = action.payload
       })
       .addCase(fetchActiveVotingMemberList.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
+        state.loading = false
+        state.error = action.payload || action.error.message
       })
-      ;
-  },
-});
+  }
+})
 
-export default MembersSlice.reducer;
+export default MembersSlice.reducer
