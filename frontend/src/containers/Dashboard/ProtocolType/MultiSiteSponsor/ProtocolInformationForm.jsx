@@ -86,6 +86,42 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   })
   const [errors, setErrors] = useState({})
 
+
+  useEffect(() => {
+    if (protocolInformation) {
+      setFormData({
+        first_time_protocol: protocolInformation?.first_time_protocol || '',
+        protocol_title: protocolInformation?.protocol_title || '',
+        protocol_number: protocolInformation?.protocol_number || '',
+        sponsor: protocolInformation?.sponsor || '',
+        study_duration: protocolInformation?.study_duration || '',
+        funding_source: protocolInformation?.funding_source || '',
+        disapproved_or_withdrawn:
+          protocolInformation?.disapproved_or_withdrawn || '',
+        disapproved_or_withdrawn_explain:
+          protocolInformation?.disapproved_or_withdrawn_explain || '',
+        oversite: protocolInformation?.oversite || '',
+        oversite_explain: protocolInformation?.oversite_explain || '',
+        protocol_id: protocolTypeDetails.protocolId,
+        created_by: userDetails.id,
+        protocol_file: [],
+        uploaded_files:
+          protocolInformation?.documents?.map((doc) => ({
+            name: doc.file_name,
+            url: doc.file_url,
+            type: doc.protocol_type
+          })) || []
+      })
+      setShowAdditionalQuestion(
+        protocolInformation?.first_time_protocol === 'No'
+      )
+      setShowDisapproveAdditionTextArea(
+        protocolInformation?.disapproved_or_withdrawn === 'Yes'
+      )
+      setShowOversiteAdditionTextArea(protocolInformation?.oversite === 'Yes')
+    }
+  }, [protocolInformation, protocolTypeDetails])
+
   const handleRadioButtonSelectFirstTime = (event, radio_name) => {
     const { name, value } = event.target
     setFormData({ ...formData, [name]: value })
@@ -125,33 +161,32 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       console.log('formData', formData)
       if (!isValid) return
       if (isEdit) {
-        const protocol_file = []
-        if (formData.protocol_file.length > 0) {
-          for (let file of formData.protocol_file) {
-            let id = await uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: protocolTypeDetails.researchType,
-              informationType: 'protocol_information',
-              documentName: 'protocol'
-            })
-            protocol_file.push(id)
-          }
-        }
-        dispatch(
-          createProtocolInformation({ ...formData, protocol_file })
-        ).then((data) => {
-          if (data.payload.status === 200) {
-            toast.success(data.payload.data.msg, {
-              position: 'top-right',
-              autoClose: 5000
-            })
-            e.target.reset()
-          }
-        })
+        // const protocol_file = []
+        // if (formData.protocol_file.length > 0) {
+        //   for (let file of formData.protocol_file) {
+        //     let id = await uploadFile(file, {
+        //       protocolId: formData.protocol_id,
+        //       createdBy: formData.created_by,
+        //       protocolType: protocolTypeDetails.researchType,
+        //       informationType: 'protocol_information',
+        //       documentName: 'protocol'
+        //     })
+        //     protocol_file.push(id)
+        //   }
+        // }
+        // dispatch(
+        //   createProtocolInformation({ ...formData, protocol_file })
+        // ).then((data) => {
+        //   if (data.payload.status === 200) {
+        //     toast.success(data.payload.data.msg, {
+        //       position: 'top-right',
+        //       autoClose: 5000
+        //     })
+        //     e.target.reset()
+        //   }
+        // })
       } else {
         if (formData.protocol_file.length === 0) return setErrors({ ...errors, protocol_file: 'This is required' })
-
         const protocol_file = []
         for (let file of formData.protocol_file) {
           let id = await uploadFile(file, {
@@ -171,7 +206,6 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
               position: 'top-right',
               autoClose: 5000
             })
-            e.target.reset()
           }
         })
       }
@@ -187,41 +221,6 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       setErrors(newErrors)
     }
   }
-
-  useEffect(() => {
-    if (protocolInformation) {
-      setFormData({
-        first_time_protocol: protocolInformation?.first_time_protocol || '',
-        protocol_title: protocolInformation?.protocol_title || '',
-        protocol_number: protocolInformation?.protocol_number || '',
-        sponsor: protocolInformation?.sponsor || '',
-        study_duration: protocolInformation?.study_duration || '',
-        funding_source: protocolInformation?.funding_source || '',
-        disapproved_or_withdrawn:
-          protocolInformation?.disapproved_or_withdrawn || '',
-        disapproved_or_withdrawn_explain:
-          protocolInformation?.disapproved_or_withdrawn_explain || '',
-        oversite: protocolInformation?.oversite || '',
-        oversite_explain: protocolInformation?.oversite_explain || '',
-        protocol_id: protocolTypeDetails.protocolId,
-        created_by: userDetails.id,
-        protocol_file: [],
-        uploaded_files:
-          protocolInformation?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type
-          })) || []
-      })
-      setShowAdditionalQuestion(
-        protocolInformation?.first_time_protocol === 'No'
-      )
-      setShowDisapproveAdditionTextArea(
-        protocolInformation?.disapproved_or_withdrawn === 'Yes'
-      )
-      setShowOversiteAdditionTextArea(protocolInformation?.oversite === 'Yes')
-    }
-  }, [protocolInformation, protocolTypeDetails])
 
   return (
     <Row>

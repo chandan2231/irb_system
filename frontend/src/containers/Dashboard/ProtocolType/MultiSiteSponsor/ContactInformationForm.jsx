@@ -78,7 +78,7 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
         secondary_contact_email:
           contactInformation?.secondary_contact_email || '',
         protocol_id: protocolTypeDetails?.protocolId || '',
-        created_by: userDetails?.id || ''
+        created_by: userDetails?.id || '',
       })
     }
   }, [contactInformation, protocolTypeDetails])
@@ -95,7 +95,25 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
         abortEarly: false
       })
       const isValid = await contactInfoSchema.isValid(getValidatedform)
-      if (isValid === true) {
+      const isEdit = false
+      if (!isValid) return
+      if (isEdit) {
+        // dispatch(createContactInformation(formData)).then((data) => {
+        //   if (data.payload.status === 200) {
+        //     toast.success(data.payload.data.msg, {
+        //       position: 'top-right',
+        //       autoClose: 5000,
+        //       hideProgressBar: false,
+        //       closeOnClick: true,
+        //       pauseOnHover: true,
+        //       draggable: true,
+        //       progress: undefined,
+        //       theme: 'dark'
+        //     })
+        //     setFormData({})
+        //   }
+        // })
+      } else {
         dispatch(createContactInformation(formData)).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
@@ -108,7 +126,6 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
               progress: undefined,
               theme: 'dark'
             })
-            setFormData({})
           }
         })
       }
@@ -116,6 +133,10 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
       const newErrors = {}
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message
+      })
+      console.log('newErrors', {
+        newErrors,
+        formData
       })
       setErrors(newErrors)
     }

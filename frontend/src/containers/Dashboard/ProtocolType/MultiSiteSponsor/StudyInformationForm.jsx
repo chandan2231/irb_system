@@ -33,7 +33,11 @@ const VisuallyHiddenInput = styled('input')({
 })
 
 const studyInfoSchema = yup.object().shape({
-  research_type: yup.string().required('This is required')
+  research_type: yup.string().nullable(),
+  research_type_explain: yup.string().nullable().when('research_type', {
+    is: (val) => val === 'Other',
+    then: () => yup.string().required('This is required')
+  }),
 })
 
 function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
@@ -43,14 +47,14 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
   const userDetails = JSON.parse(localStorage.getItem('user'))
   const [showOtherQuestion, setShowOtherQuestion] = React.useState(false)
   const [errors, setErrors] = useState({})
-  const [explainErrors, setExplainErrors] = useState()
 
   const [formData, setFormData] = useState({
     research_type: '',
     research_type_explain: '',
     protocol_id: protocolTypeDetails.protocolId,
     created_by: userDetails.id,
-    ingredient_list: []
+    ingredient_list: [],
+    uploaded_files: []
   })
 
   useEffect(() => {
@@ -60,12 +64,12 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
         research_type_explain: studyInformation?.research_type_explain || '',
         protocol_id: protocolTypeDetails?.protocolId || '',
         created_by: userDetails?.id || '',
-        ingredient_list:
-          studyInformation?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type
-          })) || []
+        ingredient_list: [],
+        uploaded_files: studyInformation?.documents?.map((doc) => ({
+          name: doc.file_name,
+          url: doc.file_url,
+          type: doc.protocol_type
+        })) || []
       })
       setShowOtherQuestion(studyInformation?.research_type === 'Other')
     }
@@ -89,22 +93,16 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
   const handleSubmitData = async (e) => {
     e.preventDefault()
     try {
-      if (
-        formData.research_type !== '' &&
-        formData.research_type === 'Other' &&
-        formData.research_type_explain === ''
-      ) {
-        setExplainErrors('This is required')
-        return
-      } else {
-        setExplainErrors('')
-      }
       const getValidatedform = await studyInfoSchema.validate(formData, {
         abortEarly: false
       })
       const isValid = await studyInfoSchema.isValid(getValidatedform)
-      if (isValid === true) {
-        let ingredient_list = []
+      const isEdit = false
+      if (!isValid) return
+      if (isEdit) {
+        // do something
+      } else {
+        const ingredient_list = []
         if (formData.ingredient_list) {
           for (let file of formData.ingredient_list) {
             let id = await uploadFile(file, {
@@ -130,7 +128,6 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                 progress: undefined,
                 theme: 'dark'
               })
-              setFormData({})
             }
           }
         )
@@ -157,7 +154,8 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
 
   console.log('studyInformation', {
     studyInformation,
-    formData
+    formData,
+    errors
   })
 
   return (
@@ -232,7 +230,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                   onChange={handleChange}
                 />
               </Box>
-              {explainErrors && <div className="error">{explainErrors}</div>}
+              {errors.research_type_explain && <div className="error">{errors.research_type_explain}</div>}
             </Form.Group>
           )}
           <Form.Group
@@ -274,6 +272,25 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
               <div className="error">{errors.ingredient_list}</div>
             )}
           </Form.Group>
+
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <InputLabel>Uploaded Documents</InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                {formData?.uploaded_files &&
+                  Array.from(formData?.uploaded_files)?.map((file, i) => (
+                    <div key={i}>{file?.name}</div>
+                  ))}
+              </Grid>
+            </Grid>
+          </Form.Group>
+
           <Form.Group
             as={Col}
             controlId="validationFormik010"
