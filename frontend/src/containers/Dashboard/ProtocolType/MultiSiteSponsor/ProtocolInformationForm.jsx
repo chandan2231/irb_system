@@ -82,7 +82,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     oversite: '',
     oversite_explain: '',
     protocol_id: protocolTypeDetails.protocolId,
-    created_by: userDetails.id
+    created_by: userDetails.id,
+    protocol_file: [],
+    uploaded_files: []
   })
   const [errors, setErrors] = useState({})
 

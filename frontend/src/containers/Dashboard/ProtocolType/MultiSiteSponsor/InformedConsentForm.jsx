@@ -16,7 +16,7 @@ import FormGroup from '@mui/material/FormGroup'
 import Checkbox from '@mui/material/Checkbox'
 import * as yup from 'yup'
 import { createInformedConsent } from '../../../../services/ProtocolType/MultiSiteSponsorService'
-import { Box, useTheme } from '@mui/material'
+import { Box, Grid, useTheme } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { uploadFile } from '../../../../services/UserManagement/UserService'
@@ -115,11 +115,11 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     professional_translator: '',
     professional_translator_explain: '',
     protocol_id: protocolTypeDetails.protocolId,
-    created_by: userDetails.id
+    created_by: userDetails.id,
+    consent_file: [],
+    uploaded_files: []
   })
   const [errors, setErrors] = useState({})
-  const [explainNoConsentErrors, setExplainNoConsentErrors] = useState()
-  const [explainTranslatorErrors, setExplainTranslatorErrors] = useState()
 
   useEffect(() => {
     if (informedConsent) {
@@ -136,12 +136,12 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
           informedConsent?.professional_translator_explain || '',
         protocol_id: protocolTypeDetails?.protocolId || '',
         created_by: userDetails?.id || '',
-        consent_file:
-          informedConsent?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type
-          })) || []
+        consent_file: [],
+        uploaded_files: informedConsent?.documents?.map((doc) => ({
+          name: doc.file_name,
+          url: doc.file_url,
+          type: doc.protocol_type
+        })) || []
       })
 
       setShowOtherQuestion(informedConsent?.consent_type?.includes('1'))
@@ -227,43 +227,24 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
   const handleSubmitData = async (e) => {
     e.preventDefault()
     try {
-      if (
-        formData.consent_type.includes('1') &&
-        formData.no_consent_explain === ''
-      ) {
-        setExplainNoConsentErrors('This is required')
-        return
+      const getValidatedform = await informedConsentSchema.validate(formData, { abortEarly: false });
+      const isValid = await informedConsentSchema.isValid(getValidatedform)
+      const isEdit = formData.uploaded_files.length > 0
+      if (!isValid) return
+
+      if (isEdit) {
+        // do something here
       } else {
-        setExplainNoConsentErrors('')
-      }
-      if (
-        formData.professional_translator !== '' &&
-        formData.professional_translator === 'No' &&
-        formData.professional_translator_explain === ''
-      ) {
-        setExplainTranslatorErrors('This is required')
-        return
-      } else {
-        setExplainTranslatorErrors('')
-      }
-      // const getValidatedform = await investigatorInfoSchema.validate(formData, {abortEarly: false});
-      // const isValid = await investigatorInfoSchema.isValid(getValidatedform)
-      const isValid = true
-      if (isValid === true) {
-        let consent_file = []
-        if (!formData.consent_file) {
-          return setErrors({ ...errors, ['consent_file']: 'This is required' })
-        } else {
-          for (let file of formData.consent_file) {
-            let id = await uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: protocolTypeDetails.researchType,
-              informationType: 'informed_consent',
-              documentName: 'consent_files'
-            })
-            consent_file.push(id)
-          }
+        const consent_file = []
+        for (let file of formData.consent_file) {
+          let id = await uploadFile(file, {
+            protocolId: formData.protocol_id,
+            createdBy: formData.created_by,
+            protocolType: protocolTypeDetails.researchType,
+            informationType: 'informed_consent',
+            documentName: 'consent_files'
+          })
+          consent_file.push(id)
         }
         dispatch(createInformedConsent({ ...formData, consent_file })).then(
           (data) => {
@@ -278,18 +259,20 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 progress: undefined,
                 theme: 'dark'
               })
-              setFormData({})
             }
           }
         )
       }
     } catch (error) {
-      console.log('error', error)
       const newErrors = {}
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message
       })
       setErrors(newErrors)
+      console.log('error', {
+        formData,
+        newErrors
+      })
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
           `[name="${Object.keys(newErrors)[0]}"]`
@@ -412,8 +395,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                   onChange={handleChange}
                 />
               </Box>
-              {explainNoConsentErrors && (
-                <div className="error">{explainNoConsentErrors}</div>
+              {errors.no_consent_explain && (
+                <div className="error">{
+                  errors.no_consent_explain
+                }</div>
               )}
             </Form.Group>
           )}
@@ -539,8 +524,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                   onChange={handleChange}
                 />
               </Box>
-              {explainTranslatorErrors && (
-                <div className="error">{explainTranslatorErrors}</div>
+              {errors.professional_translator_explain && (
+                <div className="error">{
+                  errors.professional_translator_explain
+                }</div>
               )}
             </Form.Group>
           )}
@@ -585,6 +572,25 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
               <div className="error">{errors.consent_file}</div>
             )}
           </Form.Group>
+
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <InputLabel>Uploaded Documents</InputLabel>
+              </Grid>
+              <Grid item xs={10}>
+                {formData.uploaded_files &&
+                  Array.from(formData.uploaded_files).map((file, i) => (
+                    <div key={i}>{file.name}</div>
+                  ))}
+              </Grid>
+            </Grid>
+          </Form.Group>
+
           <Form.Group as={Col} className="ul-list">
             <p>
               The informed consent process is a continuous process and the IRB
