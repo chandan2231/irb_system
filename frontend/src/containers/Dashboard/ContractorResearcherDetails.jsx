@@ -16,8 +16,10 @@ const ContractorResearcherDetails = ({
   protocolTypeDetails,
   protocolDetailsById
 }) => {
+  const location = useLocation()
   const [protocolDetailsByIdState, setProtocolDetailsByIdState] =
     React.useState(protocolDetailsById)
+  const [value, setValue] = React.useState(0)
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props
@@ -50,9 +52,7 @@ const ContractorResearcherDetails = ({
       'aria-controls': `simple-tabpanel-${index}`
     }
   }
-  const location = useLocation()
-  // console.log('location', location)
-  const [value, setValue] = React.useState(0)
+
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -91,7 +91,6 @@ const ContractorResearcherDetails = ({
           <Tab label="Submission" {...a11yProps(5)} />
         </Tabs>
       </Box>
-      {/* here client */}
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}

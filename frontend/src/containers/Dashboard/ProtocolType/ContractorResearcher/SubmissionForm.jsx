@@ -32,23 +32,6 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
     created_by: userDetails.id
   })
 
-  // useEffect(() => {
-  //     let data = { protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType }
-  //     dispatch(getClinicalSiteSavedProtocolType(data));
-  // }, [dispatch, userDetails.id]);
-
-  // const { getAllClinicalSiteSavedProtocolType, loading, error } = useSelector(
-  //     state => ({
-  //         error: state.contractorResearcher.error,
-  //         getAllClinicalSiteSavedProtocolType: state.contractorResearcher.getAllClinicalSiteSavedProtocolType,
-  //         loading: state.contractorResearcher.loading,
-  //     })
-  // );
-  // getAllClinicalSiteSavedProtocolType && getAllClinicalSiteSavedProtocolType.map((formList) => {
-  //     if (formList.filled === false) {
-  //         notSavedForm.push(formList.form)
-  //     }
-  // });
   const notSavedForm = []
 
   const getAllMultiSiteSavedProtocolType = Object.keys(protocolDetailsById).map(
@@ -121,7 +104,7 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
           )
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const titleCase = (str) => {
