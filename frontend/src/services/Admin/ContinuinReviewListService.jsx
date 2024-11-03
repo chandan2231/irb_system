@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
-export const fetchContinuinReviewProtocolList = createAsyncThunk("ContinuinReviewList/fetchContinuinReviewProtocolList",
+export const fetchContinuinReviewProtocolList = createAsyncThunk(
+  "ContinuinReviewList/fetchContinuinReviewProtocolList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -14,10 +15,11 @@ export const fetchContinuinReviewProtocolList = createAsyncThunk("ContinuinRevie
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const fetchContinuinReviewDetailsById = createAsyncThunk("ContinuinReviewList/fetchContinuinReviewDetailsById",
+export const fetchContinuinReviewDetailsById = createAsyncThunk(
+  "ContinuinReviewList/fetchContinuinReviewDetailsById",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -29,5 +31,5 @@ export const fetchContinuinReviewDetailsById = createAsyncThunk("ContinuinReview
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );

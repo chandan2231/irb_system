@@ -4,7 +4,8 @@ import ApiCall from "../../utility/ApiCall";
 const cp = "GHANA_BTC";
 const baseURL = "http://localhost:8800/api";
 
-export const fetchEventPriceList = createAsyncThunk("EventPrice/fetchEventPriceList",
+export const fetchEventPriceList = createAsyncThunk(
+  "EventPrice/fetchEventPriceList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -16,10 +17,11 @@ export const fetchEventPriceList = createAsyncThunk("EventPrice/fetchEventPriceL
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createEventPrice = createAsyncThunk("EventPrice/createEventPrice",
+export const createEventPrice = createAsyncThunk(
+  "EventPrice/createEventPrice",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -31,10 +33,11 @@ export const createEventPrice = createAsyncThunk("EventPrice/createEventPrice",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const changeStatus = createAsyncThunk("EventPrice/changeStatus",
+export const changeStatus = createAsyncThunk(
+  "EventPrice/changeStatus",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -46,5 +49,5 @@ export const changeStatus = createAsyncThunk("EventPrice/changeStatus",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );

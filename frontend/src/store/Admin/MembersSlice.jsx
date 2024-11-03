@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchMemberList, createMember, changeStatus, resetMemberPassword, fetchActiveVotingMemberList } from "../../services/Admin/MembersService";
+import {
+  fetchMemberList,
+  createMember,
+  changeStatus,
+  resetMemberPassword,
+  fetchActiveVotingMemberList,
+} from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
   name: "members",
@@ -48,10 +54,12 @@ const MembersSlice = createSlice({
       })
       .addCase(changeStatus.fulfilled, (state, action) => {
         state.loading = false;
-        let updateMemberList = state.memberList.map((element, index) => 
-          element.id === action.payload.id ? {...element, status: action.payload.status} : element
+        let updateMemberList = state.memberList.map((element, index) =>
+          element.id === action.payload.id
+            ? { ...element, status: action.payload.status }
+            : element,
         );
-        state.memberList = updateMemberList
+        state.memberList = updateMemberList;
         state.changeUserStatus = action.payload;
       })
       .addCase(changeStatus.rejected, (state, action) => {
@@ -81,8 +89,7 @@ const MembersSlice = createSlice({
       .addCase(fetchActiveVotingMemberList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
-      ;
+      });
   },
 });
 

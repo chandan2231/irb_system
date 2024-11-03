@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchEventPriceList, createEventPrice, changeStatus } from "../../services/Admin/EventPriceService";
+import {
+  fetchEventPriceList,
+  createEventPrice,
+  changeStatus,
+} from "../../services/Admin/EventPriceService";
 
 const EventPriceSlice = createSlice({
   name: "Event Price",
@@ -9,7 +13,7 @@ const EventPriceSlice = createSlice({
     eventPriceList: null,
     eventPriceCreated: null,
     changeStatus: null,
-    changeEventPriceStatus: null
+    changeEventPriceStatus: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -44,17 +48,18 @@ const EventPriceSlice = createSlice({
       })
       .addCase(changeStatus.fulfilled, (state, action) => {
         state.loading = false;
-        let updateEventPriceList = state.eventPriceList.map((element, index) => 
-          element.id === action.payload.id ? {...element, status: action.payload.status} : element
+        let updateEventPriceList = state.eventPriceList.map((element, index) =>
+          element.id === action.payload.id
+            ? { ...element, status: action.payload.status }
+            : element,
         );
-        state.eventPriceList = updateEventPriceList
+        state.eventPriceList = updateEventPriceList;
         state.changeEventPriceStatus = action.payload;
       })
       .addCase(changeStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
-      ;
+      });
   },
 });
 

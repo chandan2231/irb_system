@@ -2,23 +2,24 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
-
-export const createProtocolInformation = createAsyncThunk("ProtocolType/createProtocolInformation",
-    async (data, { rejectWithValue }) => {
-      try {
-        const response = await ApiCall({
-          method: "POST",
-          url: `${baseURL}/researchInfo/saveProtocolInfo`,
-          data,
-        });
-        return response;
-      } catch (error) {
-        return rejectWithValue(error.response?.data || error.message);
-      }
+export const createProtocolInformation = createAsyncThunk(
+  "ProtocolType/createProtocolInformation",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/saveProtocolInfo`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
     }
+  },
 );
 
-export const createInformedConsent = createAsyncThunk("ProtocolType/createInformedConsent",
+export const createInformedConsent = createAsyncThunk(
+  "ProtocolType/createInformedConsent",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -30,10 +31,11 @@ export const createInformedConsent = createAsyncThunk("ProtocolType/createInform
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createInvestigatorInformation = createAsyncThunk("ProtocolType/createInvestigatorInformation",
+export const createInvestigatorInformation = createAsyncThunk(
+  "ProtocolType/createInvestigatorInformation",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -45,9 +47,10 @@ export const createInvestigatorInformation = createAsyncThunk("ProtocolType/crea
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
-export const createStudyInformation = createAsyncThunk("ProtocolType/createStudyInformation",
+export const createStudyInformation = createAsyncThunk(
+  "ProtocolType/createStudyInformation",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -59,10 +62,11 @@ export const createStudyInformation = createAsyncThunk("ProtocolType/createStudy
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createProtocolProcedures = createAsyncThunk("ProtocolType/createProtocolProcedures",
+export const createProtocolProcedures = createAsyncThunk(
+  "ProtocolType/createProtocolProcedures",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -74,10 +78,11 @@ export const createProtocolProcedures = createAsyncThunk("ProtocolType/createPro
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createClinicalSiteSubmission = createAsyncThunk("ProtocolType/createClinicalSiteSubmission",
+export const createClinicalSiteSubmission = createAsyncThunk(
+  "ProtocolType/createClinicalSiteSubmission",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -89,10 +94,11 @@ export const createClinicalSiteSubmission = createAsyncThunk("ProtocolType/creat
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const getClinicalSiteSavedProtocolType = createAsyncThunk("ProtocolType/getClinicalSiteSavedProtocolType",
+export const getClinicalSiteSavedProtocolType = createAsyncThunk(
+  "ProtocolType/getClinicalSiteSavedProtocolType",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -104,5 +110,5 @@ export const getClinicalSiteSavedProtocolType = createAsyncThunk("ProtocolType/g
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );

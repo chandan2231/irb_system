@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
-export const fetchApprovedProtocolList = createAsyncThunk("ProtocolList/fetchApprovedProtocolList",
+export const fetchApprovedProtocolList = createAsyncThunk(
+  "ProtocolList/fetchApprovedProtocolList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -14,10 +15,11 @@ export const fetchApprovedProtocolList = createAsyncThunk("ProtocolList/fetchApp
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const fetchUnderReviewProtocolList = createAsyncThunk("ProtocolList/fetchUnderReviewProtocolList",
+export const fetchUnderReviewProtocolList = createAsyncThunk(
+  "ProtocolList/fetchUnderReviewProtocolList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -29,10 +31,11 @@ export const fetchUnderReviewProtocolList = createAsyncThunk("ProtocolList/fetch
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const fetchCreatedProtocolList = createAsyncThunk("ProtocolList/fetchCreatedProtocolList",
+export const fetchCreatedProtocolList = createAsyncThunk(
+  "ProtocolList/fetchCreatedProtocolList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -44,10 +47,11 @@ export const fetchCreatedProtocolList = createAsyncThunk("ProtocolList/fetchCrea
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const fetchProtocolDetailsById = createAsyncThunk("ProtocolList/fetchProtocolDetailsById",
+export const fetchProtocolDetailsById = createAsyncThunk(
+  "ProtocolList/fetchProtocolDetailsById",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -59,10 +63,11 @@ export const fetchProtocolDetailsById = createAsyncThunk("ProtocolList/fetchProt
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const allowProtocolEdit = createAsyncThunk("ProtocolList/allowProtocolEdit",
+export const allowProtocolEdit = createAsyncThunk(
+  "ProtocolList/allowProtocolEdit",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -70,15 +75,16 @@ export const allowProtocolEdit = createAsyncThunk("ProtocolList/allowProtocolEdi
         url: `${baseURL}/admin/protocol/allowEdit`,
         data,
       });
-      console.log('response', response)
+      console.log("response", response);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const allowProtocolWaiveFee = createAsyncThunk("ProtocolList/allowProtocolWaiveFee",
+export const allowProtocolWaiveFee = createAsyncThunk(
+  "ProtocolList/allowProtocolWaiveFee",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -90,5 +96,5 @@ export const allowProtocolWaiveFee = createAsyncThunk("ProtocolList/allowProtoco
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );

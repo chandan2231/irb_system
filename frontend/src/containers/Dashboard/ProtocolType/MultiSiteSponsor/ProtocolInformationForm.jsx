@@ -45,9 +45,10 @@ const protocoalInfoSchema = yup.object().shape({
     .string()
     .when("disapproved_or_withdrawn", {
       is: () => "Yes",
-      then: () => yup
-        .string()
-        .required("Explanation for disapproved or withdrawn is required"),
+      then: () =>
+        yup
+          .string()
+          .required("Explanation for disapproved or withdrawn is required"),
       otherwise: () => yup.string().nullable(),
     }),
   oversite_explain: yup.string().when("oversite", {
@@ -117,7 +118,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         abortEarly: false,
       });
       const isValid = await protocoalInfoSchema.isValid(getValidatedform);
-      console.log('formData', formData)
+      console.log("formData", formData);
       if (isValid) {
         let protocol_file = [];
         if (!formData.protocol_file) {
@@ -134,9 +135,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             protocol_file.push(id);
           }
         }
-        
+
         dispatch(
-          createProtocolInformation({ ...formData, protocol_file })
+          createProtocolInformation({ ...formData, protocol_file }),
         ).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
@@ -166,20 +167,27 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         sponsor: protocolInformation?.sponsor || "",
         study_duration: protocolInformation?.study_duration || "",
         funding_source: protocolInformation?.funding_source || "",
-        disapproved_or_withdrawn: protocolInformation?.disapproved_or_withdrawn || "",
-        disapproved_or_withdrawn_explain: protocolInformation?.disapproved_or_withdrawn_explain || "",
+        disapproved_or_withdrawn:
+          protocolInformation?.disapproved_or_withdrawn || "",
+        disapproved_or_withdrawn_explain:
+          protocolInformation?.disapproved_or_withdrawn_explain || "",
         oversite: protocolInformation?.oversite || "",
         oversite_explain: protocolInformation?.oversite_explain || "",
         protocol_id: protocolTypeDetails.protocolId,
         created_by: userDetails.id,
-        protocol_file: protocolInformation?.documents?.map((doc) => ({
+        protocol_file:
+          protocolInformation?.documents?.map((doc) => ({
             name: doc.file_name,
             url: doc.file_url,
             type: doc.protocol_type,
           })) || [],
       });
-      setShowAdditionalQuestion(protocolInformation?.first_time_protocol === "No");
-      setShowDisapproveAdditionTextArea(protocolInformation?.disapproved_or_withdrawn === "Yes");
+      setShowAdditionalQuestion(
+        protocolInformation?.first_time_protocol === "No",
+      );
+      setShowDisapproveAdditionTextArea(
+        protocolInformation?.disapproved_or_withdrawn === "Yes",
+      );
       setShowOversiteAdditionTextArea(protocolInformation?.oversite === "Yes");
     }
   }, [protocolInformation, protocolTypeDetails]);
@@ -224,7 +232,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                   onChange={(event) =>
                     handleRadioButtonSelectDisapproved(
                       event,
-                      "disapproved_or_withdrawn"
+                      "disapproved_or_withdrawn",
                     )
                   }
                 >

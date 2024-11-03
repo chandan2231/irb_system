@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { riskAssessmentSave, informedConsentSave, investigatorAndinstuationSave, researchProcessSave } from "../../services/ContinuinReview/ContinuinReviewService";
+import {
+  riskAssessmentSave,
+  informedConsentSave,
+  investigatorAndinstuationSave,
+  researchProcessSave,
+} from "../../services/ContinuinReview/ContinuinReviewService";
 import { fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
 
 const ContinuinReviewSlice = createSlice({

@@ -4,7 +4,8 @@ import ApiCall from "../../utility/ApiCall";
 const cp = "GHANA_BTC";
 const baseURL = "https://ghauthapi.milvik.io";
 
-export const fetchUserList = createAsyncThunk("User/fetchUserList",
+export const fetchUserList = createAsyncThunk(
+  "User/fetchUserList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -16,10 +17,11 @@ export const fetchUserList = createAsyncThunk("User/fetchUserList",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createUser = createAsyncThunk("User/createUser",
+export const createUser = createAsyncThunk(
+  "User/createUser",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -31,18 +33,19 @@ export const createUser = createAsyncThunk("User/createUser",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const changeStatus = createAsyncThunk("User/changeStatus",
+export const changeStatus = createAsyncThunk(
+  "User/changeStatus",
   async (payloadData, { rejectWithValue }) => {
-    let sendStatus = ''
+    let sendStatus = "";
     if (payloadData.status === true) {
-      sendStatus = 'disable'
+      sendStatus = "disable";
     } else {
-      sendStatus = 'enable'
+      sendStatus = "enable";
     }
-    let data = { id: payloadData.id }
+    let data = { id: payloadData.id };
     try {
       const response = await ApiCall({
         method: "PUT",
@@ -53,10 +56,11 @@ export const changeStatus = createAsyncThunk("User/changeStatus",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const fetchActiveUsersList = createAsyncThunk("User/fetchActiveUsersList",
+export const fetchActiveUsersList = createAsyncThunk(
+  "User/fetchActiveUsersList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -68,16 +72,15 @@ export const fetchActiveUsersList = createAsyncThunk("User/fetchActiveUsersList"
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-
-export const uploadFile = async (file, fileData={}) => {
+export const uploadFile = async (file, fileData = {}) => {
   let data = new FormData();
   data.append("file", file);
   if (fileData) {
     for (let key in fileData) {
-      data.append(key, fileData[key])
+      data.append(key, fileData[key]);
     }
   }
   try {
@@ -86,48 +89,39 @@ export const uploadFile = async (file, fileData={}) => {
       url: `http://localhost:8800/api/protocol/upload/file`,
       data,
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data?.id;
-  } catch (error) {
-
-  }
-}
-
+  } catch (error) {}
+};
 
 export const continueinReviewReport = async (protocolDetails) => {
-
   try {
     let response = await ApiCall({
       method: "POST",
       url: `http://localhost:8800/api/protocol/continuein/generate/pdf`,
-      data : protocolDetails,
+      data: protocolDetails,
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     return response.data;
-  } catch (error) {
-
-  }
-}
+  } catch (error) {}
+};
 
 export const protocolReport = async (protocolDetails) => {
-
   try {
     let response = await ApiCall({
       method: "POST",
       url: `http://localhost:8800/api/protocol/protocol/generate/pdf`,
-      data : protocolDetails,
+      data: protocolDetails,
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    })
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
     // console.log('response', response)
     return response.data;
-  } catch (error) {
-
-  }
-}
+  } catch (error) {}
+};

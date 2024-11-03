@@ -60,16 +60,13 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-export default function ToggleStatus({
-  status,
-  onStatusChange,
-}) {
+export default function ToggleStatus({ status, onStatusChange }) {
   const handleToggle = () => {
     onStatusChange(status);
   };
   return (
     <IOSSwitch
-      defaultChecked = {status === '1' || status === 1 ? false : true} 
+      defaultChecked={status === "1" || status === 1 ? false : true}
       onChange={handleToggle}
     />
   );

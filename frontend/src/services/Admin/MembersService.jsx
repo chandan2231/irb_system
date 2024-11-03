@@ -4,7 +4,8 @@ import ApiCall from "../../utility/ApiCall";
 const cp = "GHANA_BTC";
 const baseURL = "http://localhost:8800/api";
 
-export const fetchMemberList = createAsyncThunk("Members/fetchMemberList",
+export const fetchMemberList = createAsyncThunk(
+  "Members/fetchMemberList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -16,13 +17,11 @@ export const fetchMemberList = createAsyncThunk("Members/fetchMemberList",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-
-
-
-export const createMember = createAsyncThunk("Members/createMember",
+export const createMember = createAsyncThunk(
+  "Members/createMember",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -34,10 +33,11 @@ export const createMember = createAsyncThunk("Members/createMember",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const changeStatus = createAsyncThunk("Members/changeStatus",
+export const changeStatus = createAsyncThunk(
+  "Members/changeStatus",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -49,10 +49,11 @@ export const changeStatus = createAsyncThunk("Members/changeStatus",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const resetMemberPassword = createAsyncThunk("Members/resetMemberPassword",
+export const resetMemberPassword = createAsyncThunk(
+  "Members/resetMemberPassword",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -64,10 +65,11 @@ export const resetMemberPassword = createAsyncThunk("Members/resetMemberPassword
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const fetchActiveVotingMemberList = createAsyncThunk("Members/fetchActiveVotingMemberList",
+export const fetchActiveVotingMemberList = createAsyncThunk(
+  "Members/fetchActiveVotingMemberList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -79,5 +81,5 @@ export const fetchActiveVotingMemberList = createAsyncThunk("Members/fetchActive
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
