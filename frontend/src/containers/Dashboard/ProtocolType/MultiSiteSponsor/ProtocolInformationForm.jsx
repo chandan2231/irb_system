@@ -121,15 +121,12 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         abortEarly: false
       })
       const isValid = await protocoalInfoSchema.isValid(getValidatedform)
+      const isEdit = formData.uploaded_files.length > 0
       console.log('formData', formData)
-      if (isValid) {
-        let protocol_file = []
-        if (!formData.uploaded_files && formData.protocol_file.length === 0) {
-          return setErrors({ ...errors, protocol_file: 'This is required' })
-        } else if (
-          !formData.uploaded_files &&
-          formData.protocol_file.length > 0
-        ) {
+      if (!isValid) return
+      if (isEdit) {
+        const protocol_file = []
+        if (formData.protocol_file.length > 0) {
           for (let file of formData.protocol_file) {
             let id = await uploadFile(file, {
               protocolId: formData.protocol_id,
@@ -140,44 +137,46 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             })
             protocol_file.push(id)
           }
-          dispatch(
-            createProtocolInformation({ ...formData, protocol_file })
-          ).then((data) => {
-            if (data.payload.status === 200) {
-              toast.success(data.payload.data.msg, {
-                position: 'top-right',
-                autoClose: 5000
-              })
-              e.target.reset()
-            }
-          })
-        } else {
-          for (let file of formData.protocol_file) {
-            let id = await uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: protocolTypeDetails.researchType,
-              informationType: 'protocol_information',
-              documentName: 'protocol'
-            })
-            protocol_file.push(id)
-          }
-          dispatch(
-            createProtocolInformation({ ...formData, protocol_file })
-          ).then((data) => {
-            if (data.payload.status === 200) {
-              toast.success(data.payload.data.msg, {
-                position: 'top-right',
-                autoClose: 5000
-              })
-              e.target.reset()
-            }
-          })
         }
+        dispatch(
+          createProtocolInformation({ ...formData, protocol_file })
+        ).then((data) => {
+          if (data.payload.status === 200) {
+            toast.success(data.payload.data.msg, {
+              position: 'top-right',
+              autoClose: 5000
+            })
+            e.target.reset()
+          }
+        })
+      } else {
+        if (formData.protocol_file.length === 0) return setErrors({ ...errors, protocol_file: 'This is required' })
+
+        const protocol_file = []
+        for (let file of formData.protocol_file) {
+          let id = await uploadFile(file, {
+            protocolId: formData.protocol_id,
+            createdBy: formData.created_by,
+            protocolType: protocolTypeDetails.researchType,
+            informationType: 'protocol_information',
+            documentName: 'protocol'
+          })
+          protocol_file.push(id)
+        }
+        dispatch(
+          createProtocolInformation({ ...formData, protocol_file })
+        ).then((data) => {
+          if (data.payload.status === 200) {
+            toast.success(data.payload.data.msg, {
+              position: 'top-right',
+              autoClose: 5000
+            })
+            e.target.reset()
+          }
+        })
       }
     } catch (error) {
       const newErrors = {}
-      console.log('error', error)
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message
       })

@@ -153,6 +153,56 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
     facing_materials: []
   })
 
+  useEffect(() => {
+    if (protocolProcedures) {
+      setFormData({
+        enrolled_study_type:
+          protocolProcedures?.enrolled_study_type?.split(',') || [],
+        enrolled_type_explain: protocolProcedures?.enrolled_type_explain || '',
+        enrolled_group: protocolProcedures?.enrolled_group?.split(',') || [],
+        enrolled_group_explain:
+          protocolProcedures?.enrolled_group_explain || '',
+        study_excluded: protocolProcedures?.study_excluded || '',
+        study_excluded_explain:
+          protocolProcedures?.study_excluded_explain || '',
+        enrolled_subject: protocolProcedures?.enrolled_subject || '',
+        recurement_method:
+          protocolProcedures?.recurement_method?.split(',') || [],
+        recurement_method_explain:
+          protocolProcedures?.recurement_method_explain || '',
+        irb_approval: protocolProcedures?.irb_approval || '',
+        expected_number_sites: protocolProcedures?.expected_number_sites || '',
+        future_research: protocolProcedures?.future_research || '',
+        future_research_explain:
+          protocolProcedures?.future_research_explain || '',
+        protocol_id: protocolTypeDetails?.protocolId,
+        created_by: userDetails?.id || '',
+        facing_materials:
+          protocolProcedures?.documents?.map((doc) => ({
+            name: doc.file_name,
+            url: doc.file_url,
+            type: doc.protocol_type
+          })) || []
+      })
+
+      setShowAdditionalQuestionStudyType(
+        protocolProcedures?.enrolled_study_type?.includes('20')
+      )
+      setShowAdditionalQuestionRaceAndEthnic(
+        protocolProcedures?.enrolled_group?.includes('9')
+      )
+      setShowStudyExcludedAdditionTextArea(
+        protocolProcedures?.study_excluded === 'Yes'
+      )
+      setShowAdditionalQuestionRecuritmentMethod(
+        protocolProcedures?.recurement_method?.includes('10')
+      )
+      setShowFutureResearchAdditionTextArea(
+        protocolProcedures?.future_research === 'Yes'
+      )
+    }
+  }, [protocolProcedures, protocolTypeDetails])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
@@ -339,56 +389,6 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
       }
     }
   }
-
-  useEffect(() => {
-    if (protocolProcedures) {
-      setFormData({
-        enrolled_study_type:
-          protocolProcedures?.enrolled_study_type?.split(',') || [],
-        enrolled_type_explain: protocolProcedures?.enrolled_type_explain || '',
-        enrolled_group: protocolProcedures?.enrolled_group?.split(',') || [],
-        enrolled_group_explain:
-          protocolProcedures?.enrolled_group_explain || '',
-        study_excluded: protocolProcedures?.study_excluded || '',
-        study_excluded_explain:
-          protocolProcedures?.study_excluded_explain || '',
-        enrolled_subject: protocolProcedures?.enrolled_subject || '',
-        recurement_method:
-          protocolProcedures?.recurement_method?.split(',') || [],
-        recurement_method_explain:
-          protocolProcedures?.recurement_method_explain || '',
-        irb_approval: protocolProcedures?.irb_approval || '',
-        expected_number_sites: protocolProcedures?.expected_number_sites || '',
-        future_research: protocolProcedures?.future_research || '',
-        future_research_explain:
-          protocolProcedures?.future_research_explain || '',
-        protocol_id: protocolTypeDetails?.protocolId,
-        created_by: userDetails?.id || '',
-        facing_materials:
-          protocolProcedures?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type
-          })) || []
-      })
-
-      setShowAdditionalQuestionStudyType(
-        protocolProcedures?.enrolled_study_type?.includes('20')
-      )
-      setShowAdditionalQuestionRaceAndEthnic(
-        protocolProcedures?.enrolled_group?.includes('9')
-      )
-      setShowStudyExcludedAdditionTextArea(
-        protocolProcedures?.study_excluded === 'Yes'
-      )
-      setShowAdditionalQuestionRecuritmentMethod(
-        protocolProcedures?.recurement_method?.includes('10')
-      )
-      setShowFutureResearchAdditionTextArea(
-        protocolProcedures?.future_research === 'Yes'
-      )
-    }
-  }, [protocolProcedures, protocolTypeDetails])
 
   console.log('protocolProcedures', {
     protocolProcedures,

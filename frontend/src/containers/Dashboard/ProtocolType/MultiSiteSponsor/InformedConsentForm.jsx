@@ -118,9 +118,43 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     created_by: userDetails.id
   })
   const [errors, setErrors] = useState({})
-
   const [explainNoConsentErrors, setExplainNoConsentErrors] = useState()
   const [explainTranslatorErrors, setExplainTranslatorErrors] = useState()
+
+  useEffect(() => {
+    if (informedConsent) {
+      setFormData({
+        consent_type: informedConsent?.consent_type?.split(',') || [],
+        no_consent_explain: informedConsent?.no_consent_explain || '',
+        include_icf: informedConsent?.include_icf || '',
+        participation_compensated:
+          informedConsent?.participation_compensated || '',
+        other_language_selection:
+          informedConsent?.other_language_selection || '',
+        professional_translator: informedConsent?.professional_translator || '',
+        professional_translator_explain:
+          informedConsent?.professional_translator_explain || '',
+        protocol_id: protocolTypeDetails?.protocolId || '',
+        created_by: userDetails?.id || '',
+        consent_file:
+          informedConsent?.documents?.map((doc) => ({
+            name: doc.file_name,
+            url: doc.file_url,
+            type: doc.protocol_type
+          })) || []
+      })
+
+      setShowOtherQuestion(informedConsent?.consent_type?.includes('1'))
+      setShowICF(informedConsent?.consent_type?.includes('6'))
+      setShowOtherLangauageAdditionalQuestion(
+        informedConsent?.other_language_selection === 'Yes'
+      )
+      setShowOtherLangauageAdditionalTextbox(
+        informedConsent?.professional_translator === 'No' &&
+        informedConsent?.other_language_selection === 'Yes'
+      )
+    }
+  }, [informedConsent, protocolTypeDetails])
 
   const handleTermsChecked = (event) => {
     setTermsSelected(event.target.checked)
@@ -269,41 +303,6 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       }
     }
   }
-
-  useEffect(() => {
-    if (informedConsent) {
-      setFormData({
-        consent_type: informedConsent?.consent_type?.split(',') || [],
-        no_consent_explain: informedConsent?.no_consent_explain || '',
-        include_icf: informedConsent?.include_icf || '',
-        participation_compensated:
-          informedConsent?.participation_compensated || '',
-        other_language_selection:
-          informedConsent?.other_language_selection || '',
-        professional_translator: informedConsent?.professional_translator || '',
-        professional_translator_explain:
-          informedConsent?.professional_translator_explain || '',
-        protocol_id: protocolTypeDetails?.protocolId || '',
-        created_by: userDetails?.id || '',
-        consent_file:
-          informedConsent?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type
-          })) || []
-      })
-
-      setShowOtherQuestion(informedConsent?.consent_type?.includes('1'))
-      setShowICF(informedConsent?.consent_type?.includes('6'))
-      setShowOtherLangauageAdditionalQuestion(
-        informedConsent?.other_language_selection === 'Yes'
-      )
-      setShowOtherLangauageAdditionalTextbox(
-        informedConsent?.professional_translator === 'No' &&
-          informedConsent?.other_language_selection === 'Yes'
-      )
-    }
-  }, [informedConsent, protocolTypeDetails])
 
   console.log('informedConsent', {
     informedConsent,

@@ -55,6 +55,34 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
 
   const [errors, setErrors] = useState({})
 
+  // UseEffect to populate the formData
+  useEffect(() => {
+    if (contactInformation) {
+      setFormData({
+        name: contactInformation?.name || '',
+        title: contactInformation?.title || '',
+        company_name: contactInformation?.company_name || '',
+        address: contactInformation?.address || '',
+        city: contactInformation?.city || '',
+        state: contactInformation?.state || '',
+        zip_code: contactInformation?.zip_code || '',
+        country: contactInformation?.country || '',
+        phone_number: contactInformation?.phone_number || '',
+        email: contactInformation?.email || '',
+        secondary_contact_name:
+          contactInformation?.secondary_contact_name || '',
+        secondary_contact_title:
+          contactInformation?.secondary_contact_title || '',
+        secondary_contact_phone_number:
+          contactInformation?.secondary_contact_phone_number || '',
+        secondary_contact_email:
+          contactInformation?.secondary_contact_email || '',
+        protocol_id: protocolTypeDetails?.protocolId || '',
+        created_by: userDetails?.id || ''
+      })
+    }
+  }, [contactInformation, protocolTypeDetails])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
@@ -92,34 +120,6 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
       setErrors(newErrors)
     }
   }
-
-  // UseEffect to populate the formData
-  useEffect(() => {
-    if (contactInformation) {
-      setFormData({
-        name: contactInformation?.name || '',
-        title: contactInformation?.title || '',
-        company_name: contactInformation?.company_name || '',
-        address: contactInformation?.address || '',
-        city: contactInformation?.city || '',
-        state: contactInformation?.state || '',
-        zip_code: contactInformation?.zip_code || '',
-        country: contactInformation?.country || '',
-        phone_number: contactInformation?.phone_number || '',
-        email: contactInformation?.email || '',
-        secondary_contact_name:
-          contactInformation?.secondary_contact_name || '',
-        secondary_contact_title:
-          contactInformation?.secondary_contact_title || '',
-        secondary_contact_phone_number:
-          contactInformation?.secondary_contact_phone_number || '',
-        secondary_contact_email:
-          contactInformation?.secondary_contact_email || '',
-        protocol_id: protocolTypeDetails?.protocolId || '',
-        created_by: userDetails?.id || ''
-      })
-    }
-  }, [contactInformation, protocolTypeDetails])
 
   console.log('contactInformation', {
     contactInformation,

@@ -53,6 +53,24 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     ingredient_list: []
   })
 
+  useEffect(() => {
+    if (studyInformation) {
+      setFormData({
+        research_type: studyInformation?.research_type || '',
+        research_type_explain: studyInformation?.research_type_explain || '',
+        protocol_id: protocolTypeDetails?.protocolId || '',
+        created_by: userDetails?.id || '',
+        ingredient_list:
+          studyInformation?.documents?.map((doc) => ({
+            name: doc.file_name,
+            url: doc.file_url,
+            type: doc.protocol_type
+          })) || []
+      })
+      setShowOtherQuestion(studyInformation?.research_type === 'Other')
+    }
+  }, [studyInformation, protocolTypeDetails])
+
   const handleSelectResearchType = (event, select_name) => {
     if (event.target.value === 'Other' && select_name === 'research_type') {
       setShowOtherQuestion(true)
@@ -136,24 +154,6 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
       }
     }
   }
-
-  useEffect(() => {
-    if (studyInformation) {
-      setFormData({
-        research_type: studyInformation?.research_type || '',
-        research_type_explain: studyInformation?.research_type_explain || '',
-        protocol_id: protocolTypeDetails?.protocolId || '',
-        created_by: userDetails?.id || '',
-        ingredient_list:
-          studyInformation?.documents?.map((doc) => ({
-            name: doc.file_name,
-            url: doc.file_url,
-            type: doc.protocol_type
-          })) || []
-      })
-      setShowOtherQuestion(studyInformation?.research_type === 'Other')
-    }
-  }, [studyInformation, protocolTypeDetails])
 
   console.log('studyInformation', {
     studyInformation,
