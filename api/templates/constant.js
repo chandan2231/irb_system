@@ -7,10 +7,10 @@ const continuingReviewQuestions = {
                 medical monitor, data safety monitoring board (DSMB), or a data
                 monitoring committee (DMC) provided any correspondence that has
                 not yet been reported to the IRB?`,
-      answer: "irb_report",
-      explanation: "irb_report_explain",
-      documentHeader: "Uploaded supporting documents",
-      documentName: "supporting_document",
+      answer: 'irb_report',
+      explanation: 'irb_report_explain',
+      documentHeader: 'Uploaded supporting documents',
+      documentName: 'supporting_document'
     },
     question2: {
       text: `Since the date of the last approval, have you encountered any
@@ -28,34 +28,34 @@ const continuingReviewQuestions = {
         option3: `3. suggests that the research places subjects or others at a
                   greater risk of harm (including physical, psychological,
                   economic, or social harm) related to the research than was
-                  previously known or recognized.`,
+                  previously known or recognized.`
       },
-      answer: "criteria_report",
-      explanation: "criteria_report_explain",
-    },
+      answer: 'criteria_report',
+      explanation: 'criteria_report_explain'
+    }
   },
   informedConsentProcess: {
     title: `Informed Consent Process`,
     question1: {
       text: `Which version of the ICF are you currently using?`,
-      answer: "icf_version",
-      documentHeader: "Uploaded the most recent ICF",
-      documentName: "icf_file",
+      answer: 'icf_version',
+      documentHeader: 'Uploaded the most recent ICF',
+      documentName: 'icf_file'
     },
     question2: {
       text: `Who is performing the informed consent at your site?`,
-      answer: "performing_consent",
+      answer: 'performing_consent'
     },
     question3: {
       text: `Have there been any challenges faced to the consenting process?`,
-      answer: "challenges_faced",
-      explanation: "challenges_faced_explain",
+      answer: 'challenges_faced',
+      explanation: 'challenges_faced_explain'
     },
     question4: {
       text: `Have there been any changes to the consent form that have not been
                 reported to the IRB?`,
-      answer: "changes_consent",
-      explanation: "changes_consent_explain",
+      answer: 'changes_consent',
+      explanation: 'changes_consent_explain'
     },
     question5: {
       text: `Are you ensuring that:`,
@@ -70,379 +70,379 @@ const continuingReviewQuestions = {
                   regarding the study that may affect the participants’
                   willingness to participate in the study?`,
         option5: `5. All participants have been consented or re-consented, where
-                  necessary, with the most current approved informed consent form?`,
+                  necessary, with the most current approved informed consent form?`
       },
-      answer: "ensuring_list",
-      explanation: "ensuring_list_explain",
-      documentHeader: "Uploaded new informed consent form",
-      documentName: "consent_form",
-    },
+      answer: 'ensuring_list',
+      explanation: 'ensuring_list_explain',
+      documentHeader: 'Uploaded new informed consent form',
+      documentName: 'consent_form'
+    }
   },
   investigatorInstuationInfo: {
     title: `Investigator and Institution Information`,
     question1: {
       text: `Have there been any changes in the investigator’s situation or
                 qualifications?`,
-      answer: "inv_sit_quali",
+      answer: 'inv_sit_quali',
       checkboxes: {
-        header: "Mark all that apply",
-        answer: "investigator_changes",
+        header: 'Mark all that apply',
+        answer: 'investigator_changes',
         options: [
-          { label: "suspension of hospital privileges", value: "1" },
-          { label: "change in medical license status", value: "2" },
+          { label: 'suspension of hospital privileges', value: '1' },
+          { label: 'change in medical license status', value: '2' },
           {
             label:
-              "increase in number of research studies conducted by the investigator",
-            value: "3",
+              'increase in number of research studies conducted by the investigator',
+            value: '3'
           },
           {
-            label: "expired or updated human research protections training",
-            value: "4",
-          },
-        ],
+            label: 'expired or updated human research protections training',
+            value: '4'
+          }
+        ]
       },
-      documentHeader: "Uploaded supporting documents here",
-      documentName: "q1_supporting_documents",
+      documentHeader: 'Uploaded supporting documents here',
+      documentName: 'q1_supporting_documents'
     },
     question2: {
       text: `Have there been any investigation of or complaints related to the
                 investigator’s conduct of research?`,
-      answer: "inv_or_comp",
-      explanation: "inv_or_comp_explain",
-      documentHeader: "Uploaded supporting documents here",
-      documentName: "q2_supporting_documents",
+      answer: 'inv_or_comp',
+      explanation: 'inv_or_comp_explain',
+      documentHeader: 'Uploaded supporting documents here',
+      documentName: 'q2_supporting_documents'
     },
     question3: {
       text: `Have there been any changes in the facility’s ability to
                 adequately support the research protocol?`,
-      answer: "facility_changes",
+      answer: 'facility_changes',
       checkboxes: {
-        header: "Mark all that apply",
-        answer: "facility_change_item",
+        header: 'Mark all that apply',
+        answer: 'facility_change_item',
         options: [
-          { label: "Personnel changes", value: "1" },
-          { label: "Financial resource changes", value: "2" },
-          { label: "Change in facility address", value: "3" },
+          { label: 'Personnel changes', value: '1' },
+          { label: 'Financial resource changes', value: '2' },
+          { label: 'Change in facility address', value: '3' },
           {
             label:
-              "Change in facility resources (ie: loss of laboratory space or licensure, loss of adequate storage space, structural damage or changes to the physical facility)",
-            value: "4",
+              'Change in facility resources (ie: loss of laboratory space or licensure, loss of adequate storage space, structural damage or changes to the physical facility)',
+            value: '4'
           },
-          { label: "Other", value: "5" },
-        ],
+          { label: 'Other', value: '5' }
+        ]
       },
       documentHeader: `Uploaded supporting documents here if applicable
 (ie: new informed consent with facility address change, updated protocol to reflect facility changes, updated delegation of authority log, etc.)`,
-      documentName: "q3_supporting_documents",
+      documentName: 'q3_supporting_documents',
       subTexts: [
         {
-          text: "Have these changes been reported to the IRB?",
-          answer: "changes_reported",
-          explanation: "changes_reported_explain",
+          text: 'Have these changes been reported to the IRB?',
+          answer: 'changes_reported',
+          explanation: 'changes_reported_explain'
         },
         {
-          text: "Please describe the changes and explain in as much detail as possible. Please provide any solutions, whether temporary or permanent, work-arounds, and/or protocol adjustments",
-          answer: "changes_explain",
-        },
-      ],
+          text: 'Please describe the changes and explain in as much detail as possible. Please provide any solutions, whether temporary or permanent, work-arounds, and/or protocol adjustments',
+          answer: 'changes_explain'
+        }
+      ]
     },
     question4: {
       text: `Have there been any changes in facility regulations, standard
                 operating procedures, or standards of professional conduct?`,
-      answer: "facility_any_changes",
-      explanation: "facility_any_changes_explain",
-      documentHeader: "Uploaded supporting documents here",
-      documentName: "q4_supporting_documents",
+      answer: 'facility_any_changes',
+      explanation: 'facility_any_changes_explain',
+      documentHeader: 'Uploaded supporting documents here',
+      documentName: 'q4_supporting_documents'
     },
     question5: {
       text: `Have there been any changes to state or local law regarding
                 research that affects the conduct of research?`,
-      answer: "changes_law",
-      explanation: "changes_law_explain",
-    },
+      answer: 'changes_law',
+      explanation: 'changes_law_explain'
+    }
   },
   researchProgressInfo: {
     title: `Research Progress`,
     question1: {
       text: `Total Subjects Enrolled`,
-      answer: "subjects_enrolled",
+      answer: 'subjects_enrolled'
     },
     question2: {
       text: `How many subjects have discontinued their participation?`,
-      answer: "discontinued_subjects",
+      answer: 'discontinued_subjects',
       subTexts: [
         {
-          text: "Out of that number, how many subjects withdrew of their own accord",
-          answer: "sub_withdrew",
+          text: 'Out of that number, how many subjects withdrew of their own accord',
+          answer: 'sub_withdrew'
         },
         {
-          text: "Describe the reasons for withdrawal",
-          answer: "withdrawal_reason_explain",
+          text: 'Describe the reasons for withdrawal',
+          answer: 'withdrawal_reason_explain'
         },
         {
-          text: "how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel",
-          answer: "sub_terminated_before_completion",
+          text: 'how many subjects were terminated before completion of the protocol by the decision of the PI, Sponsor, or other contracted research personnel',
+          answer: 'sub_terminated_before_completion'
         },
         {
-          text: "Describe the reasons for termination ",
-          answer: "termination_reason_explain",
-        },
-      ],
+          text: 'Describe the reasons for termination ',
+          answer: 'termination_reason_explain'
+        }
+      ]
     },
     question3: {
       text: `How many adverse events have occurred since the last approval?`,
-      answer: "occured_adverse_event",
+      answer: 'occured_adverse_event',
       subTexts: [
         {
-          text: "Have these events been reported to the IRB?",
-          answer: "adverse_event_submission",
+          text: 'Have these events been reported to the IRB?',
+          answer: 'adverse_event_submission'
         },
         {
-          text: "What was the reason the adverse events were not reported to the IRB?",
-          answer: "adverse_event_not_reported_explain",
+          text: 'What was the reason the adverse events were not reported to the IRB?',
+          answer: 'adverse_event_not_reported_explain'
         },
         {
-          text: "Please describe the adverse events including what occurred, the timeline in which it occurred, and the time at which the study personnel became aware of the adverse event",
-          answer: "adverse_event_explain",
-        },
+          text: 'Please describe the adverse events including what occurred, the timeline in which it occurred, and the time at which the study personnel became aware of the adverse event',
+          answer: 'adverse_event_explain'
+        }
       ],
-      documentHeader: "Uploaded any supporting documents",
-      documentName: "q3_supporting_documents",
+      documentHeader: 'Uploaded any supporting documents',
+      documentName: 'q3_supporting_documents'
     },
     question4: {
       text: `How many subject have completed the study per protocol?`,
-      answer: "subjecte_completed",
+      answer: 'subjecte_completed'
     },
     question5: {
       text: `Have there been any updates/changes to the protocol since the last
                 approval?`,
-      answer: "last_approval_change",
+      answer: 'last_approval_change',
       subTexts: [
         {
-          text: "Have these changes been reported to the IRB?",
-          answer: "last_approval_change_report",
-        },
+          text: 'Have these changes been reported to the IRB?',
+          answer: 'last_approval_change_report'
+        }
       ],
-      explanation: "changes_not_reported_to_irb",
-    },
-  },
-};
+      explanation: 'changes_not_reported_to_irb'
+    }
+  }
+}
 
 const clinicalReviewQuestions = {
   protocolInformation: {
-    title: "Protocol Information",
+    title: 'Protocol Information',
     question1: {
       text: `Are you submitting this protocol for the first time?`,
-      answer: "first_time_protocol",
+      answer: 'first_time_protocol',
       subTexts: [
         {
           text: `Has this study been disapproved or withdrawn from another IRB?`,
-          answer: "disapproved_or_withdrawn",
-          explanation: "disapproved_or_withdrawn_explain",
+          answer: 'disapproved_or_withdrawn',
+          explanation: 'disapproved_or_withdrawn_explain'
         },
         {
           text: `Are you transferring oversight from another IRB?`,
-          answer: "oversite",
-          explanation: "oversite_explain",
+          answer: 'oversite',
+          explanation: 'oversite_explain'
         },
         {
           text: `Title of Protocol`,
-          answer: "protocol_title",
+          answer: 'protocol_title'
         },
         {
           text: `Protocol Number`,
-          answer: "protocol_number",
+          answer: 'protocol_number'
         },
         {
           text: `Study Duration`,
-          answer: "study_duration",
+          answer: 'study_duration'
         },
         {
           text: `Sponsor`,
-          answer: "sponsor",
+          answer: 'sponsor'
         },
         {
           text: `Funding Source`,
-          answer: "funding_source",
-        },
+          answer: 'funding_source'
+        }
       ],
-      documentHeader: "Uploaded Protocol",
-      documentName: "protocol_file",
-    },
+      documentHeader: 'Uploaded Protocol',
+      documentName: 'protocol_file'
+    }
   },
   investigatorInformation: {
-    title: "Investigator Information",
+    title: 'Investigator Information',
     subTexts: [
       {
         sequence: 1,
         text: `Investigator Name`,
-        answer: "investigator_name",
+        answer: 'investigator_name'
       },
       {
         sequence: 2,
         text: `Investigator Email`,
-        answer: "investigator_email",
+        answer: 'investigator_email'
       },
       {
         sequence: 3,
         text: `Sub Investigator Name`,
-        answer: "sub_investigator_name",
+        answer: 'sub_investigator_name'
       },
       {
         sequence: 4,
         text: `Sub Investigator Email`,
-        answer: "sub_investigator_email",
+        answer: 'sub_investigator_email'
       },
       {
         sequence: 5,
         text: `Primary point of contact if different from above`,
-        answer: "primary_contact",
+        answer: 'primary_contact'
       },
       {
         sequence: 6,
         text: `Primary point of contact email address`,
-        answer: "primary_contact_email",
+        answer: 'primary_contact_email'
       },
       {
         sequence: 7,
         text: `Has the investigator ever had an FDA audit?`,
-        answer: "fda_audit",
-        explanation: "fda_audit_explain",
+        answer: 'fda_audit',
+        explanation: 'fda_audit_explain'
       },
       {
         sequence: 8,
         text: `How long has the investigator been involved in research?`,
-        answer: "involved_years",
+        answer: 'involved_years'
       },
       {
         sequence: 9,
         text: `What is the investigator's NPI if applicable`,
-        answer: "investigators_npi",
+        answer: 'investigators_npi'
       },
       {
         sequence: 10,
         checkboxes: {
           header:
-            "What training in the field of human subjects protection has the investigator completed?",
-          answer: "training_completed",
+            'What training in the field of human subjects protection has the investigator completed?',
+          answer: 'training_completed',
           options: [
-            { label: "OHRP Human Subject Assurance Training", value: "1" },
-            { label: "CITI Program Training", value: "2" },
-            { label: "Certified Physician Investigator Training", value: "3" },
-            { label: "ACRP training (CCRC, CCRA)", value: "4" },
-            { label: "SOCRA (CCRP)", value: "5" },
+            { label: 'OHRP Human Subject Assurance Training', value: '1' },
+            { label: 'CITI Program Training', value: '2' },
+            { label: 'Certified Physician Investigator Training', value: '3' },
+            { label: 'ACRP training (CCRC, CCRA)', value: '4' },
+            { label: 'SOCRA (CCRP)', value: '5' },
             {
-              label: "Graduate or undergraduate research studies or degrees",
-              value: "6",
+              label: 'Graduate or undergraduate research studies or degrees',
+              value: '6'
             },
-            { label: "Academy of Physicians in Clinical Research", value: "7" },
-            { label: "Other", value: "8" },
+            { label: 'Academy of Physicians in Clinical Research', value: '7' },
+            { label: 'Other', value: '8' }
           ],
-          explanation: "training_completed_explain",
-        },
+          explanation: 'training_completed_explain'
+        }
       },
       {
         sequence: 11,
         text: `What is the current number of research studies supervised by the investigator?`,
-        answer: "investigator_research_number",
+        answer: 'investigator_research_number'
       },
       {
         sequence: 12,
         text: `Do you have any pending or active restrictions related to research or the practice of medicine?`,
-        answer: "pending_or_active_research",
-        explanation: "pending_or_active_research_explain",
+        answer: 'pending_or_active_research',
+        explanation: 'pending_or_active_research_explain'
       },
       {
         sequence: 13,
         text: `Does your site have an FWA?`,
-        answer: "site_fwp",
+        answer: 'site_fwp'
       },
       {
         sequence: 14,
         text: `Please provide FWA number`,
-        answer: "fwa_number",
-      },
+        answer: 'fwa_number'
+      }
     ],
     documentsUploadedList: [
       {
-        documentHeader: "Upload investigator and sub-investigator CV here",
-        documentName: "cv_files",
+        documentHeader: 'Upload investigator and sub-investigator CV here',
+        documentName: 'cv_files'
       },
       {
-        documentHeader: "Upload copy of medical license (if applicable) here",
-        documentName: "medical_license",
+        documentHeader: 'Upload copy of medical license (if applicable) here',
+        documentName: 'medical_license'
       },
       {
         documentHeader:
-          "Upload copies of training certificates (if applicable) here",
-        documentName: "training_certificates",
-      },
-    ],
+          'Upload copies of training certificates (if applicable) here',
+        documentName: 'training_certificates'
+      }
+    ]
   },
   studyInformation: {
-    title: "Study Information",
+    title: 'Study Information',
     question1: {
       text: `What type of research is being conducted?`,
-      answer: "research_type",
-      explanation: "research_type_explain",
+      answer: 'research_type',
+      explanation: 'research_type_explain'
     },
     documentsUploadedList: [
       {
         documentHeader:
-          "Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list",
-        documentName: "ingredient_list",
-      },
-    ],
+          'Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list',
+        documentName: 'ingredient_list'
+      }
+    ]
   },
   informedConsentForm: {
-    title: "Informed Consent Form",
+    title: 'Informed Consent Form',
     checkboxes: {
-      header: "What type of consent is required for this study?",
-      answer: "consent_type",
+      header: 'What type of consent is required for this study?',
+      answer: 'consent_type',
       options: [
-        { label: "No consent (requesting waiver of consent)", value: "1" },
-        { lavel: "Verbal consent", value: "2" },
-        { label: "Written, signed consent by subject", value: "3" },
+        { label: 'No consent (requesting waiver of consent)', value: '1' },
+        { lavel: 'Verbal consent', value: '2' },
+        { label: 'Written, signed consent by subject', value: '3' },
         {
-          label: "Written, signed consent by legally authorized representative",
-          value: "4",
+          label: 'Written, signed consent by legally authorized representative',
+          value: '4'
         },
-        { label: "Written, signed assent by minor", value: "5" },
-        { label: "HIPAA authorization agreement", value: "6" },
-        { label: "Waiver of HIPAA agreement", value: "7" },
-        { label: "Online/website/electronic signature consent", value: "8" },
+        { label: 'Written, signed assent by minor', value: '5' },
+        { label: 'HIPAA authorization agreement', value: '6' },
+        { label: 'Waiver of HIPAA agreement', value: '7' },
+        { label: 'Online/website/electronic signature consent', value: '8' }
       ],
-      explanation: "no_consent_explain",
+      explanation: 'no_consent_explain'
     },
     subTexts: [
       {
         sequence: 2,
         text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
-        answer: "include_icf",
+        answer: 'include_icf'
       },
       {
         sequence: 3,
         text: `Will the participants be compensated for participation in the study?`,
-        answer: "participation_compensated",
+        answer: 'participation_compensated'
       },
       {
         sequence: 4,
         text: `Will the consent forms be offered in languages other than English?`,
-        answer: "other_language_selection",
+        answer: 'other_language_selection'
       },
       {
         sequence: 5,
         text: `Have the dcument been translated by a professional translator?`,
-        answer: "professional_translator",
-        explanation: "professional_translator_explain",
-      },
+        answer: 'professional_translator',
+        explanation: 'professional_translator_explain'
+      }
     ],
     documentsUploadedList: [
       {
         documentHeader: `Upload all consent documents, including translated consents, if applicable
 (if applying for waiver of consent, document explaining reasoning must be uploaded)`,
-        documentName: "consent_file",
-      },
+        documentName: 'consent_file'
+      }
     ],
     declaration: {
       header: ` <p>The informed consent process is a continuous process and the IRB expects that
@@ -467,203 +467,203 @@ const clinicalReviewQuestions = {
                         </ul>`,
       checkBox: {
         label:
-          "Your initials below signify that you have read the terms and agree with them:",
-        value: "consent_declaration",
-      },
-    },
+          'Your initials below signify that you have read the terms and agree with them:',
+        value: 'consent_declaration'
+      }
+    }
   },
   protocolProcedure: {
-    title: "Protocol Procedures",
+    title: 'Protocol Procedures',
     checkboxes: {
-      header: "Which subject populations will be enrolled in the study?",
-      answer: "enrolled_type",
+      header: 'Which subject populations will be enrolled in the study?',
+      answer: 'enrolled_type',
       options: [
         {
-          label: "Adults",
-          value: "1",
+          label: 'Adults',
+          value: '1'
         },
         {
-          label: "Children (17 years and under)",
-          value: "2",
+          label: 'Children (17 years and under)',
+          value: '2'
         },
         {
-          label: "Blind/Visually Impaired",
-          value: "3",
+          label: 'Blind/Visually Impaired',
+          value: '3'
         },
         {
-          label: "Deaf/Hard of Hearing (including sign language communicators)",
-          value: "4",
-        },
-        {
-          label:
-            "Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)",
-          value: "5",
-        },
-        {
-          label: "Educationally Disadvantaged/Impaired or no reading skills",
-          value: "6",
-        },
-        {
-          label: "Economically disadvantaged",
-          value: "7",
-        },
-        {
-          label: "Healthy individuals",
-          value: "8",
-        },
-        {
-          label: "Terminally ill individuals",
-          value: "9",
-        },
-        {
-          label: "HIV positive",
-          value: "10",
-        },
-        {
-          label: "Hospitalized",
-          value: "11",
+          label: 'Deaf/Hard of Hearing (including sign language communicators)',
+          value: '4'
         },
         {
           label:
-            "Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)",
-          value: "12",
+            'Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)',
+          value: '5'
         },
         {
-          label: "Prisoners",
-          value: "13",
+          label: 'Educationally Disadvantaged/Impaired or no reading skills',
+          value: '6'
         },
         {
-          label: "Military Personnel",
-          value: "14",
+          label: 'Economically disadvantaged',
+          value: '7'
         },
         {
-          label: "Pregnant women",
-          value: "15",
+          label: 'Healthy individuals',
+          value: '8'
         },
         {
-          label: "Human fetuses/neonates",
-          value: "16",
+          label: 'Terminally ill individuals',
+          value: '9'
         },
         {
-          label: "Non-English speakers",
-          value: "17",
+          label: 'HIV positive',
+          value: '10'
         },
         {
-          label: "Women only",
-          value: "18",
+          label: 'Hospitalized',
+          value: '11'
         },
         {
-          label: "Men only",
-          value: "19",
+          label:
+            'Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)',
+          value: '12'
         },
         {
-          label: "Other",
-          value: "20",
+          label: 'Prisoners',
+          value: '13'
         },
+        {
+          label: 'Military Personnel',
+          value: '14'
+        },
+        {
+          label: 'Pregnant women',
+          value: '15'
+        },
+        {
+          label: 'Human fetuses/neonates',
+          value: '16'
+        },
+        {
+          label: 'Non-English speakers',
+          value: '17'
+        },
+        {
+          label: 'Women only',
+          value: '18'
+        },
+        {
+          label: 'Men only',
+          value: '19'
+        },
+        {
+          label: 'Other',
+          value: '20'
+        }
       ],
-      explanation: "enrolled_type_explain",
+      explanation: 'enrolled_type_explain'
     },
     checkboxes2: {
-      header: "Which race and ethnic groups will be enrolled in the study?",
-      answer: "enrolled_group",
+      header: 'Which race and ethnic groups will be enrolled in the study?',
+      answer: 'enrolled_group',
       options: [
-        { label: "White, not of Hispanic origin", value: "1" },
-        { label: "White, of Hispanic origin", value: "2" },
-        { label: "Black, not of Hispanic origin", value: "3" },
-        { label: "Black, of Hispanic origin", value: "4" },
-        { label: "American Indian/Alaskan Native", value: "5" },
-        { label: "Asian", value: "6" },
-        { label: "Native Hawaiian/Pacific Islander", value: "7" },
-        { label: "Multiracial", value: "8" },
-        { label: "Other", value: "9" },
+        { label: 'White, not of Hispanic origin', value: '1' },
+        { label: 'White, of Hispanic origin', value: '2' },
+        { label: 'Black, not of Hispanic origin', value: '3' },
+        { label: 'Black, of Hispanic origin', value: '4' },
+        { label: 'American Indian/Alaskan Native', value: '5' },
+        { label: 'Asian', value: '6' },
+        { label: 'Native Hawaiian/Pacific Islander', value: '7' },
+        { label: 'Multiracial', value: '8' },
+        { label: 'Other', value: '9' }
       ],
-      explanation: "enrolled_group_explain",
+      explanation: 'enrolled_group_explain'
     },
     subTexts: [
       {
         sequence: 1,
         text: `Will any subject populations be excluded from the study?`,
-        answer: "excluded_study_type",
-        explanation: "excluded_study_type_explain",
+        answer: 'excluded_study_type',
+        explanation: 'excluded_study_type_explain'
       },
       {
         sequence: 2,
         text: `How many subjects will be enrolled in the study?`,
-        answer: "enrolled_subjects",
-      },
+        answer: 'enrolled_subjects'
+      }
     ],
     checkboxes3: {
-      header: "What recruitment methods will be used in the study?",
-      answer: "recruitment_method",
+      header: 'What recruitment methods will be used in the study?',
+      answer: 'recruitment_method',
       options: [
         {
-          label: "In-person conversation during routine office visits",
-          value: "1",
+          label: 'In-person conversation during routine office visits',
+          value: '1'
         },
         {
-          label: "Recruiting participants from previous research studies",
-          value: "2",
+          label: 'Recruiting participants from previous research studies',
+          value: '2'
         },
         {
           label:
-            "Mass print advertisements such as a newspaper, magazine, or billboard",
-          value: "3",
+            'Mass print advertisements such as a newspaper, magazine, or billboard',
+          value: '3'
         },
         {
-          label: "Flyer, poster, or bulletin board in office",
-          value: "4",
+          label: 'Flyer, poster, or bulletin board in office',
+          value: '4'
         },
         {
-          label: "Radio or television ads",
-          value: "5",
+          label: 'Radio or television ads',
+          value: '5'
         },
         {
-          label: "Direct mail to potential subjects",
-          value: "6",
+          label: 'Direct mail to potential subjects',
+          value: '6'
         },
         {
-          label: "Internet including social media recruiting",
-          value: "7",
+          label: 'Internet including social media recruiting',
+          value: '7'
         },
         {
-          label: "Chart review",
-          value: "8",
+          label: 'Chart review',
+          value: '8'
         },
         {
-          label: "Telephone screening",
-          value: "9",
+          label: 'Telephone screening',
+          value: '9'
         },
         {
-          label: "Other",
-          value: "10",
-        },
+          label: 'Other',
+          value: '10'
+        }
       ],
-      explanation: "recruitment_method_explain",
+      explanation: 'recruitment_method_explain'
     },
     question3: {
       sequence: 3,
       text: `What is the location(s) name and address where the research procedures will take place?`,
-      answer: "research_place_name_address",
+      answer: 'research_place_name_address'
     },
     question4: {
       sequence: 4,
       text: `Will any samples or data collected in this study be retained for future research?`,
-      answer: "future_research",
+      answer: 'future_research',
       explanation: {
         header: `Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *`,
-        answer: "future_research_explain",
-      },
+        answer: 'future_research_explain'
+      }
     },
-    documentHeader: "Upload all recruitment and subject-facing materials *",
-    documentName: "facing_materials",
+    documentHeader: 'Upload all recruitment and subject-facing materials *',
+    documentName: 'facing_materials',
     checkBox: {
       label:
-        "Your initials below signify that you have read the terms and agree with them:",
-      value: "protocol_declaration",
-    },
+        'Your initials below signify that you have read the terms and agree with them:',
+      value: 'protocol_declaration'
+    }
   },
   submissinForm: {
-    title: "Submission Form",
+    title: 'Submission Form',
     text: `<p>By submitting this application you attest to the following:</p>
 						<ul>
 							<li>Research will not commence prior to receiving the IRB approval letter.</li>
@@ -678,205 +678,205 @@ const clinicalReviewQuestions = {
 						</ul>`,
     checkBox: {
       label:
-        "Your initials below signify that you have read and agree to the terms listed above",
-      value: "terms_selected",
-    },
-  },
-};
+        'Your initials below signify that you have read and agree to the terms listed above',
+      value: 'terms_selected'
+    }
+  }
+}
 
 const multiSiteSponsorQuestions = {
   protocolInformation: {
-    title: "Protocol Information",
+    title: 'Protocol Information',
     question1: {
       text: `Are you submitting this protocol for the first time?`,
-      answer: "first_time_protocol",
+      answer: 'first_time_protocol'
     },
     subTexts: [
       {
         sequence: 2,
         text: `Has this study been disapproved or withdrawn from another IRB?`,
-        answer: "disapproved_or_withdrawn",
-        explanation: "disapproved_or_withdrawn_explain",
+        answer: 'disapproved_or_withdrawn',
+        explanation: 'disapproved_or_withdrawn_explain'
       },
       {
         sequence: 3,
         text: `Are you transferring oversight from another IRB?`,
-        answer: "oversite",
-        explanation: "oversite_explain",
+        answer: 'oversite',
+        explanation: 'oversite_explain'
       },
       {
         sequence: 4,
         text: `Title of Protocol`,
-        answer: "protocol_title",
+        answer: 'protocol_title'
       },
       {
         sequence: 5,
         text: `Protocol Number`,
-        answer: "protocol_number",
+        answer: 'protocol_number'
       },
       {
         sequence: 6,
         text: `Sponsor`,
-        answer: "sponsor",
+        answer: 'sponsor'
       },
       {
         sequence: 7,
         text: `Study Duration`,
-        answer: "study_duration",
+        answer: 'study_duration'
       },
       {
         sequence: 8,
         text: `Funding Source`,
-        answer: "funding_source",
-      },
+        answer: 'funding_source'
+      }
     ],
-    documentHeader: "Uploaded Protocol",
-    documentName: "protocol_file",
+    documentHeader: 'Uploaded Protocol',
+    documentName: 'protocol_file'
   },
   contactInformation: {
-    title: "Contact Information",
+    title: 'Contact Information',
     subQuestions: [
       {
-        header: "Who is the primary point of contact for this study?",
+        header: 'Who is the primary point of contact for this study?'
       },
       {
         sequence: 1,
-        text: "Name",
-        answer: "name",
+        text: 'Name',
+        answer: 'name'
       },
       {
         sequence: 2,
-        text: "Title",
-        answer: "title",
+        text: 'Title',
+        answer: 'title'
       },
       {
         sequence: 3,
-        text: "Company Name",
-        answer: "company_name",
+        text: 'Company Name',
+        answer: 'company_name'
       },
       {
         sequence: 4,
-        text: "Address",
-        answer: "address",
+        text: 'Address',
+        answer: 'address'
       },
       {
         sequence: 5,
-        text: "City",
-        answer: "city",
+        text: 'City',
+        answer: 'city'
       },
       {
         sequence: 6,
-        text: "State",
-        answer: "state",
+        text: 'State',
+        answer: 'state'
       },
       {
         sequence: 7,
-        text: "Zip code",
-        answer: "zip_code",
+        text: 'Zip code',
+        answer: 'zip_code'
       },
       {
         sequence: 8,
-        text: "Country",
-        answer: "country",
+        text: 'Country',
+        answer: 'country'
       },
       {
         sequence: 9,
-        text: "Phone Number",
-        answer: "phone_number",
+        text: 'Phone Number',
+        answer: 'phone_number'
       },
       {
         sequence: 10,
-        text: "Email",
-        answer: "email",
-      },
+        text: 'Email',
+        answer: 'email'
+      }
     ],
     subQuestions2: [
       {
-        header: "Who is the secondary point of contact for this study?",
+        header: 'Who is the secondary point of contact for this study?'
       },
       {
         sequence: 11,
-        text: "Name",
-        answer: "secondary_contact_name",
+        text: 'Name',
+        answer: 'secondary_contact_name'
       },
       {
         sequence: 12,
-        text: "Title",
-        answer: "secondary_contact_title",
+        text: 'Title',
+        answer: 'secondary_contact_title'
       },
       {
         sequence: 13,
-        text: "Phone Number",
-        answer: "secondary_contact_phone_number",
+        text: 'Phone Number',
+        answer: 'secondary_contact_phone_number'
       },
       {
         sequence: 14,
-        text: "Email",
-        answer: "secondary_contact_email",
-      },
-    ],
+        text: 'Email',
+        answer: 'secondary_contact_email'
+      }
+    ]
   },
   studyInformation: {
-    title: "Study Information",
+    title: 'Study Information',
     question1: {
       text: `What type of research study are you submitting?`,
-      answer: "research_type",
-      explanation: "research_type_explain",
+      answer: 'research_type',
+      explanation: 'research_type_explain'
     },
     documentsUploadedList: [
       {
         documentHeader:
-          "Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list",
-        documentName: "ingredient_list",
-      },
-    ],
+          'Upload drug/biologic profile, device profile, food/dietary supplement ingredient list, or cosmetic ingredient list',
+        documentName: 'ingredient_list'
+      }
+    ]
   },
   informedConsentForm: {
-    title: "Informed Consent",
+    title: 'Informed Consent',
     checkboxes: {
-      header: "What type of consent is required for this study?",
-      answer: "consent_type",
+      header: 'What type of consent is required for this study?',
+      answer: 'consent_type',
       options: [
-        { label: "No consent (requesting waiver of consent)", value: "1" },
-        { lavel: "Verbal consent", value: "2" },
-        { label: "Written, signed consent by subject", value: "3" },
+        { label: 'No consent (requesting waiver of consent)', value: '1' },
+        { lavel: 'Verbal consent', value: '2' },
+        { label: 'Written, signed consent by subject', value: '3' },
         {
-          label: "Written, signed consent by legally authorized representative",
-          value: "4",
+          label: 'Written, signed consent by legally authorized representative',
+          value: '4'
         },
-        { label: "Written, signed assent by minor", value: "5" },
-        { label: "HIPAA authorization agreement", value: "6" },
-        { label: "Waiver of HIPAA agreement", value: "7" },
-        { label: "Online/website/electronic signature consent", value: "8" },
+        { label: 'Written, signed assent by minor', value: '5' },
+        { label: 'HIPAA authorization agreement', value: '6' },
+        { label: 'Waiver of HIPAA agreement', value: '7' },
+        { label: 'Online/website/electronic signature consent', value: '8' }
       ],
-      explanation: "no_consent_explain",
+      explanation: 'no_consent_explain'
     },
     subTexts: [
       {
         sequence: 1,
         text: `Will HIPAA authorization language be included in the ICF (informed consent form)?`,
-        answer: "include_icf",
+        answer: 'include_icf'
       },
       {
         sequence: 2,
         text: `Will the participants be compensated for participation in the study?`,
-        answer: "participation_compensated",
+        answer: 'participation_compensated'
       },
       {
         sequence: 3,
         text: `Will the consent forms be offered in languages other than English?`,
-        answer: "other_language_selection",
+        answer: 'other_language_selection'
       },
       {
         sequence: 4,
         text: `Have the dcument been translated by a professional translator?`,
-        answer: "professional_translator",
-        explanation: "professional_translator_explain",
-      },
+        answer: 'professional_translator',
+        explanation: 'professional_translator_explain'
+      }
     ],
     documentHeader: `Upload all consent document templates, including translated consents, if applicable,
 here (if applying for waiver of consent, document explaining reasoning must be uploaded here)`,
-    documentName: "consent_file",
+    documentName: 'consent_file',
     declaration: {
       header: `<p>The informed consent process is a continuous process and the IRB expects that
                             proper subject consent is ensured by the investigator throughout the research
@@ -901,210 +901,210 @@ here (if applying for waiver of consent, document explaining reasoning must be u
                         </ul>`,
       checkBox: {
         label:
-          "Your initials below signify that you have read the terms and agree with them:",
-        value: "consent_declaration",
-      },
-    },
+          'Your initials below signify that you have read the terms and agree with them:',
+        value: 'consent_declaration'
+      }
+    }
   },
   protocolProcedure: {
-    title: "Protocol Procedures",
+    title: 'Protocol Procedures',
     checkboxes: {
-      header: "Which subject populations will be enrolled in the study?",
-      answer: "enrolled_study_type",
+      header: 'Which subject populations will be enrolled in the study?',
+      answer: 'enrolled_study_type',
       options: [
         {
-          label: "Adults",
-          value: "1",
+          label: 'Adults',
+          value: '1'
         },
         {
-          label: "Children (17 years and under)",
-          value: "2",
+          label: 'Children (17 years and under)',
+          value: '2'
         },
         {
-          label: "Blind/Visually Impaired",
-          value: "3",
+          label: 'Blind/Visually Impaired',
+          value: '3'
         },
         {
-          label: "Deaf/Hard of Hearing (including sign language communicators)",
-          value: "4",
-        },
-        {
-          label:
-            "Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)",
-          value: "5",
-        },
-        {
-          label: "Educationally Disadvantaged/Impaired or no reading skills",
-          value: "6",
-        },
-        {
-          label: "Economically disadvantaged",
-          value: "7",
-        },
-        {
-          label: "Healthy individuals",
-          value: "8",
-        },
-        {
-          label: "Terminally ill individuals",
-          value: "9",
-        },
-        {
-          label: "HIV positive",
-          value: "10",
-        },
-        {
-          label: "Hospitalized",
-          value: "11",
+          label: 'Deaf/Hard of Hearing (including sign language communicators)',
+          value: '4'
         },
         {
           label:
-            "Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)",
-          value: "12",
+            'Individuals with impaired decision-making (requiring a LAR, including those with impaired or diminished mental capacity, dementia, and those suffering from mental health disorders)',
+          value: '5'
         },
         {
-          label: "Prisoners",
-          value: "13",
+          label: 'Educationally Disadvantaged/Impaired or no reading skills',
+          value: '6'
         },
         {
-          label: "Military Personnel",
-          value: "14",
+          label: 'Economically disadvantaged',
+          value: '7'
         },
         {
-          label: "Pregnant women",
-          value: "15",
+          label: 'Healthy individuals',
+          value: '8'
         },
         {
-          label: "Human fetuses/neonates",
-          value: "16",
+          label: 'Terminally ill individuals',
+          value: '9'
         },
         {
-          label: "Non-English speakers",
-          value: "17",
+          label: 'HIV positive',
+          value: '10'
         },
         {
-          label: "Women only",
-          value: "18",
+          label: 'Hospitalized',
+          value: '11'
         },
         {
-          label: "Men only",
-          value: "19",
+          label:
+            'Institutionalized (including nursing home, LTAC, assisted living, residential facility, mental hospital)',
+          value: '12'
         },
         {
-          label: "Other",
-          value: "20",
+          label: 'Prisoners',
+          value: '13'
         },
+        {
+          label: 'Military Personnel',
+          value: '14'
+        },
+        {
+          label: 'Pregnant women',
+          value: '15'
+        },
+        {
+          label: 'Human fetuses/neonates',
+          value: '16'
+        },
+        {
+          label: 'Non-English speakers',
+          value: '17'
+        },
+        {
+          label: 'Women only',
+          value: '18'
+        },
+        {
+          label: 'Men only',
+          value: '19'
+        },
+        {
+          label: 'Other',
+          value: '20'
+        }
       ],
-      explanation: "enrolled_type_explain",
+      explanation: 'enrolled_type_explain'
     },
     checkboxes2: {
-      header: "Which race and ethnic groups will be enrolled in the study?",
-      answer: "enrolled_group",
+      header: 'Which race and ethnic groups will be enrolled in the study?',
+      answer: 'enrolled_group',
       options: [
-        { label: "White, not of Hispanic origin", value: "1" },
-        { label: "White, of Hispanic origin", value: "2" },
-        { label: "Black, not of Hispanic origin", value: "3" },
-        { label: "Black, of Hispanic origin", value: "4" },
-        { label: "American Indian/Alaskan Native", value: "5" },
-        { label: "Asian", value: "6" },
-        { label: "Native Hawaiian/Pacific Islander", value: "7" },
-        { label: "Multiracial", value: "8" },
-        { label: "Other", value: "9" },
+        { label: 'White, not of Hispanic origin', value: '1' },
+        { label: 'White, of Hispanic origin', value: '2' },
+        { label: 'Black, not of Hispanic origin', value: '3' },
+        { label: 'Black, of Hispanic origin', value: '4' },
+        { label: 'American Indian/Alaskan Native', value: '5' },
+        { label: 'Asian', value: '6' },
+        { label: 'Native Hawaiian/Pacific Islander', value: '7' },
+        { label: 'Multiracial', value: '8' },
+        { label: 'Other', value: '9' }
       ],
-      explanation: "enrolled_group_explain",
+      explanation: 'enrolled_group_explain'
     },
     subTexts: [
       {
         sequence: 1,
         text: `Will any subject populations be excluded from the study?`,
-        answer: "excluded_study_type",
-        explanation: "excluded_study_type_explain",
+        answer: 'excluded_study_type',
+        explanation: 'excluded_study_type_explain'
       },
       {
         sequence: 2,
         text: `How many subjects will be enrolled in the study?`,
-        answer: "enrolled_subjects",
-      },
+        answer: 'enrolled_subjects'
+      }
     ],
     checkboxes3: {
-      header: "What recruitment methods will be used in the study?",
-      answer: "recruitment_method",
+      header: 'What recruitment methods will be used in the study?',
+      answer: 'recruitment_method',
       options: [
         {
-          label: "In-person conversation during routine office visits",
-          value: "1",
+          label: 'In-person conversation during routine office visits',
+          value: '1'
         },
         {
-          label: "Recruiting participants from previous research studies",
-          value: "2",
+          label: 'Recruiting participants from previous research studies',
+          value: '2'
         },
         {
           label:
-            "Mass print advertisements such as a newspaper, magazine, or billboard",
-          value: "3",
+            'Mass print advertisements such as a newspaper, magazine, or billboard',
+          value: '3'
         },
         {
-          label: "Flyer, poster, or bulletin board in office",
-          value: "4",
+          label: 'Flyer, poster, or bulletin board in office',
+          value: '4'
         },
         {
-          label: "Radio or television ads",
-          value: "5",
+          label: 'Radio or television ads',
+          value: '5'
         },
         {
-          label: "Direct mail to potential subjects",
-          value: "6",
+          label: 'Direct mail to potential subjects',
+          value: '6'
         },
         {
-          label: "Internet including social media recruiting",
-          value: "7",
+          label: 'Internet including social media recruiting',
+          value: '7'
         },
         {
-          label: "Chart review",
-          value: "8",
+          label: 'Chart review',
+          value: '8'
         },
         {
-          label: "Telephone screening",
-          value: "9",
+          label: 'Telephone screening',
+          value: '9'
         },
         {
-          label: "Other",
-          value: "10",
-        },
+          label: 'Other',
+          value: '10'
+        }
       ],
-      explanation: "recruitment_method_explain",
+      explanation: 'recruitment_method_explain'
     },
     subTexts2: [
       {
         sequence: 3,
         text: `Will the sponsor require IRB approval of site-specific templates prior to use?`,
-        answer: "irb_approval",
+        answer: 'irb_approval'
       },
       {
         sequence: 4,
         text: `What is the expected number of sites to participate in this study that will be submitted to this IRB?`,
-        answer: "expected_number_sites",
+        answer: 'expected_number_sites'
       },
       {
         sequence: 5,
         text: `Will any samples or data collected in this study be retained for future research?`,
-        answer: "future_research",
+        answer: 'future_research',
         explanation: {
           header: `Please explain how the data and/or samples will be stored, secured, and de-identified. Include information on how the data and/or samples might be used for future research *`,
-          answer: "future_research_explain",
-        },
-      },
+          answer: 'future_research_explain'
+        }
+      }
     ],
-    documentHeader: "Upload all recruitment and subject-facing materials *",
-    documentName: "facing_materials",
+    documentHeader: 'Upload all recruitment and subject-facing materials *',
+    documentName: 'facing_materials',
     checkBox: {
       label:
-        "Your initials below signify that you have read the terms and agree with them:",
-      value: "protocol_declaration",
-    },
+        'Your initials below signify that you have read the terms and agree with them:',
+      value: 'protocol_declaration'
+    }
   },
   submissinForm: {
-    title: "Submission Form",
+    title: 'Submission Form',
     text: `<p>By submitting this application you attest to the following:</p>
             <ul>
               <li>Research will not commence prior to receiving the IRB approval letter.</li>
@@ -1119,261 +1119,261 @@ here (if applying for waiver of consent, document explaining reasoning must be u
             </ul>`,
     checkBox: {
       label:
-        "Your initials below signify that you have read and agree to the terms listed above",
-      value: "terms_selected",
-    },
-  },
-};
+        'Your initials below signify that you have read and agree to the terms listed above',
+      value: 'terms_selected'
+    }
+  }
+}
 
 const principalInvestigatorQuestions = {
   investigatorInformation: {
-    title: "Principal Investigator Information",
+    title: 'Principal Investigator Information',
     subQuestions: [
       {
         sequence: 1,
-        text: "Investigator Name *",
-        answer: "investigator_name",
+        text: 'Investigator Name *',
+        answer: 'investigator_name'
       },
       {
         sequence: 2,
-        text: "Investigator Email *",
-        answer: "investigator_email",
+        text: 'Investigator Email *',
+        answer: 'investigator_email'
       },
       {
         sequence: 3,
-        text: "Sub-Investigator Name",
-        answer: "sub_investigator_name",
+        text: 'Sub-Investigator Name',
+        answer: 'sub_investigator_name'
       },
       {
         sequence: 4,
-        text: "Sub-Investigator Email",
-        answer: "sub_investigator_email",
+        text: 'Sub-Investigator Email',
+        answer: 'sub_investigator_email'
       },
       {
         sequence: 5,
-        text: "Additional Study personnel name",
-        answer: "additional_study_name",
+        text: 'Additional Study personnel name',
+        answer: 'additional_study_name'
       },
       {
         sequence: 6,
-        text: "Additional Study personnel email address",
-        answer: "additional_study_email",
-      },
+        text: 'Additional Study personnel email address',
+        answer: 'additional_study_email'
+      }
     ],
     question1: {
-      text: "Investigational/Research Location:",
+      text: 'Investigational/Research Location:',
       subTexts: [
         {
           sequence: 7,
-          text: "Name of the site *",
-          answer: "site_name",
+          text: 'Name of the site *',
+          answer: 'site_name'
         },
         {
           sequence: 8,
-          text: "Address of site *",
-          answer: "site_address",
+          text: 'Address of site *',
+          answer: 'site_address'
         },
         {
           sequence: 9,
-          text: "Do you have more than one site where research will be conducted?",
-          answer: "more_site",
+          text: 'Do you have more than one site where research will be conducted?',
+          answer: 'more_site'
         },
         {
           sequence: 10,
-          text: "Full protocol title *",
-          answer: "protocol_title",
+          text: 'Full protocol title *',
+          answer: 'protocol_title'
         },
         {
           sequence: 11,
-          text: "Protocol number *",
-          answer: "protocol_number",
+          text: 'Protocol number *',
+          answer: 'protocol_number'
         },
         {
           sequence: 12,
-          text: "Your initials below confirm that your site will only enroll subjects that meet criteria for inclusion in the study *",
-          answer: "study_criteria",
+          text: 'Your initials below confirm that your site will only enroll subjects that meet criteria for inclusion in the study *',
+          answer: 'study_criteria'
         },
         {
           sequence: 13,
-          text: "How many subjects do you expect to enroll at your site(s) *",
-          answer: "subject_number",
+          text: 'How many subjects do you expect to enroll at your site(s) *',
+          answer: 'subject_number'
         },
         {
           sequence: 14,
-          text: "What is your site number assigned by the sponsor",
-          answer: "site_number",
+          text: 'What is your site number assigned by the sponsor',
+          answer: 'site_number'
         },
         {
           sequence: 15,
-          text: "Has this study been disapproved or withdrawn from another IRB?",
-          answer: "disapproved_or_withdrawn",
+          text: 'Has this study been disapproved or withdrawn from another IRB?',
+          answer: 'disapproved_or_withdrawn'
         },
         {
           sequence: 16,
-          text: "Are you transferring oversight from another IRB?",
-          answer: "oversite",
+          text: 'Are you transferring oversight from another IRB?',
+          answer: 'oversite'
         },
         {
           sequence: 17,
-          text: "Have any individuals or immediate family members at this site received compensation from the sponsor of this study in the past 12 months that amounts to $5,000 or greater?",
-          answer: "immediate_family",
+          text: 'Have any individuals or immediate family members at this site received compensation from the sponsor of this study in the past 12 months that amounts to $5,000 or greater?',
+          answer: 'immediate_family'
         },
         {
           sequence: 18,
-          text: "Do any individuals or immediate family members at this site own interest in the form of stock or other ownership in the sponsor company of this study in the last 12 months that amounts to $5,000 or greater?",
-          answer: "stock_ownership",
+          text: 'Do any individuals or immediate family members at this site own interest in the form of stock or other ownership in the sponsor company of this study in the last 12 months that amounts to $5,000 or greater?',
+          answer: 'stock_ownership'
         },
         {
           sequence: 19,
-          text: "Do any individuals at this site have proprietary interests being investigated in this study such as, but not limited to, patents, investigational products, or licensing agreements?",
-          answer: "property_interest",
+          text: 'Do any individuals at this site have proprietary interests being investigated in this study such as, but not limited to, patents, investigational products, or licensing agreements?',
+          answer: 'property_interest'
         },
         {
           sequence: 20,
-          text: "Do any individuals at this site have a financial agreement with the sponsor for which they will receive compensation that is linked to the outcome of the study?",
-          answer: "financial_agreement",
+          text: 'Do any individuals at this site have a financial agreement with the sponsor for which they will receive compensation that is linked to the outcome of the study?',
+          answer: 'financial_agreement'
         },
         {
           sequence: 21,
-          text: "Do any individuals at this site serve in any executive position or on a board of directors for the sponsor of this study?",
-          answer: "server_position",
+          text: 'Do any individuals at this site serve in any executive position or on a board of directors for the sponsor of this study?',
+          answer: 'server_position'
         },
         {
           sequence: 22,
-          text: "Do any individuals at this site have any interests that may influence the conduct, outcome, or safety of this study?",
-          answer: "influence_conduct",
+          text: 'Do any individuals at this site have any interests that may influence the conduct, outcome, or safety of this study?',
+          answer: 'influence_conduct'
         },
         {
           sequence: 23,
-          text: "Is there a Conflict of Interest Committee that has made any determinations related to the potential conflicts and is there a management plan in place?",
-          answer: "interest_conflict",
+          text: 'Is there a Conflict of Interest Committee that has made any determinations related to the potential conflicts and is there a management plan in place?',
+          answer: 'interest_conflict'
         },
         {
           sequence: 24,
-          text: "Has the investigator ever had an FDA audit?",
-          answer: "fda_audit",
+          text: 'Has the investigator ever had an FDA audit?',
+          answer: 'fda_audit'
         },
         {
           sequence: 25,
-          text: "How long has the investigator been involved in research?",
-          answer: "involved_years",
+          text: 'How long has the investigator been involved in research?',
+          answer: 'involved_years'
         },
         {
           sequence: 26,
           text: "What is the investigator's NPI if applicable",
-          answer: "investigators_npi",
-        },
-      ],
+          answer: 'investigators_npi'
+        }
+      ]
     },
     checkboxes: {
       header:
-        "What training in the field of human subjects protection has the investigator completed?",
-      answer: "training_completed",
+        'What training in the field of human subjects protection has the investigator completed?',
+      answer: 'training_completed',
       options: [
         {
-          value: "1",
-          label: "OHRP Human Subject Assurance Training",
+          value: '1',
+          label: 'OHRP Human Subject Assurance Training'
         },
         {
-          value: "2",
-          label: "CITI Program Training",
+          value: '2',
+          label: 'CITI Program Training'
         },
         {
-          value: "3",
-          label: "Certified Physician Investigator Training",
+          value: '3',
+          label: 'Certified Physician Investigator Training'
         },
         {
-          value: "4",
-          label: "ACRP training (CCRC, CCRA)",
+          value: '4',
+          label: 'ACRP training (CCRC, CCRA)'
         },
         {
-          value: "5",
-          label: "SOCRA (CCRP)",
+          value: '5',
+          label: 'SOCRA (CCRP)'
         },
         {
-          value: "6",
-          label: "Graduate or undergraduate research studies or degrees",
+          value: '6',
+          label: 'Graduate or undergraduate research studies or degrees'
         },
         {
-          value: "7",
-          label: "Academy of Physicians in Clinical Research",
+          value: '7',
+          label: 'Academy of Physicians in Clinical Research'
         },
         {
-          value: "8",
-          label: "Other",
-        },
+          value: '8',
+          label: 'Other'
+        }
       ],
-      explanation: "training_completed_explain",
+      explanation: 'training_completed_explain'
     },
     question2: {
       sequence: 28,
-      text: "What is the current number of research studies supervised by the investigator?",
-      answer: "investigator_research_number",
+      text: 'What is the current number of research studies supervised by the investigator?',
+      answer: 'investigator_research_number'
     },
     question3: {
       sequence: 29,
-      text: "Do you have any pending or active restrictions related to research or the practice of medicine?",
-      answer: "pending_or_active_research",
-      explanation: "pending_or_active_research_explain",
+      text: 'Do you have any pending or active restrictions related to research or the practice of medicine?',
+      answer: 'pending_or_active_research',
+      explanation: 'pending_or_active_research_explain'
     },
     documentsUploadedList: [
       {
         documentHeader:
-          "Upload investigator and sub-investigator (if applicable) CV here *",
-        documentName: "cv_files",
+          'Upload investigator and sub-investigator (if applicable) CV here *',
+        documentName: 'cv_files'
       },
       {
-        documentHeader: "Upload copy of medical license (if applicable) here",
-        documentName: "medical_license",
+        documentHeader: 'Upload copy of medical license (if applicable) here',
+        documentName: 'medical_license'
       },
       {
         documentHeader:
-          "Upload copies of training certificates (if applicable) here",
-        documentName: "training_certificates",
-      },
-    ],
+          'Upload copies of training certificates (if applicable) here',
+        documentName: 'training_certificates'
+      }
+    ]
   },
   informedConsentForm: {
-    title: "Informed Consent Document Information",
+    title: 'Informed Consent Document Information',
     question1: {
       text: `The IRB will provide your site with an informed consent form formatted with your information. Please answer the questions below so that we may include it in the document`,
       subTexts: [
         {
           sequence: 1,
-          text: "Principal Investigator name *",
-          answer: "principal_investigator_name",
+          text: 'Principal Investigator name *',
+          answer: 'principal_investigator_name'
         },
         {
           sequence: 2,
-          text: "Site Name *",
-          answer: "site_name",
+          text: 'Site Name *',
+          answer: 'site_name'
         },
         {
           sequence: 3,
-          text: "Site Address *",
-          answer: "site_address",
+          text: 'Site Address *',
+          answer: 'site_address'
         },
         {
           sequence: 4,
-          text: "Additional Site Address",
-          answer: "additional_site_address",
+          text: 'Additional Site Address',
+          answer: 'additional_site_address'
         },
         {
           sequence: 5,
-          text: "Primary phone number to be listed on the ICF (include the area code) *",
-          answer: "primary_phone",
+          text: 'Primary phone number to be listed on the ICF (include the area code) *',
+          answer: 'primary_phone'
         },
         {
           sequence: 6,
-          text: "24-hour phone number to be listed on the ICF (include the area code) *",
-          answer: "always_primary_phone",
+          text: '24-hour phone number to be listed on the ICF (include the area code) *',
+          answer: 'always_primary_phone'
         },
         {
           sequence: 7,
-          text: "Will your site(s) use electronic consent?",
-          answer: "site_electronic_consent",
-        },
-      ],
+          text: 'Will your site(s) use electronic consent?',
+          answer: 'site_electronic_consent'
+        }
+      ]
     },
     declaration: {
       header: `<p>Mandatory message to end users, must be initialed before moving on to the next step:</p>
@@ -1392,16 +1392,16 @@ const principalInvestigatorQuestions = {
                           <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
                       </ul>
                   </li>
-              </ul>`,
+              </ul>`
     },
     checkBox: {
       label:
-        "Your initials below signify that you have read the terms and agree with them:",
-      value: "terms_selected",
-    },
+        'Your initials below signify that you have read the terms and agree with them:',
+      value: 'terms_selected'
+    }
   },
   submissinForm: {
-    title: "Submission",
+    title: 'Submission',
     text: `<p>By submitting this application you attest to the following:</p>
 						<ul>
 							<li>Research will not commence prior to receiving the IRB approval letter</li>
@@ -1416,21 +1416,21 @@ const principalInvestigatorQuestions = {
 						</ul>`,
     checkBox: {
       label:
-        "Your initials below signify that you have read and agree to the terms listed above",
-      value: "terms_selected",
-    },
-  },
-};
+        'Your initials below signify that you have read and agree to the terms listed above',
+      value: 'terms_selected'
+    }
+  }
+}
 
 const protocolDetails = {
   clinicalReviewQuestions,
   multiSiteSponsorQuestions,
-  principalInvestigatorQuestions,
-};
+  principalInvestigatorQuestions
+}
 
 const questionsToRender = {
   continuingReviewQuestions,
-  protocolDetails,
-};
+  protocolDetails
+}
 
-export default questionsToRender;
+export default questionsToRender

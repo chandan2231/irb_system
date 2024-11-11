@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchProtocolList, createProtocol, approvedProtocolListCheck, fetchApprovedProtocolList } from "../../services/Dashboard/DashboardService";
+import {
+  fetchProtocolList,
+  createProtocol,
+  approvedProtocolListCheck,
+  fetchApprovedProtocolList,
+} from "../../services/Dashboard/DashboardService";
 const DashboardSlice = createSlice({
   name: "dashboard",
   initialState: {
@@ -60,8 +65,7 @@ const DashboardSlice = createSlice({
       .addCase(fetchApprovedProtocolList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
-      ;
+      });
   },
 });
 

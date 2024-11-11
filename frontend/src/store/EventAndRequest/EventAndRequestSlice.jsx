@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createStudyCloseoutRequest, createPromptlyReportableEvent, createAdverseEvent, createProtocolAmendmentRequest} from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createStudyCloseoutRequest,
+  createPromptlyReportableEvent,
+  createAdverseEvent,
+  createProtocolAmendmentRequest,
+} from "../../services/EventAndRequest/EventAndRequestService";
 
 const EventAndRequestSlice = createSlice({
   name: "EventAndRequest",
@@ -61,7 +66,7 @@ const EventAndRequestSlice = createSlice({
       .addCase(createStudyCloseoutRequest.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
+      });
   },
 });
 

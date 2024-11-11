@@ -1,6 +1,15 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from "redux-persist";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 import AuthReducer from "./Auth/AuthSlice";
 import DashboardReducer from "./Dashboard/DashboardSlice";
 import ContinuinReviewReducer from "./ContinuinReview/ContinuinReviewSlice";
@@ -27,13 +36,11 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  whitelist: ['auth'], // Specify which slices you want to persist
+  whitelist: ["auth"], // Specify which slices you want to persist
   //whitelist: ["market", "application", "user", 'role', 'privilege', 'UserApplicationRole', 'team', 'hierarchy'], // Specify which slices you want to persist
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-
 
 // const store = configureStore({
 //   reducer: persistedReducer,
@@ -49,7 +56,7 @@ const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false
+      serializableCheck: false,
     }),
 });
 

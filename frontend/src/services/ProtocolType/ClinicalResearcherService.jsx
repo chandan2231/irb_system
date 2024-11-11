@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
-export const createInvestigatorAndProtocolInformation = createAsyncThunk("ProtocolType/createInvestigatorAndProtocolInformation",
+export const createInvestigatorAndProtocolInformation = createAsyncThunk(
+  "ProtocolType/createInvestigatorAndProtocolInformation",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -14,10 +15,11 @@ export const createInvestigatorAndProtocolInformation = createAsyncThunk("Protoc
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createInformedConsent = createAsyncThunk("ProtocolType/createInformedConsent",
+export const createInformedConsent = createAsyncThunk(
+  "ProtocolType/createInformedConsent",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -29,10 +31,11 @@ export const createInformedConsent = createAsyncThunk("ProtocolType/createInform
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const createPrincipalInvestigatorSubmission = createAsyncThunk("ProtocolType/createPrincipalInvestigatorSubmission",
+export const createPrincipalInvestigatorSubmission = createAsyncThunk(
+  "ProtocolType/createPrincipalInvestigatorSubmission",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -44,10 +47,11 @@ export const createPrincipalInvestigatorSubmission = createAsyncThunk("ProtocolT
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk("ProtocolType/getPrincipalInvestigatorSavedProtocolType",
+export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk(
+  "ProtocolType/getPrincipalInvestigatorSavedProtocolType",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -59,9 +63,5 @@ export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk("Proto
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
-
-
-
-

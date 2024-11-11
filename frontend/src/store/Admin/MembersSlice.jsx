@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+<<<<<<< HEAD
 import { 
     fetchMemberList, 
     createMember, 
@@ -8,6 +9,15 @@ import {
     createProtocolEvent,
     fetchMemberEventList
   } from "../../services/Admin/MembersService";
+=======
+import {
+  fetchMemberList,
+  createMember,
+  changeStatus,
+  resetMemberPassword,
+  fetchActiveVotingMemberList,
+} from "../../services/Admin/MembersService";
+>>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
 
 const MembersSlice = createSlice({
   name: "members",
@@ -58,10 +68,12 @@ const MembersSlice = createSlice({
       })
       .addCase(changeStatus.fulfilled, (state, action) => {
         state.loading = false;
-        let updateMemberList = state.memberList.map((element, index) => 
-          element.id === action.payload.id ? {...element, status: action.payload.status} : element
+        let updateMemberList = state.memberList.map((element, index) =>
+          element.id === action.payload.id
+            ? { ...element, status: action.payload.status }
+            : element,
         );
-        state.memberList = updateMemberList
+        state.memberList = updateMemberList;
         state.changeUserStatus = action.payload;
       })
       .addCase(changeStatus.rejected, (state, action) => {
@@ -91,6 +103,7 @@ const MembersSlice = createSlice({
       .addCase(fetchActiveVotingMemberList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
+<<<<<<< HEAD
       })
       .addCase(createProtocolEvent.pending, (state) => {
         state.loading = true;
@@ -117,6 +130,9 @@ const MembersSlice = createSlice({
         state.error = action.payload || action.error.message;
       })
       ;
+=======
+      });
+>>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
   },
 });
 

@@ -2,7 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = "http://localhost:8800/api";
 
-export const fetchUsersList = createAsyncThunk("UsersList/fetchUsersList",
+export const fetchUsersList = createAsyncThunk(
+  "UsersList/fetchUsersList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -14,10 +15,11 @@ export const fetchUsersList = createAsyncThunk("UsersList/fetchUsersList",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const changeUserStatus = createAsyncThunk("UsersList/changeUserStatus",
+export const changeUserStatus = createAsyncThunk(
+  "UsersList/changeUserStatus",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -29,10 +31,11 @@ export const changeUserStatus = createAsyncThunk("UsersList/changeUserStatus",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
-export const resetUserPassword = createAsyncThunk("UsersList/resetUserPassword",
+export const resetUserPassword = createAsyncThunk(
+  "UsersList/resetUserPassword",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -44,5 +47,5 @@ export const resetUserPassword = createAsyncThunk("UsersList/resetUserPassword",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );

@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { 
-  createInformedConsent, 
-  createProtocolInformation, 
-  createInvestigatorInformation, 
-  createStudyInformation, 
+import {
+  createInformedConsent,
+  createProtocolInformation,
+  createInvestigatorInformation,
+  createStudyInformation,
   createProtocolProcedures,
   createClinicalSiteSubmission,
-  getClinicalSiteSavedProtocolType
+  getClinicalSiteSavedProtocolType,
 } from "../../services/ProtocolType/ContractorResearcherService";
 const ContractorResearcherSlice = createSlice({
   name: "Clinical Site",
@@ -107,11 +107,7 @@ const ContractorResearcherSlice = createSlice({
       .addCase(getClinicalSiteSavedProtocolType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
-      
-      
-      
-      ;
+      });
   },
 });
 

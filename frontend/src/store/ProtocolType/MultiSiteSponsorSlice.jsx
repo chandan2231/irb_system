@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { 
-  createInformedConsent, 
-  createProtocolInformation, 
-  createContactInformation, 
-  createStudyInformation, 
+import {
+  createInformedConsent,
+  createProtocolInformation,
+  createContactInformation,
+  createStudyInformation,
   createProtocolProcedures,
   createMultiSiteSubmission,
-  getMultiSiteSavedProtocolType
+  getMultiSiteSavedProtocolType,
 } from "../../services/ProtocolType/MultiSiteSponsorService";
 const MultiSiteSponsorSlice = createSlice({
   name: "Multi-Site Sponsor",
@@ -107,8 +107,7 @@ const MultiSiteSponsorSlice = createSlice({
       .addCase(getMultiSiteSavedProtocolType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-      })
-      ;
+      });
   },
 });
 
