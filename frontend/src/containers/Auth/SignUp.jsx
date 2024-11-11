@@ -15,7 +15,7 @@
     const theme = useTheme();
     const dispatch = useDispatch();
     const [err, setErr] = useState(null)
-    const [researchTypeError, setResearchTypeError] = useState('')
+    // const [researchTypeError, setResearchTypeError] = useState('')
     const [successMessage, setSuccessMessage] = useState('')
     const initialValues = {
         name: "",
@@ -23,13 +23,13 @@
         email: "",
         password: "",
         city: "",
-        researcherType: "",
+        // researcherType: "",
     }
-    const options = [
-        { label: "Clinical Site", value: "Clinical Site" },
-        { label: "Multi-Site Sponsor", value: "Multi-Site Sponsor" },
-        { label: "Principal Investigator", value: "Principal Investigator" },
-    ]
+    // const options = [
+    //     { label: "Clinical Site", value: "Clinical Site" },
+    //     { label: "Multi-Site Sponsor", value: "Multi-Site Sponsor" },
+    //     { label: "Principal Investigator", value: "Principal Investigator" },
+    // ]
     //password validation
     const lowercaseRegEx = /(?=.*[a-z])/
     const uppercaseRegEx = /(?=.*[A-Z])/
@@ -55,22 +55,22 @@
         city: Yup.string().required("Required"),
     })
     const handleFormSubmit = (values) => {
-        const { researcherType } = values
-        if(researcherType === ''){
-            setResearchTypeError("Required!")
-            return
-        } else {
-            setResearchTypeError("")
-            dispatch(userSignUp(values))
-            .then(data => {
-                if(data.payload.status === 200){
-                    setSuccessMessage(data.payload.data)
-                    navigate('/signin')
-                } else {
-                    setSuccessMessage(false)
-                }
-            })
-        }
+        dispatch(userSignUp(values))
+        .then(data => {
+            if(data.payload.status === 200){
+                setSuccessMessage(data.payload.data)
+                navigate('/signin')
+            } else {
+                setSuccessMessage(false)
+            }
+        })
+        // const { researcherType } = values
+        // if(researcherType === ''){
+        //     setResearchTypeError("Required!")
+        //     return
+        // } else {
+        //     setResearchTypeError("")
+        // }
     }
 
     return (
@@ -133,29 +133,29 @@
                                 component={TextField}
                             />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
-                            <FormControl fullWidth variant="outlined">
-                                <InputLabel id="demo-simple-select-outlined-label">
-                                Researcher Type
-                                </InputLabel>
-                                <Select
-                                labelId="demo-simple-select-outlined-label"
-                                id="demo-simple-select-outlined"
-                                label="Researcher Type"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.researcherType}
-                                name="researcherType"
-                                >
-                                {options.map((item) => (
-                                    <MenuItem key={item.value} value={item.value}>
-                                    {item.label}
-                                    </MenuItem>
-                                ))}
-                                </Select>
-                                <span className="error">{researchTypeError}</span>
-                            </FormControl>
-                            </Grid>
+                            {/* <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="demo-simple-select-outlined-label">
+                                    Researcher Type
+                                    </InputLabel>
+                                    <Select
+                                    labelId="demo-simple-select-outlined-label"
+                                    id="demo-simple-select-outlined"
+                                    label="Researcher Type"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.researcherType}
+                                    name="researcherType"
+                                    >
+                                    {options.map((item) => (
+                                        <MenuItem key={item.value} value={item.value}>
+                                        {item.label}
+                                        </MenuItem>
+                                    ))}
+                                    </Select>
+                                    <span className="error">{researchTypeError}</span>
+                                </FormControl>
+                            </Grid> */}
                             <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
                             <Field
                                 label="City"

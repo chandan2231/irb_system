@@ -25,11 +25,14 @@ import {
     getEventPriceList,
     createEventPrice,
     changeEventPriceStatus,
-    getActiveVotingMemberList
+    getActiveVotingMemberList,
+    createMemberEvent,
+    memberEventList,
 } from "../controllers/admin.js";
 
 const router = express.Router()
-
+router.get('/member/eventList', memberEventList)
+router.post('/member/createEvent', createMemberEvent)
 router.get('/active/votingmember/list', getActiveVotingMemberList)
 router.post('/eventprice/status/change', changeEventPriceStatus)
 router.post('/eventprice/create', createEventPrice)

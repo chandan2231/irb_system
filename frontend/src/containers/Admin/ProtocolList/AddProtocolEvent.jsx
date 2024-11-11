@@ -32,28 +32,28 @@ const MenuProps = {
 };
 
 const defaultInputValues = {
-    event_date_time: '',
+    event_subject: '',
+    event_msg: '',
     member_id: '',
+};
+
+const modalStyles = {
+    inputFields: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginTop: '20px',
+        marginBottom: '15px',
+        '.MuiFormControl-root': {
+            marginBottom: '20px',
+        },
+    },
 };
 
 const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails }) => {
     const dispatch = useDispatch();
     const [values, setValues] = useState(defaultInputValues);
-    const [showPassword, setShowPassword] = React.useState(false);
     const [selectedMembers, setSelectedMembers] = useState([]);
-    const [dateTime, setDateTime] = useState(dayjs('YYYY-MM-DD h:mm A'));
-
-    const modalStyles = {
-        inputFields: {
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: '20px',
-            marginBottom: '15px',
-            '.MuiFormControl-root': {
-                marginBottom: '20px',
-            },
-        },
-    };
+    const [memberSelectionError, setMemberSelectionError] = useState();
 
     const { activeVotingMemberList, loading, error } = useSelector((state) => ({
         error: state.member.error,
@@ -75,23 +75,22 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
         dispatch(fetchActiveVotingMemberList());
       }, [dispatch]);
 
-    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
     const validationSchema = Yup.object().shape({
-        // event_date_time: Yup.string().required('Event Date and Time is required'),
-        // email: Yup.string().required('Email is required').email('Email is invalid.'),
-        // phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
-        // password: Yup.string().required('Password is required'),
-        // user_type: Yup.string().required('User Type is required')
-        
+        event_subject: Yup.string().required('This is required'),
+        event_msg: Yup.string().required('This is required'),
     });
 
     const {register, handleSubmit, formState: { errors }} = useForm({resolver: yupResolver(validationSchema)});
-    // console.log('errors', errors)
+    
     const addNew = (data) => {
-        console.log('dateTime', dateTime)
         console.log('values', values)
-        return
-        addNewData(data);
+        if(values.member_id.length <= 0){
+            setMemberSelectionError('Member selection is required')
+            return
+        } else {
+            setMemberSelectionError('')
+        }
+        addNewData(values);
     };
 
     const handleChange = (value) => {
@@ -105,33 +104,31 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
     const getContent = () => (
         <Box sx={modalStyles.inputFields}>
             <TextField
-                placeholder="Enter Event date and Time"
-                name="event_date_time"
-                label="Enter Event date and Time"
+                placeholder="Enter the subject"
+                name="event_subject"
+                label="Event Subject"
                 required
-                {...register('event_date_time')}
-                error={errors.event_date_time ? true : false}
-                helperText={errors.event_date_time?.message}
-                value={values.event_date_time}
-                onChange={(event) => handleChange({ ...values, event_date_time: event.target.value })}
+                {...register('event_subject')}
+                error={errors.event_subject ? true : false}
+                helperText={errors.event_subject?.message}
+                value={values.event_subject}
+                onChange={(event) => handleChange({ ...values, event_subject: event.target.value })}
             />
-            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DateTimePicker']}>
-                    <DateTimePicker 
-                        label="Select Event date and Time"
-                        // value={dateTime}
-                        onChange={(newValue) => setDateTime(dayjs(newValue))}
-                        // onChange={(event, newValue) => {
-                        //     console.log("event_date_time ", newValue);
-                        //     // handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
-                        // }}
-                        // onChange={(event, newValue) => {
-                        //     handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
-                        // }}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </DemoContainer>
-            </LocalizationProvider> */}
+            <TextField
+                placeholder="Enter the event details"
+                name="event_msg"
+                label="Enter the event details"
+                required
+                rows={10}
+                maxRows={10}
+                multiline
+                {...register('event_msg')}
+                error={errors.event_msg ? true : false}
+                helperText={errors.event_msg?.message}
+                value={values.event_msg}
+                onChange={(event) => handleChange({ ...values, event_msg: event.target.value })}
+            />
+            
             <Autocomplete
                 multiple
                 fullWidth
@@ -165,7 +162,28 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
                     />
                 )}
             />
+            {memberSelectionError && <span style={{color: 'red'}}>{memberSelectionError}</span>}
+            {/* 
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DateTimePicker']}>
+                        <DateTimePicker 
+                            label="Select Event date and Time"
+                            // value={dateTime}
+                            onChange={(newValue) => setDateTime(dayjs(newValue))}
+                            // onChange={(event, newValue) => {
+                            //     console.log("event_date_time ", newValue);
+                            //     // handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
+                            // }}
+                            // onChange={(event, newValue) => {
+                            //     handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
+                            // }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </DemoContainer>
+                </LocalizationProvider> 
+            */}
         </Box>
+        
     );
     
     return (

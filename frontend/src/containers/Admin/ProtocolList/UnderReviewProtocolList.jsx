@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUnderReviewProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -8,12 +7,14 @@ import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { useNavigate } from "react-router-dom";
-import { protocolReport } from "../../../services/UserManagement/UserService";
 import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import EditCalendarOutlinedIcon from '@mui/icons-material/EditCalendarOutlined';
 import AddProtocolEvent from "./AddProtocolEvent";
+import { fetchUnderReviewProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
+import { protocolReport } from "../../../services/UserManagement/UserService";
+import { createProtocolEvent } from "../../../services/Admin/MembersService";
 
 function UnderReviewProtocolList() {
     const theme = useTheme();
@@ -208,22 +209,36 @@ function UnderReviewProtocolList() {
     
     
     const handleAddProtocolEvent = (params) => {
-        console.log('Add Event', params)
         setOpen(true);
         setProtocolDetails(params?.row)
     }
 
-    const addNewData = (data) => {
-        dispatch(createMember(data))
+    const addNewData = (addedData) => {
+        const { event_subject, event_msg, member_id } = addedData;
+        let membersArr = [];
+        member_id.map((pList) => {
+            membersArr.push(pList.id);
+        });
+        let data = {
+            event_subject: event_subject,
+            event_message: event_msg,
+            member_id: membersArr,
+            protocol_id: protocolDetails?.protocolId,
+            protocol_name: protocolDetails?.researchType,
+            created_by: user.id,
+        };
+        console.log("data ", data);
+        // return
+        dispatch(createProtocolEvent(data))
         .then(data => {
             console.log('data', data)
             if (data.payload.status === 200) {
                 setOpen(false);
-                toast.success(data.payload.data, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
                 setFo
             } else {
                 setOpen(false);
-                toast.error(data.payload, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+                toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
             }
         })
         

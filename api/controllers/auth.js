@@ -12,13 +12,14 @@ export const register = (req, res) => {
         }
         const salt = bcrypt.genSaltSync(10);
         const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-        const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `city`) value (?)';
+        const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`, `city`) value (?)';
         const values = [
             req.body.name, 
             req.body.mobile, 
             req.body.email, 
             hashedPassword, 
-            req.body.researcherType,
+            'user',
+            'user',
             req.body.city,
         ];
         db.query(que, [values], (err, data) =>{
@@ -30,7 +31,7 @@ export const register = (req, res) => {
 
 export const login = (req, res) => {
     const que = 'select * from users where email=? AND status=?';
-    db.query(que, [req.body.email, 2], (err, data) => {
+    db.query(que, [req.body.email, 1], (err, data) => {
         if (err) return res.status(500).json(err)
         if(data.length === 0) return res.status(404).json("Email not found! Try with valid email");
         const checkpassword = bcrypt.compareSync(req.body.password, data[0].password);

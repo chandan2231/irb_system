@@ -6,13 +6,13 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import CommonButton from '../../../components/CommonButton';
 import moment from "moment";
 import ToggleStatus from '../../../components/ToggleStatus';
-import { fetchEventPriceList, createEventPrice, changeStatus } from '../../../services/Admin/EventPriceService';
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { fetchActiveVotingMemberList, fetchMemberEventList } from '../../../services/Admin/MembersService'; 
 
 function ProtocolEventList(){
     const theme = useTheme();
@@ -24,39 +24,36 @@ function ProtocolEventList(){
     
     const columns = [
         { 
-            field: 'eventName', 
-            headerName: 'Event Name', 
+            field: 'protocol_id', 
+            headerName: 'Protocol Id', 
             flex: 1,
         },
         { 
-            field: 'price', 
-            headerName: 'Price', 
+            field: 'protocol_name', 
+            headerName: 'Protocol Name', 
             flex: 1,
         },
-        {
-            field: "status",
-            headerName: "Status",
+        { 
+            field: 'event_subject', 
+            headerName: 'Event Subject', 
             flex: 1,
-            renderCell: (params) => (
-                <ToggleStatus
-                    status={params.row.status}
-                    onStatusChange={(newStatus) => {
-                        console.log("newStatus ", params.row.id, newStatus);
-                        handleChangeStatus(params.row.id, newStatus);
-                    }}
-                />
-            )
+        },
+        { 
+            field: 'members', 
+            headerName: 'Members', 
+            flex: 2,
+        },
+        { 
+            field: 'status', 
+            headerName: 'Status', 
+            width: 100,
         },
         {
             field: 'createdDate',
             headerName: 'Created Date',
             flex: 1,
         },
-        {
-            field: 'updatedDate',
-            headerName: 'Updated Date',
-            flex: 1,
-        },
+        
         {
             field: 'actions',
             type: 'actions',
@@ -90,17 +87,17 @@ function ProtocolEventList(){
         },
     ];
     var totalElements = 0;
-    const { eventPriceList, loading, error, eventPriceCreated } = useSelector(
+    const { memberEventList, loading, error, activeVotingMemberList } = useSelector(
         state => ({
-            error: state.eventPrice.error,
-            eventPriceList: state.eventPrice.eventPriceList,
-            loading: state.eventPrice.loading,
-            eventPriceCreated: state.eventPrice.eventPriceCreated,
+            error: state.member.error,
+            memberEventList: state.member.memberEventList,
+            loading: state.member.loading,
+            activeVotingMemberList: state.member.activeVotingMemberList,
         })
     );
 
-    if(eventPriceList !== '' && eventPriceList?.length > 0){
-        totalElements = eventPriceList.totalElements;
+    if(memberEventList !== '' && memberEventList?.length > 0){
+        totalElements = memberEventList.totalElements;
     }
     const rowCountRef = React.useRef(totalElements || 0);
     const rowCount = React.useMemo(() => {
@@ -112,13 +109,15 @@ function ProtocolEventList(){
 
     useEffect(() => {
         const uListArr = []
-        if(eventPriceList && eventPriceList?.length > 0) {
-            eventPriceList.map((uList, index) => {
-            let listObject = {
+        if(memberEventList && memberEventList?.length > 0) {
+            memberEventList.map((uList, index) => {
+                let listObject = {
                     id: uList.id,
-                    eventName:  uList.event_type,
-                    price:  uList.price,
-                    status:  uList.status,
+                    protocol_id:  uList.protocol_id,
+                    protocol_name:  uList.protocol_name,
+                    event_subject:  uList.event_subject,
+                    members:  uList.members,
+                    status:  uList.status === 1 ? 'Pending' : 'Completed',
                     createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
                     updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
                 }
@@ -126,67 +125,26 @@ function ProtocolEventList(){
             })
             setUserDataList(uListArr)
         }
-    }, [eventPriceList]);
+    }, [memberEventList]);
 
     useEffect(() => {
-        dispatch(fetchEventPriceList());
+        dispatch(fetchMemberEventList());
     }, [])
 
-    const addNewData = (data) => {
-        dispatch(createEventPrice(data))
-        .then(data => {
-            
-            if (data.payload.status === 200) {
-                setOpen(false);
-                toast.success(data.payload.data, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                setFo
-            } else {
-                setOpen(false);
-                toast.error(data.payload, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            }
-        })
-        
-    };
-
+    const activeVotingMemberListArr = [];
+    if (activeVotingMemberList && activeVotingMemberList.length > 0) {
+        activeVotingMemberList.map((mList, index) => {
+            let objectData = {
+                id: mList.id,
+                name: mList.name,
+            };
+            activeVotingMemberListArr.push(objectData);
+        });
+    }
+    console.log('activeVotingMemberListArr', activeVotingMemberListArr)
     useEffect(() => {
-        if(eventPriceCreated){
-            dispatch(fetchEventPriceList());
-        }
-    }, [eventPriceCreated])
-
-
-    const handleChangeStatus = (status) => {
-        if(Number(status.value) === 1 || Number(status.value) === 2){
-            let statusValue = ''
-            if(Number(status.value) === 1) {
-                statusValue = 2
-            } else if(Number(status.value) === 2){
-                statusValue = 1
-            }
-            let data = {id: status.id, status: statusValue}
-            dispatch(changeStatus(data))
-            .then(data => {
-                if (data.payload.status === 200) {
-                    toast.success(data.payload.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                } else {
-                    toast.error(data.payload.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                }
-            })
-        }
-    }
-
-    const addNew = () => {
-        setOpen(true);
-    };
-
-    const handleChangePassword = (params) => {
-        if(params.row.userType){
-            setUserId(params.row.id)
-            setPasswordChangeOpen(true)
-        }
-    }
-
-    
+        dispatch(fetchActiveVotingMemberList());
+      }, [dispatch]);
 
     const handleItemDelete = (params) => {
         //console.log('Delete Item', params)
@@ -207,21 +165,19 @@ function ProtocolEventList(){
                 <Box>
                     <Grid container spacing={2}>
                         <Grid item xs={5} sm={5} md={8} lg={8}>
-                            <Typography variant="h5" mb={2}>Prottocol Events List</Typography>
+                            <Typography variant="h5" mb={2}>Protocol Meeting Events List</Typography>
                         </Grid>
-                        
                     </Grid>
                 </Box>
                 <Box sx={{mt: 5}}>
-                <DataGrid
-                    rows={userDataList}
-                    columns={columns}
-                    rowCount={rowCount}
-                    loading={loading}
-                    paginationMode="server"
-                    onCellClick={(param) => handleChangeStatus(param)}
-                />
-                
+                    <DataGrid
+                        rows={userDataList}
+                        columns={columns}
+                        rowCount={rowCount}
+                        loading={loading}
+                        paginationMode="server"
+                        onCellClick={(param) => handleChangeStatus(param)}
+                    />
                 </Box>
             </Box>
         </>

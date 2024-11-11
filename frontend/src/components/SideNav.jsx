@@ -83,7 +83,6 @@ function SideNav (){
                                 <MenuItem active={location.pathname === '/admin/users-list' ? true : false} component={<Link to ='/admin/users-list' />} icon={<ManageAccountsOutlinedIcon />}>
                                     <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
                                 </MenuItem>
-                                
                                 <MenuItem active={location.pathname === '/admin/continuin-review-list' || location.pathname === '/admin/continuin-review-details' ? true : false} component={<Link to ='/admin/continuin-review-list' />} icon={<ReorderIcon />}>
                                     <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review List</Typography>
                                 </MenuItem>
@@ -102,7 +101,7 @@ function SideNav (){
                                     </MenuItem>
                                 </SubMenu>
                             </>
-                        ) : (
+                        ) : userDetails.researcher_type === 'user' ? (
                             <>
                                 <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
                                     <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol List</Typography>
@@ -129,6 +128,18 @@ function SideNav (){
                                     )
                                 }
                             </>
+                        ) : userDetails.researcher_type === 'Voting Member' ? (
+                          <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+                          </MenuItem>
+                        ) : userDetails.researcher_type === 'Office Staff' ? (
+                          <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+                          </MenuItem>
+                        ) : (
+                          <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+                          </MenuItem>
                         )
                     }
                 </Menu>

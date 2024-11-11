@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchMemberList, createMember, changeStatus, resetMemberPassword, fetchActiveVotingMemberList } from "../../services/Admin/MembersService";
+import { 
+    fetchMemberList, 
+    createMember, 
+    changeStatus, 
+    resetMemberPassword, 
+    fetchActiveVotingMemberList, 
+    createProtocolEvent,
+    fetchMemberEventList
+  } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
   name: "members",
@@ -14,6 +22,8 @@ const MembersSlice = createSlice({
     loadingActiveUser: null,
     memberPasswordChanged: null,
     activeVotingMemberList: null,
+    memberEventCreated: null,
+    memberEventList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -79,6 +89,30 @@ const MembersSlice = createSlice({
         state.activeVotingMemberList = action.payload;
       })
       .addCase(fetchActiveVotingMemberList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(createProtocolEvent.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createProtocolEvent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberEventCreated = action.payload;
+      })
+      .addCase(createProtocolEvent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchMemberEventList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMemberEventList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberEventList = action.payload;
+      })
+      .addCase(fetchMemberEventList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
