@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 export const register = (req, res) => {
-<<<<<<< HEAD
     const que = "select * from users where email = ?"
     db.query(que, [req.body.email], (err, data) =>{
         if (err) return res.status(500).json(err)
@@ -26,29 +25,6 @@ export const register = (req, res) => {
             if (err) return res.status(500).json(err)
             return res.status(200).json('User has been created.')
         }) 
-=======
-  const que = 'select * from users where email = ?'
-  db.query(que, [req.body.email], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length > 0) {
-      return res.status(409).json('Email already exist try with other email')
-    }
-    const salt = bcrypt.genSaltSync(10)
-    const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-    const que =
-      'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `city`) value (?)'
-    const values = [
-      req.body.name,
-      req.body.mobile,
-      req.body.email,
-      hashedPassword,
-      req.body.researcherType,
-      req.body.city
-    ]
-    db.query(que, [values], (err, data) => {
-      if (err) return res.status(500).json(err)
-      return res.status(200).json('User has been created.')
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
     })
   })
 }

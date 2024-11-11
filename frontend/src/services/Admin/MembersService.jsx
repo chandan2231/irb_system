@@ -85,7 +85,6 @@ export const fetchActiveVotingMemberList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-<<<<<<< HEAD
   }
 );
 
@@ -118,7 +117,3 @@ export const fetchMemberEventList = createAsyncThunk("Members/fetchMemberEventLi
     }
   }
 );
-=======
-  },
-);
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400

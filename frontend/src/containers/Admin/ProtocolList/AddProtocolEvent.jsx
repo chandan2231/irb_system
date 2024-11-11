@@ -32,7 +32,6 @@ const MenuProps = {
 };
 
 const defaultInputValues = {
-<<<<<<< HEAD
     event_subject: '',
     event_msg: '',
     member_id: '',
@@ -79,50 +78,6 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
     const validationSchema = Yup.object().shape({
         event_subject: Yup.string().required('This is required'),
         event_msg: Yup.string().required('This is required'),
-=======
-  event_date_time: "",
-  member_id: "",
-};
-
-const AddProtocolEvent = ({
-  open,
-  onClose,
-  addNewData,
-  title,
-  protocolDetails,
-}) => {
-  const dispatch = useDispatch();
-  const [values, setValues] = useState(defaultInputValues);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [selectedMembers, setSelectedMembers] = useState([]);
-  const [dateTime, setDateTime] = useState(dayjs("YYYY-MM-DD h:mm A"));
-
-  const modalStyles = {
-    inputFields: {
-      display: "flex",
-      flexDirection: "column",
-      marginTop: "20px",
-      marginBottom: "15px",
-      ".MuiFormControl-root": {
-        marginBottom: "20px",
-      },
-    },
-  };
-
-  const { activeVotingMemberList, loading, error } = useSelector((state) => ({
-    error: state.member.error,
-    activeVotingMemberList: state.member.activeVotingMemberList,
-    loading: state.member.loading,
-  }));
-  const activeVotingMemberListArr = [];
-  if (activeVotingMemberList && activeVotingMemberList.length > 0) {
-    activeVotingMemberList.map((mList, index) => {
-      let objectData = {
-        id: mList.id,
-        name: mList.name,
-      };
-      activeVotingMemberListArr.push(objectData);
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
     });
   }
 

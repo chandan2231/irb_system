@@ -1,12 +1,5 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-<<<<<<< HEAD
-=======
-import {
-  fetchUnderReviewProtocolList,
-  allowProtocolEdit,
-} from "../../../services/Admin/ProtocolListService";
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";

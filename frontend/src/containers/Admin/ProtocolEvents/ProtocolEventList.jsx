@@ -5,7 +5,6 @@ import Grid from "@mui/material/Grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CommonButton from "../../../components/CommonButton";
 import moment from "moment";
-<<<<<<< HEAD
 import ToggleStatus from '../../../components/ToggleStatus';
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -99,113 +98,6 @@ function ProtocolEventList(){
 
     if(memberEventList !== '' && memberEventList?.length > 0){
         totalElements = memberEventList.totalElements;
-=======
-import ToggleStatus from "../../../components/ToggleStatus";
-import {
-  fetchEventPriceList,
-  createEventPrice,
-  changeStatus,
-} from "../../../services/Admin/EventPriceService";
-import { useDispatch, useSelector } from "react-redux";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import LockResetIcon from "@mui/icons-material/LockReset";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-function ProtocolEventList() {
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
-  const [userId, setUserId] = useState();
-  const [userDataList, setUserDataList] = useState([]);
-
-  const columns = [
-    {
-      field: "eventName",
-      headerName: "Event Name",
-      flex: 1,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      flex: 1,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (params) => (
-        <ToggleStatus
-          status={params.row.status}
-          onStatusChange={(newStatus) => {
-            console.log("newStatus ", params.row.id, newStatus);
-            handleChangeStatus(params.row.id, newStatus);
-          }}
-        />
-      ),
-    },
-    {
-      field: "createdDate",
-      headerName: "Created Date",
-      flex: 1,
-    },
-    {
-      field: "updatedDate",
-      headerName: "Updated Date",
-      flex: 1,
-    },
-    {
-      field: "actions",
-      type: "actions",
-      width: 80,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<LockResetIcon />}
-          label="Change Password"
-          onClick={() => handleChangePassword(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleItemDelete(params)}
-          showInMenu
-        />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
-      ],
-    },
-  ];
-  var totalElements = 0;
-  const { eventPriceList, loading, error, eventPriceCreated } = useSelector(
-    (state) => ({
-      error: state.eventPrice.error,
-      eventPriceList: state.eventPrice.eventPriceList,
-      loading: state.eventPrice.loading,
-      eventPriceCreated: state.eventPrice.eventPriceCreated,
-    }),
-  );
-
-  if (eventPriceList !== "" && eventPriceList?.length > 0) {
-    totalElements = eventPriceList.totalElements;
-  }
-  const rowCountRef = React.useRef(totalElements || 0);
-  const rowCount = React.useMemo(() => {
-    if (totalElements !== undefined) {
-      rowCountRef.current = totalElements;
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
     }
     return rowCountRef.current;
   }, [totalElements]);

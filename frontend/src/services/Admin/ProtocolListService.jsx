@@ -75,10 +75,6 @@ export const allowProtocolEdit = createAsyncThunk(
         url: `${baseURL}/admin/protocol/allowEdit`,
         data,
       });
-<<<<<<< HEAD
-=======
-      console.log("response", response);
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

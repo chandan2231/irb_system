@@ -103,7 +103,6 @@ const MembersSlice = createSlice({
       .addCase(fetchActiveVotingMemberList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
-<<<<<<< HEAD
       })
       .addCase(createProtocolEvent.pending, (state) => {
         state.loading = true;
@@ -130,9 +129,6 @@ const MembersSlice = createSlice({
         state.error = action.payload || action.error.message;
       })
       ;
-=======
-      });
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
   },
 });
 

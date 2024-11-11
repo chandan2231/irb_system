@@ -21,7 +21,6 @@ import { userSignUp } from "../../services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material";
 
-<<<<<<< HEAD
     function SignUp(){
     const navigate = useNavigate();
     const theme = useTheme();
@@ -83,67 +82,6 @@ import { useTheme } from "@mui/material";
         // } else {
         //     setResearchTypeError("")
         // }
-=======
-function SignUp() {
-  const navigate = useNavigate();
-  const theme = useTheme();
-  const dispatch = useDispatch();
-  const [err, setErr] = useState(null);
-  const [researchTypeError, setResearchTypeError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const initialValues = {
-    name: "",
-    mobile: "",
-    email: "",
-    password: "",
-    city: "",
-    researcherType: "",
-  };
-  const options = [
-    { label: "Clinical Site", value: "Clinical Site" },
-    { label: "Multi-Site Sponsor", value: "Multi-Site Sponsor" },
-    { label: "Principal Investigator", value: "Principal Investigator" },
-  ];
-  //password validation
-  const lowercaseRegEx = /(?=.*[a-z])/;
-  const uppercaseRegEx = /(?=.*[A-Z])/;
-  const numericRegEx = /(?=.*[0-9])/;
-  const lengthRegEx = /(?=.{6,})/;
-
-  let validationSchema = Yup.object().shape({
-    name: Yup.string().required("Required"),
-    mobile: Yup.string().required("Required"),
-    email: Yup.string().email("Invalid email").required("Required"),
-    password: Yup.string()
-      .matches(
-        lowercaseRegEx,
-        "Must contain one lowercase alphabetical character!",
-      )
-      .matches(
-        uppercaseRegEx,
-        "Must contain one uppercase alphabetical character!",
-      )
-      .matches(numericRegEx, "Must contain one numeric character!")
-      .matches(lengthRegEx, "Must contain 6 characters!")
-      .required("Required!"),
-    city: Yup.string().required("Required"),
-  });
-  const handleFormSubmit = (values) => {
-    const { researcherType } = values;
-    if (researcherType === "") {
-      setResearchTypeError("Required!");
-      return;
-    } else {
-      setResearchTypeError("");
-      dispatch(userSignUp(values)).then((data) => {
-        if (data.payload.status === 200) {
-          setSuccessMessage(data.payload.data);
-          navigate("/signin");
-        } else {
-          setSuccessMessage(false);
-        }
-      });
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
     }
   };
 

@@ -660,7 +660,6 @@ export const getProtocolAmendmentRequestById = (req, res) => {
     }
   })
 }
-<<<<<<< HEAD
 
 export const createMemberEvent = (req, res) => {
     const que = 'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)';
@@ -695,5 +694,3 @@ export const memberEventList = (req, res) => {
 }
             
             
-=======
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
