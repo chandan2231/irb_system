@@ -58,244 +58,90 @@ function SideNav() {
             };
           },
         }}
-      >
-        {userDetails.researcher_type === "admin" ? (
-          <>
-            <MenuItem
-              active={
-                location.pathname === "/admin/approved-protocol-list" ||
-                location.pathname === "/admin/protocol-details"
-                  ? true
-                  : false
-              }
-              component={<Link to="/admin/approved-protocol-list" />}
-              icon={<ChecklistRtlIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Approved Protocols
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={
-                location.pathname === "/admin/under-review-protocols" ||
-                location.pathname === "/admin/protocol-details"
-                  ? true
-                  : false
-              }
-              component={<Link to="/admin/under-review-protocols" />}
-              icon={<GradingIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Under Review Protocols
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={
-                location.pathname === "/admin/created-protocols" ||
-                location.pathname === "/admin/protocol-details"
-                  ? true
-                  : false
-              }
-              component={<Link to="/admin/created-protocols" />}
-              icon={<FormatListBulletedIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Created Protocols
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={location.pathname === "/admin/members" ? true : false}
-              component={<Link to="/admin/members" />}
-              icon={<GroupAddOutlinedIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Members List
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={
-                location.pathname === "/admin/event-price-list" ? true : false
-              }
-              component={<Link to="/admin/event-price-list" />}
-              icon={<AttachMoneyIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Event Price
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={location.pathname === "/admin/protocol-event-list"}
-              component={<Link to="/admin/protocol-event-list" />}
-              icon={<CalendarMonthOutlinedIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Protocol Event
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={location.pathname === "/admin/users-list" ? true : false}
-              component={<Link to="/admin/users-list" />}
-              icon={<ManageAccountsOutlinedIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Users
-              </Typography>
-            </MenuItem>
-
-            <MenuItem
-              active={
-                location.pathname === "/admin/continuin-review-list" ||
-                location.pathname === "/admin/continuin-review-details"
-                  ? true
-                  : false
-              }
-              component={<Link to="/admin/continuin-review-list" />}
-              icon={<ReorderIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Continuing Review List
-              </Typography>
-            </MenuItem>
-            <SubMenu
-              label="Event And Request"
-              icon={<AddBusinessOutlinedIcon />}
-              style={{ fontWeight: "500", fontSize: "0.875rem" }}
-            >
-              <MenuItem
-                active={
-                  location.pathname === "/admin/protocol-amendment-request" ||
-                  location.pathname ===
-                    "/admin/protocol-amendment-request-details"
-                    ? true
-                    : false
-                }
-                component={<Link to="/admin/protocol-amendment-request" />}
-              >
-                <Typography
-                  variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
-                >
-                    { 
-                        userDetails.researcher_type === 'admin' ? (
+      >         
+        { 
+            userDetails.researcher_type === 'admin' ? (
+                <>
+                    <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/under-review-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/under-review-protocols' />} icon={<GradingIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Under Review Protocols</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/created-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/created-protocols' />} icon={<FormatListBulletedIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Created Protocols</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/members' ? true : false} component={<Link to ='/admin/members' />} icon={<GroupAddOutlinedIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Members List</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/event-price-list' ? true : false} component={<Link to ='/admin/event-price-list' />} icon={<AttachMoneyIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Event Price</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/protocol-event-list'} component={<Link to ='/admin/protocol-event-list' />} icon={<CalendarMonthOutlinedIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Event</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/users-list' ? true : false} component={<Link to ='/admin/users-list' />} icon={<ManageAccountsOutlinedIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
+                    </MenuItem>
+                    <MenuItem active={location.pathname === '/admin/continuin-review-list' || location.pathname === '/admin/continuin-review-details' ? true : false} component={<Link to ='/admin/continuin-review-list' />} icon={<ReorderIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review List</Typography>
+                    </MenuItem>
+                    <SubMenu label="Event And Request" icon={<AddBusinessOutlinedIcon />} style={{fontWeight: '500', fontSize: '0.875rem'}}>
+                        <MenuItem active={location.pathname === '/admin/protocol-amendment-request' || location.pathname === '/admin/protocol-amendment-request-details' ? true : false} component={<Link to ='/admin/protocol-amendment-request' />} >
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
+                        </MenuItem>
+                        <MenuItem active={location.pathname === '/admin/adverse-events' || location.pathname === '/admin/adverse-events-details' ? true : false} component={<Link to ='/admin/adverse-events' />} >
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
+                        </MenuItem>
+                        <MenuItem active={location.pathname === '/admin/promptly-reportable-event' || location.pathname === '/admin/promptly-reportable-event-details' ? true : false} component={<Link to ='/admin/promptly-reportable-event' />} >
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event</Typography>
+                        </MenuItem>
+                        <MenuItem active={location.pathname === '/admin/study-close-request' || location.pathname === '/admin/study-close-request-details' ? true : false} component={<Link to ='/admin/study-close-request' />} >
+                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Study Closeout Request</Typography>
+                        </MenuItem>
+                    </SubMenu>
+                </>
+            ) : userDetails.researcher_type === 'user' ? (
+                <>
+                    <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol List</Typography>
+                    </MenuItem>
+                    {
+                        approvedProtocolListCount !== null && approvedProtocolListCount > 0 && (
                             <>
-                                <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+                                <MenuItem active={location.pathname === '/continuin-review' || location.pathname === '/continuin-review-details' ? true : false} component={<Link to ='/continuin-review' />} icon={<GroupAddOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review</Typography>
                                 </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/under-review-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/under-review-protocols' />} icon={<GradingIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Under Review Protocols</Typography>
+                                <MenuItem active={location.pathname === '/protocol-amendment-request' || location.pathname === '/protocol-amendment-request-details' ? true : false} component={<Link to ='/protocol-amendment-request' />} icon={<AddBusinessOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
                                 </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/created-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/created-protocols' />} icon={<FormatListBulletedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Created Protocols</Typography>
+                                <MenuItem active={location.pathname === '/adverse-events' || location.pathname === '/adverse-events-details' ? true : false} component={<Link to ='/adverse-events' />} icon={<AddBusinessOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
                                 </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/members' ? true : false} component={<Link to ='/admin/members' />} icon={<GroupAddOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Members List</Typography>
+                                <MenuItem active={location.pathname === '/promptly-reportable-event' || location.pathname === '/promptly-reportable-event-details' ? true : false} component={<Link to ='/promptly-reportable-event' />} icon={<AddBusinessOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event</Typography>
                                 </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/event-price-list' ? true : false} component={<Link to ='/admin/event-price-list' />} icon={<AttachMoneyIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Event Price</Typography>
+                                <MenuItem active={location.pathname === '/study-close-request' || location.pathname === '/study-close-request-details' ? true : false} component={<Link to ='/study-close-request' />} icon={<AddBusinessOutlinedIcon />}>
+                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Study Closeout Request</Typography>
                                 </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/protocol-event-list'} component={<Link to ='/admin/protocol-event-list' />} icon={<CalendarMonthOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Event</Typography>
-                                </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/users-list' ? true : false} component={<Link to ='/admin/users-list' />} icon={<ManageAccountsOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
-                                </MenuItem>
-                                <MenuItem active={location.pathname === '/admin/continuin-review-list' || location.pathname === '/admin/continuin-review-details' ? true : false} component={<Link to ='/admin/continuin-review-list' />} icon={<ReorderIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review List</Typography>
-                                </MenuItem>
-                                <SubMenu label="Event And Request" icon={<AddBusinessOutlinedIcon />} style={{fontWeight: '500', fontSize: '0.875rem'}}>
-                                    <MenuItem active={location.pathname === '/admin/protocol-amendment-request' || location.pathname === '/admin/protocol-amendment-request-details' ? true : false} component={<Link to ='/admin/protocol-amendment-request' />} >
-                                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
-                                    </MenuItem>
-                                    <MenuItem active={location.pathname === '/admin/adverse-events' || location.pathname === '/admin/adverse-events-details' ? true : false} component={<Link to ='/admin/adverse-events' />} >
-                                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
-                                    </MenuItem>
-                                    <MenuItem active={location.pathname === '/admin/promptly-reportable-event' || location.pathname === '/admin/promptly-reportable-event-details' ? true : false} component={<Link to ='/admin/promptly-reportable-event' />} >
-                                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event</Typography>
-                                    </MenuItem>
-                                    <MenuItem active={location.pathname === '/admin/study-close-request' || location.pathname === '/admin/study-close-request-details' ? true : false} component={<Link to ='/admin/study-close-request' />} >
-                                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Study Closeout Request</Typography>
-                                    </MenuItem>
-                                </SubMenu>
                             </>
-                        ) : userDetails.researcher_type === 'user' ? (
-                            <>
-                                <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
-                                    <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol List</Typography>
-                                </MenuItem>
-                                {
-                                    approvedProtocolListCount !== null && approvedProtocolListCount > 0 && (
-                                        <>
-                                            <MenuItem active={location.pathname === '/continuin-review' || location.pathname === '/continuin-review-details' ? true : false} component={<Link to ='/continuin-review' />} icon={<GroupAddOutlinedIcon />}>
-                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Continuing Review</Typography>
-                                            </MenuItem>
-                                            <MenuItem active={location.pathname === '/protocol-amendment-request' || location.pathname === '/protocol-amendment-request-details' ? true : false} component={<Link to ='/protocol-amendment-request' />} icon={<AddBusinessOutlinedIcon />}>
-                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Amendment Request</Typography>
-                                            </MenuItem>
-                                            <MenuItem active={location.pathname === '/adverse-events' || location.pathname === '/adverse-events-details' ? true : false} component={<Link to ='/adverse-events' />} icon={<AddBusinessOutlinedIcon />}>
-                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Adverse Events</Typography>
-                                            </MenuItem>
-                                            <MenuItem active={location.pathname === '/promptly-reportable-event' || location.pathname === '/promptly-reportable-event-details' ? true : false} component={<Link to ='/promptly-reportable-event' />} icon={<AddBusinessOutlinedIcon />}>
-                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Promptly Reportable Event</Typography>
-                                            </MenuItem>
-                                            <MenuItem active={location.pathname === '/study-close-request' || location.pathname === '/study-close-request-details' ? true : false} component={<Link to ='/study-close-request' />} icon={<AddBusinessOutlinedIcon />}>
-                                                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Study Closeout Request</Typography>
-                                            </MenuItem>
-                                        </>
-                                    )
-                                }
-                            </>
-                        ) : userDetails.researcher_type === 'Voting Member' ? (
-                          <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
-                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
-                          </MenuItem>
-                        ) : userDetails.researcher_type === 'Office Staff' ? (
-                          <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
-                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
-                          </MenuItem>
-                        ) : (
-                          <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
-                            <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
-                          </MenuItem>
                         )
                     }
-                    component={<Link to="/study-close-request" />}
-                    icon={<AddBusinessOutlinedIcon />}
-                  >
-                    <Typography
-                      variant="body2"
-                      style={{ fontWeight: "500", fontSize: "0.875rem" }}
-                    >
-                      Study Closeout Request
-                    </Typography>
-                  </MenuItem>
                 </>
-              )}
-          </>
-        )}
+            ) : userDetails.researcher_type === 'Voting Member' ? (
+              <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+              </MenuItem>
+            ) : userDetails.researcher_type === 'Office Staff' ? (
+              <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+              </MenuItem>
+            ) : (
+              <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+              </MenuItem>
+            )
+        }
       </Menu>
     </Sidebar>
   );

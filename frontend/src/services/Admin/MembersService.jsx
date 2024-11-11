@@ -20,12 +20,7 @@ export const fetchMemberList = createAsyncThunk(
   },
 );
 
-<<<<<<< HEAD
 export const createMember = createAsyncThunk("Members/createMember",
-=======
-export const createMember = createAsyncThunk(
-  "Members/createMember",
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({

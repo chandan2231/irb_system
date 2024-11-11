@@ -229,7 +229,7 @@ function UnderReviewProtocolList() {
         }
       });
     }
-<<<<<<< HEAD
+}
     
     
     const handleAddProtocolEvent = (params) => {
@@ -267,47 +267,6 @@ function UnderReviewProtocolList() {
         })
         
     };
-=======
-  };
-
-  const handleAddProtocolEvent = (params) => {
-    console.log("Add Event", params);
-    setOpen(true);
-    setProtocolDetails(params?.row);
-  };
-
-  const addNewData = (data) => {
-    dispatch(createMember(data)).then((data) => {
-      console.log("data", data);
-      if (data.payload.status === 200) {
-        setOpen(false);
-        toast.success(data.payload.data, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-        setFo;
-      } else {
-        setOpen(false);
-        toast.error(data.payload, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
-    });
-  };
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
 
   // const handleItemDetail = (params) => {
   //     //console.log('Details Item', params)

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-<<<<<<< HEAD
 import { 
     fetchMemberList, 
     createMember, 
@@ -9,15 +8,6 @@ import {
     createProtocolEvent,
     fetchMemberEventList
   } from "../../services/Admin/MembersService";
-=======
-import {
-  fetchMemberList,
-  createMember,
-  changeStatus,
-  resetMemberPassword,
-  fetchActiveVotingMemberList,
-} from "../../services/Admin/MembersService";
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
 
 const MembersSlice = createSlice({
   name: "members",

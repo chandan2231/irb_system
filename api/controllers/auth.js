@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 
 export const register = (req, res) => {
     const que = "select * from users where email = ?"
-    db.query(que, [req.body.email], (err, data) =>{
+    db.query(que, [req.body.email], (err, data) => {
         if (err) return res.status(500).json(err)
         if (data.length > 0 ) {
             return res.status(409).json('Email already exist try with other email')
@@ -21,16 +21,14 @@ export const register = (req, res) => {
             'user',
             req.body.city,
         ];
-        db.query(que, [values], (err, data) =>{
+        db.query(que, [values], (err, data) => {
             if (err) return res.status(500).json(err)
             return res.status(200).json('User has been created.')
         }) 
     })
-  })
 }
 
 export const login = (req, res) => {
-<<<<<<< HEAD
     const que = 'select * from users where email=? AND status=?';
     db.query(que, [req.body.email, 1], (err, data) => {
         if (err) return res.status(500).json(err)
@@ -42,25 +40,6 @@ export const login = (req, res) => {
         res.cookie('accessToken', token, {httpOnly: false,}).status(200).json(others)
 
     })
-=======
-  const que = 'select * from users where email=? AND status=?'
-  db.query(que, [req.body.email, 2], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length === 0)
-      return res.status(404).json('Email not found! Try with valid email')
-    const checkpassword = bcrypt.compareSync(
-      req.body.password,
-      data[0].password
-    )
-    if (!checkpassword) return res.status(400).json('Wrong password or email!')
-    const token = jwt.sign({ id: data[0].id }, 'secretkey')
-    const { password, ...others } = data[0]
-    res
-      .cookie('accessToken', token, { httpOnly: false })
-      .status(200)
-      .json(others)
-  })
->>>>>>> c8e7a5e2cf50f4a1bc17d19bf3d715e4eb3ac400
 }
 
 export const logout = (req, res) => {
