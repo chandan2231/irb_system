@@ -62,14 +62,14 @@ function SideNav() {
         { 
             userDetails.researcher_type === 'admin' ? (
                 <>
-                    <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
+                    <MenuItem active={location.pathname === '/admin/created-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/created-protocols' />} icon={<FormatListBulletedIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Created Protocols</Typography>
                     </MenuItem>
                     <MenuItem active={location.pathname === '/admin/under-review-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/under-review-protocols' />} icon={<GradingIcon />}>
                         <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Under Review Protocols</Typography>
                     </MenuItem>
-                    <MenuItem active={location.pathname === '/admin/created-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/created-protocols' />} icon={<FormatListBulletedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Created Protocols</Typography>
+                    <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
                     </MenuItem>
                     <MenuItem active={location.pathname === '/admin/members' ? true : false} component={<Link to ='/admin/members' />} icon={<GroupAddOutlinedIcon />}>
                         <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Members List</Typography>
@@ -78,7 +78,7 @@ function SideNav() {
                         <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Event Price</Typography>
                     </MenuItem>
                     <MenuItem active={location.pathname === '/admin/protocol-event-list'} component={<Link to ='/admin/protocol-event-list' />} icon={<CalendarMonthOutlinedIcon />}>
-                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Event</Typography>
+                        <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol Events</Typography>
                     </MenuItem>
                     <MenuItem active={location.pathname === '/admin/users-list' ? true : false} component={<Link to ='/admin/users-list' />} icon={<ManageAccountsOutlinedIcon />}>
                         <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Users</Typography>
