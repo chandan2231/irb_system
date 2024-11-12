@@ -695,7 +695,6 @@ export const memberEventList = (req, res) => {
 }
 
 // export const assignProtocolToMembers = (req, res) => {
-   
 //     const member_ids = req.body.member_id
 //     for (const member_id of member_ids) {
 //         console.log('member_ids', member_ids)
@@ -716,16 +715,13 @@ export const memberEventList = (req, res) => {
 
 export const assignProtocolToMembers = async (req, res) => {
     const { member_id, protocol_id, protocol_name, created_by } = req.body;
-
     try {
         // Check if member_id is an array and has at least one item
         if (!Array.isArray(member_id) || member_id.length === 0) {
-            return res.status(400).json({ message: 'No members provided.' });
+            return res.status(500).json({ msg: 'No members provided.' });
         }
-
         // Prepare the query and values
         const que = 'INSERT INTO members_protocol (protocol_id, protocol_name, member_id, created_by) VALUES (?, ?, ?, ?)';
-        
         // Create a promise for each insert operation
         const insertPromises = member_id.map(id => {
             const values = [protocol_id, protocol_name, id, created_by];
@@ -739,7 +735,6 @@ export const assignProtocolToMembers = async (req, res) => {
                 });
             });
         });
-
         // Wait for all insertions to complete
         await Promise.all(insertPromises);
         // Send a response after all insertions
@@ -752,6 +747,16 @@ export const assignProtocolToMembers = async (req, res) => {
         res.status(500).json({ msg: 'An error occurred while assigning protocol to members.' });
     }
 };
+
+export const assignedMembersList = (req, res) => {
+    const que = 'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
+    db.query(que, [req.body.protocolId], (err, data) => {
+      if (err) return res.status(500).json(err)
+      if (data.length >= 0) {
+        return res.status(200).json(data)
+      }
+    })
+  }
 
             
             

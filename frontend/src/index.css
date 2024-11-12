@@ -28,6 +28,15 @@ body,
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.mt-10 {
+  margin-top: 10px;
+}
+.ml-10 {
+  margin-left: 10px;
+}
+.mb-10 {
+  margin-bottom: 10px;
+}
 .fullwidth {
   width: 100%;
 }

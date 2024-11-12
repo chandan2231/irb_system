@@ -127,3 +127,19 @@ export const assignProtocolToMember = createAsyncThunk("Members/assignProtocolTo
     }
   }
 );
+
+
+export const fetchAssignMemberList = createAsyncThunk("Members/fetchAssignMemberList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/admin/member/assignedMembers`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

@@ -29,9 +29,11 @@ import {
     createMemberEvent,
     memberEventList,
     assignProtocolToMembers,
+    assignedMembersList
 } from "../controllers/admin.js";
 
 const router = express.Router()
+router.post('/member/assignedMembers', assignedMembersList)
 router.post('/member/assignProtocolToMembers', assignProtocolToMembers)
 router.get('/member/eventList', memberEventList)
 router.post('/member/createEvent', createMemberEvent)

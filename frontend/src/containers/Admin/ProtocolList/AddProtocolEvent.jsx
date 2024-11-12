@@ -10,13 +10,14 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs from "dayjs";
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { fetchActiveVotingMemberList } from "../../../services/Admin/MembersService";
 import { useDispatch, useSelector } from "react-redux";
-import dayjs from "dayjs";
+
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -97,87 +98,90 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
     };
 
     const getContent = () => (
-        <Box sx={modalStyles.inputFields}>
-            <TextField
-                placeholder="Enter the subject"
-                name="event_subject"
-                label="Event Subject"
-                required
-                {...register('event_subject')}
-                error={errors.event_subject ? true : false}
-                helperText={errors.event_subject?.message}
-                value={values.event_subject}
-                onChange={(event) => handleChange({ ...values, event_subject: event.target.value })}
-            />
-            <TextField
-                placeholder="Enter the event details"
-                name="event_msg"
-                label="Enter the event details"
-                required
-                rows={10}
-                maxRows={10}
-                multiline
-                {...register('event_msg')}
-                error={errors.event_msg ? true : false}
-                helperText={errors.event_msg?.message}
-                value={values.event_msg}
-                onChange={(event) => handleChange({ ...values, event_msg: event.target.value })}
-            />
-            
-            <Autocomplete
-                multiple
-                fullWidth
-                disableCloseOnSelect
-                value={selectedMembers}
-                onChange = {(event, newValue) => {setSelectedMembers(newValue); handleChange({ ...values, member_id: newValue })}}
-                id="checkboxes-tags-demo"
-                options={activeVotingMemberListArr}
-                getOptionLabel={(option) => option.name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option, { selected }) => (
-                    <li {...props}>
-                        <Checkbox
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        style={{ marginRight: 8 }}
-                        checked={selected}
+        <>
+            <h3>{protocolDetails?.protocolId +' '+"("+protocolDetails?.researchType+")"}</h3>
+            <Box sx={modalStyles.inputFields}>
+                <TextField
+                    placeholder="Enter the subject"
+                    name="event_subject"
+                    label="Event Subject"
+                    required
+                    {...register('event_subject')}
+                    error={errors.event_subject ? true : false}
+                    helperText={errors.event_subject?.message}
+                    value={values.event_subject}
+                    onChange={(event) => handleChange({ ...values, event_subject: event.target.value })}
+                />
+                <TextField
+                    placeholder="Enter the event details"
+                    name="event_msg"
+                    label="Enter the event details"
+                    required
+                    rows={10}
+                    maxRows={10}
+                    multiline
+                    {...register('event_msg')}
+                    error={errors.event_msg ? true : false}
+                    helperText={errors.event_msg?.message}
+                    value={values.event_msg}
+                    onChange={(event) => handleChange({ ...values, event_msg: event.target.value })}
+                />
+                
+                <Autocomplete
+                    multiple
+                    fullWidth
+                    disableCloseOnSelect
+                    value={selectedMembers}
+                    onChange = {(event, newValue) => {setSelectedMembers(newValue); handleChange({ ...values, member_id: newValue })}}
+                    id="checkboxes-tags-demo"
+                    options={activeVotingMemberListArr}
+                    getOptionLabel={(option) => option.name}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    renderOption={(props, option, { selected }) => (
+                        <li {...props}>
+                            <Checkbox
+                            icon={icon}
+                            checkedIcon={checkedIcon}
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                            />
+                            {option.name}
+                        </li>
+                    )}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            name={"member_id"}
+                            label={"Select Members"}
+                            placeholder={"Select Members"}
+                            error={errors.member_id ? true : false}
+                            helperText={errors.member_id?.message}
+                            required
                         />
-                        {option.name}
-                    </li>
-                )}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        name={"member_id"}
-                        label={"Select Members"}
-                        placeholder={"Select Members"}
-                        error={errors.member_id ? true : false}
-                        helperText={errors.member_id?.message}
-                        required
-                    />
-                )}
-            />
-            {memberSelectionError && <span style={{color: 'red'}}>{memberSelectionError}</span>}
-            {/* 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={['DateTimePicker']}>
-                        <DateTimePicker 
-                            label="Select Event date and Time"
-                            // value={dateTime}
-                            onChange={(newValue) => setDateTime(dayjs(newValue))}
-                            // onChange={(event, newValue) => {
-                            //     console.log("event_date_time ", newValue);
-                            //     // handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
-                            // }}
-                            // onChange={(event, newValue) => {
-                            //     handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
-                            // }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </DemoContainer>
-                </LocalizationProvider> 
-            */}
-        </Box>
+                    )}
+                />
+                {memberSelectionError && <span style={{color: 'red'}}>{memberSelectionError}</span>}
+                {/* 
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoContainer components={['DateTimePicker']}>
+                            <DateTimePicker 
+                                label="Select Event date and Time"
+                                // value={dateTime}
+                                onChange={(newValue) => setDateTime(dayjs(newValue))}
+                                // onChange={(event, newValue) => {
+                                //     console.log("event_date_time ", newValue);
+                                //     // handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
+                                // }}
+                                // onChange={(event, newValue) => {
+                                //     handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
+                                // }}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </DemoContainer>
+                    </LocalizationProvider> 
+                */}
+            </Box>
+        </>
         
     );
     
@@ -186,7 +190,7 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
             open={open}
             onClose={onClose}
             title={title}
-            subTitle={protocolDetails?.protocolId + "("+protocolDetails?.researchType+")"}
+            subTitle={''}
             content={getContent()}
             onSubmit={handleSubmit(addNew)}
         />

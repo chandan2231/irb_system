@@ -15,7 +15,7 @@ import AddProtocolEvent from "./AddProtocolEvent";
 import { fetchUnderReviewProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
 import { protocolReport } from "../../../services/UserManagement/UserService";
 import { createProtocolEvent, assignProtocolToMember } from "../../../services/Admin/MembersService";
-import AssignedProtocolToMember from "./AssignedProtocolToMember";
+import AssignProtocolToMember from "./AssignProtocolToMember";
 
 function UnderReviewProtocolList() {
   const theme = useTheme();
@@ -296,7 +296,6 @@ function UnderReviewProtocolList() {
         
         dispatch(assignProtocolToMember(data))
         .then(data => {
-            console.log('data', data)
             if (data.payload.status === 200) {
                 setAssignedMemberOpen(false)
                 toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
@@ -350,11 +349,11 @@ function UnderReviewProtocolList() {
           />
         </Box>
         <Box>
-          <AssignedProtocolToMember
+          <AssignProtocolToMember
             open={assignedMemberOpen}
             onClose={() => setAssignedMemberOpen(false)}
             addAssignedMemberData={addAssignedMemberData}
-            title={"Assigned Protocol To Member"}
+            title={"Assign Protocol To Members"}
             protocolDetails={protocolDetails}
           />
         </Box>

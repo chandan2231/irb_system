@@ -10,13 +10,14 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs from "dayjs";
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import { fetchActiveVotingMemberList } from "../../../services/Admin/MembersService";
+import { fetchActiveVotingMemberList,  fetchAssignMemberList} from "../../../services/Admin/MembersService";
 import { useDispatch, useSelector } from "react-redux";
-import dayjs from "dayjs";
+
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -49,19 +50,20 @@ const modalStyles = {
     },
 };
 
-const AssignedProtocolToMember = ({ open, onClose, addAssignedMemberData, title, protocolDetails }) => {
+const AssignProtocolToMember = ({ open, onClose, addAssignedMemberData, title, protocolDetails }) => {
     const dispatch = useDispatch();
     const [values, setValues] = useState(defaultInputValues);
     const [selectedMembers, setSelectedMembers] = useState([]);
     const [memberSelectionError, setMemberSelectionError] = useState();
 
-    const { activeVotingMemberList, loading, error } = useSelector((state) => ({
+    const { activeVotingMemberList, loading, error, memberAssignedList } = useSelector((state) => ({
         error: state.member.error,
         activeVotingMemberList: state.member.activeVotingMemberList,
         loading: state.member.loading,
-      }));
-      const activeVotingMemberListArr = [];
-      if (activeVotingMemberList && activeVotingMemberList.length > 0) {
+        memberAssignedList: state.member.memberAssignedList,
+    }));
+    const activeVotingMemberListArr = [];
+    if (activeVotingMemberList && activeVotingMemberList.length > 0) {
         activeVotingMemberList.map((mList, index) => {
           let objectData = {
             id: mList.id,
@@ -69,11 +71,16 @@ const AssignedProtocolToMember = ({ open, onClose, addAssignedMemberData, title,
           };
           activeVotingMemberListArr.push(objectData);
         });
-      }
+    }
     
-      useEffect(() => {
+    useEffect(() => {
+        let data = {'protocolId' : protocolDetails?.protocolId}
+        dispatch(fetchAssignMemberList(data));
+    }, [protocolDetails?.protocolId]);
+
+    useEffect(() => {
         dispatch(fetchActiveVotingMemberList());
-      }, [dispatch]);
+    }, [dispatch]);
 
     const validationSchema = Yup.object().shape({
         // event_subject: Yup.string().required('This is required'),
@@ -97,52 +104,62 @@ const AssignedProtocolToMember = ({ open, onClose, addAssignedMemberData, title,
     };
 
     const getContent = () => (
-        <Box sx={modalStyles.inputFields}>
-            <Autocomplete
-                multiple
-                fullWidth
-                disableCloseOnSelect
-                value={selectedMembers}
-                onChange = {(event, newValue) => {setSelectedMembers(newValue); handleChange({ ...values, member_id: newValue })}}
-                id="checkboxes-tags-demo"
-                options={activeVotingMemberListArr}
-                getOptionLabel={(option) => option.name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, option, { selected }) => (
-                    <li {...props}>
-                        <Checkbox
-                        icon={icon}
-                        checkedIcon={checkedIcon}
-                        style={{ marginRight: 8 }}
-                        checked={selected}
+        <>
+            <h3>{protocolDetails?.protocolId +' '+"("+protocolDetails?.researchType+")"}</h3>
+            <h4>Assigned Members :</h4>
+            {
+                memberAssignedList !== null && memberAssignedList.data.length > 0 && memberAssignedList.data.map((list, index) => (
+                    <span key={index}>
+                        {list.name}{index < memberAssignedList.data.length - 1 && ', '}
+                    </span>
+                ))
+            }
+            <Box sx={modalStyles.inputFields}>
+                <Autocomplete
+                    multiple
+                    fullWidth
+                    disableCloseOnSelect
+                    value={selectedMembers}
+                    onChange = {(event, newValue) => {setSelectedMembers(newValue); handleChange({ ...values, member_id: newValue })}}
+                    id="checkboxes-tags-demo"
+                    options={activeVotingMemberListArr}
+                    getOptionLabel={(option) => option.name}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    renderOption={(props, option, { selected }) => (
+                        <li {...props}>
+                            <Checkbox
+                            icon={icon}
+                            checkedIcon={checkedIcon}
+                            style={{ marginRight: 8 }}
+                            checked={selected}
+                            />
+                            {option.name}
+                        </li>
+                    )}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            name={"member_id"}
+                            label={"Select Members"}
+                            placeholder={"Select Members"}
+                            error={errors.member_id ? true : false}
+                            helperText={errors.member_id?.message}
+                            required
                         />
-                        {option.name}
-                    </li>
-                )}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        name={"member_id"}
-                        label={"Select Members"}
-                        placeholder={"Select Members"}
-                        error={errors.member_id ? true : false}
-                        helperText={errors.member_id?.message}
-                        required
-                    />
-                )}
-            />
-            {memberSelectionError && <span style={{color: 'red'}}>{memberSelectionError}</span>}
-            
-        </Box>
+                    )}
+                />
+                {memberSelectionError && <span style={{color: 'red'}}>{memberSelectionError}</span>}
+            </Box>
+        </>
         
     );
-    
+    console.log('memberAssignedList', memberAssignedList)
     return (
         <CommonModal
             open={open}
             onClose={onClose}
             title={title}
-            subTitle={protocolDetails?.protocolId + "("+protocolDetails?.researchType+")"}
+            subTitle={''}
             content={getContent()}
             onSubmit={handleSubmit(addNew)}
         />
@@ -150,4 +167,4 @@ const AssignedProtocolToMember = ({ open, onClose, addAssignedMemberData, title,
     )
 }
 
-export default AssignedProtocolToMember;
+export default AssignProtocolToMember;
