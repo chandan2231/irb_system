@@ -49,7 +49,7 @@ const modalStyles = {
     },
 };
 
-const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails }) => {
+const AssignedProtocolToMember = ({ open, onClose, addAssignedMemberData, title, protocolDetails }) => {
     const dispatch = useDispatch();
     const [values, setValues] = useState(defaultInputValues);
     const [selectedMembers, setSelectedMembers] = useState([]);
@@ -76,8 +76,8 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
       }, [dispatch]);
 
     const validationSchema = Yup.object().shape({
-        event_subject: Yup.string().required('This is required'),
-        event_msg: Yup.string().required('This is required'),
+        // event_subject: Yup.string().required('This is required'),
+        // event_msg: Yup.string().required('This is required'),
     });
 
     const {register, handleSubmit, formState: { errors }} = useForm({resolver: yupResolver(validationSchema)});
@@ -89,7 +89,7 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
         } else {
             setMemberSelectionError('')
         }
-        addNewData(values);
+        addAssignedMemberData(values);
     };
 
     const handleChange = (value) => {
@@ -98,32 +98,6 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
 
     const getContent = () => (
         <Box sx={modalStyles.inputFields}>
-            <TextField
-                placeholder="Enter the subject"
-                name="event_subject"
-                label="Event Subject"
-                required
-                {...register('event_subject')}
-                error={errors.event_subject ? true : false}
-                helperText={errors.event_subject?.message}
-                value={values.event_subject}
-                onChange={(event) => handleChange({ ...values, event_subject: event.target.value })}
-            />
-            <TextField
-                placeholder="Enter the event details"
-                name="event_msg"
-                label="Enter the event details"
-                required
-                rows={10}
-                maxRows={10}
-                multiline
-                {...register('event_msg')}
-                error={errors.event_msg ? true : false}
-                helperText={errors.event_msg?.message}
-                value={values.event_msg}
-                onChange={(event) => handleChange({ ...values, event_msg: event.target.value })}
-            />
-            
             <Autocomplete
                 multiple
                 fullWidth
@@ -158,25 +132,7 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
                 )}
             />
             {memberSelectionError && <span style={{color: 'red'}}>{memberSelectionError}</span>}
-            {/* 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={['DateTimePicker']}>
-                        <DateTimePicker 
-                            label="Select Event date and Time"
-                            // value={dateTime}
-                            onChange={(newValue) => setDateTime(dayjs(newValue))}
-                            // onChange={(event, newValue) => {
-                            //     console.log("event_date_time ", newValue);
-                            //     // handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
-                            // }}
-                            // onChange={(event, newValue) => {
-                            //     handleChange({ ...values, event_date_time: dayjs(newValue).format('YYYY-MM-DD h:mm A')});
-                            // }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </DemoContainer>
-                </LocalizationProvider> 
-            */}
+            
         </Box>
         
     );
@@ -194,4 +150,4 @@ const AddProtocolEvent = ({ open, onClose, addNewData, title, protocolDetails })
     )
 }
 
-export default AddProtocolEvent;
+export default AssignedProtocolToMember;

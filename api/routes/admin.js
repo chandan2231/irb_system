@@ -28,9 +28,11 @@ import {
     getActiveVotingMemberList,
     createMemberEvent,
     memberEventList,
+    assignProtocolToMembers,
 } from "../controllers/admin.js";
 
 const router = express.Router()
+router.post('/member/assignProtocolToMembers', assignProtocolToMembers)
 router.get('/member/eventList', memberEventList)
 router.post('/member/createEvent', createMemberEvent)
 router.get('/active/votingmember/list', getActiveVotingMemberList)

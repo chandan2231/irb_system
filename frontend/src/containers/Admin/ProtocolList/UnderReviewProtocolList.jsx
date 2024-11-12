@@ -14,7 +14,8 @@ import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import AddProtocolEvent from "./AddProtocolEvent";
 import { fetchUnderReviewProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import { createProtocolEvent } from "../../../services/Admin/MembersService";
+import { createProtocolEvent, assignProtocolToMember } from "../../../services/Admin/MembersService";
+import AssignedProtocolToMember from "./AssignedProtocolToMember";
 
 function UnderReviewProtocolList() {
   const theme = useTheme();
@@ -23,6 +24,7 @@ function UnderReviewProtocolList() {
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   const [open, setOpen] = useState(false);
+  const [assignedMemberOpen, setAssignedMemberOpen] = useState(false);
   const [protocolDetails, setProtocolDetails] = useState();
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -92,6 +94,12 @@ function UnderReviewProtocolList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
+        <GridActionsCellItem
+          icon={<EditCalendarOutlinedIcon />}
+          label="Assign Members"
+          onClick={() => handleAssignedMemberToProtocol(params)}
+          showInMenu
+        />,
         <GridActionsCellItem
           icon={<EditCalendarOutlinedIcon />}
           label="Add Event"
@@ -259,9 +267,41 @@ function UnderReviewProtocolList() {
             if (data.payload.status === 200) {
                 setOpen(false);
                 toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-                setFo
             } else {
                 setOpen(false);
+                toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+            }
+        })
+        
+    };
+    
+
+    const handleAssignedMemberToProtocol = (params) => {
+        setAssignedMemberOpen(true);
+        setProtocolDetails(params?.row)
+    }
+
+    const addAssignedMemberData = (addedData) => {
+        const { member_id } = addedData;
+        let membersArr = [];
+        member_id.map((pList) => {
+            membersArr.push(pList.id);
+        });
+        let data = {
+            member_id: membersArr,
+            protocol_id: protocolDetails?.protocolId,
+            protocol_name: protocolDetails?.researchType,
+            created_by: user.id,
+        };
+        
+        dispatch(assignProtocolToMember(data))
+        .then(data => {
+            console.log('data', data)
+            if (data.payload.status === 200) {
+                setAssignedMemberOpen(false)
+                toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
+            } else {
+                setAssignedMemberOpen(false)
                 toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
             }
         })
@@ -306,6 +346,15 @@ function UnderReviewProtocolList() {
             onClose={() => setOpen(false)}
             addNewData={addNewData}
             title={"Create Protocol Event"}
+            protocolDetails={protocolDetails}
+          />
+        </Box>
+        <Box>
+          <AssignedProtocolToMember
+            open={assignedMemberOpen}
+            onClose={() => setAssignedMemberOpen(false)}
+            addAssignedMemberData={addAssignedMemberData}
+            title={"Assigned Protocol To Member"}
             protocolDetails={protocolDetails}
           />
         </Box>

@@ -36,6 +36,7 @@ export const createEventPrice = (req, res) => {
 }
 
 
+
 export const getEventPriceList = (req, res) => {
   const que = 'select * from event_price'
   db.query(que, [], (err, data) => {
@@ -692,5 +693,65 @@ export const memberEventList = (req, res) => {
         }
     })
 }
+
+// export const assignProtocolToMembers = (req, res) => {
+   
+//     const member_ids = req.body.member_id
+//     for (const member_id of member_ids) {
+//         console.log('member_ids', member_ids)
+//         console.log('member_id', member_id)
+//         const que = 'insert into members_protocol (`protocol_id`, `protocol_name`,`member_id`,`created_by`) value (?)'
+//         const values = [
+//             req.body.protocol_id, 
+//             req.body.protocol_name,
+//             member_id,
+//             req.body.created_by,
+//         ]
+//         db.query(que, [values], (err, data) => {
+//             if (err) return res.status(500).json(err)
+//             return res.status(200).json('Protocol Assigned to Members Successfully.')
+//         })
+//     }
+// }
+
+export const assignProtocolToMembers = async (req, res) => {
+    const { member_id, protocol_id, protocol_name, created_by } = req.body;
+
+    try {
+        // Check if member_id is an array and has at least one item
+        if (!Array.isArray(member_id) || member_id.length === 0) {
+            return res.status(400).json({ message: 'No members provided.' });
+        }
+
+        // Prepare the query and values
+        const que = 'INSERT INTO members_protocol (protocol_id, protocol_name, member_id, created_by) VALUES (?, ?, ?, ?)';
+        
+        // Create a promise for each insert operation
+        const insertPromises = member_id.map(id => {
+            const values = [protocol_id, protocol_name, id, created_by];
+            return new Promise((resolve, reject) => {
+                db.query(que, values, (err, data) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+        });
+
+        // Wait for all insertions to complete
+        await Promise.all(insertPromises);
+        // Send a response after all insertions
+        let result = {}
+        result.status = 200
+        result.msg = 'Protocol Assigned to Members Successfully.'
+        return res.json(result)
+    } catch (error) {
+        console.error('Error assigning protocol:', error);
+        res.status(500).json({ msg: 'An error occurred while assigning protocol to members.' });
+    }
+};
+
             
             
