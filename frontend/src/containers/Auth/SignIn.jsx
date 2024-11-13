@@ -60,7 +60,7 @@ function SignIn() {
           } else if(data.payload.data.user_type === "Voting Member") {
             navigate("/member/protocol-list");
           } else if(data.payload.data.user_type === "Committee Chair") {
-            navigate("/dashboard");
+            navigate("/committee-chair/protocol-list");
           } else if(data.payload.data.user_type === "Office Staff") {
             navigate("/dashboard");
           } else if(data.payload.data.user_type === "Non Voting Member") {

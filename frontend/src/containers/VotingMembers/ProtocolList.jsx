@@ -26,7 +26,7 @@ function VotingMemberProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/admin/protocol-details", { state: { details: params.row, type: 'member' } });
+    navigate("/member/protocol-details", { state: { details: params.row, type: 'member' } });
   };
   const columns = [
     {

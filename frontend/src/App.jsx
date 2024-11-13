@@ -51,7 +51,7 @@ import Members from "./containers/Admin/Members/Members";
 import EventPriceList from "./containers/Admin/EventPriceList/EventPriceList";
 import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList";
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
-
+import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList.jsx";
 function App() {
   const [loader, setLoader] = useState(true);
   //const navigate = useNavigate();
@@ -232,6 +232,18 @@ function App() {
                       <Route
                         path="/member/protocol-list"
                         element={<VotingMemberProtocolList />}
+                      />
+                      <Route
+                        path="/member/protocol-details"
+                        element={<AdminProtocolDetails />}
+                      />
+                      <Route
+                        path="/committee-chair/protocol-list"
+                        element={<CommitteeChairProtocolList />}
+                      />
+                      <Route
+                        path="/committee-chair/protocol-details"
+                        element={<AdminProtocolDetails />}
                       />
                       {/* </Route> */}
                       <Route path="/signin" element={<SignIn />} />

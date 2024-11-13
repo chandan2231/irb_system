@@ -62,8 +62,10 @@ function AppHeader() {
           <h2>IRB System</h2>
           <Box className="center-card">
             <h2>
-              {userDetails.user_type === "admin"
-                ? "Super Admin Portal" : userDetails.user_type === "Voting Member" ? 'Voting Member Portal'
+              {
+                userDetails.user_type === "admin" ? "Super Admin Portal" 
+                : userDetails.user_type === "Voting Member" ? 'Voting Member Portal'
+                : userDetails.user_type === "Committee Chair" ? 'Committee Chair Portal'
                 : ""}
             </h2>
           </Box>
