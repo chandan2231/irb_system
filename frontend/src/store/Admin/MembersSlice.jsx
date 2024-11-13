@@ -8,7 +8,8 @@ import {
     createProtocolEvent,
     fetchMemberEventList,
     assignProtocolToMember,
-    fetchAssignMemberList
+    fetchAssignMemberList,
+    fetchAssignMemberProtocolList
   } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
@@ -28,6 +29,7 @@ const MembersSlice = createSlice({
     memberEventList: null,
     memberAssigned: null,
     memberAssignedList: null,
+    assignMemberProtocolList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -143,6 +145,18 @@ const MembersSlice = createSlice({
         state.memberAssignedList = action.payload;
       })
       .addCase(fetchAssignMemberList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchAssignMemberProtocolList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAssignMemberProtocolList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.assignMemberProtocolList = action.payload;
+      })
+      .addCase(fetchAssignMemberProtocolList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })

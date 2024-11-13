@@ -31,7 +31,7 @@ const consentType = [
   { label: "Online/website/electronic signature consent", value: "8" },
 ];
 
-function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
+function InformedConsentForm({ protocolTypeDetails, informedConsent, type }) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -334,21 +334,24 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
             </FormGroup>
           </FormControl>
         </Form.Group>
-        <Form.Group
-          as={Col}
-          controlId="validationFormik010"
-          className="mt-mb-20"
-          style={{ textAlign: "right" }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            type="Submit"
-            disabled={!termsSelected}
-          >
-            SAVE AND CONTINUE
-          </Button>
-        </Form.Group>
+        {
+          type !== 'member' && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="Submit"
+              >
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )
+        }
       </form>
     </Row>
   );

@@ -14,6 +14,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import ReorderIcon from "@mui/icons-material/Reorder";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
 
 function SideNav() {
   const theme = useTheme();
@@ -60,7 +61,7 @@ function SideNav() {
         }}
       >         
         { 
-            userDetails.researcher_type === 'admin' ? (
+            userDetails.user_type === 'admin' ? (
                 <>
                     <MenuItem active={location.pathname === '/admin/created-protocols' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/created-protocols' />} icon={<FormatListBulletedIcon />}>
                         <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Created Protocols</Typography>
@@ -101,6 +102,10 @@ function SideNav() {
                         </MenuItem>
                     </SubMenu>
                 </>
+            ) : userDetails.user_type === 'Voting Member' ? (
+              <MenuItem active={location.pathname === '/member/protocol-list' || location.pathname === '/member/protocol-details' ? true : false} component={<Link to ='/member/protocol-list' />} icon={<FormatListBulletedOutlinedIcon />}>
+                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Protocol List</Typography>
+              </MenuItem>
             ) : userDetails.researcher_type === 'user' ? (
                 <>
                     <MenuItem active={location.pathname === '/dashboard' || location.pathname === '/protocol-details' ? true : false} component={<Link to ='/dashboard' />} icon={<AddBusinessOutlinedIcon />}>
@@ -128,10 +133,6 @@ function SideNav() {
                         )
                     }
                 </>
-            ) : userDetails.researcher_type === 'Voting Member' ? (
-              <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
-                <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>
-              </MenuItem>
             ) : userDetails.researcher_type === 'Office Staff' ? (
               <MenuItem active={location.pathname === '/admin/approved-protocol-list' || location.pathname === '/admin/protocol-details' ? true : false} component={<Link to ='/admin/approved-protocol-list' />} icon={<ChecklistRtlIcon />}>
                 <Typography variant="body2" style={{fontWeight: '500', fontSize: '0.875rem'}}>Approved Protocols</Typography>

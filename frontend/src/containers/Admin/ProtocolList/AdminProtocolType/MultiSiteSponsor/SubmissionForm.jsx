@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 
-function SubmissionForm() {
+function SubmissionForm({type}) {
   const [termsSelected, setTermsSelected] = React.useState(false);
   const initialValues = {
     notificationName: "",
@@ -116,21 +116,24 @@ function SubmissionForm() {
               </FormGroup>
             </FormControl>
           </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              type="Submit"
-              disabled={!termsSelected}
-            >
-              SUBMIT
-            </Button>
-          </Form.Group>
+          {
+            type !== 'member' && (
+              <Form.Group
+                as={Col}
+                controlId="validationFormik010"
+                className="mt-mb-20"
+                style={{ textAlign: "right" }}
+              >
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="Submit"
+                >
+                  SUBMIT
+                </Button>
+              </Form.Group>
+            )
+          }
         </form>
       </Row>
     </>

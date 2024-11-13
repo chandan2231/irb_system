@@ -31,7 +31,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-function InformedConsentForm({ consentInformation }) {
+function InformedConsentForm({ consentInformation, type }) {
   const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
   const [showICF, setShowICF] = React.useState(false);
   const [termsSelected, setTermsSelected] = React.useState(false);
@@ -282,21 +282,25 @@ function InformedConsentForm({ consentInformation }) {
             </FormGroup>
           </FormControl>
         </Form.Group>
-        <Form.Group
-          as={Col}
-          controlId="validationFormik010"
-          className="mt-mb-20"
-          style={{ textAlign: "right" }}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            type="Submit"
-            disabled={!termsSelected}
-          >
-            SAVE AND CONTINUE
-          </Button>
-        </Form.Group>
+        {
+          type !== 'member' && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="Submit"
+                disabled
+              >
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )
+        }
       </form>
     </Row>
   );

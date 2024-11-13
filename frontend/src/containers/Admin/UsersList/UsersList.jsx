@@ -33,7 +33,7 @@ function UsersList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/protocol-details", { state: { details: params.row } });
+    navigate("/protocol-details", { state: { details: params.row, type: 'user' } });
   };
   const columns = [
     {

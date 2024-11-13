@@ -1,34 +1,22 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createProtocol,
-  fetchProtocolList,
-  changeStatus,
-} from "../../services/Dashboard/DashboardService";
+import { fetchAssignMemberProtocolList } from "../../services/Admin/MembersService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import CommonButton from "../../components/CommonButton";
 import moment from "moment";
-import ToggleStatus from "../../components/ToggleStatus";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import AddResearch from "./AddResearch";
 import { useNavigate } from "react-router-dom";
+import { protocolReport } from "../../services/UserManagement/UserService";
+import ToggleStatus from "../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { protocolReport } from "../../services/UserManagement/UserService";
 
-function Dashboard() {
+function VotingMemberProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   useEffect(() => {
@@ -38,7 +26,7 @@ function Dashboard() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/protocol-details", { state: { details: params.row, type: 'user' } });
+    navigate("/admin/protocol-details", { state: { details: params.row, type: 'member' } });
   };
   const columns = [
     {
@@ -56,10 +44,9 @@ function Dashboard() {
       headerName: "Research Type",
       flex: 1,
     },
-
     {
-      field: "createdDate",
-      headerName: "Created Date",
+      field: "assignedDate",
+      headerName: "Assigned Date",
       flex: 1,
     },
     {
@@ -106,21 +93,20 @@ function Dashboard() {
     },
   ];
 
-  var totalElements = 0;
-  const { protocolList, loading, error, createdProtocol } = useSelector(
-    (state) => ({
-      error: state.dashboard.error,
-      protocolList: state.dashboard.protocolList,
-      loading: state.dashboard.loading,
-      createdProtocol: state.dashboard.createdProtocol,
-    }),
-  );
   useEffect(() => {
-    const data = { login_id: user.id };
-    dispatch(fetchProtocolList(data));
+    let data = {'memberId': user.id}
+    dispatch(fetchAssignMemberProtocolList(data));
   }, [dispatch, user.id]);
-  if (protocolList !== "" && protocolList?.length > 0) {
-    totalElements = protocolList.length;
+
+  var totalElements = 0;
+  const { assignMemberProtocolList, loading, error } = useSelector((state) => ({
+    error: state.member.error,
+    assignMemberProtocolList: state.member.assignMemberProtocolList,
+    loading: state.member.loading,
+  }));
+  
+  if (assignMemberProtocolList?.data !== "" && assignMemberProtocolList?.data?.length > 0) {
+    totalElements = assignMemberProtocolList?.data.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -130,62 +116,22 @@ function Dashboard() {
     return rowCountRef.current;
   }, [totalElements]);
 
-  const addNew = () => {
-    setOpen(true);
-  };
-
   useEffect(() => {
     const pListArr = [];
-    if (protocolList && protocolList?.length > 0) {
-      protocolList.map((pList, index) => {
-        let protocolObject = {
-          id: pList.id,
-          protocolId: pList.protocol_id,
-          researchType: pList.research_type,
-          createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
-        };
-        pListArr.push(protocolObject);
-      });
-      setProtocolDataList(pListArr);
-    }
-  }, [protocolList]);
-
-  const addNewData = (data) => {
-    let dataObj = {
-      research_type_id: data.research_type_id,
-      login_id: user.id,
-    };
-    dispatch(createProtocol(dataObj)).then((data) => {
-      if (data.payload.status === 200) {
-        setOpen(false);
-        toast.success(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
+    if (assignMemberProtocolList?.data && assignMemberProtocolList?.data?.length > 0) {
+        assignMemberProtocolList?.data?.map((pList, index) => {
+            let protocolObject = {
+                id: pList.id,
+                protocolId: pList.protocol_id,
+                researchType: pList.protocol_name,
+                assignedDate: moment(pList.created_at).format("DD-MM-YYYY"),
+                updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+            }
+            pListArr.push(protocolObject);
         });
-      }
-    });
-  };
-
-  useEffect(() => {
-    if (createdProtocol) {
-      const data = { login_id: user.id };
-      dispatch(fetchProtocolList(data));
+        setProtocolDataList(pListArr);
     }
-  }, [createdProtocol]);
-
-  const handleChangeStatus = (status) => {
-    if (status.value === true || status.value === false) {
-      let data = { id: status.id, status: status.row.status };
-      dispatch(changeStatus(data));
-    }
-  };
+  }, [assignMemberProtocolList?.data]);
 
   const handleViewPdf = async (params) => {
     const { row } = params;
@@ -199,6 +145,9 @@ function Dashboard() {
       window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
     }
   };
+
+  // console.log('protocolList', protocolList)
+
 
   // const handleItemDelete = (params) => {
   //     //console.log('Delete Item', params)
@@ -233,26 +182,9 @@ function Dashboard() {
                 Protocol List
               </Typography>
             </Grid>
-            <Grid item xs={7} sm={7} md={4} lg={4}>
-              <Box display="flex" justifyContent="flex-end">
-                <CommonButton
-                  variant="contained"
-                  onClick={addNew}
-                  startIcon={<AddOutlinedIcon />}
-                >
-                  Add Research Type
-                </CommonButton>
-              </Box>
-            </Grid>
           </Grid>
         </Box>
-        <Box>
-          <AddResearch
-            open={open}
-            onClose={() => setOpen(false)}
-            addNewData={addNewData}
-          />
-        </Box>
+
         <Box sx={{ mt: 5 }}>
           <DataGrid
             rows={protocolDataList}
@@ -260,8 +192,6 @@ function Dashboard() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
-            // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
@@ -269,4 +199,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default VotingMemberProtocolList;

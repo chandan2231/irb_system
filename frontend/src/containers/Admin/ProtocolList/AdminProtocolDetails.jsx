@@ -11,6 +11,7 @@ const AdminProtocolDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const protocolTypeDetails = location.state.details;
+  const type = location.state.type;
   const [user, setUser] = useState([]);
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -38,16 +39,19 @@ const AdminProtocolDetails = () => {
         <ContractorResearcherDetails
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsById}
+          type={type}
         />
       ) : protocolTypeDetails.researchType === "Multi-Site Sponsor" ? (
         <MultiSiteSponsorDetails
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsById}
+          type={type}
         />
       ) : (
         <ClinicalResearcherDetails
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsById}
+          type={type}
         />
       )}
     </>

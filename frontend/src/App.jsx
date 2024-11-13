@@ -49,7 +49,8 @@ import AdminProtocolAmendmentRequest from "./containers/Admin/ProtocolAmendmentR
 import AdminProtocolAmendmentRequestDetails from "./containers/Admin/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 import Members from "./containers/Admin/Members/Members";
 import EventPriceList from "./containers/Admin/EventPriceList/EventPriceList";
-import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList.jsx";
+import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList";
+import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 
 function App() {
   const [loader, setLoader] = useState(true);
@@ -227,6 +228,10 @@ function App() {
                       <Route
                         path="/admin/protocol-event-list"
                         element={<ProtocolEventList />}
+                      />
+                      <Route
+                        path="/member/protocol-list"
+                        element={<VotingMemberProtocolList />}
                       />
                       {/* </Route> */}
                       <Route path="/signin" element={<SignIn />} />

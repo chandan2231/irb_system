@@ -34,7 +34,7 @@ const studyInfoSchema = yup.object().shape({
   research_type: yup.string().required("This is required"),
 });
 
-function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
+function StudyInformationForm({ protocolTypeDetails, studyInformation, type }) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -164,16 +164,24 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
               }
             })}
         </Form.Group>
-        <Form.Group
-          as={Col}
-          controlId="validationFormik010"
-          className="mt-mb-20"
-          style={{ textAlign: "right" }}
-        >
-          <Button variant="contained" color="primary" type="Submit">
-            SAVE AND CONTINUE
-          </Button>
-        </Form.Group>
+        {
+          type !== 'member' && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="Submit"
+              >
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )
+        }
       </form>
     </Row>
   );

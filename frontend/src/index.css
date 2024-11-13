@@ -37,6 +37,9 @@ body,
 .mb-10 {
   margin-bottom: 10px;
 }
+.pr-25 {
+  padding-right: 25px;
+}
 .fullwidth {
   width: 100%;
 }

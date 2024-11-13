@@ -33,7 +33,7 @@ function UnderReviewProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/admin/protocol-details", { state: { details: params.row } });
+    navigate("/admin/protocol-details", { state: { details: params.row, type: 'admin' } });
   };
   const columns = [
     {
