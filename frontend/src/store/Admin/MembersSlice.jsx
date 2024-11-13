@@ -9,7 +9,8 @@ import {
     fetchMemberEventList,
     assignProtocolToMember,
     fetchAssignMemberList,
-    fetchAssignMemberProtocolList
+    fetchAssignMemberProtocolList,
+    votingMemberApprovalProtocol
   } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
@@ -30,6 +31,7 @@ const MembersSlice = createSlice({
     memberAssigned: null,
     memberAssignedList: null,
     assignMemberProtocolList: null,
+    votingMemberApprovedProtocol: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -157,6 +159,18 @@ const MembersSlice = createSlice({
         state.assignMemberProtocolList = action.payload;
       })
       .addCase(fetchAssignMemberProtocolList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(votingMemberApprovalProtocol.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(votingMemberApprovalProtocol.fulfilled, (state, action) => {
+        state.loading = false;
+        state.votingMemberApprovedProtocol = action.payload;
+      })
+      .addCase(votingMemberApprovalProtocol.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })

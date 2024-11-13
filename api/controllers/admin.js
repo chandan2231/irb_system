@@ -766,7 +766,22 @@ export const assignedMembersProtocolList = (req, res) => {
         return res.status(200).json(data)
       }
     })
-  }
+}
+
+export const votingMemberApprovalProtocol = (req, res) => {
+    var datetime = new Date()
+    const que = 'UPDATE members_protocol SET protocol=?, consent=?, supported_documents=?, comment=?, electronic_signature=?, completed_date=? WHERE id=?'
+    db.query(que, [req.body.protocol, req.body.consent, req.body.supported_documents, req.body.comment, req.body.electronic_signature, datetime.toISOString().slice(0, 10), req.body.id], (err, data) => {
+      if (err) {
+        return res.status(500).json(err)
+      } else {
+        let result = {}
+        result.status = 200
+        result.msg = 'Protocol Approved Successfully'
+        return res.json(result)
+      }
+    })
+}
 
             
             

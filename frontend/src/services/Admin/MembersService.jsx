@@ -158,3 +158,18 @@ export const fetchAssignMemberProtocolList = createAsyncThunk("Members/fetchAssi
     }
   }
 );
+
+export const votingMemberApprovalProtocol = createAsyncThunk("Members/votingMemberApprovalProtocol",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/admin/member/votingMemberApprovalProtocol`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

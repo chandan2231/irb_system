@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import InvestigatorInformationForm from "../ProtocolList/AdminProtocolType/ClinicalResearcher/InvestigatorInformationForm";
 import InformedConsentForm from "../ProtocolList/AdminProtocolType/ClinicalResearcher/InformedConsentForm";
 import SubmissionForm from "../ProtocolList/AdminProtocolType/ClinicalResearcher/SubmissionForm";
+import { votingMemberApprovalProtocol } from "../../../services/Admin/MembersService";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
@@ -18,6 +19,7 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -78,9 +80,10 @@ const ClinicalResearcherDetails = ({
     electronic_signature: "",
     protocol_id: protocolTypeDetails.protocolId,
     created_by: userDetails.id,
+    id: protocolTypeDetails.id,
   });
   const [errors, setErrors] = useState({});
-
+  const dispatch = useDispatch();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -100,6 +103,11 @@ const ClinicalResearcherDetails = ({
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
@@ -108,24 +116,24 @@ const ClinicalResearcherDetails = ({
         { abortEarly: false },
       );
       const isValid = await memberProtocolSchema.isValid(getValidatedform);
-      // if (isValid === true) {
-      //   dispatch(createInformedConsent(formData)).then((data) => {
-      //     if (data.payload.status === 200) {
-      //       toast.success(data.payload.data.msg, {
-      //         position: "top-right",
-      //         autoClose: 5000,
-      //         hideProgressBar: false,
-      //         closeOnClick: true,
-      //         pauseOnHover: true,
-      //         draggable: true,
-      //         progress: undefined,
-      //         theme: "dark",
-      //       });
-      //       setFormData({});
-      //       e.target.reset();
-      //     }
-      //   });
-      // }
+      if (isValid === true) {
+        dispatch(votingMemberApprovalProtocol(formData)).then((data) => {
+          if (data.payload.status === 200) {
+            toast.success(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+            // setFormData({});
+            // e.target.reset();
+          }
+        });
+      }
     } catch (error) {
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -255,7 +263,7 @@ const ClinicalResearcherDetails = ({
                     label="Comment"
                     id="comment"
                     name="comment"
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     defaultValue={formData.comment}
                     multiline
                     rows={4}
@@ -276,7 +284,7 @@ const ClinicalResearcherDetails = ({
                     label="Electronic Signature *"
                     id="electronic_signature"
                     name="electronic_signature"
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     defaultValue={formData.electronic_signature}
                   />
                   {errors.electronic_signature && (

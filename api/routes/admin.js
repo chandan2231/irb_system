@@ -30,10 +30,12 @@ import {
     memberEventList,
     assignProtocolToMembers,
     assignedMembersList,
-    assignedMembersProtocolList
+    assignedMembersProtocolList,
+    votingMemberApprovalProtocol,
 } from "../controllers/admin.js";
 
 const router = express.Router()
+router.post('/member/votingMemberApprovalProtocol', votingMemberApprovalProtocol)
 router.post('/member/assignedMembersProtocolList', assignedMembersProtocolList)
 router.post('/member/assignedMembers', assignedMembersList)
 router.post('/member/assignProtocolToMembers', assignProtocolToMembers)

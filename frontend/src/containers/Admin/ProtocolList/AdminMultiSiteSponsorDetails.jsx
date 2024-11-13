@@ -10,6 +10,7 @@ import StudyInformationForm from "../ProtocolList/AdminProtocolType/MultiSiteSpo
 import InformedConsentForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/InformedConsentForm";
 import SubmissionForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/SubmissionForm";
 import ProtocolProceduresForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/ProtocolProceduresForm";
+import { votingMemberApprovalProtocol } from "../../../services/Admin/MembersService";
 import { useLocation } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -22,6 +23,7 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -70,6 +72,7 @@ const MultiSiteSponsorDetails = ({
     };
   }
   const location = useLocation();
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [formData, setFormData] = useState({
@@ -80,11 +83,19 @@ const MultiSiteSponsorDetails = ({
     electronic_signature: "",
     protocol_id: protocolTypeDetails.protocolId,
     created_by: userDetails.id,
+    id: protocolTypeDetails.id,
   });
   const [errors, setErrors] = useState({});
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleRadioButtonProtocol = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -107,24 +118,24 @@ const MultiSiteSponsorDetails = ({
         { abortEarly: false },
       );
       const isValid = await memberProtocolSchema.isValid(getValidatedform);
-      // if (isValid === true) {
-      //   dispatch(createInformedConsent(formData)).then((data) => {
-      //     if (data.payload.status === 200) {
-      //       toast.success(data.payload.data.msg, {
-      //         position: "top-right",
-      //         autoClose: 5000,
-      //         hideProgressBar: false,
-      //         closeOnClick: true,
-      //         pauseOnHover: true,
-      //         draggable: true,
-      //         progress: undefined,
-      //         theme: "dark",
-      //       });
-      //       setFormData({});
-      //       e.target.reset();
-      //     }
-      //   });
-      // }
+      if (isValid === true) {
+        dispatch(votingMemberApprovalProtocol(formData)).then((data) => {
+          if (data.payload.status === 200) {
+            toast.success(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+            // setFormData({});
+            // e.target.reset();
+          }
+        });
+      }
     } catch (error) {
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -146,6 +157,18 @@ const MultiSiteSponsorDetails = ({
   };
   return (
     <Box sx={{ width: "100%" }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <h2 className="ml-20">
         {protocolTypeDetails.researchType} Details(
         {protocolTypeDetails.protocolId})
@@ -242,7 +265,7 @@ const MultiSiteSponsorDetails = ({
                     label="Comment"
                     id="comment"
                     name="comment"
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     defaultValue={formData.comment}
                     multiline
                     rows={4}
@@ -263,7 +286,7 @@ const MultiSiteSponsorDetails = ({
                     label="Electronic Signature *"
                     id="electronic_signature"
                     name="electronic_signature"
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     defaultValue={formData.electronic_signature}
                   />
                   {errors.electronic_signature && (

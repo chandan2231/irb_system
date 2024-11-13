@@ -10,6 +10,8 @@ import StudyInformationForm from "../ProtocolList/AdminProtocolType/ContractorRe
 import InformedConsentForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/InformedConsentForm";
 import ProtocolProceduresForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/ProtocolProceduresForm";
 import SubmissionForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/SubmissionForm";
+import { votingMemberApprovalProtocol } from "../../../services/Admin/MembersService";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -72,7 +74,7 @@ const ContractorResearcherDetails = ({
   const location = useLocation();
   const [value, setValue] = React.useState(0);
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     protocol: "",
     consent: "",
@@ -81,6 +83,7 @@ const ContractorResearcherDetails = ({
     electronic_signature: "",
     protocol_id: protocolTypeDetails.protocolId,
     created_by: userDetails.id,
+    id: protocolTypeDetails.id,
   });
   const [errors, setErrors] = useState({});
 
@@ -111,24 +114,24 @@ const ContractorResearcherDetails = ({
         { abortEarly: false },
       );
       const isValid = await memberProtocolSchema.isValid(getValidatedform);
-      // if (isValid === true) {
-      //   dispatch(createInformedConsent(formData)).then((data) => {
-      //     if (data.payload.status === 200) {
-      //       toast.success(data.payload.data.msg, {
-      //         position: "top-right",
-      //         autoClose: 5000,
-      //         hideProgressBar: false,
-      //         closeOnClick: true,
-      //         pauseOnHover: true,
-      //         draggable: true,
-      //         progress: undefined,
-      //         theme: "dark",
-      //       });
-      //       setFormData({});
-      //       e.target.reset();
-      //     }
-      //   });
-      // }
+      if (isValid === true) {
+        dispatch(votingMemberApprovalProtocol(formData)).then((data) => {
+          if (data.payload.status === 200) {
+            toast.success(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+            // setFormData({});
+            // e.target.reset();
+          }
+        });
+      }
     } catch (error) {
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -149,8 +152,25 @@ const ContractorResearcherDetails = ({
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <h2 className="ml-20">
         {protocolTypeDetails.researchType} Details(
         {protocolTypeDetails.protocolId})
@@ -247,7 +267,7 @@ const ContractorResearcherDetails = ({
                     label="Comment"
                     id="comment"
                     name="comment"
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     defaultValue={formData.comment}
                     multiline
                     rows={4}
@@ -268,7 +288,7 @@ const ContractorResearcherDetails = ({
                     label="Electronic Signature *"
                     id="electronic_signature"
                     name="electronic_signature"
-                    onChange={handleChange}
+                    onChange={handleInputChange}
                     defaultValue={formData.electronic_signature}
                   />
                   {errors.electronic_signature && (
