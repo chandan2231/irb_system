@@ -78,7 +78,6 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation, typ
         abortEarly: false,
       });
       const isValid = await protocoalInfoSchema.isValid(getValidatedform);
-      console.log("formData", formData);
       if (isValid === true) {
         dispatch(createProtocolInformation(formData)).then((data) => {
           if (data.payload.status === 200) {
@@ -88,9 +87,6 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation, typ
       }
     } catch (error) {}
   };
-
-  console.log("protocolInformation", protocolInformation);
-
   return (
     <Row>
       <form onSubmit={handleSubmitData}>

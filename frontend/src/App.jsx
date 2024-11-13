@@ -51,7 +51,9 @@ import Members from "./containers/Admin/Members/Members";
 import EventPriceList from "./containers/Admin/EventPriceList/EventPriceList";
 import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList";
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
-import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList.jsx";
+import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
+import ApprovalMemberDetails from "./containers/CommitteeChair/ApprovalMemberDetails";
+
 function App() {
   const [loader, setLoader] = useState(true);
   //const navigate = useNavigate();
@@ -244,6 +246,10 @@ function App() {
                       <Route
                         path="/committee-chair/protocol-details"
                         element={<AdminProtocolDetails />}
+                      />
+                      <Route
+                        path="/committee-chair/approval-member-details"
+                        element={<ApprovalMemberDetails />}
                       />
                       {/* </Route> */}
                       <Route path="/signin" element={<SignIn />} />

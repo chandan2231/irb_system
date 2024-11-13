@@ -32,9 +32,11 @@ import {
     assignedMembersList,
     assignedMembersProtocolList,
     votingMemberApprovalProtocol,
+    approvedProtocolsByMembersList,
 } from "../controllers/admin.js";
 
 const router = express.Router()
+router.post('/member/approvedProtocolsByMembersList', approvedProtocolsByMembersList)
 router.post('/member/votingMemberApprovalProtocol', votingMemberApprovalProtocol)
 router.post('/member/assignedMembersProtocolList', assignedMembersProtocolList)
 router.post('/member/assignedMembers', assignedMembersList)

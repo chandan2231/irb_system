@@ -783,5 +783,15 @@ export const votingMemberApprovalProtocol = (req, res) => {
     })
 }
 
+export const approvedProtocolsByMembersList = (req, res) => {
+    const que = 'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
+    db.query(que, [req.body.protocolId], (err, data) => {
+      if (err) return res.status(500).json(err)
+      if (data.length >= 0) {
+        return res.status(200).json(data)
+      }
+    })
+}
+
             
             
