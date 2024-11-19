@@ -44,20 +44,18 @@ const protocoalInfoSchema = yup.object().shape({
     then: () =>
       yup
         .string()
-        .notRequired(
-          "This is required when the protocol is not submitted for the first time",
-        ),
+        .required("This is required when the protocol is not submitted for the first time"),
+    otherwise: () => yup.string(), // Ensure it's nullable if condition isn't met
   }),
 
-  disapproved_or_withdrawn_explain: yup
-    .string()
-    .when("disapproved_or_withdrawn", {
-      is: (value) => value === "Yes", // Explicit condition check
-      then: () =>
-        yup
-          .string()
-          .notRequired("Explanation is required if disapproved or withdrawn"),
-    }),
+  disapproved_or_withdrawn_explain: yup.string().when("disapproved_or_withdrawn", {
+    is: (value) => value === "Yes", // Explicit condition check
+    then: () =>
+      yup
+        .string()
+        .required("Explanation is required if disapproved or withdrawn"),
+    otherwise: () => yup.string().nullable(), // Allow null or empty if not required
+  }),
 
   oversite: yup.string(),
 
@@ -66,17 +64,14 @@ const protocoalInfoSchema = yup.object().shape({
     then: () =>
       yup
         .string()
-        .required(
-          "This is required if oversight is transferred from another IRB",
-        ),
+        .required("This is required if oversight is transferred from another IRB"),
+    otherwise: () => yup.string().nullable(),
   }),
 
   protocol_title: yup.string().required("Protocol title is required"),
   protocol_number: yup.string().required("Protocol number is required"),
   sponsor: yup.string().required("Sponsor is required"),
-  study_duration: yup
-    .string()
-    .required("Approximate duration of the study is required"),
+  study_duration: yup.string().required("Approximate duration of the study is required"),
   funding_source: yup.string().required("Funding source is required"),
 
   protocol_file: yup
@@ -85,6 +80,7 @@ const protocoalInfoSchema = yup.object().shape({
       return value && value.length > 0;
     }),
 });
+
 
 function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   const theme = useTheme();
@@ -216,6 +212,12 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       });
       const isValid = await protocoalInfoSchema.isValid(validatedFormData);
 
+      console.log("protocolInformation form", {
+        formData,
+        validatedFormData,
+        isValid,
+      });
+
       if (isValid) {
         let protocol_file = [];
         if (formData.protocol_file) {
@@ -325,6 +327,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="disapproved_or_withdrawn"
+                    value={formData.disapproved_or_withdrawn}
                     onChange={(event) =>
                       handleRadioButtonSelectDisapproved(
                         event,
@@ -381,6 +384,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                     row
                     aria-labelledby="demo-row-radio-buttons-group-label"
                     name="oversite"
+                    value={formData.oversite}
                     onChange={(event) =>
                       handleRadioButtonSelectOversite(event, "oversite")
                     }
