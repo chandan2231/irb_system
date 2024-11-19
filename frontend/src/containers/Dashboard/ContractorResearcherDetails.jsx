@@ -91,7 +91,6 @@ const ContractorResearcherDetails = ({
           <Tab label="Submission" {...a11yProps(5)} />
         </Tabs>
       </Box>
-      {/* here client */}
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}

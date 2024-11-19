@@ -62,6 +62,27 @@ function SubmissionForm({ protocolTypeDetails }) {
   // });
   const notSavedForm = [];
 
+  const getAllMultiSiteSavedProtocolType = Object.keys(protocolDetailsById).map(
+    (key) => {
+      const value = protocolDetailsById[key]
+      const valueKeys = Object.keys(value)
+      const isDocumentIncluded = valueKeys.includes('documents')
+      return {
+        form: key,
+        filled: valueKeys.length - (isDocumentIncluded ? 1 : 0) !== 0,
+        length: valueKeys.length,
+        filledLength: valueKeys.length - (isDocumentIncluded ? 1 : 0)
+      }
+    }
+  )
+
+  getAllMultiSiteSavedProtocolType &&
+    getAllMultiSiteSavedProtocolType.map((formList) => {
+      if (formList.filled === false) {
+        notSavedForm.push(formList.form);
+      }
+    });
+
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
@@ -101,7 +122,7 @@ function SubmissionForm({ protocolTypeDetails }) {
           );
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const titleCase = (str) => {
     var splitStr = str.toLowerCase().split(" ");

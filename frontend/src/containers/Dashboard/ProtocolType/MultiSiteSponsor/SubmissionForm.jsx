@@ -33,22 +33,48 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
     created_by: userDetails.id,
   });
   const notSavedForm = [];
-  useEffect(() => {
-    let data = {
-      protocolId: protocolTypeDetails?.protocolId,
-      protocolType: protocolTypeDetails?.researchType,
-    };
-    dispatch(getMultiSiteSavedProtocolType(data));
-  }, [dispatch, userDetails.id]);
+  // useEffect(() => {
+  //   let data = {
+  //     protocolId: protocolTypeDetails?.protocolId,
+  //     protocolType: protocolTypeDetails?.researchType,
+  //   };
+  //   dispatch(getMultiSiteSavedProtocolType(data));
+  // }, [dispatch, userDetails.id]);
 
-  const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
-    (state) => ({
-      error: state.multiSiteSponsor.error,
-      getAllMultiSiteSavedProtocolType:
-        state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
-      loading: state.multiSiteSponsor.loading,
-    }),
-  );
+  // const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
+  //   (state) => ({
+  //     error: state.multiSiteSponsor.error,
+  //     getAllMultiSiteSavedProtocolType:
+  //       state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
+  //     loading: state.multiSiteSponsor.loading,
+  //   }),
+  // );
+  // getAllMultiSiteSavedProtocolType &&
+  //   getAllMultiSiteSavedProtocolType.map((formList) => {
+  //     if (formList.filled === false) {
+  //       notSavedForm.push(formList.form);
+  //     }
+  //   });
+
+  console.log("submission form details", {
+    protocolTypeDetails,
+    protocolDetailsById
+  });
+
+  const getAllMultiSiteSavedProtocolType = Object.keys(protocolDetailsById).map(
+    (key) => {
+      const value = protocolDetailsById[key]
+      const valueKeys = Object.keys(value)
+      const isDocumentIncluded = valueKeys.includes('documents')
+      return {
+        form: key,
+        filled: valueKeys.length - (isDocumentIncluded ? 1 : 0) !== 0,
+        length: valueKeys.length,
+        filledLength: valueKeys.length - (isDocumentIncluded ? 1 : 0)
+      }
+    }
+  )
+
   getAllMultiSiteSavedProtocolType &&
     getAllMultiSiteSavedProtocolType.map((formList) => {
       if (formList.filled === false) {
@@ -102,7 +128,7 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
           });
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const titleCase = (str) => {

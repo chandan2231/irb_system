@@ -50,11 +50,11 @@ const investigatorInfoSchema = yup.object().shape({
     .string()
     .email("Invalid email format")
     .required("Sub-Investigator email is required"),
-  primary_contact: yup.string(),
+  primary_contact: yup.string().notRequired(),
   primary_contact_email: yup.string().email("Invalid email format"),
   fda_audit: yup.string().required("Please specify if FDA audit occurred"),
   fda_audit_explain: yup.string().when("fda_audit", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () =>
       yup.string().required("Explanation is required if FDA audit occurred"),
   }),
