@@ -169,9 +169,11 @@ function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
               </ListSubheader>
             }
           >
-            {notSavedForm.map((showForm) => {
+            {notSavedForm.map((showForm, index) => {
               return (
-                <ListItemButton>
+                <ListItemButton
+                  key={index}
+                >
                   <ListItemIcon>
                     <StarBorder />
                   </ListItemIcon>

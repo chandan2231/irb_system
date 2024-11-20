@@ -23,7 +23,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
 
-function SubmissionForm({ protocolTypeDetails }) {
+function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = React.useState(false);
@@ -162,9 +162,11 @@ function SubmissionForm({ protocolTypeDetails }) {
             </ListSubheader>
           }
         >
-          {notSavedForm.map((showForm) => {
+          {notSavedForm.map((showForm, index) => {
             return (
-              <ListItemButton>
+              <ListItemButton
+                key={index}
+              >
                 <ListItemIcon>
                   <StarBorder />
                 </ListItemIcon>
