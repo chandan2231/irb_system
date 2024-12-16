@@ -35,8 +35,6 @@ const corsOptions = {
 // Use the cors middleware
 app.use(cors(corsOptions));
 
-
-app.options('*', cors());
 app.use(cookieParser())
 
 app.use('/api/auth', authRoutes)
