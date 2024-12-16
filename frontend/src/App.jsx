@@ -68,7 +68,7 @@ function App() {
     try {
       const cookieName = "accessToken";
       const getCookie = getCookieValue(cookieName);
-      let res = await axios.get("https://api.irbhub.com/api/auth/", {
+      let res = await axios.get("http://localhost:8800/api/auth/", {
         headers: {
           "Content-Type": "application/json",
           token: getCookie,
