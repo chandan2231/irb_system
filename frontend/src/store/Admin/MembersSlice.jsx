@@ -11,7 +11,8 @@ import {
     fetchAssignMemberList,
     fetchAssignMemberProtocolList,
     votingMemberApprovalProtocol,
-    fetchApprovedProtocolsByMembersList
+    fetchApprovedProtocolsByMembersList,
+    chairCommitteeApprovalProtocol,
   } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
@@ -34,6 +35,7 @@ const MembersSlice = createSlice({
     assignMemberProtocolList: null,
     votingMemberApprovedProtocol: null,
     approvedProtocolsByMembersList: null,
+    createdChairCommitteeApprovalProtocol: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -185,6 +187,18 @@ const MembersSlice = createSlice({
         state.approvedProtocolsByMembersList = action.payload;
       })
       .addCase(fetchApprovedProtocolsByMembersList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(chairCommitteeApprovalProtocol.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(chairCommitteeApprovalProtocol.fulfilled, (state, action) => {
+        state.loading = false;
+        state.createdChairCommitteeApprovalProtocol = action.payload;
+      })
+      .addCase(chairCommitteeApprovalProtocol.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })

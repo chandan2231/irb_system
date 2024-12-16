@@ -33,9 +33,11 @@ import {
     assignedMembersProtocolList,
     votingMemberApprovalProtocol,
     approvedProtocolsByMembersList,
+    chairCommitteeApprovalProtocol,
 } from "../controllers/admin.js";
 
 const router = express.Router()
+router.post('/member/chairCommitteeApprovalProtocol', chairCommitteeApprovalProtocol)
 router.post('/member/approvedProtocolsByMembersList', approvedProtocolsByMembersList)
 router.post('/member/votingMemberApprovalProtocol', votingMemberApprovalProtocol)
 router.post('/member/assignedMembersProtocolList', assignedMembersProtocolList)

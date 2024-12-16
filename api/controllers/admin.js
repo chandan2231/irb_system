@@ -793,5 +793,21 @@ export const approvedProtocolsByMembersList = (req, res) => {
     })
 }
 
+export const chairCommitteeApprovalProtocol = (req, res) => {
+    var datetime = new Date()
+    let protocolStatus = req.body.protocol === 'Approve' ? 3 : req.body.protocol === 'Under Review' ? 2 :  req.body.protocol === 'Rejected' ? 4 : 5
+    const que = 'UPDATE protocols SET status=?, comment=?, electronic_signature=?, approval_date_by_chair_committee=? WHERE protocol_id=?'
+    db.query(que, [protocolStatus, req.body.comment, req.body.electronic_signature, datetime.toISOString().slice(0, 10), req.body.protocol_id], (err, data) => {
+      if (err) {
+        return res.status(500).json(err)
+      } else {
+        let result = {}
+        result.status = 200
+        result.msg = 'Protocol Details updated Successfully'
+        return res.json(result)
+      }
+    })
+}
+
             
             

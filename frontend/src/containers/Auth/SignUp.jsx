@@ -178,22 +178,7 @@ import { useTheme } from "@mui/material";
                             />
                             </Grid>
                         </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
-                        >
-                          <Field
-                            label="City"
-                            variant="outlined"
-                            fullWidth
-                            name="city"
-                            value={values.city}
-                            component={TextField}
-                          />
-                        </Grid>
+                        
                       </CardContent>
                       <Grid
                         item
