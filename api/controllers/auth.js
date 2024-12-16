@@ -37,12 +37,7 @@ export const login = (req, res) => {
         if(!checkpassword) return res.status(400).json('Wrong password or email!');
         const token = jwt.sign({id: data[0].id}, 'secretkey');
         const { password, ...others } = data[0];
-	res.cookie('accessToken', token, {
-  httpOnly: true,   // Should be true in production if possible, to protect against XSS
-  secure: process.env.NODE_ENV === 'production',  // Only set secure flag in production
-  sameSite: 'None',   // For cross-origin cookies, sameSite should be None
-});
-        res.status(200).json(others)
+        res.cookie('accessToken', token, {httpOnly: true, sameSite: 'None', secure: true}).status(200).json(others)
 
     })
 }

@@ -12,6 +12,7 @@ export const userSignin = createAsyncThunk(
         url: `${baseURL}/auth/login`,
         data,
         headers: { withCredentials: true },
+        credentials: 'include',
       });
       return response;
     } catch (error) {
