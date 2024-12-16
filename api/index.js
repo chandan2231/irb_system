@@ -14,10 +14,27 @@ const app = express()
 // middlewares
 app.use(express.json())
 
-app.use(cors({
-  origin: 'https://irbhub.com', // the frontend URL
-  credentials: true,
-}));
+// Define allowed origins for production
+const allowedOrigins = ['https://irbhub.com'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Check if the origin is in the allowedOrigins list
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,  // Allow credentials (cookies, HTTP authentication, etc.)
+  preflightContinue: false, // Don't pass preflight request to the next handler
+};
+
+// Use the cors middleware
+app.use(cors(corsOptions));
+
 
 app.options('*', cors());
 app.use(cookieParser())

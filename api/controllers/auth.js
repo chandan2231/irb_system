@@ -37,7 +37,13 @@ export const login = (req, res) => {
         if(!checkpassword) return res.status(400).json('Wrong password or email!');
         const token = jwt.sign({id: data[0].id}, 'secretkey');
         const { password, ...others } = data[0];
-        res.cookie('accessToken', token, {httpOnly: true, sameSite: 'None', secure: true}).status(200).json(others)
+        res.cookie('accessToken', token, {
+          httpOnly: true,       // Prevents access to the cookie via JavaScript (XSS protection)
+          secure: true, // Only send cookies over HTTPS in production
+          sameSite: 'None',     // For cross-origin cookies
+          maxAge: 3600000,      // 1 hour expiration
+        });
+        res.status(200).json(others);
 
     })
 }
