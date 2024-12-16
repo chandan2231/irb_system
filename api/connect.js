@@ -1,10 +1,10 @@
 import mysql from 'mysql'
 
 export const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'irb_system',
+  host: 'irb-database.cpbkqtxkbqjv.us-east-2.rds.amazonaws.com',
+  user: 'irb_dbadmin',
+  password: 'dmDveCBvmE8jiB8TT2Yp',
+  database: 'irb_dbadmin',
   port: 3306
 })
 
