@@ -12,10 +12,11 @@ import cookieParser from 'cookie-parser'
 const app = express()
 
 // middlewares
+//app.use(cors());
 app.use(express.json())
 
 // Define allowed origins for production
-const allowedOrigins = ['https://irbhub.com'];
+const allowedOrigins = ['https://app.irbhub.com'];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -33,9 +34,10 @@ const corsOptions = {
 };
 
 // Use the cors middleware
+app.use(cookieParser())
+// Apply CORS middleware
 app.use(cors(corsOptions));
 
-app.use(cookieParser())
 
 app.use('/api/auth', authRoutes)
 app.use('/api/researchInfo', researchRoutes)

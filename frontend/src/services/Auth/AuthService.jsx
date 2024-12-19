@@ -10,8 +10,7 @@ export const userSignin = createAsyncThunk(
       const response = await ApiCall({
         method: "POST",
         url: `${baseURL}/auth/login`,
-        data,
-        headers: { withCredentials: true },
+        data
       });
       return response;
     } catch (error) {
