@@ -7,7 +7,7 @@ import JSONBigInt from "json-bigint";
 
 export const commonHeaders = {
   "Content-Type": "application/json",
-  //  "Access-Control-Allow-Origin": "*",
+  // "Access-Control-Allow-Origin": "*",
   // 'X-Client-Type': 'DesktopApp',
   // 'X-Client-Language': 'ENGLISH',
   // 'X-Client-Platform': 'Web',

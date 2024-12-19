@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 
-const baseURL = "https://api.irbhub.com/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const userSignin = createAsyncThunk(
   "Auth/userSignin",
@@ -10,13 +10,13 @@ export const userSignin = createAsyncThunk(
       const response = await ApiCall({
         method: "POST",
         url: `${baseURL}/auth/login`,
-        data
+        data,
       });
       return response;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const userSignUp = createAsyncThunk(
@@ -32,7 +32,7 @@ export const userSignUp = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const userLogout = createAsyncThunk(
@@ -48,7 +48,7 @@ export const userLogout = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const sendUsername = createAsyncThunk(
@@ -68,7 +68,7 @@ export const sendUsername = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const validateUser = createAsyncThunk(
@@ -88,7 +88,7 @@ export const validateUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const changePassword = createAsyncThunk(
@@ -109,5 +109,5 @@ export const changePassword = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

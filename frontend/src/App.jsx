@@ -53,6 +53,7 @@ import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventLi
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
 import ApprovalMemberDetails from "./containers/CommitteeChair/ApprovalMemberDetails";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 function App() {
   const [loader, setLoader] = useState(true);
@@ -68,7 +69,7 @@ function App() {
     try {
       const cookieName = "accessToken";
       const getCookie = getCookieValue(cookieName);
-      let res = await axios.get("https://api.irbhub.com/api/auth/", {
+      let res = await axios.get(baseURL + "/auth/", {
         headers: {
           "Content-Type": "application/json",
           token: getCookie,

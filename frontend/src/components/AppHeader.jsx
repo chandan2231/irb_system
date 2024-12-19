@@ -49,7 +49,7 @@ function AppHeader() {
                             src='/src/assets/irb_logo.png'
                         /> */}
           <Box className="center-card">
-            <h2>IRB System</h2>
+            <h2>IRB HUB</h2>
           </Box>
         </Toolbar>
       ) : (
@@ -59,14 +59,16 @@ function AppHeader() {
           >
             <MenuTwoToneIcon sx={styles.iconColor} />
           </IconButton>
-          <h2>IRB System</h2>
+          <h2>IRB HUB</h2>
           <Box className="center-card">
             <h2>
-              {
-                userDetails.user_type === "admin" ? "Super Admin Portal" 
-                : userDetails.user_type === "Voting Member" ? 'Voting Member Portal'
-                : userDetails.user_type === "Committee Chair" ? 'Committee Chair Portal'
-                : ""}
+              {userDetails.user_type === "admin"
+                ? "Super Admin Portal"
+                : userDetails.user_type === "Voting Member"
+                  ? "Voting Member Portal"
+                  : userDetails.user_type === "Committee Chair"
+                    ? "Committee Chair Portal"
+                    : ""}
             </h2>
           </Box>
           {/* <Box

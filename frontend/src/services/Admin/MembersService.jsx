@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-
-const cp = "GHANA_BTC";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const fetchMemberList = createAsyncThunk(
   "Members/fetchMemberList",
@@ -17,10 +15,11 @@ export const fetchMemberList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
-export const createMember = createAsyncThunk("Members/createMember",
+export const createMember = createAsyncThunk(
+  "Members/createMember",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -32,7 +31,7 @@ export const createMember = createAsyncThunk("Members/createMember",
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const changeStatus = createAsyncThunk(
@@ -48,7 +47,7 @@ export const changeStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const resetMemberPassword = createAsyncThunk(
@@ -64,7 +63,7 @@ export const resetMemberPassword = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchActiveVotingMemberList = createAsyncThunk(
@@ -83,7 +82,8 @@ export const fetchActiveVotingMemberList = createAsyncThunk(
   }
 );
 
-export const createProtocolEvent = createAsyncThunk("Members/createProtocolEvent",
+export const createProtocolEvent = createAsyncThunk(
+  "Members/createProtocolEvent",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -98,7 +98,8 @@ export const createProtocolEvent = createAsyncThunk("Members/createProtocolEvent
   }
 );
 
-export const fetchMemberEventList = createAsyncThunk("Members/fetchMemberEventList",
+export const fetchMemberEventList = createAsyncThunk(
+  "Members/fetchMemberEventList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -113,7 +114,8 @@ export const fetchMemberEventList = createAsyncThunk("Members/fetchMemberEventLi
   }
 );
 
-export const assignProtocolToMember = createAsyncThunk("Members/assignProtocolToMember",
+export const assignProtocolToMember = createAsyncThunk(
+  "Members/assignProtocolToMember",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -128,8 +130,8 @@ export const assignProtocolToMember = createAsyncThunk("Members/assignProtocolTo
   }
 );
 
-
-export const fetchAssignMemberList = createAsyncThunk("Members/fetchAssignMemberList",
+export const fetchAssignMemberList = createAsyncThunk(
+  "Members/fetchAssignMemberList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -144,7 +146,8 @@ export const fetchAssignMemberList = createAsyncThunk("Members/fetchAssignMember
   }
 );
 
-export const fetchAssignMemberProtocolList = createAsyncThunk("Members/fetchAssignMemberProtocolList",
+export const fetchAssignMemberProtocolList = createAsyncThunk(
+  "Members/fetchAssignMemberProtocolList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -159,7 +162,8 @@ export const fetchAssignMemberProtocolList = createAsyncThunk("Members/fetchAssi
   }
 );
 
-export const votingMemberApprovalProtocol = createAsyncThunk("Members/votingMemberApprovalProtocol",
+export const votingMemberApprovalProtocol = createAsyncThunk(
+  "Members/votingMemberApprovalProtocol",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -174,8 +178,8 @@ export const votingMemberApprovalProtocol = createAsyncThunk("Members/votingMemb
   }
 );
 
-
-export const fetchApprovedProtocolsByMembersList = createAsyncThunk("Members/fetchApprovedProtocolsByMembersList",
+export const fetchApprovedProtocolsByMembersList = createAsyncThunk(
+  "Members/fetchApprovedProtocolsByMembersList",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -189,7 +193,8 @@ export const fetchApprovedProtocolsByMembersList = createAsyncThunk("Members/fet
     }
   }
 );
-export const chairCommitteeApprovalProtocol = createAsyncThunk("Members/chairCommitteeApprovalProtocol",
+export const chairCommitteeApprovalProtocol = createAsyncThunk(
+  "Members/chairCommitteeApprovalProtocol",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({

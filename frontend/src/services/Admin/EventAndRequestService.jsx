@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const getStudyCloseoutRequest = createAsyncThunk(
   "EventAndRequest/getStudyCloseoutRequest",
@@ -17,7 +16,7 @@ export const getStudyCloseoutRequest = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const getPromptlyReportableEvent = createAsyncThunk(
@@ -34,7 +33,7 @@ export const getPromptlyReportableEvent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const getAdverseEvent = createAsyncThunk(
@@ -51,7 +50,7 @@ export const getAdverseEvent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const getProtocolAmendmentRequest = createAsyncThunk(
@@ -68,7 +67,7 @@ export const getProtocolAmendmentRequest = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchStudyCloseoutRequestDetailsById = createAsyncThunk(
@@ -84,7 +83,7 @@ export const fetchStudyCloseoutRequestDetailsById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchPromptlyReportableEventById = createAsyncThunk(
@@ -100,7 +99,7 @@ export const fetchPromptlyReportableEventById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchAdverseEventById = createAsyncThunk(
@@ -116,7 +115,7 @@ export const fetchAdverseEventById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchProtocolAmendmentRequestById = createAsyncThunk(
@@ -132,5 +131,5 @@ export const fetchProtocolAmendmentRequestById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

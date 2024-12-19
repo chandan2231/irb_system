@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const fetchContinuinReviewProtocolList = createAsyncThunk(
   "ContinuinReviewList/fetchContinuinReviewProtocolList",
@@ -15,7 +15,7 @@ export const fetchContinuinReviewProtocolList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchContinuinReviewDetailsById = createAsyncThunk(
@@ -31,5 +31,5 @@ export const fetchContinuinReviewDetailsById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

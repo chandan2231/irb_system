@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const fetchApprovedProtocolList = createAsyncThunk(
   "ProtocolList/fetchApprovedProtocolList",
@@ -15,7 +15,7 @@ export const fetchApprovedProtocolList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchUnderReviewProtocolList = createAsyncThunk(
@@ -31,7 +31,7 @@ export const fetchUnderReviewProtocolList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchCreatedProtocolList = createAsyncThunk(
@@ -47,7 +47,7 @@ export const fetchCreatedProtocolList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchProtocolDetailsById = createAsyncThunk(
@@ -63,7 +63,7 @@ export const fetchProtocolDetailsById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const allowProtocolEdit = createAsyncThunk(
@@ -79,7 +79,7 @@ export const allowProtocolEdit = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const allowProtocolWaiveFee = createAsyncThunk(
@@ -95,5 +95,5 @@ export const allowProtocolWaiveFee = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

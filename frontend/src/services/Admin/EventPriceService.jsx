@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-
-const cp = "GHANA_BTC";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const fetchEventPriceList = createAsyncThunk(
   "EventPrice/fetchEventPriceList",
@@ -17,7 +15,7 @@ export const fetchEventPriceList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createEventPrice = createAsyncThunk(
@@ -33,7 +31,7 @@ export const createEventPrice = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const changeStatus = createAsyncThunk(
@@ -49,5 +47,5 @@ export const changeStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

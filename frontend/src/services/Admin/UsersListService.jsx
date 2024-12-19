@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BSAE_URL;
 
 export const fetchUsersList = createAsyncThunk(
   "UsersList/fetchUsersList",
@@ -15,7 +15,7 @@ export const fetchUsersList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const changeUserStatus = createAsyncThunk(
@@ -31,7 +31,7 @@ export const changeUserStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const resetUserPassword = createAsyncThunk(
@@ -47,5 +47,5 @@ export const resetUserPassword = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
