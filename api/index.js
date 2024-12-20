@@ -35,9 +35,10 @@ if (process.env.NODE_ENV === 'development') {
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token'],
     credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
-    preflightContinue: false // Don't pass preflight request to the next handler
+    preflightContinue: false, // Don't pass preflight request to the next handler
+    optionsSuccessStatus: 204
   }
   // Use the cors middleware
   app.use(cors(corsOptions))
