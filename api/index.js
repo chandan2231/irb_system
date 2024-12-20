@@ -12,17 +12,16 @@ dotenv.config({ path: `.env`, override: true })
 
 const app = express()
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', true)
-  next()
-})
-
 // middlewares
 app.use(express.json())
 
 app.use(cookieParser())
 if (process.env.NODE_ENV === 'development') {
   app.use(cors({ origin: 'http://localhost:5173' }))
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', true)
+    next()
+  })
 } else {
   // Define allowed origins for production
   // const allowedOrigins = ['https://app.irbhub.org']
