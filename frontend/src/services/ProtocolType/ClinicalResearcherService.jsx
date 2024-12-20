@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const createInvestigatorAndProtocolInformation = createAsyncThunk(
   "ProtocolType/createInvestigatorAndProtocolInformation",
@@ -15,7 +15,7 @@ export const createInvestigatorAndProtocolInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createInformedConsent = createAsyncThunk(
@@ -31,7 +31,7 @@ export const createInformedConsent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createPrincipalInvestigatorSubmission = createAsyncThunk(
@@ -47,7 +47,7 @@ export const createPrincipalInvestigatorSubmission = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk(
@@ -63,5 +63,5 @@ export const getPrincipalInvestigatorSavedProtocolType = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

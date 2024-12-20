@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const createProtocolInformation = createAsyncThunk(
   "ProtocolType/createProtocolInformation",
@@ -15,7 +15,7 @@ export const createProtocolInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createInformedConsent = createAsyncThunk(
@@ -31,7 +31,7 @@ export const createInformedConsent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createInvestigatorInformation = createAsyncThunk(
@@ -47,7 +47,7 @@ export const createInvestigatorInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 export const createStudyInformation = createAsyncThunk(
   "ProtocolType/createStudyInformation",
@@ -62,7 +62,7 @@ export const createStudyInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createProtocolProcedures = createAsyncThunk(
@@ -78,7 +78,7 @@ export const createProtocolProcedures = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createClinicalSiteSubmission = createAsyncThunk(
@@ -94,7 +94,7 @@ export const createClinicalSiteSubmission = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const getClinicalSiteSavedProtocolType = createAsyncThunk(
@@ -110,5 +110,5 @@ export const getClinicalSiteSavedProtocolType = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

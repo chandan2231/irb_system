@@ -19,6 +19,8 @@ import * as yup from "yup";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_BASE_URL;
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -72,8 +74,8 @@ function InformedConsentForm({ consentInformation, type }) {
     console.log("sadasdsadas", formData);
     try {
       const res = await axios.post(
-        "http://localhost:8800/api/researchInfo/saveInformedInfo",
-        formData,
+        baseURL + "/researchInfo/saveInformedInfo",
+        formData
       );
       console.log("res", res);
       if (res.status === 200) {
@@ -282,25 +284,18 @@ function InformedConsentForm({ consentInformation, type }) {
             </FormGroup>
           </FormControl>
         </Form.Group>
-        {
-          type !== 'member' && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                type="Submit"
-                disabled
-              >
-                SAVE AND CONTINUE
-              </Button>
-            </Form.Group>
-          )
-        }
+        {type !== "member" && (
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+            style={{ textAlign: "right" }}
+          >
+            <Button variant="contained" color="primary" type="Submit" disabled>
+              SAVE AND CONTINUE
+            </Button>
+          </Form.Group>
+        )}
       </form>
     </Row>
   );

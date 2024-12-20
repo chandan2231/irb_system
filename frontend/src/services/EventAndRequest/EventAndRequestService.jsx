@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const createStudyCloseoutRequest = createAsyncThunk(
   "EventAndRequest/createStudyCloseoutRequest",
@@ -17,7 +17,7 @@ export const createStudyCloseoutRequest = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createPromptlyReportableEvent = createAsyncThunk(
@@ -34,7 +34,7 @@ export const createPromptlyReportableEvent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createAdverseEvent = createAsyncThunk(
@@ -51,7 +51,7 @@ export const createAdverseEvent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createProtocolAmendmentRequest = createAsyncThunk(
@@ -68,5 +68,5 @@ export const createProtocolAmendmentRequest = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

@@ -4,6 +4,7 @@ import Backdrop from "@mui/material/Backdrop";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const PrivateRoutes = () => {
   // const user = useSelector((store) => store.authSlice.auth.user);
@@ -27,7 +28,7 @@ const PrivateRoutes = () => {
     try {
       const cookieName = "accessToken";
       const getCookie = getCookieValue(cookieName);
-      let res = await axios.get("http://localhost:8800/api/auth/", {
+      let res = await axios.get(baseURL + "/auth/", {
         headers: {
           "Content-Type": "application/json",
           token: getCookie,

@@ -1,8 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 
-const cp = "GHANA_BTC";
-const baseURL = "https://ghauthapi.milvik.io";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchUserList = createAsyncThunk(
   "User/fetchUserList",
@@ -17,7 +16,7 @@ export const fetchUserList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createUser = createAsyncThunk(
@@ -33,7 +32,7 @@ export const createUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const changeStatus = createAsyncThunk(
@@ -56,7 +55,7 @@ export const changeStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchActiveUsersList = createAsyncThunk(
@@ -72,7 +71,7 @@ export const fetchActiveUsersList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const uploadFile = async (file, fileData = {}) => {
@@ -86,7 +85,7 @@ export const uploadFile = async (file, fileData = {}) => {
   try {
     let response = await ApiCall({
       method: "POST",
-      url: `http://localhost:8800/api/protocol/upload/file`,
+      url: `${baseURL}/protocol/upload/file`,
       data,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -101,7 +100,7 @@ export const continueinReviewReport = async (protocolDetails) => {
   try {
     let response = await ApiCall({
       method: "POST",
-      url: `http://localhost:8800/api/protocol/continuein/generate/pdf`,
+      url: `${baseURL}/protocol/continuein/generate/pdf`,
       data: protocolDetails,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -115,7 +114,7 @@ export const protocolReport = async (protocolDetails) => {
   try {
     let response = await ApiCall({
       method: "POST",
-      url: `http://localhost:8800/api/protocol/protocol/generate/pdf`,
+      url: `${baseURL}/protocol/protocol/generate/pdf`,
       data: protocolDetails,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

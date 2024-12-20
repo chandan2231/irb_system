@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const riskAssessmentSave = createAsyncThunk(
   "ContinuinRevew/riskAssessmentSave",
@@ -17,7 +17,7 @@ export const riskAssessmentSave = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const informedConsentSave = createAsyncThunk(
@@ -34,7 +34,7 @@ export const informedConsentSave = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const investigatorAndinstuationSave = createAsyncThunk(
@@ -51,7 +51,7 @@ export const investigatorAndinstuationSave = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const researchProcessSave = createAsyncThunk(
@@ -68,5 +68,5 @@ export const researchProcessSave = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

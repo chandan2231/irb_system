@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchProtocolList = createAsyncThunk(
   "Dashboard/fetchProtocolList",
@@ -15,7 +16,7 @@ export const fetchProtocolList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createProtocol = createAsyncThunk(
@@ -31,7 +32,7 @@ export const createProtocol = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const changeStatus = createAsyncThunk(
@@ -54,7 +55,7 @@ export const changeStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchActiveMarketList = createAsyncThunk(
@@ -70,7 +71,7 @@ export const fetchActiveMarketList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const approvedProtocolListCheck = createAsyncThunk(
@@ -86,7 +87,7 @@ export const approvedProtocolListCheck = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const fetchApprovedProtocolList = createAsyncThunk(
@@ -102,5 +103,5 @@ export const fetchApprovedProtocolList = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = "http://localhost:8800/api";
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const createProtocolInformation = createAsyncThunk(
   "ProtocolType/createProtocolInformation",
@@ -15,7 +15,7 @@ export const createProtocolInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createContactInformation = createAsyncThunk(
@@ -31,7 +31,7 @@ export const createContactInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createStudyInformation = createAsyncThunk(
@@ -47,7 +47,7 @@ export const createStudyInformation = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createInformedConsent = createAsyncThunk(
@@ -63,7 +63,7 @@ export const createInformedConsent = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createProtocolProcedures = createAsyncThunk(
@@ -79,7 +79,7 @@ export const createProtocolProcedures = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const createMultiSiteSubmission = createAsyncThunk(
@@ -95,7 +95,7 @@ export const createMultiSiteSubmission = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
 
 export const getMultiSiteSavedProtocolType = createAsyncThunk(
@@ -111,5 +111,5 @@ export const getMultiSiteSavedProtocolType = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
-  },
+  }
 );
