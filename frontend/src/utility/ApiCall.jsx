@@ -34,7 +34,7 @@ export default function ApiCall({ method, url, data, params, headers = null }) {
     baseURL: url,
     headers: newHeader,
     // timeout: 30000,
-    withCredentials: true,
+    // withCredentials: true,
     transformResponse: [
       function (data) {
         try {

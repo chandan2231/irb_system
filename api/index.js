@@ -25,25 +25,25 @@ if (process.env.NODE_ENV === 'development') {
   app.use(cors({ origin: 'http://localhost:5173' }))
 } else {
   // Define allowed origins for production
-  const allowedOrigins = ['https://app.irbhub.org']
-  const corsOptions = {
-    origin: function (origin, callback) {
-      // Check if the origin is in the allowedOrigins list
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Token', 'token'],
-    credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
-    preflightContinue: false, // Don't pass preflight request to the next handler
-    optionsSuccessStatus: 204
-  }
+  // const allowedOrigins = ['https://app.irbhub.org']
+  // const corsOptions = {
+  //   origin: function (origin, callback) {
+  //     // Check if the origin is in the allowedOrigins list
+  //     if (!origin || allowedOrigins.includes(origin)) {
+  //       callback(null, true)
+  //     } else {
+  //       callback(new Error('Not allowed by CORS'))
+  //     }
+  //   },
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  //   allowedHeaders: ['Content-Type', 'Authorization', 'Token', 'token'],
+  //   credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
+  //   preflightContinue: false, // Don't pass preflight request to the next handler
+  //   optionsSuccessStatus: 204
+  // }
   // Use the cors middleware
-  app.use(cors(corsOptions))
-  app.options('/', cors(corsOptions))
+  app.use(cors({ origin: ['https://app.irbhub.org'] }))
+  // app.options('/', cors(corsOptions))
 }
 
 app.use('/api/auth', authRoutes)
