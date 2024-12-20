@@ -3,6 +3,25 @@ import ApiCall from "../../utility/ApiCall";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
+export const validateUserToken = createAsyncThunk(
+  "Auth/validateUserToken",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/auth/`,
+        headers: {
+          "Content-Type": "application/json",
+          token: data.token,
+        },
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const userSignin = createAsyncThunk(
   "Auth/userSignin",
   async (data, { rejectWithValue }) => {

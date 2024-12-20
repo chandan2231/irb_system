@@ -60,7 +60,7 @@ export const logout = (req, res) => {
   res.end()
 }
 
-export const verifyToken = (req, res, next) => {
+export const validateUserToken = (req, res, next) => {
   try {
     const authHeader = req.headers.token // get the session cookie from request header
     if (!authHeader) return res.sendStatus(401) // if there is no cookie from request header, send an unauthorized response.

@@ -1,19 +1,7 @@
-import React from "react";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import theme from "./config/theme";
-import "./App.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
 import SideNav from "./components/SideNav";
 import AppHeader from "./components/AppHeader";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import { PersistGate } from "redux-persist/integration/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Provider } from "react-redux";
-import { store, persistor } from "./store/index.js";
-import { CookiesProvider } from "react-cookie";
 import SignIn from "./containers/Auth/SignIn";
 import SignUp from "./containers/Auth/SignUp";
 import Backdrop from "@mui/material/Backdrop";
@@ -53,10 +41,14 @@ import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventLi
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
 import ApprovalMemberDetails from "./containers/CommitteeChair/ApprovalMemberDetails";
+import { validateUserToken } from "./services/Auth/AuthService.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, CssBaseline } from "@mui/material";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const [loader, setLoader] = useState(true);
+  const dispatch = useDispatch();
   //const navigate = useNavigate();
   function getCookieValue(name) {
     const regex = new RegExp(`(^| )${name}=([^;]+)`);
@@ -65,37 +57,66 @@ function App() {
       return match[2];
     }
   }
-  const validateToken = async (e) => {
-    try {
-      const cookieName = "accessToken";
-      const getCookie = getCookieValue(cookieName);
-      let res = await axios.get(baseURL + "/auth/", {
-        headers: {
-          "Content-Type": "application/json",
-          token: getCookie,
-        },
-      });
-      if (res.status === 200) {
-        setLoader(false);
-        if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
-          window.location.replace("/dashboard");
+  // const validateToken = async (e) => {
+  //   try {
+  //     const cookieName = "accessToken";
+  //     const getCookie = getCookieValue(cookieName);
+  //     let res = await axios.get(baseURL + "/auth/", {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         token: getCookie,
+  //       },
+  //     });
+  //     if (res.status === 200) {
+  //       setLoader(false);
+  //       if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
+  //         window.location.replace("/dashboard");
+  //       }
+  //     } else {
+  //       if (!["/signin", "/signup"].includes(window.location.pathname)) {
+  //         window.location.replace("/signin");
+  //       }
+  //       setLoader(false);
+  //     }
+  //   } catch (err) {
+  //     setLoader(false);
+  //     if (!["/signin", "/signup"].includes(window.location.pathname)) {
+  //       window.location.replace("/signin");
+  //     }
+  //   }
+  // };
+
+  useEffect(() => {
+    const cookieName = "accessToken";
+    const getCookie = getCookieValue(cookieName);
+    let data = { token: getCookie };
+    console.log("data", data);
+    dispatch(validateUserToken(data)).then((data) => {
+      try {
+        console.log("Validate token", data);
+        if (data.payload.status === 200) {
+          setLoader(false);
+          if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
+            window.location.replace("/dashboard");
+          }
+        } else {
+          if (!["/signin", "/signup"].includes(window.location.pathname)) {
+            window.location.replace("/signin");
+          }
+          setLoader(false);
         }
-      } else {
+      } catch (err) {
+        setLoader(false);
         if (!["/signin", "/signup"].includes(window.location.pathname)) {
           window.location.replace("/signin");
         }
-        setLoader(false);
       }
-    } catch (err) {
-      setLoader(false);
-      if (!["/signin", "/signup"].includes(window.location.pathname)) {
-        window.location.replace("/signin");
-      }
-    }
-  };
-  useEffect(() => {
-    validateToken();
-  });
+    });
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   validateToken();
+  // });
   if (loader) {
     return (
       <Backdrop
@@ -108,162 +129,145 @@ function App() {
   }
 
   return (
-    <CookiesProvider defaultSetOptions={{ path: "/" }}>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <ProSidebarProvider>
-              <CssBaseline />
-              <AppHeader />
-              <Box sx={styles.container}>
-                <BrowserRouter>
-                  <SideNav />
-                  <Box sx={styles.mainSection} component={"main"}>
-                    <Routes>
-                      {/* <Route element={<PrivateRoutes />}> */}
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route
-                        path="/protocol-details"
-                        element={<ProtocolDetails />}
-                      />
-                      <Route
-                        path="/continuin-review"
-                        element={<ContinuingReview />}
-                      />
-                      <Route
-                        path="/continuin-review-details"
-                        element={<ContinuingReviewDetails />}
-                      />
-                      <Route
-                        path="/protocol-amendment-request"
-                        element={<ProtocolAmendmentRequest />}
-                      />
-                      <Route
-                        path="/protocol-amendment-request-details"
-                        element={<ProtocolAmendmentRequestDetails />}
-                      />
-                      <Route
-                        path="/adverse-events"
-                        element={<AdverseEvents />}
-                      />
-                      <Route
-                        path="/adverse-events-details"
-                        element={<AdverseEventsDetails />}
-                      />
-                      <Route
-                        path="/promptly-reportable-event"
-                        element={<PromptlyReportableEvent />}
-                      />
-                      <Route
-                        path="/promptly-reportable-event-details"
-                        element={<PromptlyReportableEventDetails />}
-                      />
-                      <Route
-                        path="/study-close-request"
-                        element={<StudyCloseoutRequest />}
-                      />
-                      <Route
-                        path="/study-close-request-details"
-                        element={<StudyCloseoutRequestDetails />}
-                      />
-                      <Route
-                        path="/admin/approved-protocol-list"
-                        element={<ApprovedProtocolList />}
-                      />
-                      <Route
-                        path="/admin/under-review-protocols"
-                        element={<UnderReviewProtocolList />}
-                      />
-                      <Route
-                        path="/admin/created-protocols"
-                        element={<CreatedProtocolList />}
-                      />
-                      <Route
-                        path="/admin/protocol-details"
-                        element={<AdminProtocolDetails />}
-                      />
-                      <Route
-                        path="/admin/continuin-review-list"
-                        element={<ContinuinReviewList />}
-                      />
-                      <Route
-                        path="/admin/continuin-review-details"
-                        element={<AdminContinuingReviewDetails />}
-                      />
-                      <Route path="/admin/users-list" element={<UsersList />} />
-                      <Route
-                        path="/admin/protocol-amendment-request"
-                        element={<AdminProtocolAmendmentRequest />}
-                      />
-                      <Route
-                        path="/admin/protocol-amendment-request-details"
-                        element={<AdminProtocolAmendmentRequestDetails />}
-                      />
-                      <Route
-                        path="/admin/adverse-events"
-                        element={<AdminAdverseEvents />}
-                      />
-                      <Route
-                        path="/admin/adverse-events-details"
-                        element={<AdminAdverseEventsDetails />}
-                      />
-                      <Route
-                        path="/admin/promptly-reportable-event"
-                        element={<AdminPromptlyReportableEvent />}
-                      />
-                      <Route
-                        path="/admin/promptly-reportable-event-details"
-                        element={<AdminPromptlyReportableEventDetails />}
-                      />
-                      <Route
-                        path="/admin/study-close-request"
-                        element={<AdminStudyCloseoutRequest />}
-                      />
-                      <Route
-                        path="/admin/study-close-request-details"
-                        element={<AdminStudyCloseoutRequestDetails />}
-                      />
-                      <Route path="/admin/members" element={<Members />} />
-                      <Route
-                        path="/admin/event-price-list"
-                        element={<EventPriceList />}
-                      />
-                      <Route
-                        path="/admin/protocol-event-list"
-                        element={<ProtocolEventList />}
-                      />
-                      <Route
-                        path="/member/protocol-list"
-                        element={<VotingMemberProtocolList />}
-                      />
-                      <Route
-                        path="/member/protocol-details"
-                        element={<AdminProtocolDetails />}
-                      />
-                      <Route
-                        path="/committee-chair/protocol-list"
-                        element={<CommitteeChairProtocolList />}
-                      />
-                      <Route
-                        path="/committee-chair/protocol-details"
-                        element={<AdminProtocolDetails />}
-                      />
-                      <Route
-                        path="/committee-chair/approval-member-details"
-                        element={<ApprovalMemberDetails />}
-                      />
-                      {/* </Route> */}
-                      <Route path="/signin" element={<SignIn />} />
-                      <Route path="/signup" element={<SignUp />} />
-                    </Routes>
-                  </Box>
-                </BrowserRouter>
-              </Box>
-            </ProSidebarProvider>
-          </ThemeProvider>
-        </PersistGate>
-      </Provider>
-    </CookiesProvider>
+    <ProSidebarProvider>
+      <CssBaseline />
+      <AppHeader />
+      <Box sx={styles.container}>
+        <BrowserRouter>
+          <SideNav />
+          <Box sx={styles.mainSection} component={"main"}>
+            <Routes>
+              {/* <Route element={<PrivateRoutes />}> */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/protocol-details" element={<ProtocolDetails />} />
+              <Route path="/continuin-review" element={<ContinuingReview />} />
+              <Route
+                path="/continuin-review-details"
+                element={<ContinuingReviewDetails />}
+              />
+              <Route
+                path="/protocol-amendment-request"
+                element={<ProtocolAmendmentRequest />}
+              />
+              <Route
+                path="/protocol-amendment-request-details"
+                element={<ProtocolAmendmentRequestDetails />}
+              />
+              <Route path="/adverse-events" element={<AdverseEvents />} />
+              <Route
+                path="/adverse-events-details"
+                element={<AdverseEventsDetails />}
+              />
+              <Route
+                path="/promptly-reportable-event"
+                element={<PromptlyReportableEvent />}
+              />
+              <Route
+                path="/promptly-reportable-event-details"
+                element={<PromptlyReportableEventDetails />}
+              />
+              <Route
+                path="/study-close-request"
+                element={<StudyCloseoutRequest />}
+              />
+              <Route
+                path="/study-close-request-details"
+                element={<StudyCloseoutRequestDetails />}
+              />
+              <Route
+                path="/admin/approved-protocol-list"
+                element={<ApprovedProtocolList />}
+              />
+              <Route
+                path="/admin/under-review-protocols"
+                element={<UnderReviewProtocolList />}
+              />
+              <Route
+                path="/admin/created-protocols"
+                element={<CreatedProtocolList />}
+              />
+              <Route
+                path="/admin/protocol-details"
+                element={<AdminProtocolDetails />}
+              />
+              <Route
+                path="/admin/continuin-review-list"
+                element={<ContinuinReviewList />}
+              />
+              <Route
+                path="/admin/continuin-review-details"
+                element={<AdminContinuingReviewDetails />}
+              />
+              <Route path="/admin/users-list" element={<UsersList />} />
+              <Route
+                path="/admin/protocol-amendment-request"
+                element={<AdminProtocolAmendmentRequest />}
+              />
+              <Route
+                path="/admin/protocol-amendment-request-details"
+                element={<AdminProtocolAmendmentRequestDetails />}
+              />
+              <Route
+                path="/admin/adverse-events"
+                element={<AdminAdverseEvents />}
+              />
+              <Route
+                path="/admin/adverse-events-details"
+                element={<AdminAdverseEventsDetails />}
+              />
+              <Route
+                path="/admin/promptly-reportable-event"
+                element={<AdminPromptlyReportableEvent />}
+              />
+              <Route
+                path="/admin/promptly-reportable-event-details"
+                element={<AdminPromptlyReportableEventDetails />}
+              />
+              <Route
+                path="/admin/study-close-request"
+                element={<AdminStudyCloseoutRequest />}
+              />
+              <Route
+                path="/admin/study-close-request-details"
+                element={<AdminStudyCloseoutRequestDetails />}
+              />
+              <Route path="/admin/members" element={<Members />} />
+              <Route
+                path="/admin/event-price-list"
+                element={<EventPriceList />}
+              />
+              <Route
+                path="/admin/protocol-event-list"
+                element={<ProtocolEventList />}
+              />
+              <Route
+                path="/member/protocol-list"
+                element={<VotingMemberProtocolList />}
+              />
+              <Route
+                path="/member/protocol-details"
+                element={<AdminProtocolDetails />}
+              />
+              <Route
+                path="/committee-chair/protocol-list"
+                element={<CommitteeChairProtocolList />}
+              />
+              <Route
+                path="/committee-chair/protocol-details"
+                element={<AdminProtocolDetails />}
+              />
+              <Route
+                path="/committee-chair/approval-member-details"
+                element={<ApprovalMemberDetails />}
+              />
+              {/* </Route> */}
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+            </Routes>
+          </Box>
+        </BrowserRouter>
+      </Box>
+    </ProSidebarProvider>
   );
 }
 

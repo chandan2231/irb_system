@@ -6,6 +6,7 @@ import {
   userSignin,
   userSignUp,
   userLogout,
+  validateUserToken,
 } from "../../services/Auth/AuthService";
 
 const AuthSlice = createSlice({
@@ -18,6 +19,7 @@ const AuthSlice = createSlice({
     signinUser: null,
     signupUser: null,
     logoutUser: null,
+    userTokenValidated: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -67,6 +69,19 @@ const AuthSlice = createSlice({
         state.usernameSent = action.payload;
       })
       .addCase(sendUsername.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+
+      .addCase(validateUserToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(validateUserToken.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userTokenValidated = action.payload;
+      })
+      .addCase(validateUserToken.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
