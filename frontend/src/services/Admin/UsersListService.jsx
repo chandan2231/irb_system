@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
-const baseURL = import.meta.env.VITE_API_BSAE_URL;
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const fetchUsersList = createAsyncThunk(
   "UsersList/fetchUsersList",

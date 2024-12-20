@@ -53,7 +53,7 @@ import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventLi
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
 import ApprovalMemberDetails from "./containers/CommitteeChair/ApprovalMemberDetails";
-const baseURL = import.meta.env.VITE_API_BSAE_URL;
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const [loader, setLoader] = useState(true);
