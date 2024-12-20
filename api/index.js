@@ -18,8 +18,8 @@ app.use((req, res, next) => {
 })
 // middlewares
 app.use(express.json())
-app.use(cookieParser())
 
+app.use(cookieParser())
 if (process.env.NODE_ENV === 'development') {
   app.use(cors({ origin: 'http://localhost:5173' }))
 } else {
@@ -49,13 +49,12 @@ app.use('/api/protocol', protocolRoutes)
 app.use('/api/continuinReview', continuinReviewRoutes)
 app.use('/api/eventAndRequest', eventAndRequest)
 app.use('/api/admin', adminRoutes)
-
 if (process.env.NODE_ENV === 'development') {
-  app.listen(8000, () => {
+  app.listen(8800, () => {
     console.log('API Working!')
   })
 } else {
-  app.listen(3000, () => {
+  app.listen(8000, () => {
     console.log('API Working!')
   })
 }
