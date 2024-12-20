@@ -3,43 +3,50 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
 export const register = (req, res) => {
-    const que = "select * from users where email = ?"
-    db.query(que, [req.body.email], (err, data) => {
-        if (err) return res.status(500).json(err)
-        if (data.length > 0 ) {
-            return res.status(409).json('Email already exist try with other email')
-        }
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPassword = bcrypt.hashSync(req.body.password, salt);
-        const que = 'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`, `city`) value (?)';
-        const values = [
-            req.body.name, 
-            req.body.mobile, 
-            req.body.email, 
-            hashedPassword, 
-            'user',
-            'user',
-            req.body.city,
-        ];
-        db.query(que, [values], (err, data) => {
-            if (err) return res.status(500).json(err)
-            return res.status(200).json('User has been created.')
-        }) 
+  const que = 'select * from users where email = ?'
+  db.query(que, [req.body.email], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length > 0) {
+      return res.status(409).json('Email already exist try with other email')
+    }
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt)
+    const que =
+      'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`, `city`) value (?)'
+    const values = [
+      req.body.name,
+      req.body.mobile,
+      req.body.email,
+      hashedPassword,
+      'user',
+      'user',
+      req.body.city
+    ]
+    db.query(que, [values], (err, data) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json('User has been created.')
     })
+  })
 }
 
 export const login = (req, res) => {
-    const que = 'select * from users where email=? AND status=?';
-    db.query(que, [req.body.email, 1], (err, data) => {
-        if (err) return res.status(500).json(err)
-        if(data.length === 0) return res.status(404).json("Email not found! Try with valid email");
-        const checkpassword = bcrypt.compareSync(req.body.password, data[0].password);
-        if(!checkpassword) return res.status(400).json('Wrong password or email!');
-        const token = jwt.sign({id: data[0].id}, 'secretkey');
-        const { password, ...others } = data[0];
-        res.cookie('accessToken', token, {httpOnly: false,}).status(200).json(others)
-
-    })
+  const que = 'select * from users where email=? AND status=?'
+  db.query(que, [req.body.email, 1], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length === 0)
+      return res.status(404).json('Email not found! Try with valid email')
+    const checkpassword = bcrypt.compareSync(
+      req.body.password,
+      data[0].password
+    )
+    if (!checkpassword) return res.status(400).json('Wrong password or email!')
+    const token = jwt.sign({ id: data[0].id }, 'secretkey')
+    const { password, ...others } = data[0]
+    res
+      .cookie('accessToken', token, { httpOnly: false })
+      .status(200)
+      .json(others)
+  })
 }
 
 export const logout = (req, res) => {

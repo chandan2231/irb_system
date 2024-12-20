@@ -34,7 +34,7 @@ function SignIn() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showPassword, setShowPassword] = React.useState(false);
   const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null,
+    JSON.parse(localStorage.getItem("user")) || null
   );
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
@@ -57,13 +57,15 @@ function SignIn() {
         setTimeout(() => {
           if (data.payload.data.user_type === "admin") {
             navigate("/admin/approved-protocol-list");
-          } else if(data.payload.data.user_type === "Voting Member") {
+          } else if (data.payload.data.user_type === "Voting Member") {
             navigate("/member/protocol-list");
-          } else if(data.payload.data.user_type === "Committee Chair") {
+          } else if (data.payload.data.user_type === "Committee Chair") {
             navigate("/committee-chair/protocol-list");
-          } else if(data.payload.data.user_type === "Office Staff") {
+          } else if (data.payload.data.user_type === "Office Staff") {
             navigate("/dashboard");
-          } else if(data.payload.data.user_type === "Non Voting Member") {
+          } else if (data.payload.data.user_type === "Non Voting Member") {
+            navigate("/dashboard");
+          } else if (data.payload.data.user_type === "user") {
             navigate("/dashboard");
           }
         }, 2000);
