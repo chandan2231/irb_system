@@ -12,10 +12,6 @@ dotenv.config({ path: `.env`, override: true })
 
 const app = express()
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', true)
-  next()
-})
 // middlewares
 app.use(express.json())
 
@@ -35,13 +31,14 @@ if (process.env.NODE_ENV === 'development') {
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'token'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token', 'accessToken'],
     credentials: true, // Allow credentials (cookies, HTTP authentication, etc.)
     preflightContinue: false, // Don't pass preflight request to the next handler
     optionsSuccessStatus: 204
   }
   // Use the cors middleware
   app.use(cors(corsOptions))
+  app.options('/', cors(corsOptions))
 }
 
 app.use('/api/auth', authRoutes)
