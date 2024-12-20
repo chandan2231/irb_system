@@ -9,7 +9,7 @@ export const validateUserToken = createAsyncThunk(
     try {
       const response = await ApiCall({
         method: "GET",
-        url: `${baseURL}/auth/`,
+        url: `${baseURL}/auth`,
         headers: {
           "Content-Type": "application/json",
           token: data.token,
