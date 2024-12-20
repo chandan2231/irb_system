@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(cors({ origin: 'http://localhost:5173' }))
 } else {
   // Define allowed origins for production
-  const allowedOrigins = ['https://irbhub.org']
+  const allowedOrigins = ['https://app.irbhub.org']
   const corsOptions = {
     origin: function (origin, callback) {
       // Check if the origin is in the allowedOrigins list
@@ -50,6 +50,6 @@ app.use('/api/continuinReview', continuinReviewRoutes)
 app.use('/api/eventAndRequest', eventAndRequest)
 app.use('/api/admin', adminRoutes)
 
-app.listen(8800, () => {
+app.listen(8000, () => {
   console.log('API Working!')
 })
