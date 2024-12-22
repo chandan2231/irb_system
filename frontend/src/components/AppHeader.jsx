@@ -25,11 +25,13 @@ function AppHeader() {
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const handleCloseUserMenu = () => {
     dispatch(userLogout()).then((data) => {
+      console.log("data.payload.status", data.payload.status);
       if (data.payload.status === 200) {
+        console.log("in", data.payload.status);
         removeCookie("accessToken");
         window.localStorage.clear();
         window.location.replace("/signin");
-        window.location.reload();
+        // window.location.reload();
       } else {
         setErr(err.respone.data);
       }
