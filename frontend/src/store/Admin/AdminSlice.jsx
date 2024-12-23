@@ -68,18 +68,6 @@ const AdminSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-      .addCase(fetchContinuinReviewProtocolList.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchContinuinReviewProtocolList.fulfilled, (state, action) => {
-        state.loading = false;
-        state.continuinReviewProtocolList = action.payload;
-      })
-      .addCase(fetchContinuinReviewProtocolList.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
       .addCase(fetchUsersList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -89,6 +77,18 @@ const AdminSlice = createSlice({
         state.usersList = action.payload;
       })
       .addCase(fetchUsersList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchContinuinReviewProtocolList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchContinuinReviewProtocolList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.continuinReviewProtocolList = action.payload;
+      })
+      .addCase(fetchContinuinReviewProtocolList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
@@ -173,14 +173,14 @@ const AdminSlice = createSlice({
         (state, action) => {
           state.loading = false;
           state.studyCloseoutRequestDetailsById = action.payload;
-        },
+        }
       )
       .addCase(
         fetchStudyCloseoutRequestDetailsById.rejected,
         (state, action) => {
           state.loading = false;
           state.error = action.payload || action.error.message;
-        },
+        }
       )
       .addCase(fetchPromptlyReportableEventById.pending, (state) => {
         state.loading = true;
@@ -228,7 +228,7 @@ const AdminSlice = createSlice({
           (element, index) =>
             element.id === action.payload.id
               ? { ...element, allow_edit: action.payload.allow_edit }
-              : element,
+              : element
         );
         state.underReviewProtocolList = updateUnderReviewProtocolList;
         state.allowEditStatus = action.payload;
@@ -246,7 +246,7 @@ const AdminSlice = createSlice({
         let updateUserList = state.usersList.map((element, index) =>
           element.id === action.payload.id
             ? { ...element, status: action.payload.status }
-            : element,
+            : element
         );
         state.usersList = updateUserList;
         state.userStatusChanged = action.payload;
@@ -301,7 +301,7 @@ const AdminSlice = createSlice({
           (element, index) =>
             element.id === action.payload.id
               ? { ...element, waive_fee: action.payload.waive_fee }
-              : element,
+              : element
         );
         state.createdProtocolList = updateCreatedProtocolList;
         state.protocolWaiveFee = action.payload;

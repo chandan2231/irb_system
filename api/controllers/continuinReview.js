@@ -18,10 +18,18 @@ export const saveRiskAssessment = (req, res) => {
     if (err) {
       return res.status(500).json(err)
     } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Risk Assessment has been saved successfully'
-      return res.json(result)
+      const que =
+        'UPDATE protocols SET continuein_review_status=? WHERE protocol_id=?'
+      db.query(que, [2, req.body.protocol_id], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'Risk Assessment has been saved successfully'
+          return res.json(result)
+        }
+      })
     }
   })
 }
@@ -48,10 +56,18 @@ export const saveInformedConsent = (req, res) => {
     if (err) {
       return res.status(500).json(err)
     } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Informed Consent Process has been saved successfully'
-      return res.json(result)
+      const que =
+        'UPDATE protocols SET continuein_review_status=? WHERE protocol_id=?'
+      db.query(que, [2, req.body.protocol_id], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'Informed Consent Process has been saved successfully'
+          return res.json(result)
+        }
+      })
     }
   })
 }
@@ -83,11 +99,19 @@ export const saveInvestigatorAndinstuation = (req, res) => {
     if (err) {
       return res.status(500).json(err)
     } else {
-      let result = {}
-      result.status = 200
-      result.msg =
-        'Investigator and Instuation Information has been saved successfully'
-      return res.json(result)
+      const que =
+        'UPDATE protocols SET continuein_review_status=? WHERE protocol_id=?'
+      db.query(que, [2, req.body.protocol_id], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg =
+            'Investigator and Instuation Information has been saved successfully'
+          return res.json(result)
+        }
+      })
     }
   })
 }
@@ -119,10 +143,18 @@ export const saveResearchProcess = (req, res) => {
     if (err) {
       return res.status(500).json(err)
     } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Research Process has been saved successfully'
-      return res.json(result)
+      const que =
+        'UPDATE protocols SET continuein_review_status=? WHERE protocol_id=?'
+      db.query(que, [2, req.body.protocol_id], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'Research Process has been saved successfully'
+          return res.json(result)
+        }
+      })
     }
   })
 }

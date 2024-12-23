@@ -1,6 +1,4 @@
 import { db } from '../connect.js'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import { generatePdfFromHTML } from '../utils/pdfService.js'
 import * as s3Service from '../utils/s3Service.js'
@@ -17,8 +15,7 @@ export const getProtocolList = (req, res) => {
 }
 
 export const getApprovedProtocolCheck = (req, res) => {
-  const que =
-    'SELECT * from protocol_submission WHERE created_by=? AND status=?'
+  const que = 'SELECT * from protocols WHERE added_by=? AND status=?'
   db.query(que, [req.body.userId, 3], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
@@ -28,8 +25,7 @@ export const getApprovedProtocolCheck = (req, res) => {
 }
 
 export const getApprovedProtocolList = (req, res) => {
-  const que =
-    'SELECT * from protocol_submission WHERE created_by=? AND status=?'
+  const que = 'SELECT * from protocols WHERE added_by=? AND status=?'
   db.query(que, [req.body.login_id, 3], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {

@@ -1,45 +1,56 @@
-import express from "express";
-import { 
-    getApprovedProtocolList, 
-    getAllUsers, 
-    getContinuinDetailsById, 
-    getProtocolDetailsById,
-    getStudyCloseoutRequestList,
-    getPromptlyReportableEventList,
-    getAdverseEventList,
-    getProtocolAmendmentRequestList,
-    getStudyCloseoutDetailsById,
-    getPromptlyReportableEventById,
-    getAdverseEventById,
-    getProtocolAmendmentRequestById,
-    allowProtocolEdit,
-    getMemberList,
-    createMember,
-    changeMemberStatus,
-    changeMemberPassword,
-    changeUserStatus,
-    changeUserPassword,
-    getUnderReviewProtocolList,
-    getCreatedProtocolList,
-    allowProtocolWaiveFee,
-    getEventPriceList,
-    createEventPrice,
-    changeEventPriceStatus,
-    getActiveVotingMemberList,
-    createMemberEvent,
-    memberEventList,
-    assignProtocolToMembers,
-    assignedMembersList,
-    assignedMembersProtocolList,
-    votingMemberApprovalProtocol,
-    approvedProtocolsByMembersList,
-    chairCommitteeApprovalProtocol,
-} from "../controllers/admin.js";
+import express from 'express'
+import {
+  getApprovedProtocolList,
+  getAllUsers,
+  getContinuinDetailsById,
+  getProtocolDetailsById,
+  getStudyCloseoutRequestList,
+  getPromptlyReportableEventList,
+  getAdverseEventList,
+  getProtocolAmendmentRequestList,
+  getStudyCloseoutDetailsById,
+  getPromptlyReportableEventById,
+  getAdverseEventById,
+  getProtocolAmendmentRequestById,
+  allowProtocolEdit,
+  getMemberList,
+  createMember,
+  changeMemberStatus,
+  changeMemberPassword,
+  changeUserStatus,
+  changeUserPassword,
+  getUnderReviewProtocolList,
+  getCreatedProtocolList,
+  allowProtocolWaiveFee,
+  getEventPriceList,
+  createEventPrice,
+  changeEventPriceStatus,
+  getActiveVotingMemberList,
+  createMemberEvent,
+  memberEventList,
+  assignProtocolToMembers,
+  assignedMembersList,
+  assignedMembersProtocolList,
+  votingMemberApprovalProtocol,
+  approvedProtocolsByMembersList,
+  chairCommitteeApprovalProtocol,
+  getContinueinProtocolList
+} from '../controllers/admin.js'
 
 const router = express.Router()
-router.post('/member/chairCommitteeApprovalProtocol', chairCommitteeApprovalProtocol)
-router.post('/member/approvedProtocolsByMembersList', approvedProtocolsByMembersList)
-router.post('/member/votingMemberApprovalProtocol', votingMemberApprovalProtocol)
+router.post(
+  '/member/chairCommitteeApprovalProtocol',
+  chairCommitteeApprovalProtocol
+)
+router.post(
+  '/member/approvedProtocolsByMembersList',
+  approvedProtocolsByMembersList
+)
+router.post(
+  '/member/votingMemberApprovalProtocol',
+  votingMemberApprovalProtocol
+)
+router.get('/continuein/protocol/list', getContinueinProtocolList)
 router.post('/member/assignedMembersProtocolList', assignedMembersProtocolList)
 router.post('/member/assignedMembers', assignedMembersList)
 router.post('/member/assignProtocolToMembers', assignProtocolToMembers)

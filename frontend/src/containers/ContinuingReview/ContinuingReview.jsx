@@ -11,7 +11,7 @@ import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useNavigate } from "react-router-dom";
-import { fetchProtocolList } from "../../services/Dashboard/DashboardService";
+import { fetchApprovedProtocolList } from "../../services/Dashboard/DashboardService";
 import { continueinReviewReport } from "../../services/UserManagement/UserService";
 
 function ContinuingReview() {
@@ -97,17 +97,17 @@ function ContinuingReview() {
   ];
 
   var totalElements = 0;
-  const { protocolList, loading, error } = useSelector((state) => ({
+  const { approvedProtocolList, loading, error } = useSelector((state) => ({
     error: state.dashboard.error,
-    protocolList: state.dashboard.protocolList,
+    approvedProtocolList: state.dashboard.approvedProtocolList,
     loading: state.dashboard.loading,
   }));
   useEffect(() => {
     const data = { login_id: user.id };
-    dispatch(fetchProtocolList(data));
+    dispatch(fetchApprovedProtocolList(data));
   }, [dispatch, user.id]);
-  if (protocolList !== "" && protocolList?.length > 0) {
-    totalElements = protocolList.length;
+  if (approvedProtocolList !== "" && approvedProtocolList?.length > 0) {
+    totalElements = approvedProtocolList.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -123,8 +123,8 @@ function ContinuingReview() {
 
   useEffect(() => {
     const pListArr = [];
-    if (protocolList && protocolList?.length > 0) {
-      protocolList.map((pList, index) => {
+    if (approvedProtocolList && approvedProtocolList?.length > 0) {
+      approvedProtocolList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
@@ -136,7 +136,7 @@ function ContinuingReview() {
       });
       setProtocolDataList(pListArr);
     }
-  }, [protocolList]);
+  }, [approvedProtocolList]);
 
   const handleViewPdf = async (params) => {
     const { row } = params;

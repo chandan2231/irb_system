@@ -106,7 +106,7 @@ function ContinuinReviewList() {
       error: state.admin.error,
       continuinReviewProtocolList: state.admin.continuinReviewProtocolList,
       loading: state.admin.loading,
-    }),
+    })
   );
   useEffect(() => {
     dispatch(fetchContinuinReviewProtocolList());

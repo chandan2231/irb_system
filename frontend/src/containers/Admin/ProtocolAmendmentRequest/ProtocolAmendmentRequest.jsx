@@ -100,7 +100,7 @@ function AdminProtocolAmendmentRequest() {
       protocolAmendmentRequestList:
         state.admin.protocolAmendmentRequestList?.data,
       loading: state.admin.loading,
-    }),
+    })
   );
   useEffect(() => {
     dispatch(getProtocolAmendmentRequest());
@@ -133,7 +133,7 @@ function AdminProtocolAmendmentRequest() {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
-          researchType: pList.protocol_type,
+          researchType: pList.research_type,
           createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
         };

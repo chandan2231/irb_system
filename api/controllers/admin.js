@@ -11,7 +11,6 @@ export const getActiveVotingMemberList = (req, res) => {
   })
 }
 
-
 export const changeEventPriceStatus = (req, res) => {
   const que = 'UPDATE event_price SET status=? WHERE id=?'
   db.query(que, [req.body.status, req.body.id], (err, data) => {
@@ -34,8 +33,6 @@ export const createEventPrice = (req, res) => {
     return res.status(200).json('Event Price has been created Successfully.')
   })
 }
-
-
 
 export const getEventPriceList = (req, res) => {
   const que = 'select * from event_price'
@@ -663,35 +660,37 @@ export const getProtocolAmendmentRequestById = (req, res) => {
 }
 
 export const createMemberEvent = (req, res) => {
-    const que = 'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)';
-    const values = [
-        req.body.protocol_id,
-        req.body.event_subject,
-        req.body.event_message,
-        req.body.member_id.toString(),
-        req.body.created_by,
-        req.body.protocol_name
-    ];
-    db.query(que, [values], (err, data) =>{
-        if (err) {
-            return res.status(500).json(err)
-        } else {
-            let result = {}
-            result.status = 200
-            result.msg = 'Event has been created Successfully.'
-            return res.json(result)
-        }
-    })
+  const que =
+    'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)'
+  const values = [
+    req.body.protocol_id,
+    req.body.event_subject,
+    req.body.event_message,
+    req.body.member_id.toString(),
+    req.body.created_by,
+    req.body.protocol_name
+  ]
+  db.query(que, [values], (err, data) => {
+    if (err) {
+      return res.status(500).json(err)
+    } else {
+      let result = {}
+      result.status = 200
+      result.msg = 'Event has been created Successfully.'
+      return res.json(result)
+    }
+  })
 }
 
 export const memberEventList = (req, res) => {
-    const que = "SELECT me.id, me.*, GROUP_CONCAT(users.name SEPARATOR ', ') AS members FROM member_event AS me JOIN users AS users ON FIND_IN_SET(users.id, me.member_id) > 0 WHERE me.status =? GROUP BY me.id"
-    db.query(que, [1], (err, data) =>{
-        if (err) return res.status(500).json(err)
-        if (data.length >= 0 ) {
-            return res.status(200).json(data)
-        }
-    })
+  const que =
+    "SELECT me.id, me.*, GROUP_CONCAT(users.name SEPARATOR ', ') AS members FROM member_event AS me JOIN users AS users ON FIND_IN_SET(users.id, me.member_id) > 0 WHERE me.status =? GROUP BY me.id"
+  db.query(que, [1], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
 }
 
 // export const assignProtocolToMembers = (req, res) => {
@@ -701,7 +700,7 @@ export const memberEventList = (req, res) => {
 //         console.log('member_id', member_id)
 //         const que = 'insert into members_protocol (`protocol_id`, `protocol_name`,`member_id`,`created_by`) value (?)'
 //         const values = [
-//             req.body.protocol_id, 
+//             req.body.protocol_id,
 //             req.body.protocol_name,
 //             member_id,
 //             req.body.created_by,
@@ -714,64 +713,80 @@ export const memberEventList = (req, res) => {
 // }
 
 export const assignProtocolToMembers = async (req, res) => {
-    const { member_id, protocol_id, protocol_name, created_by } = req.body;
-    try {
-        // Check if member_id is an array and has at least one item
-        if (!Array.isArray(member_id) || member_id.length === 0) {
-            return res.status(500).json({ msg: 'No members provided.' });
-        }
-        // Prepare the query and values
-        const que = 'INSERT INTO members_protocol (protocol_id, protocol_name, member_id, created_by) VALUES (?, ?, ?, ?)';
-        // Create a promise for each insert operation
-        const insertPromises = member_id.map(id => {
-            const values = [protocol_id, protocol_name, id, created_by];
-            return new Promise((resolve, reject) => {
-                db.query(que, values, (err, data) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(data);
-                    }
-                });
-            });
-        });
-        // Wait for all insertions to complete
-        await Promise.all(insertPromises);
-        // Send a response after all insertions
-        let result = {}
-        result.status = 200
-        result.msg = 'Protocol Assigned to Members Successfully.'
-        return res.json(result)
-    } catch (error) {
-        console.error('Error assigning protocol:', error);
-        res.status(500).json({ msg: 'An error occurred while assigning protocol to members.' });
+  const { member_id, protocol_id, protocol_name, created_by } = req.body
+  try {
+    // Check if member_id is an array and has at least one item
+    if (!Array.isArray(member_id) || member_id.length === 0) {
+      return res.status(500).json({ msg: 'No members provided.' })
     }
-};
+    // Prepare the query and values
+    const que =
+      'INSERT INTO members_protocol (protocol_id, protocol_name, member_id, created_by) VALUES (?, ?, ?, ?)'
+    // Create a promise for each insert operation
+    const insertPromises = member_id.map((id) => {
+      const values = [protocol_id, protocol_name, id, created_by]
+      return new Promise((resolve, reject) => {
+        db.query(que, values, (err, data) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(data)
+          }
+        })
+      })
+    })
+    // Wait for all insertions to complete
+    await Promise.all(insertPromises)
+    // Send a response after all insertions
+    let result = {}
+    result.status = 200
+    result.msg = 'Protocol Assigned to Members Successfully.'
+    return res.json(result)
+  } catch (error) {
+    console.error('Error assigning protocol:', error)
+    res
+      .status(500)
+      .json({ msg: 'An error occurred while assigning protocol to members.' })
+  }
+}
 
 export const assignedMembersList = (req, res) => {
-    const que = 'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
-    db.query(que, [req.body.protocolId], (err, data) => {
-      if (err) return res.status(500).json(err)
-      if (data.length >= 0) {
-        return res.status(200).json(data)
-      }
-    })
+  const que =
+    'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
+  db.query(que, [req.body.protocolId], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
 }
 
 export const assignedMembersProtocolList = (req, res) => {
-    const que = 'SELECT * FROM members_protocol WHERE member_id=?'
-    db.query(que, [req.body.memberId], (err, data) => {
-      if (err) return res.status(500).json(err)
-      if (data.length >= 0) {
-        return res.status(200).json(data)
-      }
-    })
+  const que = 'SELECT * FROM members_protocol WHERE member_id=?'
+  db.query(que, [req.body.memberId], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
 }
 
 export const votingMemberApprovalProtocol = (req, res) => {
-    var datetime = new Date()
-    const que = 'UPDATE members_protocol SET protocol=?, consent=?, supported_documents=?, comment=?, electronic_signature=?, completed_date=? WHERE id=?'
-    db.query(que, [req.body.protocol, req.body.consent, req.body.supported_documents, req.body.comment, req.body.electronic_signature, datetime.toISOString().slice(0, 10), req.body.id], (err, data) => {
+  var datetime = new Date()
+  const que =
+    'UPDATE members_protocol SET protocol=?, consent=?, supported_documents=?, comment=?, electronic_signature=?, completed_date=? WHERE id=?'
+  db.query(
+    que,
+    [
+      req.body.protocol,
+      req.body.consent,
+      req.body.supported_documents,
+      req.body.comment,
+      req.body.electronic_signature,
+      datetime.toISOString().slice(0, 10),
+      req.body.id
+    ],
+    (err, data) => {
       if (err) {
         return res.status(500).json(err)
       } else {
@@ -780,24 +795,43 @@ export const votingMemberApprovalProtocol = (req, res) => {
         result.msg = 'Protocol Approved Successfully'
         return res.json(result)
       }
-    })
+    }
+  )
 }
 
 export const approvedProtocolsByMembersList = (req, res) => {
-    const que = 'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
-    db.query(que, [req.body.protocolId], (err, data) => {
-      if (err) return res.status(500).json(err)
-      if (data.length >= 0) {
-        return res.status(200).json(data)
-      }
-    })
+  const que =
+    'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
+  db.query(que, [req.body.protocolId], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
 }
 
 export const chairCommitteeApprovalProtocol = (req, res) => {
-    var datetime = new Date()
-    let protocolStatus = req.body.protocol === 'Approve' ? 3 : req.body.protocol === 'Under Review' ? 2 :  req.body.protocol === 'Rejected' ? 4 : 5
-    const que = 'UPDATE protocols SET status=?, comment=?, electronic_signature=?, approval_date_by_chair_committee=? WHERE protocol_id=?'
-    db.query(que, [protocolStatus, req.body.comment, req.body.electronic_signature, datetime.toISOString().slice(0, 10), req.body.protocol_id], (err, data) => {
+  var datetime = new Date()
+  let protocolStatus =
+    req.body.protocol === 'Approve'
+      ? 3
+      : req.body.protocol === 'Under Review'
+        ? 2
+        : req.body.protocol === 'Rejected'
+          ? 4
+          : 5
+  const que =
+    'UPDATE protocols SET status=?, comment=?, electronic_signature=?, approval_date_by_chair_committee=? WHERE protocol_id=?'
+  db.query(
+    que,
+    [
+      protocolStatus,
+      req.body.comment,
+      req.body.electronic_signature,
+      datetime.toISOString().slice(0, 10),
+      req.body.protocol_id
+    ],
+    (err, data) => {
       if (err) {
         return res.status(500).json(err)
       } else {
@@ -806,8 +840,16 @@ export const chairCommitteeApprovalProtocol = (req, res) => {
         result.msg = 'Protocol Details updated Successfully'
         return res.json(result)
       }
-    })
+    }
+  )
 }
 
-            
-            
+export const getContinueinProtocolList = (req, res) => {
+  const que = 'select * from protocols WHERE continuein_review_status=?'
+  db.query(que, [2], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}

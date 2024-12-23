@@ -8,7 +8,7 @@ export const fetchContinuinReviewProtocolList = createAsyncThunk(
     try {
       const response = await ApiCall({
         method: "GET",
-        url: `${baseURL}/admin/protocol/list`,
+        url: `${baseURL}/admin/continuein/protocol/list`,
         data,
       });
       return response.data;
