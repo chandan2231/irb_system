@@ -392,7 +392,7 @@ function InvestigatorInformationForm({
       updatedTrainingCompleted.push(value);
     } else {
       updatedTrainingCompleted = updatedTrainingCompleted.filter(
-        (training) => training !== value,
+        (training) => training !== value
       );
     }
     setFormData({ ...formData, training_completed: updatedTrainingCompleted });
@@ -408,7 +408,7 @@ function InvestigatorInformationForm({
     try {
       const getValidatedform = await investigatorAndProtocolInfoSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid =
         await investigatorAndProtocolInfoSchema.isValid(getValidatedform);
@@ -470,7 +470,7 @@ function InvestigatorInformationForm({
               setFormData({});
               e.target.reset();
             }
-          },
+          }
         );
       }
     } catch (error) {
@@ -481,7 +481,7 @@ function InvestigatorInformationForm({
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -497,61 +497,65 @@ function InvestigatorInformationForm({
     if (investigatorInformation) {
       setFormData({
         training_completed:
-          investigatorInformation?.training_completed.split(",") || [],
-        investigator_name: investigatorInformation?.investigator_name,
-        investigator_email: investigatorInformation?.investigator_email,
-        sub_investigator_name: investigatorInformation?.sub_investigator_name,
-        sub_investigator_email: investigatorInformation?.sub_investigator_email,
-        additional_study_name: investigatorInformation?.additional_study_name,
-        additional_study_email: investigatorInformation?.additional_study_email,
-        site_name: investigatorInformation?.site_name,
-        site_address: investigatorInformation?.site_address,
-        more_site: investigatorInformation?.more_site,
-        site_name_address: investigatorInformation?.site_name_address,
-        protocol_title: investigatorInformation?.protocol_title,
-        protocol_number: investigatorInformation?.protocol_number,
-        study_criteria: investigatorInformation?.study_criteria,
-        subject_number: investigatorInformation?.subject_number,
-        site_number: investigatorInformation?.site_number,
+          investigatorInformation?.training_completed?.split(",") || [],
+        investigator_name: investigatorInformation?.investigator_name || "",
+        investigator_email: investigatorInformation?.investigator_email || "",
+        sub_investigator_name:
+          investigatorInformation?.sub_investigator_name || "",
+        sub_investigator_email:
+          investigatorInformation?.sub_investigator_email || "",
+        additional_study_name:
+          investigatorInformation?.additional_study_name || "",
+        additional_study_email:
+          investigatorInformation?.additional_study_email || "",
+        site_name: investigatorInformation?.site_name || "",
+        site_address: investigatorInformation?.site_address || "",
+        more_site: investigatorInformation?.more_site || "",
+        site_name_address: investigatorInformation?.site_name_address || "",
+        protocol_title: investigatorInformation?.protocol_title || "",
+        protocol_number: investigatorInformation?.protocol_number || "",
+        study_criteria: investigatorInformation?.study_criteria || "",
+        subject_number: investigatorInformation?.subject_number || "",
+        site_number: investigatorInformation?.site_number || "",
         disapproved_or_withdrawn:
-          investigatorInformation?.disapproved_or_withdrawn,
+          investigatorInformation?.disapproved_or_withdrawn || "",
         disapproved_or_withdrawn_explain:
-          investigatorInformation?.disapproved_or_withdrawn_explain,
-        oversite: investigatorInformation?.oversite,
-        oversite_explain: investigatorInformation?.oversite_explain,
-        immediate_family: investigatorInformation?.immediate_family,
+          investigatorInformation?.disapproved_or_withdrawn_explain || "",
+        oversite: investigatorInformation?.oversite || "",
+        oversite_explain: investigatorInformation?.oversite_explain || "",
+        immediate_family: investigatorInformation?.immediate_family || "",
         immediate_family_explain:
-          investigatorInformation?.immediate_family_explain,
-        stock_ownership: investigatorInformation?.stock_ownership,
+          investigatorInformation?.immediate_family_explain || "",
+        stock_ownership: investigatorInformation?.stock_ownership || "",
         stock_ownership_explain:
-          investigatorInformation?.stock_ownership_explain,
-        property_interest: investigatorInformation?.property_interest,
+          investigatorInformation?.stock_ownership_explain || "",
+        property_interest: investigatorInformation?.property_interest || "",
         property_interest_explain:
-          investigatorInformation?.property_interest_explain,
-        financial_agreement: investigatorInformation?.financial_agreement,
+          investigatorInformation?.property_interest_explain || "",
+        financial_agreement: investigatorInformation?.financial_agreement || "",
         financial_agreement_explain:
-          investigatorInformation?.financial_agreement_explain,
-        server_position: investigatorInformation?.server_position,
+          investigatorInformation?.financial_agreement_explain || "",
+        server_position: investigatorInformation?.server_position || "",
         server_position_explain:
-          investigatorInformation?.server_position_explain,
-        influence_conduct: investigatorInformation?.influence_conduct,
+          investigatorInformation?.server_position_explain || "",
+        influence_conduct: investigatorInformation?.influence_conduct || "",
         influence_conduct_explain:
-          investigatorInformation?.influence_conduct_explain,
-        interest_conflict: investigatorInformation?.interest_conflict,
+          investigatorInformation?.influence_conduct_explain || "",
+        interest_conflict: investigatorInformation?.interest_conflict || "",
         interest_conflict_explain:
-          investigatorInformation?.interest_conflict_explain,
-        fda_audit: investigatorInformation?.fda_audit,
-        fda_audit_explain: investigatorInformation?.fda_audit_explain,
-        involved_years: investigatorInformation?.involved_years,
-        investigators_npi: investigatorInformation?.investigators_npi,
+          investigatorInformation?.interest_conflict_explain || "",
+        fda_audit: investigatorInformation?.fda_audit || "",
+        fda_audit_explain: investigatorInformation?.fda_audit_explain || "",
+        involved_years: investigatorInformation?.involved_years || "",
+        investigators_npi: investigatorInformation?.investigators_npi || "",
         training_completed_explain:
-          investigatorInformation?.training_completed_explain,
+          investigatorInformation?.training_completed_explain || "",
         investigator_research_number:
-          investigatorInformation?.investigator_research_number,
+          investigatorInformation?.investigator_research_number || "",
         pending_or_active_research:
-          investigatorInformation?.pending_or_active_research,
+          investigatorInformation?.pending_or_active_research || "",
         pending_or_active_research_explain:
-          investigatorInformation?.pending_or_active_research_explain,
+          investigatorInformation?.pending_or_active_research_explain || "",
         cv_files:
           investigatorInformation?.documents
             ?.filter((doc) => doc.document_name === "investigator_cv")
@@ -583,37 +587,37 @@ function InvestigatorInformationForm({
 
       setShowAdditionalQuestion(investigatorInformation?.more_site === "Yes");
       setShowDisapproveAdditionTextArea(
-        investigatorInformation?.disapproved_or_withdrawn === "Yes",
+        investigatorInformation?.disapproved_or_withdrawn === "Yes"
       );
       setShowOversiteAdditionTextArea(
-        investigatorInformation?.oversite === "Yes",
+        investigatorInformation?.oversite === "Yes"
       );
       setShowImmediateFamilyAdditionTextArea(
-        investigatorInformation?.immediate_family === "Yes",
+        investigatorInformation?.immediate_family === "Yes"
       );
       setShowStockOwnershipAdditionTextArea(
-        investigatorInformation?.stock_ownership === "Yes",
+        investigatorInformation?.stock_ownership === "Yes"
       );
       setShowPropertyInterestAdditionTextArea(
-        investigatorInformation?.property_interest === "Yes",
+        investigatorInformation?.property_interest === "Yes"
       );
       setShowFinancialAgreementAdditionTextArea(
-        investigatorInformation?.financial_agreement === "Yes",
+        investigatorInformation?.financial_agreement === "Yes"
       );
       setShowServePositionAdditionTextArea(
-        investigatorInformation?.server_position === "Yes",
+        investigatorInformation?.server_position === "Yes"
       );
       setShowInfluenceConductAdditionTextArea(
-        investigatorInformation?.influence_conduct === "Yes",
+        investigatorInformation?.influence_conduct === "Yes"
       );
       setShowInterestConflictsAdditionTextArea(
-        investigatorInformation?.interest_conflict === "Yes",
+        investigatorInformation?.interest_conflict === "Yes"
       );
       setShowFdaAuditAdditionTextArea(
-        investigatorInformation?.fda_audit === "Yes",
+        investigatorInformation?.fda_audit === "Yes"
       );
       setShowAdditionalQuestionPendingOrActive(
-        investigatorInformation?.pending_or_active_research === "Yes",
+        investigatorInformation?.pending_or_active_research === "Yes"
       );
     }
   }, [investigatorInformation]);
@@ -936,7 +940,7 @@ function InvestigatorInformationForm({
                 onChange={(event) =>
                   handleRadioButtonSelectDisapproved(
                     event,
-                    "disapproved_or_withdrawn",
+                    "disapproved_or_withdrawn"
                   )
                 }
               >
@@ -1203,7 +1207,7 @@ function InvestigatorInformationForm({
                 onChange={(event) =>
                   handleRadioButtonFinancialAgreement(
                     event,
-                    "financial_agreement",
+                    "financial_agreement"
                   )
                 }
               >
@@ -1655,7 +1659,7 @@ function InvestigatorInformationForm({
                 onChange={(event) =>
                   handlePendingOrInactiveresearch(
                     event,
-                    "pending_or_active_research",
+                    "pending_or_active_research"
                   )
                 }
               >
@@ -1714,7 +1718,7 @@ function InvestigatorInformationForm({
                   if (e.target.files && e.target.files.length) {
                     setFormData({
                       ...formData,
-                      [e.target.name]: e.target.files,
+                      [e.target.name]: Array.from(e.target.files),
                     });
                   }
                 }}

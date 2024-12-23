@@ -35,7 +35,7 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 const emailRegex = new RegExp(
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 );
 const investigatorInfoSchema = yup.object().shape({
   investigator_name: yup.string().required("Investigator name is required"),
@@ -74,7 +74,7 @@ const investigatorInfoSchema = yup.object().shape({
   pending_or_active_research: yup
     .string()
     .required(
-      "Please specify if there are any pending or active research restrictions",
+      "Please specify if there are any pending or active research restrictions"
     ),
   pending_or_active_research_explain: yup
     .string()
@@ -84,7 +84,7 @@ const investigatorInfoSchema = yup.object().shape({
         yup
           .string()
           .required(
-            "Explanation is required if there are pending or active research restrictions",
+            "Explanation is required if there are pending or active research restrictions"
           ),
     }),
   site_fwp: yup.string().required("Please specify if your site has an FWA"),
@@ -221,21 +221,23 @@ function InvestigatorInformationForm({
             })) || [],
       });
       setShowAdditionalQuestion(
-        investigatorInformation.fda_audit === "Yes" ? true : false,
+        investigatorInformation.fda_audit === "Yes" ? true : false
       );
       setShowAdditionalQuestionPendingOrActive(
         investigatorInformation.pending_or_active_research === "Yes"
           ? true
-          : false,
+          : false
       );
       setShowAdditionalQuestionSiteFWP(
-        investigatorInformation.site_fwp === "Yes" ? true : false,
+        investigatorInformation.site_fwp === "Yes" ? true : false
       );
       setShowOtherQuestion(
-        investigatorInformation.training_completed.includes("8") ? true : false,
+        investigatorInformation?.training_completed?.includes("8")
+          ? true
+          : false
       );
       setOtherQuestionSelection(
-        investigatorInformation.training_completed.includes("8") ? "8" : "",
+        investigatorInformation?.training_completed?.includes("8") ? "8" : ""
       );
     }
   }, [investigatorInformation, protocolTypeDetails]);
@@ -295,7 +297,7 @@ function InvestigatorInformationForm({
       updatedTrainingCompleted.push(value);
     } else {
       updatedTrainingCompleted = updatedTrainingCompleted.filter(
-        (training) => training !== value,
+        (training) => training !== value
       );
     }
     setFormData({ ...formData, training_completed: updatedTrainingCompleted });
@@ -363,7 +365,7 @@ function InvestigatorInformationForm({
             cv_files,
             medical_license,
             training_certificates,
-          }),
+          })
         ).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
@@ -394,7 +396,7 @@ function InvestigatorInformationForm({
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -777,7 +779,7 @@ function InvestigatorInformationForm({
                 onChange={(event) =>
                   handlePendingOrInactiveresearch(
                     event,
-                    "pending_or_active_research",
+                    "pending_or_active_research"
                   )
                 }
               >

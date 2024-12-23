@@ -80,7 +80,7 @@ const protocolProcedureInfoSchema = yup.object().shape({
   irb_approval: yup
     .string()
     .required(
-      "Please specify if IRB approval of site-specific templates is required",
+      "Please specify if IRB approval of site-specific templates is required"
     ),
   expected_number_sites: yup
     .string()
@@ -99,7 +99,7 @@ const protocolProcedureInfoSchema = yup.object().shape({
   facing_materials: yup
     .mixed()
     .required(
-      "You must upload at least one recruitment or subject-facing material",
+      "You must upload at least one recruitment or subject-facing material"
     ),
 });
 
@@ -170,7 +170,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
       updatedStudyTypeChecked.push(value);
     } else {
       updatedStudyTypeChecked = updatedStudyTypeChecked.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
     }
     setFormData({ ...formData, enrolled_study_type: updatedStudyTypeChecked });
@@ -188,7 +188,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
       updatedGroupsChecked.push(value);
     } else {
       updatedGroupsChecked = updatedGroupsChecked.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
     }
     setFormData({ ...formData, enrolled_group: updatedGroupsChecked });
@@ -280,10 +280,12 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
 
       const getValidatedform = await protocolProcedureInfoSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
+      console.log("getValidatedform", getValidatedform);
       const isValid =
         await protocolProcedureInfoSchema.isValid(getValidatedform);
+      console.log("isValid", isValid);
       if (isValid === true) {
         let facing_materials = [];
         if (!formData.facing_materials) {
@@ -328,7 +330,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -373,19 +375,19 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
       });
 
       setShowAdditionalQuestionStudyType(
-        protocolProcedures?.enrolled_study_type?.includes("20"),
+        protocolProcedures?.enrolled_study_type?.includes("20")
       );
       setShowAdditionalQuestionRaceAndEthnic(
-        protocolProcedures?.enrolled_group?.includes("9"),
+        protocolProcedures?.enrolled_group?.includes("9")
       );
       setShowStudyExcludedAdditionTextArea(
-        protocolProcedures?.study_excluded === "Yes",
+        protocolProcedures?.study_excluded === "Yes"
       );
       setShowAdditionalQuestionRecuritmentMethod(
-        protocolProcedures?.recurement_method?.includes("10"),
+        protocolProcedures?.recurement_method?.includes("10")
       );
       setShowFutureResearchAdditionTextArea(
-        protocolProcedures?.future_research === "Yes",
+        protocolProcedures?.future_research === "Yes"
       );
     }
   }, [protocolProcedures, protocolTypeDetails]);
@@ -984,7 +986,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
                 onChange={(event) =>
                   handleRadioButtonSelectFutureResearch(
                     event,
-                    "future_research",
+                    "future_research"
                   )
                 }
               >
