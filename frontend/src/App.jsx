@@ -57,66 +57,67 @@ function App() {
       return match[2];
     }
   }
-  const validateToken = async (e) => {
-    try {
-      const cookieName = "accessToken";
-      const getCookie = getCookieValue(cookieName);
-      let res = await axios.get(baseURL + "/auth/", {
-        headers: {
-          "Content-Type": "application/json",
-          token: getCookie,
-        },
-      });
-      if (res.status === 200) {
-        setLoader(false);
-        if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
-          window.location.replace("/dashboard");
-        }
-      } else {
-        if (!["/signin", "/signup"].includes(window.location.pathname)) {
-          window.location.replace("/signin");
-        }
-        setLoader(false);
-      }
-    } catch (err) {
-      setLoader(false);
-      if (!["/signin", "/signup"].includes(window.location.pathname)) {
-        window.location.replace("/signin");
-      }
-    }
-  };
-
-  // useEffect(() => {
-  //   const cookieName = "accessToken";
-  //   const getCookie = getCookieValue(cookieName);
-  //   let data = { token: getCookie };
-  //   console.log("data", data);
-  //   dispatch(validateUserToken(data)).then((data) => {
-  //     try {
-  //       console.log("Validate token", data);
-  //       if (data.payload.status === 200) {
-  //         setLoader(false);
-  //         if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
-  //           window.location.replace("/dashboard");
-  //         }
-  //       } else {
-  //         if (!["/signin", "/signup"].includes(window.location.pathname)) {
-  //           window.location.replace("/signin");
-  //         }
-  //         setLoader(false);
-  //       }
-  //     } catch (err) {
+  // const validateToken = async (e) => {
+  //   try {
+  //     const cookieName = "accessToken";
+  //     const getCookie = getCookieValue(cookieName);
+  //     let res = await axios.get(baseURL + "/auth/", {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         token: getCookie,
+  //       },
+  //     });
+  //     if (res.status === 200) {
   //       setLoader(false);
+  //       if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
+  //         window.location.replace("/dashboard");
+  //       }
+  //     } else {
   //       if (!["/signin", "/signup"].includes(window.location.pathname)) {
   //         window.location.replace("/signin");
   //       }
+  //       setLoader(false);
   //     }
-  //   });
-  // }, [dispatch]);
+  //   } catch (err) {
+  //     setLoader(false);
+  //     if (!["/signin", "/signup"].includes(window.location.pathname)) {
+  //       window.location.replace("/signin");
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
-    validateToken();
-  }, []);
+    const cookieName = "accessToken";
+    const getCookie = getCookieValue(cookieName);
+    let data = { token: getCookie };
+    console.log("data", data);
+    dispatch(validateUserToken(data)).then((data) => {
+      try {
+        console.log("Validate token", data);
+        if (data.payload.status === 200) {
+          setLoader(false);
+          if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
+            window.location.replace("/dashboard");
+          }
+        } else {
+          if (!["/signin", "/signup"].includes(window.location.pathname)) {
+            window.location.replace("/signin");
+          }
+          setLoader(false);
+        }
+      } catch (err) {
+        setLoader(false);
+        if (!["/signin", "/signup"].includes(window.location.pathname)) {
+          window.location.replace("/signin");
+        }
+      }
+    });
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   validateToken();
+  // }, [dispatch]);
+
   if (loader) {
     return (
       <Backdrop
