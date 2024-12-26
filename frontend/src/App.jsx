@@ -86,33 +86,33 @@ function App() {
   //   }
   // };
 
-  useEffect(() => {
-    const cookieName = "accessToken";
-    const getCookie = getCookieValue(cookieName);
-    let data = { token: getCookie };
-    console.log("data", data);
-    dispatch(validateUserToken(data)).then((data) => {
-      try {
-        console.log("Validate token", data);
-        if (data.payload.status === 200) {
-          setLoader(false);
-          if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
-            window.location.replace("/dashboard");
-          }
-        } else {
-          if (!["/signin", "/signup"].includes(window.location.pathname)) {
-            window.location.replace("/signin");
-          }
-          setLoader(false);
-        }
-      } catch (err) {
-        setLoader(false);
-        if (!["/signin", "/signup"].includes(window.location.pathname)) {
-          window.location.replace("/signin");
-        }
-      }
-    });
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const cookieName = "accessToken";
+  //   const getCookie = getCookieValue(cookieName);
+  //   let data = { token: getCookie };
+  //   console.log("data", data);
+  //   dispatch(validateUserToken(data)).then((data) => {
+  //     try {
+  //       console.log("Validate token", data);
+  //       if (data.payload.status === 200) {
+  //         setLoader(false);
+  //         if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
+  //           window.location.replace("/dashboard");
+  //         }
+  //       } else {
+  //         if (!["/signin", "/signup"].includes(window.location.pathname)) {
+  //           window.location.replace("/signin");
+  //         }
+  //         setLoader(false);
+  //       }
+  //     } catch (err) {
+  //       setLoader(false);
+  //       if (!["/signin", "/signup"].includes(window.location.pathname)) {
+  //         window.location.replace("/signin");
+  //       }
+  //     }
+  //   });
+  // }, [dispatch]);
 
   // useEffect(() => {
   //   validateToken();
