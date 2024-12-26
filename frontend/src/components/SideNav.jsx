@@ -64,10 +64,7 @@ function SideNav() {
           <>
             <MenuItem
               active={
-                location.pathname === "/admin/created-protocols" ||
-                location.pathname === "/admin/protocol-details"
-                  ? true
-                  : false
+                location.pathname === "/admin/created-protocols" ? true : false
               }
               component={<Link to="/admin/created-protocols" />}
               icon={<FormatListBulletedIcon />}
@@ -81,8 +78,7 @@ function SideNav() {
             </MenuItem>
             <MenuItem
               active={
-                location.pathname === "/admin/under-review-protocols" ||
-                location.pathname === "/admin/protocol-details"
+                location.pathname === "/admin/under-review-protocols"
                   ? true
                   : false
               }
@@ -98,8 +94,7 @@ function SideNav() {
             </MenuItem>
             <MenuItem
               active={
-                location.pathname === "/admin/approved-protocol-list" ||
-                location.pathname === "/admin/protocol-details"
+                location.pathname === "/admin/approved-protocol-list"
                   ? true
                   : false
               }

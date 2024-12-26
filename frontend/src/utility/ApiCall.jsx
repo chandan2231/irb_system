@@ -7,7 +7,7 @@ import JSONBigInt from "json-bigint";
 
 export const commonHeaders = {
   "Content-Type": "application/json",
-  // "Access-Control-Allow-Origin": "*",
+  //  "Access-Control-Allow-Origin": "*",
   // 'X-Client-Type': 'DesktopApp',
   // 'X-Client-Language': 'ENGLISH',
   // 'X-Client-Platform': 'Web',
@@ -34,7 +34,7 @@ export default function ApiCall({ method, url, data, params, headers = null }) {
     baseURL: url,
     headers: newHeader,
     // timeout: 30000,
-    // withCredentials: true,
+    withCredentials: true,
     transformResponse: [
       function (data) {
         try {
