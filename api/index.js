@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'development') {
   //   optionsSuccessStatus: 204
   // }
   // Use the cors middleware
-  app.use(cors({ origin: ['https://app.irbhub.org'] }))
+  app.use(cors({ origin: ['https://app.irbhub.com', 'https://app.irbhub.org'] }))
   // app.options('/', cors(corsOptions))
 }
 
