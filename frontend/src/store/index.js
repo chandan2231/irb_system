@@ -17,8 +17,9 @@ import ClinicalResearcherReducer from "./ProtocolType/ClinicalResearcherSlice";
 import MultiSiteSponsorReducer from "./ProtocolType/MultiSiteSponsorSlice";
 import ContractorResearcherReducer from "./ProtocolType/ContractorResearcherSlice";
 import AdminReducer from "./Admin/AdminSlice";
-import MembersSlice from "./Admin/MembersSlice";
-import EventPriceSlice from "./Admin/EventPriceSlice";
+import MembersReducer from "./Admin/MembersSlice";
+import EventPriceReducer from "./Admin/EventPriceSlice";
+import CommunicationReducer from "./Communication/CommunicationSlice";
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -28,8 +29,9 @@ const rootReducer = combineReducers({
   multiSiteSponsor: MultiSiteSponsorReducer,
   contractorResearcher: ContractorResearcherReducer,
   admin: AdminReducer,
-  member: MembersSlice,
-  eventPrice: EventPriceSlice,
+  member: MembersReducer,
+  eventPrice: EventPriceReducer,
+  communication: CommunicationReducer,
 });
 
 const persistConfig = {

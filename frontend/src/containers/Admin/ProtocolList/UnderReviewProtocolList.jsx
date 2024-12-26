@@ -6,15 +6,23 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+
 import { useNavigate } from "react-router-dom";
 import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import AddProtocolEvent from "./AddProtocolEvent";
-import { fetchUnderReviewProtocolList, allowProtocolEdit } from "../../../services/Admin/ProtocolListService";
+import {
+  fetchUnderReviewProtocolList,
+  allowProtocolEdit,
+} from "../../../services/Admin/ProtocolListService";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import { createProtocolEvent, assignProtocolToMember } from "../../../services/Admin/MembersService";
+import {
+  createProtocolEvent,
+  assignProtocolToMember,
+} from "../../../services/Admin/MembersService";
 import AssignProtocolToMember from "./AssignProtocolToMember";
 
 function UnderReviewProtocolList() {
@@ -33,7 +41,14 @@ function UnderReviewProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/admin/protocol-details", { state: { details: params.row, type: 'admin' } });
+    navigate("/admin/protocol-details", {
+      state: { details: params.row, type: "admin" },
+    });
+  };
+  const navigateToCommunicationDetails = (params) => {
+    navigate("/communication", {
+      state: { details: params.row, identifierType: "admin" },
+    });
   };
   const columns = [
     {
@@ -110,6 +125,12 @@ function UnderReviewProtocolList() {
           icon={<PictureAsPdfIcon />}
           label="View Pdf"
           onClick={() => handleViewPdf(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CompareArrowsIcon />}
+          label="Communication"
+          onClick={() => navigateToCommunicationDetails(params)}
           showInMenu
         />,
         // <GridActionsCellItem
@@ -220,7 +241,7 @@ function UnderReviewProtocolList() {
           const updatedProtocolDataList = protocolDataList.map((element) =>
             element.id === response.payload.data.id
               ? { ...element, allow_edit: response.payload.data.allowEditvalue }
-              : element,
+              : element
           );
           setProtocolDataList(updatedProtocolDataList);
         } else {
@@ -237,75 +258,105 @@ function UnderReviewProtocolList() {
         }
       });
     }
-}
-    
-    
-    const handleAddProtocolEvent = (params) => {
-        setOpen(true);
-        setProtocolDetails(params?.row)
-    }
+  };
 
-    const addNewData = (addedData) => {
-        const { event_subject, event_msg, member_id } = addedData;
-        let membersArr = [];
-        member_id.map((pList) => {
-            membersArr.push(pList.id);
-        });
-        let data = {
-            event_subject: event_subject,
-            event_message: event_msg,
-            member_id: membersArr,
-            protocol_id: protocolDetails?.protocolId,
-            protocol_name: protocolDetails?.researchType,
-            created_by: user.id,
-        };
-        console.log("data ", data);
-        // return
-        dispatch(createProtocolEvent(data))
-        .then(data => {
-            console.log('data', data)
-            if (data.payload.status === 200) {
-                setOpen(false);
-                toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            } else {
-                setOpen(false);
-                toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            }
-        })
-        
+  const handleAddProtocolEvent = (params) => {
+    setOpen(true);
+    setProtocolDetails(params?.row);
+  };
+
+  const addNewData = (addedData) => {
+    const { event_subject, event_msg, member_id } = addedData;
+    let membersArr = [];
+    member_id.map((pList) => {
+      membersArr.push(pList.id);
+    });
+    let data = {
+      event_subject: event_subject,
+      event_message: event_msg,
+      member_id: membersArr,
+      protocol_id: protocolDetails?.protocolId,
+      protocol_name: protocolDetails?.researchType,
+      created_by: user.id,
     };
-    
-
-    const handleAssignedMemberToProtocol = (params) => {
-        setAssignedMemberOpen(true);
-        setProtocolDetails(params?.row)
-    }
-
-    const addAssignedMemberData = (addedData) => {
-        const { member_id } = addedData;
-        let membersArr = [];
-        member_id.map((pList) => {
-            membersArr.push(pList.id);
+    console.log("data ", data);
+    // return
+    dispatch(createProtocolEvent(data)).then((data) => {
+      console.log("data", data);
+      if (data.payload.status === 200) {
+        setOpen(false);
+        toast.success(data.payload.data.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         });
-        let data = {
-            member_id: membersArr,
-            protocol_id: protocolDetails?.protocolId,
-            protocol_name: protocolDetails?.researchType,
-            created_by: user.id,
-        };
-        
-        dispatch(assignProtocolToMember(data))
-        .then(data => {
-            if (data.payload.status === 200) {
-                setAssignedMemberOpen(false)
-                toast.success(data.payload.data.msg, {position: "top-right",autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            } else {
-                setAssignedMemberOpen(false)
-                toast.error(data.payload.data.msg, {position: "top-right", autoClose: 5000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "dark"});
-            }
-        })
-        
+      } else {
+        setOpen(false);
+        toast.error(data.payload.data.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    });
+  };
+
+  const handleAssignedMemberToProtocol = (params) => {
+    setAssignedMemberOpen(true);
+    setProtocolDetails(params?.row);
+  };
+
+  const addAssignedMemberData = (addedData) => {
+    const { member_id } = addedData;
+    let membersArr = [];
+    member_id.map((pList) => {
+      membersArr.push(pList.id);
+    });
+    let data = {
+      member_id: membersArr,
+      protocol_id: protocolDetails?.protocolId,
+      protocol_name: protocolDetails?.researchType,
+      created_by: user.id,
     };
+
+    dispatch(assignProtocolToMember(data)).then((data) => {
+      if (data.payload.status === 200) {
+        setAssignedMemberOpen(false);
+        toast.success(data.payload.data.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        setAssignedMemberOpen(false);
+        toast.error(data.payload.data.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    });
+  };
 
   // const handleItemDetail = (params) => {
   //     //console.log('Details Item', params)

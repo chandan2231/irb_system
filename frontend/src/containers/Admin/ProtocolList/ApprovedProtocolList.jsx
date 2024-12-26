@@ -10,6 +10,8 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
 import ToggleStatus from "../../../components/ToggleStatus";
@@ -29,7 +31,14 @@ function ApprovedProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/admin/protocol-details", { state: { details: params.row, type: 'admin' } });
+    navigate("/admin/protocol-details", {
+      state: { details: params.row, type: "admin" },
+    });
+  };
+  const navigateToCommunicationDetails = (params) => {
+    navigate("/communication", {
+      state: { details: params.row, identifierType: "admin" },
+    });
   };
   const columns = [
     {
@@ -61,7 +70,15 @@ function ApprovedProtocolList() {
       field: "allowEdit",
       headerName: "Allow Edit",
       flex: 1,
-      renderCell: (params) => <ToggleStatus status={params.row.allowEdit} />,
+      renderCell: (params) => (
+        <ToggleStatus
+          status={params.row.allowEdit}
+          onStatusChange={(newAllowEdit) => {
+            handleChangeStatus(params.row.id, newAllowEdit);
+          }}
+        />
+      ),
+      // renderCell: (params) => <ToggleStatus status={params.row.allowEdit} />,
     },
     {
       field: "status",
@@ -87,6 +104,12 @@ function ApprovedProtocolList() {
           icon={<PictureAsPdfIcon />}
           label="View Pdf"
           onClick={() => handleViewPdf(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CompareArrowsIcon />}
+          label="Communication"
+          onClick={() => navigateToCommunicationDetails(params)}
           showInMenu
         />,
         // <GridActionsCellItem
@@ -259,7 +282,7 @@ function ApprovedProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
+            // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
