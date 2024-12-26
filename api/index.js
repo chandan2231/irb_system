@@ -40,6 +40,8 @@ if (process.env.NODE_ENV === 'development') {
     preflightContinue: false // Don't pass preflight request to the next handler
   }
   // Use the cors middleware
+  app.use(cors({ origin: [ 'https://app.irbhub.org'] }))
+  // app.options('/', cors(corsOptions)
   app.use(cors(corsOptions))
 }
 
