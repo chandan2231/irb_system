@@ -38,60 +38,38 @@ const emailRegex = new RegExp(
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 );
 const investigatorInfoSchema = yup.object().shape({
-  investigator_name: yup.string().required("Investigator name is required"),
+  investigator_name: yup.string().required("This is required"),
   investigator_email: yup
     .string()
     .email("Invalid email format")
-    .required("Investigator email is required"),
-  sub_investigator_name: yup
-    .string()
-    .required("Sub-Investigator name is required"),
-  sub_investigator_email: yup
-    .string()
-    .email("Invalid email format")
-    .required("Sub-Investigator email is required"),
-  primary_contact: yup.string(),
-  primary_contact_email: yup.string().email("Invalid email format"),
-  fda_audit: yup.string().required("Please specify if FDA audit occurred"),
+    .required("This is required"),
   fda_audit_explain: yup.string().when("fda_audit", {
     is: () => "Yes",
-    then: () =>
-      yup.string().required("Explanation is required if FDA audit occurred"),
+    then: () => yup.string().required("This is required"),
+    otherwise: () => yup.string().nullable(),
   }),
-  involved_years: yup.string().required("Involvement duration is required"),
-  investigators_npi: yup.string(),
-  training_completed: yup
-    .string()
-    .required("Please specify the training completed"),
   training_completed_explain: yup.string().when("training_completed", {
     is: (value) => value.includes("8"),
-    then: () =>
-      yup.string().required("Explanation for 'Other' training is required"),
+    then: () => yup.string().required("This is required"),
   }),
   investigator_research_number: yup
-    .string()
-    .required("Number of supervised studies is required"),
-  pending_or_active_research: yup
-    .string()
-    .required(
-      "Please specify if there are any pending or active research restrictions"
-    ),
+    .number()
+    .positive("The number must be positive")
+    .typeError("This must be a number")
+    .integer("The number must be an integer")
+    .required("This is required"),
   pending_or_active_research_explain: yup
     .string()
     .when("pending_or_active_research", {
       is: () => "Yes",
-      then: () =>
-        yup
-          .string()
-          .required(
-            "Explanation is required if there are pending or active research restrictions"
-          ),
+      then: () => yup.string().required("This is required"),
+      otherwise: () => yup.string().nullable(),
     }),
-  site_fwp: yup.string().required("Please specify if your site has an FWA"),
+
   fwa_number: yup.string().when("site_fwp", {
     is: () => "Yes",
-    then: () =>
-      yup.string().required("FWA number is required if the site has an FWA"),
+    then: () => yup.string().required("This is required"),
+    otherwise: () => yup.string().nullable(),
   }),
   cv_files: yup
     .mixed()
@@ -300,7 +278,11 @@ function InvestigatorInformationForm({
         (training) => training !== value
       );
     }
-    setFormData({ ...formData, training_completed: updatedTrainingCompleted });
+    const updatedTrainingCompletedString = updatedTrainingCompleted.join(",");
+    setFormData({
+      ...formData,
+      training_completed: updatedTrainingCompletedString,
+    });
   };
 
   const handleChange = (e) => {
@@ -388,11 +370,6 @@ function InvestigatorInformationForm({
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
       });
-      // if (otherQuestionSelection !== '' && otherQuestionSelection === 8 && formData.training_completed_explain === "") {
-      //     newErrors['training_completed_explain_error'] = 'This is required';
-      // } else {
-      //     newErrors['training_completed_explain_error'] = '';
-      // }
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
@@ -476,16 +453,13 @@ function InvestigatorInformationForm({
             <Box sx={{ width: "100%", maxWidth: "100%" }}>
               <TextField
                 fullWidth
-                label="Sub-Investigator Name *"
+                label="Sub-Investigator Name"
                 id="sub_investigator_name"
                 name="sub_investigator_name"
                 value={formData.sub_investigator_name || ""}
                 onChange={handleChange}
               />
             </Box>
-            {errors.sub_investigator_name && (
-              <div className="error">{errors.sub_investigator_name}</div>
-            )}
           </Form.Group>
           <Form.Group
             as={Col}
@@ -502,9 +476,6 @@ function InvestigatorInformationForm({
                 onChange={handleChange}
               />
             </Box>
-            {errors.sub_investigator_email && (
-              <div className="error">{errors.sub_investigator_email}</div>
-            )}
           </Form.Group>
           <Form.Group
             as={Col}
@@ -666,7 +637,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("3")}
+                      checked={formData.training_completed.includes("3")}
                     />
                   }
                   label="Certified Physician Investigator Training"
@@ -675,7 +646,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("4")}
+                      checked={formData.training_completed.includes("4")}
                     />
                   }
                   label="ACRP training (CCRC, CCRA)"
@@ -684,7 +655,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("5")}
+                      checked={formData.training_completed.includes("5")}
                     />
                   }
                   label="SOCRA (CCRP)"
@@ -693,7 +664,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("6")}
+                      checked={formData.training_completed.includes("6")}
                     />
                   }
                   label="Graduate or undergraduate research studies or degrees"
@@ -702,7 +673,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("7")}
+                      checked={formData.training_completed.includes("7")}
                     />
                   }
                   label="Academy of Physicians in Clinical Research"
@@ -711,7 +682,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("8")}
+                      checked={formData.training_completed.includes("8")}
                     />
                   }
                   label="Other"
@@ -763,6 +734,9 @@ function InvestigatorInformationForm({
                 onChange={handleChange}
               />
             </Box>
+            {errors.investigator_research_number && (
+              <div className="error">{errors.investigator_research_number}</div>
+            )}
           </Form.Group>
 
           <Form.Group as={Col} controlId="validationFormik01">

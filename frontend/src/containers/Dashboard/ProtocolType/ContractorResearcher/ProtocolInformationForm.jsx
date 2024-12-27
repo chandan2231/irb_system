@@ -45,7 +45,7 @@ const protocoalInfoSchema = yup.object().shape({
       yup
         .string()
         .notRequired(
-          "This is required when the protocol is not submitted for the first time",
+          "This is required when the protocol is not submitted for the first time"
         ),
   }),
 
@@ -67,7 +67,7 @@ const protocoalInfoSchema = yup.object().shape({
       yup
         .string()
         .required(
-          "This is required if oversight is transferred from another IRB",
+          "This is required if oversight is transferred from another IRB"
         ),
   }),
 
@@ -154,10 +154,10 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             }) || [],
       });
       setShowAdditionalQuestion(
-        protocolInformation.first_time_protocol === "No",
+        protocolInformation.first_time_protocol === "No"
       );
       setShowDisapproveAdditionTextArea(
-        protocolInformation.disapproved_or_withdrawn === "Yes",
+        protocolInformation.disapproved_or_withdrawn === "Yes"
       );
       setShowOversiteAdditionTextArea(protocolInformation.oversite === "Yes");
     }
@@ -232,11 +232,11 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         }
 
         dispatch(
-          createProtocolInformation({ ...formData, protocol_file }),
+          createProtocolInformation({ ...formData, protocol_file })
         ).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, { position: "top-right" });
-            setFormData({});
+            // setFormData({});
           }
         });
       }
@@ -251,7 +251,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       // Scroll to the first error field if there are validation errors
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -263,15 +263,15 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     }
   };
 
-  console.log("protocolInformation form", {
-    formData,
-    protocolInformation,
-  });
+  // console.log("protocolInformation form", {
+  //   formData,
+  //   protocolInformation,
+  // });
 
-  console.log("protocolInformationFormData", {
-    formData,
-    errors,
-  });
+  // console.log("protocolInformationFormData", {
+  //   formData,
+  //   errors,
+  // });
 
   // here on the client side
   return (
@@ -328,7 +328,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                     onChange={(event) =>
                       handleRadioButtonSelectDisapproved(
                         event,
-                        "disapproved_or_withdrawn",
+                        "disapproved_or_withdrawn"
                       )
                     }
                   >

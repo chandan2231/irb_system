@@ -61,7 +61,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
         name={"research_type_id"}
         label={"Select Research Type *"}
         error={errors.research_type_id ? true : false}
-        helpertext={errors.research_type_id?.message}
+        helperText={errors.research_type_id?.message}
         value={values.research_type_id}
         labelId={"demo-simple-select-required-label"}
         id={"demo-simple-select-required"}

@@ -22,7 +22,7 @@ function AppHeader() {
   const { collapseSidebar, toggleSidebar, broken } = useProSidebar();
   const [err, setErr] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
-  const userDetails = JSON.parse(localStorage.getItem("user"));
+  const userDetails = JSON.parse(localStorage.getItem("user")) || {};
   const handleCloseUserMenu = () => {
     dispatch(userLogout()).then((data) => {
       console.log("data.payload.status", data.payload.status);

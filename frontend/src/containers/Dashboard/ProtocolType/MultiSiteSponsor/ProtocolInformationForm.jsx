@@ -44,17 +44,17 @@ const protocoalInfoSchema = yup.object().shape({
   disapproved_or_withdrawn_explain: yup
     .string()
     .when("disapproved_or_withdrawn", {
-      is: () => "Yes",
+      is: (value) => value === "Yes",
       then: () =>
         yup
           .string()
           .required("Explanation for disapproved or withdrawn is required"),
-      otherwise: () => yup.string().nullable(),
+      otherwise: () => yup.string().notRequired(),
     }),
   oversite_explain: yup.string().when("oversite", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("Oversight explanation is required"),
-    otherwise: () => yup.string().nullable(),
+    otherwise: () => yup.string().notRequired(),
   }),
 });
 
@@ -114,6 +114,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
+      console.log("formData", formData);
       const getValidatedform = await protocoalInfoSchema.validate(formData, {
         abortEarly: false,
       });
@@ -154,6 +155,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
       });
+      console.log("error", { error, newErrors, formData });
       setErrors(newErrors);
     }
   };
