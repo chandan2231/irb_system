@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -104,6 +105,8 @@ const protocolProcedureInfoSchema = yup.object().shape({
 });
 
 function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -248,6 +251,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       if (
@@ -307,6 +311,8 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
         }
         dispatch(createProtocolProcedures(formData)).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
+
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -317,12 +323,14 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+            // setFormData({});
             e.target.reset();
           }
         });
       }
     } catch (error) {
+      setLoader(false)
+
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -396,6 +404,15 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
     protocolProcedures,
     formData,
   });
+
+  console.log("protocolInformation loader", loader);
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
+
 
   return (
     <>

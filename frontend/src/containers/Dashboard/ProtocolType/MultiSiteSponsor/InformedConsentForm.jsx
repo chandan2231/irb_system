@@ -22,6 +22,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const informedConsentSchema = yup.object().shape({
   consent_type: yup
@@ -91,6 +92,8 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -191,6 +194,8 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
+
     e.preventDefault();
     try {
       if (
@@ -234,6 +239,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
         dispatch(createInformedConsent({ ...formData, consent_file })).then(
           (data) => {
             if (data.payload.status === 200) {
+              setLoader(false)
               toast.success(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -244,12 +250,13 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 progress: undefined,
                 theme: "dark",
               });
-              setFormData({});
+              // setFormData({});
             }
           },
         );
       }
     } catch (error) {
+      setLoader(false)
       console.log("error", error);
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -300,7 +307,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       );
       setShowOtherLangauageAdditionalTextbox(
         informedConsent?.professional_translator === "No" &&
-          informedConsent?.other_language_selection === "Yes",
+        informedConsent?.other_language_selection === "Yes",
       );
     }
   }, [informedConsent, protocolTypeDetails]);
@@ -309,6 +316,14 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     informedConsent,
     formData,
   });
+
+  console.log("informedInformation loader", loader);
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>

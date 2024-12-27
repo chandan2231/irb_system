@@ -11,6 +11,8 @@ import { useTheme } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
+
 
 const contactInfoSchema = yup.object().shape({
   name: yup.string().required("This is required"),
@@ -30,6 +32,8 @@ const contactInfoSchema = yup.object().shape({
 });
 
 function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -61,6 +65,7 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       const getValidatedform = await contactInfoSchema.validate(formData, {
@@ -70,6 +75,8 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
       if (isValid === true) {
         dispatch(createContactInformation(formData)).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
+
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -80,11 +87,13 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+            // setFormData({});
           }
         });
       }
     } catch (error) {
+      setLoader(false)
+
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -125,6 +134,15 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
     contactInformation,
     formData,
   });
+
+
+  console.log("contactInformation loader", loader);
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>

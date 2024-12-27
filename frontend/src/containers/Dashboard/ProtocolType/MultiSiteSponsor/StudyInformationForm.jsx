@@ -19,6 +19,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -37,6 +38,8 @@ const studyInfoSchema = yup.object().shape({
 });
 
 function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -69,18 +72,19 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
-      if (
-        formData.research_type !== "" &&
-        formData.research_type === "Other" &&
-        formData.research_type_explain === ""
-      ) {
-        setExplainErrors("This is required");
-        return;
-      } else {
-        setExplainErrors("");
-      }
+      // if (
+      //   formData.research_type !== "" &&
+      //   formData.research_type === "Other" &&
+      //   formData.research_type_explain === ""
+      // ) {
+      //   setExplainErrors("This is required");
+      //   return;
+      // } else {
+      //   setExplainErrors("");
+      // }
       const getValidatedform = await studyInfoSchema.validate(formData, {
         abortEarly: false,
       });
@@ -102,6 +106,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
         dispatch(createStudyInformation({ ...formData, ingredient_list })).then(
           (data) => {
             if (data.payload.status === 200) {
+              setLoader(false)
               toast.success(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -112,12 +117,13 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                 progress: undefined,
                 theme: "dark",
               });
-              setFormData({});
+              // setFormData({});
             }
           },
         );
       }
     } catch (error) {
+      setLoader(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -159,6 +165,14 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     studyInformation,
     formData,
   });
+
+  console.log("studyInformation loader", loader);
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>
