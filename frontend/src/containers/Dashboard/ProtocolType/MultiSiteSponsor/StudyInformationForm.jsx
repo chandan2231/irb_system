@@ -35,6 +35,11 @@ const VisuallyHiddenInput = styled("input")({
 
 const studyInfoSchema = yup.object().shape({
   research_type: yup.string().required("This is required"),
+  research_type_explain: yup.string().when("research_type", {
+    is: (val) => val === "Other",
+    then: () => yup.string().required("This is required"),
+    otherwise: () => yup.string().notRequired()
+  }),
 });
 
 function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
@@ -140,6 +145,11 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
           });
         }
       }
+      console.log("newErrors", {
+        newErrors,
+        formData,
+        error,
+      });
     }
   };
 
@@ -242,11 +252,13 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                   id="research_type_explain"
                   rows={3}
                   multiline
-                  value={formData.research_type_explain}
+                  value={formData?.research_type_explain}
                   onChange={handleChange}
                 />
               </Box>
-              {explainErrors && <div className="error">{explainErrors}</div>}
+              {errors?.research_type_explain && <div className="error">{
+                errors?.research_type_explain
+              }</div>}
             </Form.Group>
           )}
           <Form.Group

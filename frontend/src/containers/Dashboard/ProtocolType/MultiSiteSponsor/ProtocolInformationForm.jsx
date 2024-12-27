@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { uploadFile } from "../../../../services/UserManagement/UserService";
 
 
 const VisuallyHiddenInput = styled("input")({
@@ -43,21 +44,19 @@ const protocoalInfoSchema = yup.object().shape({
   sponsor: yup.string().required("This is required"),
   study_duration: yup.string().required("This is required"),
   funding_source: yup.string().required("This is required"),
-  disapproved_or_withdrawn_explain: yup
-    .string()
-    .when("disapproved_or_withdrawn", {
-      is: (value) => value === "Yes",
-      then: () =>
-        yup
-          .string()
-          .required("Explanation for disapproved or withdrawn is required"),
-      otherwise: () => yup.string().notRequired(),
-    }),
-  oversite_explain: yup.string().when("oversite", {
+  disapproved_or_withdrawn_explain: yup.string().when("disapproved_or_withdrawn", {
     is: (value) => value === "Yes",
-    then: () => yup.string().required("Oversight explanation is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().notRequired(),
   }),
+  oversite_explain: yup.string().when("oversite", {
+    is: (value) => value === "Yes",
+    then: () => yup.string().required("This is required"),
+    otherwise: () => yup.string().notRequired(),
+  }),
+  protocol_file: yup.mixed().test("fileReuired", "This is required", (value) => {
+    return value && value.length > 0;
+  })
 });
 
 function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
@@ -84,6 +83,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     oversite_explain: "",
     protocol_id: protocolTypeDetails.protocolId,
     created_by: userDetails.id,
+    protocol_file: [],
   });
   const [errors, setErrors] = useState({});
 
@@ -159,6 +159,8 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       }
     } catch (error) {
       setLoader(false)
+
+      console.log("error", error);
 
       const newErrors = {};
       error.inner.forEach((err) => {

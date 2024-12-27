@@ -41,67 +41,63 @@ const VisuallyHiddenInput = styled("input")({
 const protocolProcedureInfoSchema = yup.object().shape({
   enrolled_study_type: yup
     .array()
-    .of(yup.string())
-    .required("Please select at least one subject population"),
+    .min(0, "At least one study type must be selected"),
   enrolled_type_explain: yup.string().when("enrolled_study_type", {
-    is: (enrolled_study_type) => enrolled_study_type.includes("20"),
-    then: () => yup.string().required("Please explain the subject population"),
+    is: (val) => val.includes("20"),
+    then: () =>
+      yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   enrolled_group: yup
     .array()
-    .of(yup.string())
-    .required("Please select at least one race and ethnic group"),
+    .min(0, "This is required"),
   enrolled_group_explain: yup.string().when("enrolled_group", {
-    is: (enrolled_group) => enrolled_group.includes("9"),
+    is: (val) => val.includes("9"),
     then: () =>
-      yup.string().required("Please explain the race and ethnic group"),
+      yup
+        .string()
+        .required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  study_excluded: yup
-    .string()
-    .required("Please specify if any populations are excluded"),
+  study_excluded: yup.string().notRequired(),
   study_excluded_explain: yup.string().when("study_excluded", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain the exclusion criteria"),
+    is: (value) => value === "Yes",
+    then: () =>
+      yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   enrolled_subject: yup
     .string()
-    .required("Please specify how many subjects will be enrolled"),
+    .required("This is required"),
   recurement_method: yup
     .array()
-    .of(yup.string())
-    .required("Please select at least one recruitment method"),
+    .min(0, "At least one recruitment method must be selected"),
   recurement_method_explain: yup.string().when("recurement_method", {
-    is: (recurement_method) => recurement_method.includes("10"),
-    then: () => yup.string().required("Please explain the recruitment method"),
+    is: (val) => val.includes("10"),
+    then: () =>
+      yup
+        .string()
+        .required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   irb_approval: yup
     .string()
-    .required(
-      "Please specify if IRB approval of site-specific templates is required"
-    ),
+    .notRequired(),
   expected_number_sites: yup
     .string()
-    .required("Please specify the expected number of sites"),
-  future_research: yup
-    .string()
-    .required("Please specify if samples will be retained for future research"),
+    .required("This is required"),
+  future_research: yup.string().notRequired(),
   future_research_explain: yup.string().when("future_research", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () =>
       yup
         .string()
-        .required("Please explain how the samples will be stored and used"),
+        .required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  facing_materials: yup
-    .mixed()
-    .required(
-      "You must upload at least one recruitment or subject-facing material"
-    ),
+  facing_materials: yup.mixed().test("fileRequired", "This is required", (value) => {
+    return value.length > 0;
+  })
 });
 
 function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
@@ -254,34 +250,33 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
     setLoader(true)
     e.preventDefault();
     try {
-      if (
-        formData.enrolled_study_type.includes("20") &&
-        formData.enrolled_type_explain === ""
-      ) {
-        setExplainEnrolledTypeErrors("This is required");
-        return;
-      } else {
-        setExplainEnrolledTypeErrors("");
-      }
-      if (
-        formData.enrolled_group.includes("9") &&
-        formData.enrolled_group_explain === ""
-      ) {
-        setExplainEnrolledGroupErrors("This is required");
-        return;
-      } else {
-        setExplainEnrolledGroupErrors("");
-      }
-      if (
-        formData.recurement_method.includes("10") &&
-        formData.recurement_method_explain === ""
-      ) {
-        setExplainRecurementMethodErrors("This is required");
-        return;
-      } else {
-        setExplainRecurementMethodErrors("");
-      }
-
+      // if (
+      //   formData.enrolled_study_type.includes("20") &&
+      //   formData.enrolled_type_explain === ""
+      // ) {
+      //   setExplainEnrolledTypeErrors("This is required");
+      //   return;
+      // } else {
+      //   setExplainEnrolledTypeErrors("");
+      // }
+      // if (
+      //   formData.enrolled_group.includes("9") &&
+      //   formData.enrolled_group_explain === ""
+      // ) {
+      //   setExplainEnrolledGroupErrors("This is required");
+      //   return;
+      // } else {
+      //   setExplainEnrolledGroupErrors("");
+      // }
+      // if (
+      //   formData.recurement_method.includes("10") &&
+      //   formData.recurement_method_explain === ""
+      // ) {
+      //   setExplainRecurementMethodErrors("This is required");
+      //   return;
+      // } else {
+      //   setExplainRecurementMethodErrors("");
+      // }
       const getValidatedform = await protocolProcedureInfoSchema.validate(
         formData,
         { abortEarly: false }
@@ -347,6 +342,11 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
           });
         }
       }
+
+      console.log("this is error", {
+        errors: newErrors,
+        formData
+      })
     }
   };
 
@@ -637,12 +637,12 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
                   name="enrolled_type_explain"
                   rows={3}
                   multiline
-                  value={formData.enrolled_type_explain}
+                  value={formData?.enrolled_type_explain}
                   onChange={handleChange}
                 />
               </Box>
-              {explainEnrolledTypeErrors && (
-                <div className="error">{explainEnrolledTypeErrors}</div>
+              {errors?.enrolled_type_explain && (
+                <div className="error">{errors?.enrolled_type_explain}</div>
               )}
             </Form.Group>
           )}
@@ -745,8 +745,8 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
                   onChange={handleChange}
                 />
               </Box>
-              {explainEnrolledGroupErrors && (
-                <div className="error">{explainEnrolledGroupErrors}</div>
+              {errors?.enrolled_group_explain && (
+                <div className="error">{errors?.enrolled_group_explain}</div>
               )}
             </Form.Group>
           )}
@@ -937,8 +937,8 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
                   onChange={handleChange}
                 />
               </Box>
-              {explainRecurementMethodErrors && (
-                <div className="error">{explainRecurementMethodErrors}</div>
+              {errors?.recurement_method_explain && (
+                <div className="error">{errors?.recurement_method_explain}</div>
               )}
             </Form.Group>
           )}
