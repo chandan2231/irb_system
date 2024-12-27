@@ -23,6 +23,7 @@ import { createInvestigatorAndProtocolInformation } from "../../../../services/P
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -45,7 +46,7 @@ const investigatorAndProtocolInfoSchema = yup.object().shape({
   site_name: yup.string().required("This is required"),
   site_address: yup.string().required("This is required"),
   site_name_address: yup.string().when("more_site", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
@@ -56,59 +57,59 @@ const investigatorAndProtocolInfoSchema = yup.object().shape({
   disapproved_or_withdrawn_explain: yup
     .string()
     .when("disapproved_or_withdrawn", {
-      is: () => "Yes",
+      is: (value) => value === "Yes",
       then: () => yup.string().required("This is required"),
       otherwise: () => yup.string().nullable(),
     }),
   oversite_explain: yup.string().when("oversite", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   immediate_family_explain: yup.string().when("immediate_family", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   stock_ownership_explain: yup.string().when("stock_ownership", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   property_interest_explain: yup.string().when("property_interest", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   financial_agreement_explain: yup.string().when("financial_agreement", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   server_position_explain: yup.string().when("server_position", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   influence_conduct_explain: yup.string().when("influence_conduct", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   interest_conflict_explain: yup.string().when("interest_conflict", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   fda_audit_explain: yup.string().when("fda_audit", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   pending_or_active_research_explain: yup
     .string()
     .when("pending_or_active_research", {
-      is: () => "Yes",
+      is: (value) => value === "Yes",
       then: () => yup.string().required("This is required"),
       otherwise: () => yup.string().nullable(),
     }),
@@ -122,6 +123,8 @@ function InvestigatorInformationForm({
   protocolTypeDetails,
   investigatorInformation,
 }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -404,6 +407,7 @@ function InvestigatorInformationForm({
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       const getValidatedform = await investigatorAndProtocolInfoSchema.validate(
@@ -457,6 +461,7 @@ function InvestigatorInformationForm({
         dispatch(createInvestigatorAndProtocolInformation(formData)).then(
           (data) => {
             if (data.payload.status === 200) {
+              setLoader(false)
               toast.success(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -474,6 +479,7 @@ function InvestigatorInformationForm({
         );
       }
     } catch (error) {
+      setLoader(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -492,6 +498,14 @@ function InvestigatorInformationForm({
       }
     }
   };
+
+  console.log("investigator info ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   useEffect(() => {
     if (investigatorInformation) {

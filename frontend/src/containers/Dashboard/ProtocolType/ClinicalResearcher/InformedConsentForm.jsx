@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { createInformedConsent } from "../../../../services/ProtocolType/ClinicalResearcherService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const informedConsentInfoSchema = yup.object().shape({
   principal_investigator_name: yup.string().required("This is required"),
@@ -26,6 +27,8 @@ const informedConsentInfoSchema = yup.object().shape({
 });
 
 function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -80,6 +83,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       const getValidatedform = await informedConsentInfoSchema.validate(
@@ -90,6 +94,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       if (isValid === true) {
         dispatch(createInformedConsent(formData)).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -106,6 +111,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
         });
       }
     } catch (error) {
+      setLoader(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -130,6 +136,14 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     formData,
     errors,
   });
+
+  console.log("informed consent form ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>
