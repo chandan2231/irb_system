@@ -22,6 +22,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,63 +39,65 @@ const VisuallyHiddenInput = styled("input")({
 const protocolProcedureInfoSchema = yup.object().shape({
   enrolled_study_type: yup
     .array()
-    .min(1, "At least one study type must be selected"),
+    .min(0, "At least one study type must be selected"),
   enrolled_type_explain: yup.string().when("enrolled_study_type", {
     is: (val) => val.includes("20"),
     then: () =>
-      yup.string().required("Explanation for 'Other' study type is required"),
+      yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   enrolled_group: yup
     .array()
-    .min(1, "At least one race/ethnic group must be selected"),
+    .min(0, "This is required"),
   enrolled_group_explain: yup.string().when("enrolled_group", {
     is: (val) => val.includes("9"),
     then: () =>
       yup
         .string()
-        .required("Explanation for 'Other' race/ethnic group is required"),
+        .required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  study_excluded: yup.string().required("This field is required"),
+  study_excluded: yup.string().notRequired(),
   study_excluded_explain: yup.string().when("study_excluded", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () =>
-      yup.string().required("Explanation for excluded populations is required"),
+      yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   enrolled_subject: yup
     .string()
-    .required("Please specify how many subjects will be enrolled"),
+    .required("This is required"),
   recurement_method: yup
     .array()
-    .min(1, "At least one recruitment method must be selected"),
+    .min(0, "At least one recruitment method must be selected"),
   recurement_method_explain: yup.string().when("recurement_method", {
     is: (val) => val.includes("10"),
     then: () =>
       yup
         .string()
-        .required("Explanation for 'Other' recruitment method is required"),
+        .required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   research_place_name_address: yup
     .string()
-    .required("Research place name and address is required"),
-  future_research: yup.string().required("This field is required"),
+    .required("This is required"),
+  future_research: yup.string().notRequired(),
   future_research_explain: yup.string().when("future_research", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () =>
       yup
         .string()
-        .required("Explanation for future research data handling is required"),
+        .required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  facing_materials: yup
-    .mixed()
-    .required("Please upload subject-facing materials"),
+  facing_materials: yup.mixed().test("fileRequired", "This is required", (value) => {
+    return value.length > 0;
+  })
 });
 
 function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -233,6 +236,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       // if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
@@ -279,11 +283,11 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
           }
         }
         console.log("formData", formData);
-        return;
         dispatch(
           createProtocolProcedures({ ...formData, facing_materials }),
         ).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -294,12 +298,13 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+            // setFormData({});
             e.target.reset();
           }
         });
       }
     } catch (error) {
+      setLoader(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -339,7 +344,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
         future_research: protocolProcedure?.future_research || "",
         future_research_explain:
           protocolProcedure?.future_research_explain || "",
-        protocol_id: protocolTypeDetails?.protocol_id || "",
+        protocol_id: protocolTypeDetails?.protocolId || "",
         created_by: userDetails.id || "",
         facing_materials:
           protocolProcedure?.documents?.map((doc) => ({
@@ -370,7 +375,17 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
     protocolProcedure,
     formData,
     errors,
+    protocolTypeDetails
   });
+
+  console.log("protocol procedure form ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
+
 
   return (
     <>

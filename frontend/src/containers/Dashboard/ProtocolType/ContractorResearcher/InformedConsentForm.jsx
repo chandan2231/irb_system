@@ -22,6 +22,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,45 +39,40 @@ const VisuallyHiddenInput = styled("input")({
 const informedConsentSchema = yup.object().shape({
   consent_type: yup
     .array()
-    .min(1, "At least one consent type must be selected"),
+    .min(0, "At least one consent type must be selected"),
   no_consent_explain: yup.string().when("consent_type", {
     is: (val) => val.includes("1"),
     then: () => yup.string().required("Explanation for no consent is required"),
-    otherwise: () => yup.string().nullable(),
+    otherwise: () => yup.string().notRequired(),
   }),
-  include_icf: yup.string().when("consent_type", {
-    is: (val) => val.includes("6"),
-    then: () => yup.string().required("ICF inclusion is required"),
-    otherwise: () => yup.string().nullable(),
-  }),
+  include_icf: yup.string().notRequired(),
   participation_compensated: yup
     .string()
-    .required("Please specify if participants will be compensated"),
+    .notRequired(),
   other_language_selection: yup
     .string()
-    .required("Please specify if other languages will be used"),
-  professional_translator: yup.string().when("other_language_selection", {
-    is: () => "Yes",
-    then: () =>
-      yup.string().required("Professional translator selection is required"),
-    otherwise: () => yup.string().nullable(),
-  }),
+    .notRequired(),
+  professional_translator: yup.string().notRequired(),
   professional_translator_explain: yup
     .string()
     .when("professional_translator", {
-      is: () => "No",
+      is: (value) => value === "No",
       then: () =>
         yup
           .string()
           .required(
-            "Explanation for not using a professional translator is required",
+            "This is required",
           ),
       otherwise: () => yup.string().nullable(),
     }),
-  consent_file: yup.mixed().required("Please upload consent documents"),
+  consent_file: yup.mixed().test("fileRequired", "This is required", (value) => {
+    return value.length > 0;
+  })
 });
 
 function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
+  const [loader, setLoader] = useState(false)
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -184,27 +180,29 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
+
     e.preventDefault();
     try {
-      if (
-        formData.consent_type.includes("1") &&
-        formData.no_consent_explain === ""
-      ) {
-        setExplainNoConsentErrors("This is required");
-        return;
-      } else {
-        setExplainNoConsentErrors("");
-      }
-      if (
-        formData.professional_translator !== "" &&
-        formData.professional_translator === "No" &&
-        formData.professional_translator_explain === ""
-      ) {
-        setExplainTranslatorErrors("This is required");
-        return;
-      } else {
-        setExplainTranslatorErrors("");
-      }
+      // if (
+      //   formData.consent_type.includes("1") &&
+      //   formData.no_consent_explain === ""
+      // ) {
+      //   setExplainNoConsentErrors("This is required");
+      //   return;
+      // } else {
+      //   setExplainNoConsentErrors("");
+      // }
+      // if (
+      //   formData.professional_translator !== "" &&
+      //   formData.professional_translator === "No" &&
+      //   formData.professional_translator_explain === ""
+      // ) {
+      //   setExplainTranslatorErrors("This is required");
+      //   return;
+      // } else {
+      //   setExplainTranslatorErrors("");
+      // }
       const getValidatedform = await informedConsentSchema.validate(formData, {
         abortEarly: false,
       });
@@ -228,6 +226,8 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
         dispatch(createInformedConsent({ ...formData, consent_file })).then(
           (data) => {
             if (data.payload.status === 200) {
+              setLoader(false)
+
               toast.success(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -238,12 +238,14 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 progress: undefined,
                 theme: "dark",
               });
-              setFormData({});
+              // setFormData({});
             }
           },
         );
       }
     } catch (error) {
+      setLoader(false)
+
       console.log("error", error);
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -305,6 +307,14 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     formData,
     errors,
   });
+
+  console.log("informedConsent ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>

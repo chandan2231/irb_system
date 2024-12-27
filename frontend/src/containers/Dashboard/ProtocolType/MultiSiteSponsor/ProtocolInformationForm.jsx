@@ -21,6 +21,9 @@ import { Box, useTheme } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
+import { uploadFile } from "../../../../services/UserManagement/UserService";
+
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -41,24 +44,24 @@ const protocoalInfoSchema = yup.object().shape({
   sponsor: yup.string().required("This is required"),
   study_duration: yup.string().required("This is required"),
   funding_source: yup.string().required("This is required"),
-  disapproved_or_withdrawn_explain: yup
-    .string()
-    .when("disapproved_or_withdrawn", {
-      is: (value) => value === "Yes",
-      then: () =>
-        yup
-          .string()
-          .required("Explanation for disapproved or withdrawn is required"),
-      otherwise: () => yup.string().notRequired(),
-    }),
-  oversite_explain: yup.string().when("oversite", {
+  disapproved_or_withdrawn_explain: yup.string().when("disapproved_or_withdrawn", {
     is: (value) => value === "Yes",
-    then: () => yup.string().required("Oversight explanation is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().notRequired(),
   }),
+  oversite_explain: yup.string().when("oversite", {
+    is: (value) => value === "Yes",
+    then: () => yup.string().required("This is required"),
+    otherwise: () => yup.string().notRequired(),
+  }),
+  protocol_file: yup.mixed().test("fileReuired", "This is required", (value) => {
+    return value && value.length > 0;
+  })
 });
 
 function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
+  const [loader, setLoader] = useState(false)
+
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [showAdditionalQuestion, setShowAdditionalQuestion] =
@@ -80,6 +83,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
     oversite_explain: "",
     protocol_id: protocolTypeDetails.protocolId,
     created_by: userDetails.id,
+    protocol_file: [],
   });
   const [errors, setErrors] = useState({});
 
@@ -112,6 +116,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       console.log("formData", formData);
@@ -141,16 +146,22 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           createProtocolInformation({ ...formData, protocol_file }),
         ).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
+
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
             });
-            setFormData({});
+            // setFormData({});
             e.target.reset();
           }
         });
       }
     } catch (error) {
+      setLoader(false)
+
+      console.log("error", error);
+
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -193,6 +204,16 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
       setShowOversiteAdditionTextArea(protocolInformation?.oversite === "Yes");
     }
   }, [protocolInformation, protocolTypeDetails]);
+
+
+  console.log("protocolInformation loader", loader);
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
+
 
   return (
     <Row>

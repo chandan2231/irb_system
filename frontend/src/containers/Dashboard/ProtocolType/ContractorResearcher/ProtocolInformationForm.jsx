@@ -23,6 +23,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -125,6 +126,8 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
 
   const [errors, setErrors] = useState({});
 
+  const [loader, setLoader] = useState(false)
+
   // Populate form data when protocolInformation changes
   useEffect(() => {
     if (protocolInformation) {
@@ -209,6 +212,8 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
+
     e.preventDefault();
     try {
       const validatedFormData = await protocoalInfoSchema.validate(formData, {
@@ -235,12 +240,14 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           createProtocolInformation({ ...formData, protocol_file })
         ).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
             toast.success(data.payload.data.msg, { position: "top-right" });
             // setFormData({});
           }
         });
       }
     } catch (validationError) {
+      setLoader(false)
       const newErrors = {};
       console.log("validationError", validationError);
       validationError.inner.forEach((err) => {
@@ -274,6 +281,15 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   // });
 
   // here on the client side
+
+  console.log("Loader protocolInfo ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
+
   return (
     <Row>
       <>
