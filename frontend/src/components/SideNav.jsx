@@ -20,7 +20,7 @@ function SideNav() {
   const theme = useTheme();
   const loaction = useLocation();
   const dispatch = useDispatch();
-  const userDetails = JSON.parse(localStorage.getItem("user"));
+  const userDetails = JSON.parse(localStorage.getItem("user")) || {};
   const { approvedProtocolListCount, loading, error } = useSelector(
     (state) => ({
       error: state.dashboard.error,

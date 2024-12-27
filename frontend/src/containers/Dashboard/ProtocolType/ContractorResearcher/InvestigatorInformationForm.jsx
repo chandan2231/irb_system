@@ -300,7 +300,8 @@ function InvestigatorInformationForm({
         (training) => training !== value
       );
     }
-    setFormData({ ...formData, training_completed: updatedTrainingCompleted });
+    const updatedTrainingCompletedString = updatedTrainingCompleted.join(",");
+    setFormData({ ...formData, training_completed: updatedTrainingCompletedString });
   };
 
   const handleChange = (e) => {
@@ -666,7 +667,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("3")}
+                      checked={formData.training_completed.includes("3")}
                     />
                   }
                   label="Certified Physician Investigator Training"
@@ -675,7 +676,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("4")}
+                      checked={formData.training_completed.includes("4")}
                     />
                   }
                   label="ACRP training (CCRC, CCRA)"
@@ -684,7 +685,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("5")}
+                      checked={formData.training_completed.includes("5")}
                     />
                   }
                   label="SOCRA (CCRP)"
@@ -693,7 +694,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("6")}
+                      checked={formData.training_completed.includes("6")}
                     />
                   }
                   label="Graduate or undergraduate research studies or degrees"
@@ -702,7 +703,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("7")}
+                      checked={formData.training_completed.includes("7")}
                     />
                   }
                   label="Academy of Physicians in Clinical Research"
@@ -711,7 +712,7 @@ function InvestigatorInformationForm({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      hecked={formData.training_completed.includes("8")}
+                      checked={formData.training_completed.includes("8")}
                     />
                   }
                   label="Other"

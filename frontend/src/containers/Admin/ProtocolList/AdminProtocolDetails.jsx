@@ -35,6 +35,8 @@ const AdminProtocolDetails = () => {
     protocolDetailsById: state.admin.protocolDetailsById,
     loading: state.admin.loading,
   }));
+
+  
   return (
     <>
       {protocolTypeDetails.researchType === "Clinical Site" ? (
