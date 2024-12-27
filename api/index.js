@@ -5,6 +5,7 @@ import protocolRoutes from './routes/protocol.js'
 import continuinReviewRoutes from './routes/continuinReview.js'
 import adminRoutes from './routes/admin.js'
 import eventAndRequest from './routes/eventAndRequest.js'
+import communication from './routes/communication.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
@@ -40,7 +41,7 @@ if (process.env.NODE_ENV === 'development') {
     preflightContinue: false // Don't pass preflight request to the next handler
   }
   // Use the cors middleware
-  app.use(cors({ origin: [ 'https://app.irbhub.org'] }))
+  app.use(cors({ origin: ['https://app.irbhub.org'] }))
   // app.options('/', cors(corsOptions)
   app.use(cors(corsOptions))
 }
@@ -50,6 +51,7 @@ app.use('/api/researchInfo', researchRoutes)
 app.use('/api/protocol', protocolRoutes)
 app.use('/api/continuinReview', continuinReviewRoutes)
 app.use('/api/eventAndRequest', eventAndRequest)
+app.use('/api/communication', communication)
 app.use('/api/admin', adminRoutes)
 
 if (process.env.NODE_ENV === 'development') {

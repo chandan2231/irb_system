@@ -129,6 +129,27 @@ export const saveFile = async (req, res) => {
             return res.status(200).json({ id: data.insertId })
           }
         })
+      } else if (req.body.informationType === 'communication_attachments') {
+        const que2 =
+          'insert into communication_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by_user_type`, `created_by`, `created_at`, `updated_at`) value (?)'
+        const protocolValue = [
+          req.body.protocolId,
+          req.body.protocolType,
+          req.body.informationType,
+          req.body.documentName,
+          req.file.filename,
+          imageUrl,
+          req.body.createdByUserType,
+          req.body.createdBy,
+          datetime.toISOString().slice(0, 10),
+          datetime.toISOString().slice(0, 10)
+        ]
+        db.query(que2, [protocolValue], (err, data) => {
+          if (err) return res.status(500).json(err)
+          if (data) {
+            return res.status(200).json({ id: data.insertId })
+          }
+        })
       } else {
         const que2 =
           'insert into protocol_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'

@@ -20,8 +20,6 @@ const AdminProtocolDetails = () => {
     }
   }, []);
 
-  console.log('protocolTypeDetails', protocolTypeDetails)
-
   useEffect(() => {
     let data = {
       protocolId: protocolTypeDetails?.protocolId,

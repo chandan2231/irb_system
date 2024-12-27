@@ -13,6 +13,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
 import ToggleStatus from "../../../components/ToggleStatus";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,7 +30,14 @@ function CreatedProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/admin/protocol-details", { state: { details: params.row, type: 'admin' } });
+    navigate("/admin/protocol-details", {
+      state: { details: params.row, type: "admin" },
+    });
+  };
+  const navigateToCommunicationDetails = (params) => {
+    navigate("/communication", {
+      state: { details: params.row, identifierType: "admin" },
+    });
   };
   const columns = [
     {
@@ -61,7 +69,15 @@ function CreatedProtocolList() {
       field: "waiveFee",
       headerName: "Waive Fee",
       flex: 1,
-      renderCell: (params) => <ToggleStatus status={params.row.waiveFee} />,
+      renderCell: (params) => (
+        <ToggleStatus
+          status={params.row.waiveFee}
+          onStatusChange={(newWaiveFee) => {
+            handleChangeStatus(params.row.id, newWaiveFee);
+          }}
+        />
+      ),
+      // renderCell: (params) => <ToggleStatus status={params.row.waiveFee} />,
     },
     {
       field: "status",
@@ -87,6 +103,12 @@ function CreatedProtocolList() {
           icon={<PictureAsPdfIcon />}
           label="View Pdf"
           onClick={() => handleViewPdf(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CompareArrowsIcon />}
+          label="Communication"
+          onClick={() => navigateToCommunicationDetails(params)}
           showInMenu
         />,
         // <GridActionsCellItem
@@ -262,7 +284,7 @@ function CreatedProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
+            // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>

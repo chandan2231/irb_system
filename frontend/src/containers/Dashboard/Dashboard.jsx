@@ -18,6 +18,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import AddResearch from "./AddResearch";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -38,7 +39,14 @@ function Dashboard() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/protocol-details", { state: { details: params.row, type: 'user' } });
+    navigate("/protocol-details", {
+      state: { details: params.row, type: "user" },
+    });
+  };
+  const navigateToCommunicationDetails = (params) => {
+    navigate("/communication", {
+      state: { details: params.row, identifierType: "user" },
+    });
   };
   const columns = [
     {
@@ -54,6 +62,11 @@ function Dashboard() {
     {
       field: "researchType",
       headerName: "Research Type",
+      flex: 1,
+    },
+    {
+      field: "protocolStatus",
+      headerName: "Protocol Status",
       flex: 1,
     },
 
@@ -78,12 +91,12 @@ function Dashboard() {
           onClick={() => handleViewPdf(params)}
           showInMenu
         />,
-        // <GridActionsCellItem
-        //     icon={<RadioButtonUncheckedIcon />}
-        //     label="Change Status"
-        //     onClick={handleChangeStatus(params)}
-        //     showInMenu
-        // />,
+        <GridActionsCellItem
+          icon={<CompareArrowsIcon />}
+          label="Communication"
+          onClick={() => navigateToCommunicationDetails(params)}
+          showInMenu
+        />,
         // <GridActionsCellItem
         //     icon={<EditNoteIcon />}
         //     label="Edit"
@@ -113,12 +126,13 @@ function Dashboard() {
       protocolList: state.dashboard.protocolList,
       loading: state.dashboard.loading,
       createdProtocol: state.dashboard.createdProtocol,
-    }),
+    })
   );
   useEffect(() => {
     const data = { login_id: user.id };
     dispatch(fetchProtocolList(data));
   }, [dispatch, user.id]);
+
   if (protocolList !== "" && protocolList?.length > 0) {
     totalElements = protocolList.length;
   }
@@ -142,6 +156,14 @@ function Dashboard() {
           id: pList.id,
           protocolId: pList.protocol_id,
           researchType: pList.research_type,
+          protocolStatus:
+            pList.status === "1"
+              ? "Created"
+              : pList.status === "2"
+                ? "Under Review"
+                : pList.status === "3"
+                  ? "Approved"
+                  : "Rejected",
           createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
         };
