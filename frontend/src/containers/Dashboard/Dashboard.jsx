@@ -132,6 +132,7 @@ function Dashboard() {
     const data = { login_id: user.id };
     dispatch(fetchProtocolList(data));
   }, [dispatch, user.id]);
+
   if (protocolList !== "" && protocolList?.length > 0) {
     totalElements = protocolList.length;
   }

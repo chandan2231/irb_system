@@ -155,7 +155,7 @@ function SideNav() {
                 variant="body2"
                 style={{ fontWeight: "500", fontSize: "0.875rem" }}
               >
-                Users
+                Applicants
               </Typography>
             </MenuItem>
             <MenuItem

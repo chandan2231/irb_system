@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { saveEnquiry } from "../../services/Communication/CommunicationService";
+import {
+  saveEnquiry,
+  getCommunicationListByProtocolId,
+} from "../../services/Communication/CommunicationService";
 
 const ContinuinReviewSlice = createSlice({
   name: "communication",
@@ -7,6 +10,7 @@ const ContinuinReviewSlice = createSlice({
     loading: false,
     error: null,
     enquirySaved: null,
+    communicationList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -20,6 +24,18 @@ const ContinuinReviewSlice = createSlice({
         state.enquirySaved = action.payload;
       })
       .addCase(saveEnquiry.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getCommunicationListByProtocolId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCommunicationListByProtocolId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.communicationList = action.payload;
+      })
+      .addCase(getCommunicationListByProtocolId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

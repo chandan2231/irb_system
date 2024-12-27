@@ -41,8 +41,8 @@ import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventLi
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
 import ApprovalMemberDetails from "./containers/CommitteeChair/ApprovalMemberDetails";
-import ProtocolCommunication from "./containers/Communication/ProtocolCommunication";
-import { validateUserToken } from "./services/Auth/AuthService.jsx";
+import Communication from "./containers/Communication/Communication";
+import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -141,10 +141,7 @@ function App() {
             <Routes>
               {/* <Route element={<PrivateRoutes />}> */}
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route
-                path="/communication"
-                element={<ProtocolCommunication />}
-              />
+              <Route path="/communication" element={<Communication />} />
               <Route path="/continuin-review" element={<ContinuingReview />} />
               <Route
                 path="/continuin-review-details"

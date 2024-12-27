@@ -35,11 +35,8 @@ const communicationSchema = yup.object().shape({
   body: yup.string().required("This is required"),
 });
 
-function ProtocolCommunication() {
-  const location = useLocation();
+function SendEmail({ protocolTypeDetails, enqueryUserType }) {
   const dispatch = useDispatch();
-  const protocolTypeDetails = location.state.details;
-  const enqueryUserType = location.state.identifierType;
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [formData, setFormData] = useState({
     subject: "",
@@ -77,22 +74,24 @@ function ProtocolCommunication() {
           });
           attachments_file.push(id);
         }
-        dispatch(saveEnquiry({ ...formData })).then((data) => {
-          if (data.payload.status === 200) {
-            toast.success(data.payload.data.msg, {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-            });
-            setFormData({});
-            setErrors({});
+        dispatch(saveEnquiry({ ...formData, attachments_file })).then(
+          (data) => {
+            if (data.payload.status === 200) {
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+              setFormData({});
+              setErrors({});
+            }
           }
-        });
+        );
       }
     } catch (error) {
       console.log("error", error);
@@ -129,12 +128,7 @@ function ProtocolCommunication() {
         theme="dark"
       />
       <Row>
-        <Box className="mt-mb-ml-mr-25">
-          <h1>Post Your Query</h1>
-          <h3>
-            {protocolTypeDetails.researchType}&nbsp;(
-            {protocolTypeDetails.protocolId})
-          </h3>
+        <Box>
           <form onSubmit={handleSubmitData}>
             <Form.Group
               as={Col}
@@ -200,6 +194,7 @@ function ProtocolCommunication() {
                           });
                         }
                       }}
+                      multiple
                     />
                   </Button>
                   {errors.attachments_file && (
@@ -230,4 +225,4 @@ function ProtocolCommunication() {
   );
 }
 
-export default ProtocolCommunication;
+export default SendEmail;

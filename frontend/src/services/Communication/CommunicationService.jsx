@@ -20,13 +20,13 @@ export const saveEnquiry = createAsyncThunk(
   }
 );
 
-export const informedConsentSave = createAsyncThunk(
-  "ContinuinRevew/informedConsentSave",
+export const getCommunicationListByProtocolId = createAsyncThunk(
+  "ContinuinRevew/getCommunicationListByProtocolId",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/continuinReview/informedConsentSave`,
+        url: `${baseURL}/communication/getCommunicationListByProtocolId`,
         data,
         headers: { withCredentials: true },
       });
