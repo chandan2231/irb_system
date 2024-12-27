@@ -1,254 +1,204 @@
 import React, { useEffect, useState } from "react";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Form from "react-bootstrap/Form";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
-import Checkbox from "@mui/material/Checkbox";
+import { Col, Row, Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createMultiSiteSubmission,
   getMultiSiteSavedProtocolType,
 } from "../../../../services/ProtocolType/MultiSiteSponsorService";
-import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
+import {
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+  Button,
+} from "@mui/material";
 
-function SubmissionForm({ protocolTypeDetails, protocolDetailsById }) {
+// Helper function to convert string to title case
+const titleCase = (str) =>
+  str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  const [termsSelected, setTermsSelected] = React.useState(false);
+  const [termsSelected, setTermsSelected] = useState(false);
+
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
   });
-  const notSavedForm = [];
-  useEffect(() => {
-    let data = {
-      protocolId: protocolTypeDetails?.protocolId,
-      protocolType: protocolTypeDetails?.researchType,
-    };
-    dispatch(getMultiSiteSavedProtocolType(data));
-  }, [dispatch, userDetails.id]);
 
   const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
-    (state) => ({
-      error: state.multiSiteSponsor.error,
-      getAllMultiSiteSavedProtocolType:
-        state.multiSiteSponsor.getAllMultiSiteSavedProtocolType,
-      loading: state.multiSiteSponsor.loading,
-    }),
+    (state) => state.multiSiteSponsor
   );
-  getAllMultiSiteSavedProtocolType &&
-    getAllMultiSiteSavedProtocolType.map((formList) => {
-      if (formList.filled === false) {
-        notSavedForm.push(formList.form);
-      }
-    });
 
-  const handleFinalSubmissionTearmChecked = (event) => {
-    const { checked } = event.target;
-    if (checked === true) {
-      setTermsSelected(true);
-    } else if (checked === false) {
-      setTermsSelected(false);
+  const notSavedForms =
+    getAllMultiSiteSavedProtocolType?.filter((form) => !form.filled) || [];
+
+  useEffect(() => {
+    if (
+      protocolTypeDetails?.protocolId &&
+      protocolTypeDetails?.researchType &&
+      !loading && // Check if data is loading
+      (!getAllMultiSiteSavedProtocolType ||
+        getAllMultiSiteSavedProtocolType.length === 0) // Ensure no redundant API calls
+    ) {
+      const data = {
+        protocolId: protocolTypeDetails.protocolId,
+        protocolType: protocolTypeDetails.researchType,
+      };
+      dispatch(getMultiSiteSavedProtocolType(data));
     }
-  };
+  }, [
+    dispatch,
+    protocolTypeDetails?.protocolId,
+    protocolTypeDetails?.researchType,
+    getAllMultiSiteSavedProtocolType, // Add this to avoid unnecessary calls if data already exists
+    loading, // Prevent calls if already in loading state
+  ]);
 
+  // Handle terms checkbox change
+  const handleTermsChange = (event) => setTermsSelected(event.target.checked);
+
+  // Handle form submission
   const handleSubmitData = async (e) => {
     e.preventDefault();
-    try {
-      if (notSavedForm.length >= 0) {
-        toast.error(
-          "Befor final submission you have to fill protocol information",
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          },
-        );
-      } else if (notSavedForm.length <= 0) {
-        const isValid = true;
-        if (isValid === true) {
-          dispatch(createMultiSiteSubmission({ ...formData })).then((data) => {
-            if (data.payload.status === 200) {
-              toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-              setFormData({});
-            }
-          });
+
+    // Show toast if there are unsaved forms
+    if (notSavedForms.length > 0) {
+      toast.error(
+        "Before final submission, you must fill in the required protocol information.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "dark",
         }
-      }
-    } catch (error) {}
-  };
-
-  const titleCase = (str) => {
-    var splitStr = str.toLowerCase().split(" ");
-    for (var i = 0; i < splitStr.length; i++) {
-      splitStr[i] =
-        splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+      );
+      return;
     }
-    return splitStr.join(" ");
-  };
 
+    try {
+      const response = await dispatch(createMultiSiteSubmission(formData));
+      if (response.payload.status === 200) {
+        toast.success(response.payload.data.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "dark",
+        });
+        setFormData({}); // Clear form data after successful submission
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+    }
+  };
+  console.log("notSavedForms", notSavedForms);
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
+
       <Row>
-        {notSavedForm.length > 0 && (
+        {notSavedForms.length > 0 && (
           <List
             sx={{ width: "100%", maxWidth: "50%", bgcolor: "background.paper" }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            subheader={
-              <ListSubheader
-                component="div"
-                id="nested-list-subheader"
-                style={{ fontSize: "18px", color: "red" }}
-              >
-                Befor final submission you have to fill the below forms
-              </ListSubheader>
-            }
           >
-            {notSavedForm.map((showForm) => {
-              return (
-                <ListItemButton>
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={titleCase(showForm.replaceAll("_", " "))}
-                  />
-                </ListItemButton>
-              );
-            })}
+            <ListSubheader
+              component="div"
+              style={{ fontSize: "18px", color: "red" }}
+            >
+              Before final submission, fill in the forms below
+            </ListSubheader>
+            {notSavedForms.map((form) => (
+              <ListItemButton key={form.form}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText
+                  primary={titleCase(form.form.replaceAll("_", " "))}
+                />
+              </ListItemButton>
+            ))}
           </List>
         )}
+
         <form onSubmit={handleSubmitData}>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik01"
-            className="ul-list"
-          >
-            <p>By submitting this application you attest to the following:</p>
+          <Form.Group as={Col} controlId="protocol-terms" className="ul-list">
+            <p>By submitting this application, you attest to the following:</p>
             <ul>
               <li>
                 Research will not commence prior to receiving the IRB approval
                 letter.
               </li>
               <li>
-                The sponsor will conduct regular reviews of the sites and the
-                principal investigators to ensure ethical conduct of the study
-                and data integrity.
+                The sponsor will conduct regular reviews of the sites and
+                investigators.
+              </li>
+              <li>All involved in the study are properly credentialed.</li>
+              <li>
+                Only the most current IRB-approved consent form will be used.
               </li>
               <li>
-                The sponsor ensures that all persons involved in conducting the
-                study are trained and have proper credentialing for conducting
-                research.
+                No changes to the protocol or consent forms will be made without
+                IRB approval.
               </li>
               <li>
-                Only the most current IRB-approved consent form will be used to
-                enroll subjects.
+                Study procedures comply with applicable laws and regulations.
               </li>
               <li>
-                No changes will be made to the research protocol, consents
-                forms, and all patient-facing materials without the approval of
-                the IRB{" "}
+                Findings affecting subject safety will be communicated to the
+                IRB.
               </li>
               <li>
-                The study procedures will comply with all applicable laws and
-                regulations regarding the conduct of research
-              </li>
-              <li>
-                All findings from the study, during and/or after study
-                completion that directly affect subject safety will be
-                communicated to subjects and to this IRB
-              </li>
-              <li>
-                All findings from the study, during and/or after study
-                completion that could influence the conduct of the study, alter
-                the IRB’s approval of the study, or influence subjects
-                willingness to participate or continue participating in the
-                study will be reported to this IRB
-              </li>
-              <li>
-                It is the sponsor’s responsibility to ensure that manufacturing
-                and formulation of investigational products adhere to federal
+                The sponsor will ensure compliance with investigational product
                 regulations.
               </li>
-              <li>
-                The sponsor agrees to submit and provide payment to this IRB for
-                annual review yearly including payment for all sites that will
-                be submitting to this IRB
-              </li>
+              <li>The sponsor will submit payment for annual IRB review.</li>
             </ul>
           </Form.Group>
-          <Form.Group as={Col} controlId="validationFormik01">
+
+          <Form.Group as={Col} controlId="terms-checkbox">
             <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup
-                onChange={(event) => handleFinalSubmissionTearmChecked(event)}
-              >
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="Your initials below signify that you have read and agree to the terms listed above"
-                />
-              </FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={termsSelected}
+                    onChange={handleTermsChange}
+                  />
+                }
+                label="I agree to the terms."
+              />
             </FormControl>
           </Form.Group>
+
           <Form.Group
             as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
+            controlId="submit-button"
             style={{ textAlign: "right" }}
           >
             <Button
               variant="contained"
               color="primary"
-              type="Submit"
+              type="submit"
               disabled={!termsSelected}
             >
-              SUBMIT
+              Submit
             </Button>
           </Form.Group>
         </form>
       </Row>
     </>
   );
-}
+};
 
 export default SubmissionForm;

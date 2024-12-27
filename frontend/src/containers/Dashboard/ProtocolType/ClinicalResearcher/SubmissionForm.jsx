@@ -5,15 +5,14 @@ import Form from "react-bootstrap/Form";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createPrincipalInvestigatorSubmission,
   getPrincipalInvestigatorSavedProtocolType,
 } from "../../../../services/ProtocolType/ClinicalResearcherService";
-import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ListSubheader from "@mui/material/ListSubheader";
@@ -23,93 +22,111 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
 
-function SubmissionForm({ protocolTypeDetails }) {
+const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  const [termsSelected, setTermsSelected] = React.useState(false);
+  const [termsSelected, setTermsSelected] = useState(false);
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
   });
 
-  const handleFinalSubmissionTearmChecked = (event) => {
-    const { checked } = event.target;
-    if (checked === true) {
-      setTermsSelected(true);
-    } else if (checked === false) {
-      setTermsSelected(false);
+  const { getAllPrincipalInvestigatorSavedProtocolType, loading, error } =
+    useSelector((state) => state.clinicalResearcher);
+
+  // Fetch unsaved forms on mount
+  const notSavedForms =
+    getAllPrincipalInvestigatorSavedProtocolType?.filter(
+      (form) => !form.filled
+    ) || [];
+
+  useEffect(() => {
+    if (
+      protocolTypeDetails?.protocolId &&
+      protocolTypeDetails?.researchType &&
+      !loading && // Check if data is loading
+      (!getAllPrincipalInvestigatorSavedProtocolType ||
+        getAllPrincipalInvestigatorSavedProtocolType.length === 0) // Ensure no redundant API calls
+    ) {
+      const data = {
+        protocolId: protocolTypeDetails.protocolId,
+        protocolType: protocolTypeDetails.researchType,
+      };
+      dispatch(getPrincipalInvestigatorSavedProtocolType(data));
     }
+  }, [
+    dispatch,
+    protocolTypeDetails?.protocolId,
+    protocolTypeDetails?.researchType,
+    getAllPrincipalInvestigatorSavedProtocolType, // Add this to avoid unnecessary calls if data already exists
+    loading, // Prevent calls if already in loading state
+  ]);
+
+  const handleTermsChange = (event) => {
+    setTermsSelected(event.target.checked);
   };
-
-  // useEffect(() => {
-  //     let data = {protocolId: protocolTypeDetails?.protocolId, protocolType: protocolTypeDetails?.researchType}
-  //     dispatch(getPrincipalInvestigatorSavedProtocolType(data));
-  // }, [dispatch, userDetails.id]);
-
-  // const { getAllPrincipalInvestigatorSavedProtocolType, loading, error } = useSelector(
-  //     state => ({
-  //         error: state.clinicalResearcher.error,
-  //         getAllPrincipalInvestigatorSavedProtocolType: state.clinicalResearcher.getAllPrincipalInvestigatorSavedProtocolType,
-  //         loading: state.clinicalResearcher.loading,
-  //     })
-  // );
-
-  // getAllPrincipalInvestigatorSavedProtocolType && getAllPrincipalInvestigatorSavedProtocolType.map((formList) => {
-  //     if(formList.filled === false){
-  //         notSavedForm.push(formList.form)
-  //     }
-  // });
-  const notSavedForm = [];
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
-    try {
-      if (notSavedForm.length > 0) {
-        toast.error(
-          "Befor final submission you have to fill protocol information",
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          },
-        );
-      } else if (notSavedForm.length <= 0) {
-        const isValid = true;
-        if (isValid === true) {
-          dispatch(createPrincipalInvestigatorSubmission({ ...formData })).then(
-            (data) => {
-              if (data.payload.status === 200) {
-                toast.success(data.payload.data.msg, {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "dark",
-                });
-                setFormData({});
-              }
-            },
-          );
+
+    if (notSavedForms.length > 0) {
+      toast.error(
+        "Before final submission you have to fill protocol information",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         }
+      );
+    } else {
+      try {
+        // Assuming validation is handled on the backend
+        dispatch(createPrincipalInvestigatorSubmission(formData)).then(
+          (data) => {
+            if (data.payload.status === 200) {
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+              setFormData({});
+            }
+          }
+        );
+      } catch (error) {
+        // Handle error
+        toast.error("An error occurred while submitting the form.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
-    } catch (error) {}
-  };
-  const titleCase = (str) => {
-    var splitStr = str.toLowerCase().split(" ");
-    for (var i = 0; i < splitStr.length; i++) {
-      splitStr[i] =
-        splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
-    return splitStr.join(" ");
+  };
+
+  // Utility function to format titles
+  const titleCase = (str) => {
+    return str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   return (
@@ -126,35 +143,34 @@ function SubmissionForm({ protocolTypeDetails }) {
         pauseOnHover
         theme="dark"
       />
-      {notSavedForm.length > 0 && (
+
+      {/* Display list of unsaved forms */}
+      {notSavedForms.length > 0 && (
         <List
           sx={{ width: "100%", maxWidth: "50%", bgcolor: "background.paper" }}
           component="nav"
-          aria-labelledby="nested-list-subheader"
-          subheader={
-            <ListSubheader
-              component="div"
-              id="nested-list-subheader"
-              style={{ fontSize: "18px", color: "red" }}
-            >
-              Befor final submission you have to fill the below forms
-            </ListSubheader>
-          }
         >
-          {notSavedForm.map((showForm) => {
-            return (
-              <ListItemButton>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText
-                  primary={titleCase(showForm.replaceAll("_", " "))}
-                />
-              </ListItemButton>
-            );
-          })}
+          <ListSubheader
+            component="div"
+            id="nested-list-subheader"
+            style={{ fontSize: "18px", color: "red" }}
+          >
+            Before final submission you have to fill the below forms
+          </ListSubheader>
+          {notSavedForms.map((form, index) => (
+            <ListItemButton key={index}>
+              <ListItemIcon>
+                <StarBorder />
+              </ListItemIcon>
+              <ListItemText
+                primary={titleCase(form.form.replaceAll("_", " "))}
+              />
+            </ListItemButton>
+          ))}
         </List>
       )}
+
+      {/* Submission Form */}
       <Row>
         <form onSubmit={handleSubmitData}>
           <Form.Group
@@ -166,52 +182,52 @@ function SubmissionForm({ protocolTypeDetails }) {
             <ul>
               <li>
                 Research will not commence prior to receiving the IRB approval
-                letter
+                letter.
               </li>
               <li>
                 The principal investigator will personally supervise and/or
-                conduct the study
+                conduct the study.
               </li>
               <li>
                 The principal investigator ensures that all persons involved in
                 conducting the study are trained and have proper credentialing
-                for conducting research
+                for conducting research.
               </li>
               <li>
                 Only the most current IRB-approved consent form will be used to
-                enroll subjects
+                enroll subjects.
               </li>
               <li>
                 No changes will be made to the research protocol, consents
                 forms, and all patient-facing materials without the approval of
-                the IRB
+                the IRB.
               </li>
               <li>
                 The study procedures will comply with all applicable laws and
-                regulations regarding the conduct of research
+                regulations regarding the conduct of research.
               </li>
               <li>
                 All findings from the study that directly affect subject safety
-                will be communicated to subjects, the sponsor, and to this IRB
+                will be communicated to subjects, the sponsor, and to this IRB.
               </li>
               <li>
                 All serious adverse events (SAEs), whether related to the study
                 procedures or not, will be reported to this IRB within 2
                 business days of the investigator becoming aware of the event
-                for IRB safety review
+                for IRB safety review.
               </li>
               <li>
-                The investigator will submit annual review and reviews in
-                compliance with sponsor
+                The investigator will submit annual reviews in compliance with
+                the sponsor.
               </li>
             </ul>
           </Form.Group>
+
+          {/* Checkbox to confirm terms */}
           <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup
-                onChange={(event) => handleFinalSubmissionTearmChecked(event)}
-              >
+              <FormGroup onChange={handleTermsChange}>
                 <FormControlLabel
                   control={<Checkbox />}
                   label="Your initials below signify that you have read and agree to the terms listed above"
@@ -219,6 +235,8 @@ function SubmissionForm({ protocolTypeDetails }) {
               </FormGroup>
             </FormControl>
           </Form.Group>
+
+          {/* Submit button */}
           <Form.Group
             as={Col}
             controlId="validationFormik010"
@@ -238,6 +256,6 @@ function SubmissionForm({ protocolTypeDetails }) {
       </Row>
     </>
   );
-}
+};
 
 export default SubmissionForm;

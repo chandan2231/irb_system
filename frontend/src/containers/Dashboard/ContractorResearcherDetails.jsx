@@ -63,11 +63,11 @@ const ContractorResearcherDetails = ({
     }
   }, [protocolDetailsById]);
 
-  console.log("protocolTypeDetails", {
-    protocolTypeDetails,
-    protocolDetailsById,
-    protocolDetailsByIdState,
-  });
+  // console.log("protocolTypeDetails", {
+  //   protocolTypeDetails,
+  //   protocolDetailsById,
+  //   protocolDetailsByIdState,
+  // });
 
   return (
     <Box sx={{ width: "100%" }}>

@@ -141,6 +141,7 @@ function App() {
             <Routes>
               {/* <Route element={<PrivateRoutes />}> */}
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/protocol-details" element={<ProtocolDetails />} />
               <Route path="/communication" element={<Communication />} />
               <Route path="/continuin-review" element={<ContinuingReview />} />
               <Route
