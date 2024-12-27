@@ -22,6 +22,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -44,9 +45,9 @@ const investigatorInfoSchema = yup.object().shape({
     .email("Invalid email format")
     .required("This is required"),
   fda_audit_explain: yup.string().when("fda_audit", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
-    otherwise: () => yup.string().nullable(),
+    otherwise: () => yup.string().notRequired(),
   }),
   training_completed_explain: yup.string().when("training_completed", {
     is: (value) => value.includes("8"),
@@ -61,19 +62,21 @@ const investigatorInfoSchema = yup.object().shape({
   pending_or_active_research_explain: yup
     .string()
     .when("pending_or_active_research", {
-      is: () => "Yes",
+      is: (value) => value === "Yes",
       then: () => yup.string().required("This is required"),
       otherwise: () => yup.string().nullable(),
     }),
-
   fwa_number: yup.string().when("site_fwp", {
-    is: () => "Yes",
+    is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
-    otherwise: () => yup.string().nullable(),
+    otherwise: () => yup.string().notRequired(),
   }),
-  cv_files: yup
-    .mixed()
-    .required("Please upload investigator and sub-investigator CV"),
+  cv_files: yup.mixed().test("fileType", "This is required", (value) => {
+    if (value.length === 0) {
+      return false;
+    }
+    return true;
+  }),
   medical_license: yup.mixed(),
   training_certificates: yup.mixed(),
 });
@@ -146,6 +149,8 @@ function InvestigatorInformationForm({
   });
 
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false)
+
 
   useEffect(() => {
     if (investigatorInformation) {
@@ -279,9 +284,12 @@ function InvestigatorInformationForm({
       );
     }
     const updatedTrainingCompletedString = updatedTrainingCompleted.join(",");
+    const removeEmptyString = updatedTrainingCompletedString
+      .split(",")
+      .filter((item) => item !== "").join(",")
     setFormData({
       ...formData,
-      training_completed: updatedTrainingCompletedString,
+      training_completed: removeEmptyString,
     });
   };
 
@@ -291,6 +299,7 @@ function InvestigatorInformationForm({
   };
 
   const handleSubmitData = async (e) => {
+    setLoader(true)
     e.preventDefault();
     try {
       const getValidatedform = await investigatorInfoSchema.validate(formData, {
@@ -350,6 +359,7 @@ function InvestigatorInformationForm({
           })
         ).then((data) => {
           if (data.payload.status === 200) {
+            setLoader(false)
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -360,12 +370,13 @@ function InvestigatorInformationForm({
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+            // setFormData({});
             e.target.reset();
           }
         });
       }
     } catch (error) {
+      setLoader(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -384,6 +395,14 @@ function InvestigatorInformationForm({
       }
     }
   };
+
+  console.log("Investigato InfoForm ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   console.log("investigatorInformationFormData", {
     formData,
