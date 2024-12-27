@@ -106,6 +106,11 @@ const investigatorAndProtocolInfoSchema = yup.object().shape({
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
+  training_completed_explain: yup.string().when("training_completed", {
+    is: (value) => value.includes("8"),
+    then: () => yup.string().required("This is required"),
+    otherwise: () => yup.string().nullable(),
+  }),
   pending_or_active_research_explain: yup
     .string()
     .when("pending_or_active_research", {
@@ -215,6 +220,8 @@ function InvestigatorInformationForm({
     investigator_research_number: "",
     pending_or_active_research: "",
     pending_or_active_research_explain: "",
+    protocol_id: protocolTypeDetails?.protocolId || "",
+    created_by: userDetails.id,
     cv_files: [],
   });
   const [errors, setErrors] = useState({});
@@ -472,7 +479,7 @@ function InvestigatorInformationForm({
                 progress: undefined,
                 theme: "dark",
               });
-              setFormData({});
+              // setFormData({});
               e.target.reset();
             }
           }
@@ -499,13 +506,7 @@ function InvestigatorInformationForm({
     }
   };
 
-  console.log("investigator info ======>", loader)
 
-  if (loader) {
-    return (
-      <Loader />
-    );
-  }
 
   useEffect(() => {
     if (investigatorInformation) {
@@ -570,6 +571,8 @@ function InvestigatorInformationForm({
           investigatorInformation?.pending_or_active_research || "",
         pending_or_active_research_explain:
           investigatorInformation?.pending_or_active_research_explain || "",
+        protocol_id: protocolTypeDetails?.protocolId || "",
+        created_by: userDetails.id || "",
         cv_files:
           investigatorInformation?.documents
             ?.filter((doc) => doc.document_name === "investigator_cv")
@@ -641,6 +644,14 @@ function InvestigatorInformationForm({
     investigatorInformation,
     errors,
   });
+
+  console.log("investigator info ======>", loader)
+
+  if (loader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <>

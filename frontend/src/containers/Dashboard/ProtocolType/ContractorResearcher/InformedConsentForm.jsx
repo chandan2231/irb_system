@@ -238,7 +238,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 progress: undefined,
                 theme: "dark",
               });
-              setFormData({});
+              // setFormData({});
             }
           },
         );

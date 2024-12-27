@@ -298,7 +298,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+            // setFormData({});
             e.target.reset();
           }
         });
