@@ -27,8 +27,8 @@ export const createPayment = async (req, res) => {
       }
     ],
     application_context: {
-      return_url: 'http://localhost:5173/success',
-      cancel_url: 'http://localhost:5173/cancel'
+      return_url: 'https://app.irbhub.org/success',
+      cancel_url: 'https://app.irbhub.org/cancel'
     }
   })
   try {
