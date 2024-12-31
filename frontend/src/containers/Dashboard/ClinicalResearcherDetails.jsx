@@ -15,9 +15,13 @@ const ClinicalResearcherDetails = ({
 }) => {
   const [protocolDetailsByIdState, setProtocolDetailsByIdState] =
     React.useState(protocolDetailsById);
+  const [apiCallIdentifier, setApiCallIdentifier] = React.useState(false);
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
+    if (value === 5) {
+      setApiCallIdentifier(true);
+    }
     return (
       <div
         role="tabpanel"
@@ -95,18 +99,21 @@ const ClinicalResearcherDetails = ({
           investigatorInformation={
             protocolDetailsById?.investigator_protocol_information
           }
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsById?.consent_information}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsById}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
     </Box>

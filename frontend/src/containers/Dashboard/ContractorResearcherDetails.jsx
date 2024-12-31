@@ -18,9 +18,13 @@ const ContractorResearcherDetails = ({
 }) => {
   const [protocolDetailsByIdState, setProtocolDetailsByIdState] =
     React.useState(protocolDetailsById);
+  const [apiCallIdentifier, setApiCallIdentifier] = React.useState(false);
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
+    if (value === 5) {
+      setApiCallIdentifier(true);
+    }
     return (
       <div
         role="tabpanel"
@@ -96,6 +100,7 @@ const ContractorResearcherDetails = ({
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
           protocolInformation={protocolDetailsByIdState?.protocol_information}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -104,30 +109,35 @@ const ContractorResearcherDetails = ({
           investigatorInformation={
             protocolDetailsByIdState?.investigator_information
           }
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <StudyInformationForm
           protocolTypeDetails={protocolTypeDetails}
           studyInformation={protocolDetailsByIdState?.study_information}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsByIdState?.informed_consent}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
         <ProtocolProceduresForm
           protocolTypeDetails={protocolTypeDetails}
           protocolProcedure={protocolDetailsByIdState?.protocol_procedure}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsByIdState}
+          apiCallIdentifier={apiCallIdentifier}
         />
       </CustomTabPanel>
     </Box>
