@@ -6,11 +6,12 @@ import continuinReviewRoutes from './routes/continuinReview.js'
 import adminRoutes from './routes/admin.js'
 import eventAndRequest from './routes/eventAndRequest.js'
 import communication from './routes/communication.js'
+import payment from './routes/payment.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
-dotenv.config({ path: `.env`, override: true })
 
+dotenv.config({ path: `.env`, override: true })
 const app = express()
 
 app.use((req, res, next) => {
@@ -53,6 +54,7 @@ app.use('/api/continuinReview', continuinReviewRoutes)
 app.use('/api/eventAndRequest', eventAndRequest)
 app.use('/api/communication', communication)
 app.use('/api/admin', adminRoutes)
+app.use('/api/payment', payment)
 
 if (process.env.NODE_ENV === 'development') {
   app.listen(8800, () => {

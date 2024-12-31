@@ -20,6 +20,7 @@ import AdminReducer from "./Admin/AdminSlice";
 import MembersReducer from "./Admin/MembersSlice";
 import EventPriceReducer from "./Admin/EventPriceSlice";
 import CommunicationReducer from "./Communication/CommunicationSlice";
+import PaymentReducer from "./Payment/PaymentSlice";
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   member: MembersReducer,
   eventPrice: EventPriceReducer,
   communication: CommunicationReducer,
+  payment: PaymentReducer,
 });
 
 const persistConfig = {

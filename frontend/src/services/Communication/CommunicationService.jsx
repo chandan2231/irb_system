@@ -21,7 +21,7 @@ export const saveEnquiry = createAsyncThunk(
 );
 
 export const getCommunicationListByProtocolId = createAsyncThunk(
-  "ContinuinRevew/getCommunicationListByProtocolId",
+  "Communication/getCommunicationListByProtocolId",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -38,7 +38,7 @@ export const getCommunicationListByProtocolId = createAsyncThunk(
 );
 
 export const investigatorAndinstuationSave = createAsyncThunk(
-  "ContinuinRevew/investigatorAndinstuationSave",
+  "Communication/investigatorAndinstuationSave",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
@@ -55,7 +55,7 @@ export const investigatorAndinstuationSave = createAsyncThunk(
 );
 
 export const researchProcessSave = createAsyncThunk(
-  "ContinuinRevew/researchProcessSave",
+  "Communication/researchProcessSave",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({

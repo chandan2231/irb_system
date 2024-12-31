@@ -20,6 +20,7 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 // Helper function to convert string to title case
 const titleCase = (str) =>
@@ -31,6 +32,7 @@ const titleCase = (str) =>
 
 const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(false);
 
@@ -39,6 +41,12 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
   });
+
+  const navigateToPaymentPage = (params) => {
+    navigate("/payment", {
+      state: { details: params, identifierType: "user" },
+    });
+  };
 
   const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
     (state) => state.multiSiteSponsor
@@ -72,37 +80,59 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   // Handle terms checkbox change
   const handleTermsChange = (event) => setTermsSelected(event.target.checked);
 
-  // Handle form submission
   const handleSubmitData = async (e) => {
     e.preventDefault();
-
-    // Show toast if there are unsaved forms
     if (notSavedForms.length > 0) {
       toast.error(
-        "Before final submission, you must fill in the required protocol information.",
+        "Before final submission, you have to fill protocol information",
         {
           position: "top-right",
           autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
           theme: "dark",
         }
       );
       return;
-    }
-
-    try {
-      const response = await dispatch(createMultiSiteSubmission(formData));
-      if (response.payload.status === 200) {
-        toast.success(response.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          theme: "dark",
-        });
-        setFormData({}); // Clear form data after successful submission
-      }
-    } catch (error) {
-      console.error("Error during submission:", error);
+    } else {
+      navigateToPaymentPage(formData);
     }
   };
+
+  // Handle form submission
+  // const handleSubmitDataOld = async (e) => {
+  //   e.preventDefault();
+
+  //   // Show toast if there are unsaved forms
+  //   if (notSavedForms.length > 0) {
+  //     toast.error(
+  //       "Before final submission, you must fill in the required protocol information.",
+  //       {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         theme: "dark",
+  //       }
+  //     );
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await dispatch(createMultiSiteSubmission(formData));
+  //     if (response.payload.status === 200) {
+  //       toast.success(response.payload.data.msg, {
+  //         position: "top-right",
+  //         autoClose: 5000,
+  //         theme: "dark",
+  //       });
+  //       setFormData({}); // Clear form data after successful submission
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during submission:", error);
+  //   }
+  // };
+
   console.log("notSavedForms", notSavedForms);
   return (
     <>
@@ -192,7 +222,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
               type="submit"
               disabled={!termsSelected}
             >
-              Submit
+              SUBMIT AND PAY
             </Button>
           </Form.Group>
         </form>

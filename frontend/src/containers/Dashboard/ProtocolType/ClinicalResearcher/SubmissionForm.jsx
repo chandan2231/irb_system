@@ -21,9 +21,11 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
+import { useNavigate } from "react-router-dom";
 
 const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,6 +33,12 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
   });
+
+  const navigateToPaymentPage = (params) => {
+    navigate("/payment", {
+      state: { details: params, identifierType: "user" },
+    });
+  };
 
   const { getAllPrincipalInvestigatorSavedProtocolType, loading, error } =
     useSelector((state) => state.clinicalResearcher);
@@ -69,10 +77,9 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
-
     if (notSavedForms.length > 0) {
       toast.error(
-        "Before final submission you have to fill protocol information",
+        "Before final submission, you have to fill protocol information",
         {
           position: "top-right",
           autoClose: 5000,
@@ -80,44 +87,40 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          progress: undefined,
           theme: "dark",
         }
       );
+      return;
     } else {
-      try {
-        // Assuming validation is handled on the backend
-        dispatch(createPrincipalInvestigatorSubmission(formData)).then(
-          (data) => {
-            if (data.payload.status === 200) {
-              toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-              setFormData({});
-            }
-          }
-        );
-      } catch (error) {
-        // Handle error
-        toast.error("An error occurred while submitting the form.", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
+      navigateToPaymentPage(formData);
     }
+    // try {
+    //   const response = await dispatch(
+    //     createClinicalSiteSubmission({ ...formData })
+    //   );
+    //   if (response.payload.status === 200) {
+    //     toast.success(response.payload.data.msg, {
+    //       position: "top-right",
+    //       autoClose: 5000,
+    //       hideProgressBar: false,
+    //       closeOnClick: true,
+    //       pauseOnHover: true,
+    //       draggable: true,
+    //       theme: "dark",
+    //     });
+    //     setFormData({});
+    //   }
+    // } catch (error) {
+    //   toast.error("Error during submission", {
+    //     position: "top-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     theme: "dark",
+    //   });
+    // }
   };
 
   // Utility function to format titles
@@ -249,7 +252,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
               type="Submit"
               disabled={!termsSelected}
             >
-              SUBMIT
+              SUBMIT AND PAY
             </Button>
           </Form.Group>
         </form>

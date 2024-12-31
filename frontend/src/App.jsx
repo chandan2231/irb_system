@@ -42,6 +42,9 @@ import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
 import ApprovalMemberDetails from "./containers/CommitteeChair/ApprovalMemberDetails";
 import Communication from "./containers/Communication/Communication";
+import PayPalButton from "./components/PaymentPage";
+import CanclePayment from "./components/CanclePayment";
+import SuccessPayment from "./components/SuccessPayment";
 import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
@@ -143,6 +146,9 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/protocol-details" element={<ProtocolDetails />} />
               <Route path="/communication" element={<Communication />} />
+              <Route path="/payment" element={<PayPalButton />} />
+              <Route path="/success" element={<SuccessPayment />} />
+              <Route path="/cancel" element={<CanclePayment />} />
               <Route path="/continuin-review" element={<ContinuingReview />} />
               <Route
                 path="/continuin-review-details"
