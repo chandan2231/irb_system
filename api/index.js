@@ -10,16 +10,19 @@ import payment from './routes/payment.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
+import bodyParser from 'body-parser'
 
 dotenv.config({ path: `.env`, override: true })
 const app = express()
+
+// middlewares
+app.use(bodyParser.json())
+app.use(express.json())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', true)
   next()
 })
-// middlewares
-app.use(express.json())
 
 app.use(cookieParser())
 if (process.env.NODE_ENV === 'development') {
