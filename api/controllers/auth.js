@@ -1,32 +1,79 @@
 import { db } from '../connect.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import sendEmail from '../emailService.js'
 
-export const register = (req, res) => {
-  const que = 'select * from users where email = ?'
-  db.query(que, [req.body.email], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length > 0) {
-      return res.status(409).json('Email already exist try with other email')
+export const register = async (req, res) => {
+  try {
+    // Check if the email already exists
+    const checkEmailQuery = 'SELECT * FROM users WHERE email = ?'
+    const existingUserData = await new Promise((resolve, reject) => {
+      db.query(checkEmailQuery, [req.body.email], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+    const existingUser = Array.isArray(existingUserData)
+      ? existingUserData
+      : [existingUserData]
+    // If email exists, return an error
+    if (existingUser.length > 0) {
+      return res
+        .status(409)
+        .json('Email already exists. Please try with another email.')
     }
+
+    // Hash the password
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-    const que =
-      'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`, `city`) value (?)'
+
+    // Insert new user into the database
+    const insertQuery = `
+      INSERT INTO users (name, mobile, email, password, researcher_type, user_type) 
+      VALUES (?)`
     const values = [
       req.body.name,
       req.body.mobile,
       req.body.email,
       hashedPassword,
       'user',
-      'user',
-      req.body.city
+      'user'
     ]
-    db.query(que, [values], (err, data) => {
-      if (err) return res.status(500).json(err)
-      return res.status(200).json('User has been created.')
+
+    const insertResult = await new Promise((resolve, reject) => {
+      db.query(insertQuery, [values], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
     })
-  })
+
+    // Now, send the welcome email
+    const to = req.body.email
+    const subject = 'Welcome to IRBHUB'
+    const greetingHtml = `<p>Dear ${req.body.name},</p>`
+    const bodyHtml = `<p>You have successfully registered with IRBHUB.</p>`
+    const emailHtml = `
+      <div>
+        ${greetingHtml}
+        ${bodyHtml}
+      </div>`
+    const text = emailHtml
+    const html = emailHtml
+
+    // Send email
+    try {
+      await sendEmail(to, subject, text, html)
+      return res.status(200).json('User has been created and email sent.')
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+      return res
+        .status(500)
+        .json({ status: 500, msg: 'User created but failed to send email.' })
+    }
+  } catch (err) {
+    console.error('Error during registration:', err)
+    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
+  }
 }
 
 export const login = (req, res) => {

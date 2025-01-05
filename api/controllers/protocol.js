@@ -3,6 +3,102 @@ import fs from 'fs'
 import { generatePdfFromHTML } from '../utils/pdfService.js'
 import * as s3Service from '../utils/s3Service.js'
 import PdfTemplates from '../templates/generate-pdf.js'
+import sendEmail from '../emailService.js'
+import { getUserInfo } from '../userData.js'
+
+export const createProtocol = async (req, res) => {
+  try {
+    const prefix = 'IRBH'
+
+    // Query to find the latest IRB number to increment
+    const que1 = 'SELECT protocol_id FROM protocols ORDER BY id DESC LIMIT 1'
+
+    // Wrap the db query in a promise to use async/await
+    const result = await new Promise((resolve, reject) => {
+      db.query(que1, (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+    const data = Array.isArray(result) ? result : [result]
+    let newProtocolNumber
+    if (data && data.length > 0) {
+      // Extract the last IRB number and increment it
+      const lastProtocolNumber = data[0].protocol_id
+      const lastNumber = parseInt(lastProtocolNumber.replace(prefix, ''), 10) // Remove the prefix and convert to number
+      // Increment the number, and format with leading zeros
+      const incrementedNumber = lastNumber + 1
+      newProtocolNumber = prefix + incrementedNumber.toString().padStart(5, '0') // Ensure the number has leading zeros
+    } else {
+      // If no protocol exists yet, start with IRBH00001
+      newProtocolNumber = prefix + '00001'
+    }
+
+    // Now, insert the new protocol with the generated IRB number
+    const que2 =
+      'INSERT INTO protocols (`protocol_id`, `research_type`, `added_by`) VALUES (?)'
+    const protocolValue = [
+      newProtocolNumber,
+      req.body.research_type_id,
+      req.body.login_id
+    ]
+
+    // Wrap the insert query in a promise to use async/await
+    await new Promise((resolve, reject) => {
+      db.query(que2, [protocolValue], (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+
+    // Fetch user info
+    const user = await getUserInfo(req.body.login_id)
+    const to = user.email
+    const subject = 'Protocol Created'
+
+    // Create protocol and body HTML
+    const grettingHtml = `<p>Dear ${user.name},</p>`
+    const bodyHtml = `<p>You have successfully registered your research with us.</p>`
+    const protocolNumberHtml = `<p>Your Protocol Number is ${newProtocolNumber}</p>`
+
+    const emailHtml = `
+      <div>
+        ${grettingHtml}
+        ${bodyHtml}
+        ${protocolNumberHtml}
+      </div>`
+    const text = emailHtml
+    const html = emailHtml
+
+    // Send email
+    try {
+      await sendEmail(to, subject, text, html)
+
+      const resultResponse = {
+        status: 200,
+        msg:
+          'Research type has been created with protocol number: ' +
+          newProtocolNumber
+      }
+      return res.json(resultResponse)
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+      res.status(500).json({ status: 500, msg: 'Error sending email' })
+    }
+  } catch (err) {
+    console.error('Error in creating protocol:', err)
+    return res.status(500).json({
+      status: 500,
+      msg: 'An error occurred while creating the protocol'
+    })
+  }
+}
 
 export const getProtocolList = (req, res) => {
   const que = 'select * from protocols where added_by = ?'
@@ -59,27 +155,6 @@ export const getApprovedProtocolList = (req, res) => {
 //     })
 
 // }
-
-export const createProtocol = (req, res) => {
-  const protocolNumber = 'IRB' + Math.floor(Math.random() * 899999 + 100000)
-  const que2 =
-    'insert into protocols (`protocol_id`, `research_type`, `added_by`) value (?)'
-  const protocolValue = [
-    protocolNumber,
-    req.body.research_type_id,
-    req.body.login_id
-  ]
-  db.query(que2, [protocolValue], (err2, data) => {
-    if (err2) {
-      return res.status(500).json(err2)
-    } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Research type has been created.'
-      return res.json(result)
-    }
-  })
-}
 
 export const saveFile = async (req, res) => {
   var datetime = new Date()
