@@ -6,6 +6,7 @@ import {
   fetchUnderReviewProtocolList,
   fetchCreatedProtocolList,
   allowProtocolWaiveFee,
+  fetchAllProtocolList,
 } from "../../services/Admin/ProtocolListService";
 import {
   fetchContinuinReviewProtocolList,
@@ -52,10 +53,23 @@ const AdminSlice = createSlice({
     underReviewProtocolList: null,
     createdProtocolList: null,
     protocolWaiveFee: null,
+    allProtocolList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchAllProtocolList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllProtocolList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allProtocolList = action.payload;
+      })
+      .addCase(fetchAllProtocolList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
       .addCase(fetchApprovedProtocolList.pending, (state) => {
         state.loading = true;
         state.error = null;
