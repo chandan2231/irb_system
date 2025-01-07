@@ -2,6 +2,22 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ApiCall from "../../utility/ApiCall";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
+export const fetchAllProtocolList = createAsyncThunk(
+  "ProtocolList/fetchAllProtocolList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/admin/all-protocol/list`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const fetchApprovedProtocolList = createAsyncThunk(
   "ProtocolList/fetchApprovedProtocolList",
   async (data, { rejectWithValue }) => {
