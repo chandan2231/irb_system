@@ -1,5 +1,6 @@
 import { db } from '../connect.js'
 import bcrypt from 'bcryptjs'
+import sendEmail from '../emailService.js'
 
 export const getActiveVotingMemberList = (req, res) => {
   const que = 'select * from users WHERE user_type=? AND status=?'
@@ -102,20 +103,34 @@ export const changeMemberStatus = (req, res) => {
   })
 }
 
-export const createMember = (req, res) => {
-  // CHECK MEMBER IF EXIST
-  const que = 'select * from users where email = ?'
-  db.query(que, [req.body.email], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length > 0) {
-      return res.status(409).json('Email already exist try with other email')
+export const createMember = async (req, res) => {
+  try {
+    // Check if the email already exists
+    const checkEmailQuery = 'SELECT * FROM users WHERE email = ?'
+    const existingUserData = await new Promise((resolve, reject) => {
+      db.query(checkEmailQuery, [req.body.email], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+    const existingUser = Array.isArray(existingUserData)
+      ? existingUserData
+      : [existingUserData]
+    // If email exists, return an error
+    if (existingUser.length > 0) {
+      return res
+        .status(409)
+        .json('Email already exists. Please try with another email.')
     }
-    // CREATE A NEW MEMBER
-    // hash the password
+
+    // Hash the password
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-    const que =
-      'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`) value (?)'
+
+    // Insert new user into the database
+    const insertQuery = `
+      INSERT INTO users (name, mobile, email, password, researcher_type, user_type) 
+      VALUES (?)`
     const values = [
       req.body.name,
       req.body.phone,
@@ -124,12 +139,80 @@ export const createMember = (req, res) => {
       'member',
       req.body.user_type
     ]
-    db.query(que, [values], (err, data) => {
-      if (err) return res.status(500).json(err)
-      return res.status(200).json('Member has been created Successfully.')
+
+    const insertResult = await new Promise((resolve, reject) => {
+      db.query(insertQuery, [values], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
     })
-  })
+
+    // Now, send the welcome email
+    const loginUrl = 'https://app.irbhub.org/signin'
+    const to = req.body.email
+    const subject = 'Welcome to IRBHUB'
+    const greetingHtml = `<p>Dear ${req.body.name},</p>`
+    let bodyHtml = `<p>You have successfully registered with IRBHUB as a ${req.body.user_type} role.</p>`
+    bodyHtml += `<p>Your login details are</p>`
+    bodyHtml += `<p>Email: ${req.body.email}</p>`
+    bodyHtml += `<p>Password: ${req.body.password}</p>`
+    bodyHtml += `<p>Login URL: <a href="${loginUrl}" target="_blank" rel="noopener noreferrer">
+              Click here
+            </a></p>`
+    const emailHtml = `
+      <div>
+        ${greetingHtml}
+        ${bodyHtml}
+      </div>`
+    const text = emailHtml
+    const html = emailHtml
+
+    // Send email
+    try {
+      await sendEmail(to, subject, text, html)
+      return res
+        .status(200)
+        .json('Member has been created successfully and email sent.')
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+      return res
+        .status(500)
+        .json({ status: 500, msg: 'Member created but failed to send email.' })
+    }
+  } catch (err) {
+    console.error('Error during registration:', err)
+    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
+  }
 }
+
+// export const createMember = (req, res) => {
+//   // CHECK MEMBER IF EXIST
+//   const que = 'select * from users where email = ?'
+//   db.query(que, [req.body.email], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length > 0) {
+//       return res.status(409).json('Email already exist try with other email')
+//     }
+//     // CREATE A NEW MEMBER
+//     // hash the password
+//     const salt = bcrypt.genSaltSync(10)
+//     const hashedPassword = bcrypt.hashSync(req.body.password, salt)
+//     const que =
+//       'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`) value (?)'
+//     const values = [
+//       req.body.name,
+//       req.body.phone,
+//       req.body.email,
+//       hashedPassword,
+//       'member',
+//       req.body.user_type
+//     ]
+//     db.query(que, [values], (err, data) => {
+//       if (err) return res.status(500).json(err)
+//       return res.status(200).json('Member has been created Successfully.')
+//     })
+//   })
+// }
 
 export const getMemberList = (req, res) => {
   const que = 'select * from users where researcher_type=?'

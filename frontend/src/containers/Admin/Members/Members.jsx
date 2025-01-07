@@ -105,11 +105,11 @@ function Members() {
       memberList: state.member.memberList,
       loading: state.member.loading,
       memberCreated: state.member.memberCreated,
-    }),
+    })
   );
 
   if (memberList !== "" && memberList?.length > 0) {
-    totalElements = memberList.totalElements;
+    totalElements = memberList.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
