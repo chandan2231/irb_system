@@ -10,9 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
-import { fetchUnderReviewProtocolList } from "../../services/Admin/ProtocolListService";
+import {
+  fetchUnderReviewProtocolList,
+  fetchAllProtocolList,
+} from "../../services/Admin/ProtocolListService";
 import { protocolReport } from "../../services/UserManagement/UserService";
-
 
 function CommitteeChairProtocolList() {
   const theme = useTheme();
@@ -27,10 +29,14 @@ function CommitteeChairProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/committee-chair/protocol-details", { state: { details: params.row, type: 'committee-chair' } });
+    navigate("/committee-chair/protocol-details", {
+      state: { details: params.row, type: "committee-chair" },
+    });
   };
   const navigateMemberApprovalDetails = (params) => {
-    navigate("/committee-chair/approval-member-details", { state: { details: params.row, type: 'committee-chair' } });
+    navigate("/committee-chair/approval-member-details", {
+      state: { details: params.row, type: "committee-chair" },
+    });
   };
   const columns = [
     {
@@ -86,22 +92,21 @@ function CommitteeChairProtocolList() {
         //   onClick={() => handleAddProtocolEvent(params)}
         //   showInMenu
         // />,
-        
       ],
     },
   ];
 
   var totalElements = 0;
-  const { underReviewProtocolList, loading, error } = useSelector((state) => ({
+  const { allProtocolList, loading, error } = useSelector((state) => ({
     error: state.admin.error,
-    underReviewProtocolList: state.admin.underReviewProtocolList,
+    allProtocolList: state.admin.allProtocolList,
     loading: state.admin.loading,
   }));
   useEffect(() => {
-    dispatch(fetchUnderReviewProtocolList());
+    dispatch(fetchAllProtocolList());
   }, [dispatch, user.id]);
-  if (underReviewProtocolList !== "" && underReviewProtocolList?.length > 0) {
-    totalElements = underReviewProtocolList.length;
+  if (allProtocolList !== "" && allProtocolList?.length > 0) {
+    totalElements = allProtocolList.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -113,8 +118,8 @@ function CommitteeChairProtocolList() {
 
   useEffect(() => {
     const pListArr = [];
-    if (underReviewProtocolList && underReviewProtocolList?.length > 0) {
-      underReviewProtocolList.map((pList, index) => {
+    if (allProtocolList && allProtocolList?.length > 0) {
+      allProtocolList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
@@ -126,7 +131,9 @@ function CommitteeChairProtocolList() {
                 ? "Under Review"
                 : pList.status === "3"
                   ? "Approved"
-                  : "Rejected",
+                  : pList.status === "4"
+                    ? "Rejected"
+                    : "Approved Pending Changes",
           createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
         };
@@ -134,7 +141,7 @@ function CommitteeChairProtocolList() {
       });
       setProtocolDataList(pListArr);
     }
-  }, [underReviewProtocolList]);
+  }, [allProtocolList]);
 
   const handleViewPdf = async (params) => {
     const { row } = params;
@@ -149,43 +156,43 @@ function CommitteeChairProtocolList() {
     }
   };
 
-    return (
-        <>
-        <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-        />
-        <Box m={theme.layoutContainer.layoutSection}>
-            <Box>
-                <Grid container spacing={2}>
-                    <Grid item xs={5} sm={5} md={8} lg={8}>
-                    <Typography variant="h5" mb={2}>
-                        Protocol List
-                    </Typography>
-                    </Grid>
-                </Grid>
-            </Box>
-            <Box sx={{ mt: 5 }}>
-            <DataGrid
-                rows={protocolDataList}
-                columns={columns}
-                rowCount={rowCount}
-                loading={loading}
-                paginationMode="server"
-                // onCellClick={(param) => handleChangeStatus(param)}
-            />
-            </Box>
+  return (
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      <Box m={theme.layoutContainer.layoutSection}>
+        <Box>
+          <Grid container spacing={2}>
+            <Grid item xs={5} sm={5} md={8} lg={8}>
+              <Typography variant="h5" mb={2}>
+                Protocol List
+              </Typography>
+            </Grid>
+          </Grid>
         </Box>
-        </>
-    );
+        <Box sx={{ mt: 5 }}>
+          <DataGrid
+            rows={protocolDataList}
+            columns={columns}
+            rowCount={rowCount}
+            loading={loading}
+            paginationMode="server"
+            // onCellClick={(param) => handleChangeStatus(param)}
+          />
+        </Box>
+      </Box>
+    </>
+  );
 }
 
 export default CommitteeChairProtocolList;

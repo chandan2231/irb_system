@@ -1,6 +1,174 @@
 import { db } from '../connect.js'
 import bcrypt from 'bcryptjs'
 import sendEmail from '../emailService.js'
+import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
+
+export const chairCommitteeApprovalProtocol = async (req, res) => {
+  try {
+    const datetime = new Date()
+    // Determine the protocol status based on the input
+    let protocolStatus =
+      req.body.protocol === 'Approved'
+        ? 3
+        : req.body.protocol === 'Under Review'
+          ? 2
+          : req.body.protocol === 'Rejected'
+            ? 4
+            : 5
+
+    const que =
+      'UPDATE protocols SET status=?, comment=?, electronic_signature=?, approval_date_by_chair_committee=? WHERE protocol_id=?'
+
+    // Use a promise to handle the query and await its result
+    const result = await new Promise((resolve, reject) => {
+      db.query(
+        que,
+        [
+          protocolStatus,
+          req.body.comment,
+          req.body.electronic_signature,
+          datetime.toISOString().slice(0, 10),
+          req.body.protocol_id
+        ],
+        (err, data) => {
+          if (err) reject(err)
+          resolve(data)
+        }
+      )
+    })
+
+    // Check if any rows were affected (ensure the protocol exists)
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ status: 404, msg: 'Protocol not found' })
+    }
+
+    // Get user info and send email
+    const userDetails = await getUserInfoByProtocolId(req.body.protocol_id)
+    const user = await getUserInfo(userDetails.added_by)
+    const to = user.email
+    const subject = `Protocol Status of ${req.body.protocol_id}`
+
+    // Create the greeting and body HTML for the email
+    const greetingHtml = `<p>Dear ${user.name},</p>`
+    const bodyHtml = `<p>Your protocol status for protocol id ${req.body.protocol_id} is: ${req.body.protocol}</p>`
+
+    let additionalComment = ''
+    if (req.body.comment && req.body.comment !== '') {
+      additionalComment += `<p>Comment by the committee chair member:</p>`
+      additionalComment += `<p>${req.body.comment}</p>` // Display the comment
+    }
+
+    const emailHtml = `
+      <div>
+        ${greetingHtml}
+        ${bodyHtml}
+        ${additionalComment}
+      </div>`
+
+    const text = emailHtml
+    const html = emailHtml
+
+    // Send the email
+    try {
+      await sendEmail(to, subject, text, html)
+
+      // Respond to the client that the protocol was updated successfully
+      const resultResponse = {
+        status: 200,
+        msg: 'Protocol status updated successfully'
+      }
+      return res.json(resultResponse)
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+      return res.status(500).json({ status: 500, msg: 'Error sending email' })
+    }
+  } catch (err) {
+    console.error('Error updating protocol:', err)
+    return res.status(500).json({ status: 500, msg: 'Error updating protocol' })
+  }
+}
+
+export const createMember = async (req, res) => {
+  try {
+    // Check if the email already exists
+    const checkEmailQuery = 'SELECT * FROM users WHERE email = ?'
+    const existingUserData = await new Promise((resolve, reject) => {
+      db.query(checkEmailQuery, [req.body.email], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+    const existingUser = Array.isArray(existingUserData)
+      ? existingUserData
+      : [existingUserData]
+    // If email exists, return an error
+    if (existingUser.length > 0) {
+      return res
+        .status(409)
+        .json('Email already exists. Please try with another email.')
+    }
+
+    // Hash the password
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt)
+
+    // Insert new user into the database
+    const insertQuery = `
+      INSERT INTO users (name, mobile, email, password, researcher_type, user_type) 
+      VALUES (?)`
+    const values = [
+      req.body.name,
+      req.body.phone,
+      req.body.email,
+      hashedPassword,
+      'member',
+      req.body.user_type
+    ]
+
+    const insertResult = await new Promise((resolve, reject) => {
+      db.query(insertQuery, [values], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+
+    // Now, send the welcome email
+    const loginUrl = 'https://app.irbhub.org/signin'
+    const to = req.body.email
+    const subject = 'Welcome to IRBHUB'
+    const greetingHtml = `<p>Dear ${req.body.name},</p>`
+    let bodyHtml = `<p>You have successfully registered with IRBHUB as a ${req.body.user_type} role.</p>`
+    bodyHtml += `<p>Your login details are</p>`
+    bodyHtml += `<p>Email: ${req.body.email}</p>`
+    bodyHtml += `<p>Password: ${req.body.password}</p>`
+    bodyHtml += `<p>Login URL: <a href="${loginUrl}" target="_blank" rel="noopener noreferrer">
+              Click here
+            </a></p>`
+    const emailHtml = `
+      <div>
+        ${greetingHtml}
+        ${bodyHtml}
+      </div>`
+    const text = emailHtml
+    const html = emailHtml
+
+    // Send email
+    try {
+      await sendEmail(to, subject, text, html)
+      return res
+        .status(200)
+        .json('Member has been created successfully and email sent.')
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+      return res
+        .status(500)
+        .json({ status: 500, msg: 'Member created but failed to send email.' })
+    }
+  } catch (err) {
+    console.error('Error during registration:', err)
+    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
+  }
+}
 
 export const getActiveVotingMemberList = (req, res) => {
   const que = 'select * from users WHERE user_type=? AND status=?'
@@ -102,117 +270,6 @@ export const changeMemberStatus = (req, res) => {
     }
   })
 }
-
-export const createMember = async (req, res) => {
-  try {
-    // Check if the email already exists
-    const checkEmailQuery = 'SELECT * FROM users WHERE email = ?'
-    const existingUserData = await new Promise((resolve, reject) => {
-      db.query(checkEmailQuery, [req.body.email], (err, data) => {
-        if (err) reject(err)
-        resolve(data)
-      })
-    })
-    const existingUser = Array.isArray(existingUserData)
-      ? existingUserData
-      : [existingUserData]
-    // If email exists, return an error
-    if (existingUser.length > 0) {
-      return res
-        .status(409)
-        .json('Email already exists. Please try with another email.')
-    }
-
-    // Hash the password
-    const salt = bcrypt.genSaltSync(10)
-    const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-
-    // Insert new user into the database
-    const insertQuery = `
-      INSERT INTO users (name, mobile, email, password, researcher_type, user_type) 
-      VALUES (?)`
-    const values = [
-      req.body.name,
-      req.body.phone,
-      req.body.email,
-      hashedPassword,
-      'member',
-      req.body.user_type
-    ]
-
-    const insertResult = await new Promise((resolve, reject) => {
-      db.query(insertQuery, [values], (err, data) => {
-        if (err) reject(err)
-        resolve(data)
-      })
-    })
-
-    // Now, send the welcome email
-    const loginUrl = 'https://app.irbhub.org/signin'
-    const to = req.body.email
-    const subject = 'Welcome to IRBHUB'
-    const greetingHtml = `<p>Dear ${req.body.name},</p>`
-    let bodyHtml = `<p>You have successfully registered with IRBHUB as a ${req.body.user_type} role.</p>`
-    bodyHtml += `<p>Your login details are</p>`
-    bodyHtml += `<p>Email: ${req.body.email}</p>`
-    bodyHtml += `<p>Password: ${req.body.password}</p>`
-    bodyHtml += `<p>Login URL: <a href="${loginUrl}" target="_blank" rel="noopener noreferrer">
-              Click here
-            </a></p>`
-    const emailHtml = `
-      <div>
-        ${greetingHtml}
-        ${bodyHtml}
-      </div>`
-    const text = emailHtml
-    const html = emailHtml
-
-    // Send email
-    try {
-      await sendEmail(to, subject, text, html)
-      return res
-        .status(200)
-        .json('Member has been created successfully and email sent.')
-    } catch (emailError) {
-      console.error('Error sending email:', emailError)
-      return res
-        .status(500)
-        .json({ status: 500, msg: 'Member created but failed to send email.' })
-    }
-  } catch (err) {
-    console.error('Error during registration:', err)
-    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
-  }
-}
-
-// export const createMember = (req, res) => {
-//   // CHECK MEMBER IF EXIST
-//   const que = 'select * from users where email = ?'
-//   db.query(que, [req.body.email], (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length > 0) {
-//       return res.status(409).json('Email already exist try with other email')
-//     }
-//     // CREATE A NEW MEMBER
-//     // hash the password
-//     const salt = bcrypt.genSaltSync(10)
-//     const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-//     const que =
-//       'insert into users (`name`, `mobile`, `email`,  `password`, `researcher_type`, `user_type`) value (?)'
-//     const values = [
-//       req.body.name,
-//       req.body.phone,
-//       req.body.email,
-//       hashedPassword,
-//       'member',
-//       req.body.user_type
-//     ]
-//     db.query(que, [values], (err, data) => {
-//       if (err) return res.status(500).json(err)
-//       return res.status(200).json('Member has been created Successfully.')
-//     })
-//   })
-// }
 
 export const getMemberList = (req, res) => {
   const que = 'select * from users where researcher_type=?'
@@ -893,43 +950,20 @@ export const approvedProtocolsByMembersList = (req, res) => {
   })
 }
 
-export const chairCommitteeApprovalProtocol = (req, res) => {
-  var datetime = new Date()
-  let protocolStatus =
-    req.body.protocol === 'Approve'
-      ? 3
-      : req.body.protocol === 'Under Review'
-        ? 2
-        : req.body.protocol === 'Rejected'
-          ? 4
-          : 5
-  const que =
-    'UPDATE protocols SET status=?, comment=?, electronic_signature=?, approval_date_by_chair_committee=? WHERE protocol_id=?'
-  db.query(
-    que,
-    [
-      protocolStatus,
-      req.body.comment,
-      req.body.electronic_signature,
-      datetime.toISOString().slice(0, 10),
-      req.body.protocol_id
-    ],
-    (err, data) => {
-      if (err) {
-        return res.status(500).json(err)
-      } else {
-        let result = {}
-        result.status = 200
-        result.msg = 'Protocol Details updated Successfully'
-        return res.json(result)
-      }
-    }
-  )
-}
-
 export const getContinueinProtocolList = (req, res) => {
   const que = 'select * from protocols WHERE continuein_review_status=?'
   db.query(que, [2], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
+export const getAllProtocolList = (req, res) => {
+  const que =
+    'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status!=1'
+  db.query(que, {}, (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)

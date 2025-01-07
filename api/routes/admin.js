@@ -34,7 +34,8 @@ import {
   votingMemberApprovalProtocol,
   approvedProtocolsByMembersList,
   chairCommitteeApprovalProtocol,
-  getContinueinProtocolList
+  getContinueinProtocolList,
+  getAllProtocolList
 } from '../controllers/admin.js'
 
 const router = express.Router()
@@ -67,6 +68,7 @@ router.post('/member/status/change', changeMemberStatus)
 router.post('/member/create', createMember)
 router.get('/member/list', getMemberList)
 router.get('/approved-protocol/list', getApprovedProtocolList)
+router.get('/all-protocol/list', getAllProtocolList)
 router.get('/under-review/protocol/list', getUnderReviewProtocolList)
 router.get('/created/protocol/list', getCreatedProtocolList)
 router.post('/protocol/allowEdit', allowProtocolEdit)
