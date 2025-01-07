@@ -1,6 +1,4 @@
 import { db } from '../connect.js'
-// const { client } = require('./paypalConfig')
-// const paypal = require('@paypal/checkout-server-sdk')
 import { client } from '../paypalConfig.js'
 import paypal from '@paypal/checkout-server-sdk'
 
@@ -52,15 +50,14 @@ export const capturePayment = async (req, res) => {
 
   try {
     const captureResult = await client().execute(captureOrderRequest)
-    console.log('captureResult', captureResult)
-
     // Store payment details in the database
     const paymentData = {
       payment_id: captureResult.result.id,
       payer_id: payerId,
       amount: req.body.amount,
       currency: req.body.currencyCode,
-      status: captureResult.result.status
+      status: captureResult.result.status,
+      protocol_id: req.body.protocolId
     }
 
     db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {

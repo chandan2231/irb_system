@@ -66,7 +66,7 @@ export default function ToggleStatus({ status, onStatusChange }) {
   };
   return (
     <IOSSwitch
-      defaultChecked={status === "1" || status === 1 ? false : true}
+      defaultChecked={status === "1" || status === 1 ? true : false}
       onChange={handleToggle}
     />
   );
