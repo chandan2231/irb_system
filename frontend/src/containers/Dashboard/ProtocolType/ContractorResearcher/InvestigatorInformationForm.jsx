@@ -149,8 +149,7 @@ function InvestigatorInformationForm({
   });
 
   const [errors, setErrors] = useState({});
-  const [loader, setLoader] = useState(false)
-
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (investigatorInformation) {
@@ -286,7 +285,8 @@ function InvestigatorInformationForm({
     const updatedTrainingCompletedString = updatedTrainingCompleted.join(",");
     const removeEmptyString = updatedTrainingCompletedString
       .split(",")
-      .filter((item) => item !== "").join(",")
+      .filter((item) => item !== "")
+      .join(",");
     setFormData({
       ...formData,
       training_completed: removeEmptyString,
@@ -299,7 +299,7 @@ function InvestigatorInformationForm({
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
       const getValidatedform = await investigatorInfoSchema.validate(formData, {
@@ -359,7 +359,7 @@ function InvestigatorInformationForm({
           })
         ).then((data) => {
           if (data.payload.status === 200) {
-            setLoader(false)
+            setLoader(false);
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -371,12 +371,12 @@ function InvestigatorInformationForm({
               theme: "dark",
             });
             // setFormData({});
-            e.target.reset();
+            // e.target.reset();
           }
         });
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -396,12 +396,10 @@ function InvestigatorInformationForm({
     }
   };
 
-  console.log("Investigato InfoForm ======>", loader)
+  console.log("Investigato InfoForm ======>", loader);
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   console.log("investigatorInformationFormData", {
