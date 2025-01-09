@@ -23,6 +23,7 @@ import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -370,6 +371,10 @@ function InvestigatorInformationForm({
               progress: undefined,
               theme: "dark",
             });
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
             // setFormData({});
             // e.target.reset();
           }
@@ -407,6 +412,19 @@ function InvestigatorInformationForm({
     errors,
     investigatorInformation,
   });
+
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   return (
     <>
@@ -856,9 +874,10 @@ function InvestigatorInformationForm({
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              color="secondary"
             >
               Upload file
               <VisuallyHiddenInput
@@ -893,9 +912,10 @@ function InvestigatorInformationForm({
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              color="secondary"
             >
               Upload file
               <VisuallyHiddenInput
@@ -932,9 +952,10 @@ function InvestigatorInformationForm({
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              color="secondary"
             >
               Upload file
               <VisuallyHiddenInput
@@ -964,7 +985,6 @@ function InvestigatorInformationForm({
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
-            style={{ textAlign: "right" }}
           >
             <Button variant="contained" color="primary" type="Submit">
               SAVE AND CONTINUE
