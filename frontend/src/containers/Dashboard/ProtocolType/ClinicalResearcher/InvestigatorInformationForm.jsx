@@ -24,6 +24,7 @@ import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -127,8 +128,9 @@ const investigatorAndProtocolInfoSchema = yup.object().shape({
 function InvestigatorInformationForm({
   protocolTypeDetails,
   investigatorInformation,
+  handleNextTab,
 }) {
-  const [loader, setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -414,7 +416,7 @@ function InvestigatorInformationForm({
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
       const getValidatedform = await investigatorAndProtocolInfoSchema.validate(
@@ -468,7 +470,7 @@ function InvestigatorInformationForm({
         dispatch(createInvestigatorAndProtocolInformation(formData)).then(
           (data) => {
             if (data.payload.status === 200) {
-              setLoader(false)
+              setLoader(false);
               toast.success(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -479,14 +481,17 @@ function InvestigatorInformationForm({
                 progress: undefined,
                 theme: "dark",
               });
-              // setFormData({});
-              e.target.reset();
+              getProtocolDetailsById(
+                formData.protocol_id,
+                protocolTypeDetails.researchType
+              );
+              handleNextTab(1);
             }
           }
         );
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -505,8 +510,6 @@ function InvestigatorInformationForm({
       }
     }
   };
-
-
 
   useEffect(() => {
     if (investigatorInformation) {
@@ -639,18 +642,21 @@ function InvestigatorInformationForm({
     }
   }, [investigatorInformation]);
 
-  console.log("investigatorInformationFormData", {
-    formData,
-    investigatorInformation,
-    errors,
-  });
-
-  console.log("investigator info ======>", loader)
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -1731,7 +1737,8 @@ function InvestigatorInformationForm({
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
+              color="secondary"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
             >
@@ -1767,7 +1774,8 @@ function InvestigatorInformationForm({
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
+              color="secondary"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
             >
@@ -1805,7 +1813,8 @@ function InvestigatorInformationForm({
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
+              color="secondary"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
             >

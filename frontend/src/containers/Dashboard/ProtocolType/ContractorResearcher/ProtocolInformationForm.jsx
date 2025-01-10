@@ -88,7 +88,11 @@ const protocoalInfoSchema = yup.object().shape({
     }),
 });
 
-function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
+function ProtocolInformationForm({
+  protocolTypeDetails,
+  protocolInformation,
+  handleNextTab,
+}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -261,7 +265,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
               formData.protocol_id,
               protocolTypeDetails.researchType
             );
-            // setFormData({});
+            handleNextTab(1);
           }
         });
       }
@@ -614,6 +618,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
+            style={{ textAlign: "right" }}
           >
             <Button
               // disabled={!dirty || !isValid}

@@ -81,7 +81,11 @@ const protocolProcedureInfoSchema = yup.object().shape({
     }),
 });
 
-function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
+function ProtocolProceduresForm({
+  protocolTypeDetails,
+  protocolProcedure,
+  handleNextTab,
+}) {
   const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
@@ -225,24 +229,6 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
     setLoader(true);
     e.preventDefault();
     try {
-      // if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
-      //     setExplainEnrolledTypeErrors('This is required')
-      //     return
-      // } else {
-      //     setExplainEnrolledTypeErrors('')
-      // }
-      // if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
-      //     setExplainEnrolledGroupErrors('This is required')
-      //     return
-      // } else {
-      //     setExplainEnrolledGroupErrors('')
-      // }
-      // if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
-      //     setExplainRecurementMethodErrors('This is required')
-      //     return
-      // } else {
-      //     setExplainRecurementMethodErrors('')
-      // }
       const getValidatedform = await protocolProcedureInfoSchema.validate(
         formData,
         { abortEarly: false }
@@ -288,6 +274,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
               formData.protocol_id,
               protocolTypeDetails.researchType
             );
+            handleNextTab(5);
           }
         });
       }
@@ -1082,6 +1069,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
+            style={{ textAlign: "right" }}
           >
             <Button
               variant="contained"

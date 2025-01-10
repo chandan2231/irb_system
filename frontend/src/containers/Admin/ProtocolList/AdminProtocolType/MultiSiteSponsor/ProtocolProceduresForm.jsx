@@ -94,7 +94,11 @@ const protocolProcedureInfoSchema = yup.object().shape({
   research_place_name_address: yup.string().required("This is required"),
 });
 
-function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures, type }) {
+function ProtocolProceduresForm({
+  protocolTypeDetails,
+  protocolProcedures,
+  type,
+}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -132,7 +136,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures, type 
     try {
       const getValidatedform = await protocolProcedureInfoSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid =
         await protocolProcedureInfoSchema.isValid(getValidatedform);
@@ -187,7 +191,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures, type 
                   label={studyTypeList.label}
                   value={studyTypeList.value}
                   checked={studyTypeArr?.find(
-                    (id) => Number(id) === Number(studyTypeList.value),
+                    (id) => Number(id) === Number(studyTypeList.value)
                   )}
                 />
               );
@@ -226,7 +230,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures, type 
                   label={groupList.label}
                   value={groupList.value}
                   checked={groupTypeArr?.find(
-                    (id) => Number(id) === Number(groupList.value),
+                    (id) => Number(id) === Number(groupList.value)
                   )}
                 />
               );
@@ -314,7 +318,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures, type 
                   label={recruitmentMethodList.label}
                   value={recruitmentMethodList.value}
                   checked={recurementMethodArr?.find(
-                    (id) => Number(id) === Number(recruitmentMethodList.value),
+                    (id) => Number(id) === Number(recruitmentMethodList.value)
                   )}
                 />
               );
@@ -458,24 +462,22 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures, type 
           </FormControl>
         </Form.Group>
 
-        {
-          type !== 'member' && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
+        {type !== "member" && (
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+            style={{ textAlign: "right" }}
+          >
+            {/* <Button
                 variant="contained"
                 color="primary"
                 type="Submit"
               >
                 SAVE AND CONTINUE
-              </Button>
-            </Form.Group>
-          )
-        }
+              </Button> */}
+          </Form.Group>
+        )}
       </form>
     </Row>
   );

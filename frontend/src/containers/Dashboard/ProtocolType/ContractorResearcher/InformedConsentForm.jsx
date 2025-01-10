@@ -64,7 +64,11 @@ const informedConsentSchema = yup.object().shape({
     }),
 });
 
-function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
+function InformedConsentForm({
+  protocolTypeDetails,
+  informedConsent,
+  handleNextTab,
+}) {
   const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
@@ -178,25 +182,6 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
 
     e.preventDefault();
     try {
-      // if (
-      //   formData.consent_type.includes("1") &&
-      //   formData.no_consent_explain === ""
-      // ) {
-      //   setExplainNoConsentErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainNoConsentErrors("");
-      // }
-      // if (
-      //   formData.professional_translator !== "" &&
-      //   formData.professional_translator === "No" &&
-      //   formData.professional_translator_explain === ""
-      // ) {
-      //   setExplainTranslatorErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainTranslatorErrors("");
-      // }
       const getValidatedform = await informedConsentSchema.validate(formData, {
         abortEarly: false,
       });
@@ -236,6 +221,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 formData.protocol_id,
                 protocolTypeDetails.researchType
               );
+              handleNextTab(4);
             }
           }
         );
@@ -671,6 +657,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
+            style={{ textAlign: "right" }}
           >
             <Button
               variant="contained"

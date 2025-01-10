@@ -43,7 +43,11 @@ const studyInfoSchema = yup.object().shape({
   ingredient_list: yup.mixed().required("You must upload the relevant file"),
 });
 
-function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
+function StudyInformationForm({
+  protocolTypeDetails,
+  studyInformation,
+  handleNextTab,
+}) {
   const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
@@ -87,15 +91,6 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     setLoader(true);
     e.preventDefault();
     try {
-      // if (
-      //   formData.research_type === "Other" &&
-      //   formData.research_type_explain === ""
-      // ) {
-      //   setExplainErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainErrors("");
-      // }
       const getValidatedform = await studyInfoSchema.validate(formData, {
         abortEarly: false,
       });
@@ -132,6 +127,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                 formData.protocol_id,
                 protocolTypeDetails.researchType
               );
+              handleNextTab(3);
             }
           }
         );
@@ -316,6 +312,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
+            style={{ textAlign: "right" }}
           >
             <Button variant="contained" color="primary" type="Submit">
               SAVE AND CONTINUE

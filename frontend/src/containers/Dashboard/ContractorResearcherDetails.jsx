@@ -1,13 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { Box, Button, Typography } from "@mui/material";
-import {
-  Description,
-  Person,
-  LocalHospital,
-  DescriptionOutlined,
-  Send,
-} from "@mui/icons-material"; // Icons for the buttons
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import ProtocolInformationForm from "../Dashboard/ProtocolType/ContractorResearcher/ProtocolInformationForm";
 import InvestigatorInformationForm from "../Dashboard/ProtocolType/ContractorResearcher/InvestigatorInformationForm";
 import StudyInformationForm from "../Dashboard/ProtocolType/ContractorResearcher/StudyInformationForm";
@@ -79,6 +73,7 @@ const ContractorResearcherDetails = ({
         style={{ padding: "0px 0px 0px 24px" }}
       >
         <Button
+          endIcon={<DoubleArrowIcon />}
           variant={value === 0 ? "contained" : "text"}
           onClick={() => handleButtonClick(0)}
           sx={{
@@ -100,6 +95,7 @@ const ContractorResearcherDetails = ({
           Protocol Information
         </Button>
         <Button
+          endIcon={<DoubleArrowIcon />}
           variant={value === 1 ? "contained" : "text"}
           onClick={() => handleButtonClick(1)}
           sx={{
@@ -121,6 +117,7 @@ const ContractorResearcherDetails = ({
           Investigator Information
         </Button>
         <Button
+          endIcon={<DoubleArrowIcon />}
           variant={value === 2 ? "contained" : "text"}
           onClick={() => handleButtonClick(2)}
           sx={{
@@ -142,6 +139,7 @@ const ContractorResearcherDetails = ({
           Study Type
         </Button>
         <Button
+          endIcon={<DoubleArrowIcon />}
           variant={value === 3 ? "contained" : "text"}
           onClick={() => handleButtonClick(3)}
           sx={{
@@ -163,6 +161,7 @@ const ContractorResearcherDetails = ({
           Informed Consent
         </Button>
         <Button
+          endIcon={<DoubleArrowIcon />}
           variant={value === 4 ? "contained" : "text"}
           onClick={() => handleButtonClick(4)}
           sx={{
@@ -212,6 +211,7 @@ const ContractorResearcherDetails = ({
           protocolTypeDetails={protocolTypeDetails}
           protocolInformation={protocolDetailsByIdState?.protocol_information}
           apiCallIdentifier={apiCallIdentifier}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -221,6 +221,7 @@ const ContractorResearcherDetails = ({
             protocolDetailsByIdState?.investigator_information
           }
           apiCallIdentifier={apiCallIdentifier}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
@@ -228,6 +229,7 @@ const ContractorResearcherDetails = ({
           protocolTypeDetails={protocolTypeDetails}
           studyInformation={protocolDetailsByIdState?.study_information}
           apiCallIdentifier={apiCallIdentifier}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
@@ -235,6 +237,7 @@ const ContractorResearcherDetails = ({
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsByIdState?.informed_consent}
           apiCallIdentifier={apiCallIdentifier}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
@@ -242,6 +245,7 @@ const ContractorResearcherDetails = ({
           protocolTypeDetails={protocolTypeDetails}
           protocolProcedure={protocolDetailsByIdState?.protocol_procedure}
           apiCallIdentifier={apiCallIdentifier}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={5}>
@@ -249,6 +253,7 @@ const ContractorResearcherDetails = ({
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
     </Box>

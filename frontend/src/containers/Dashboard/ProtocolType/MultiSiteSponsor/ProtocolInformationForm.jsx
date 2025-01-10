@@ -18,12 +18,12 @@ import * as yup from "yup";
 import Grid from "@mui/material/Grid";
 import { createProtocolInformation } from "../../../../services/ProtocolType/MultiSiteSponsorService";
 import { Box, useTheme } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { uploadFile } from "../../../../services/UserManagement/UserService";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -44,23 +44,31 @@ const protocoalInfoSchema = yup.object().shape({
   sponsor: yup.string().required("This is required"),
   study_duration: yup.string().required("This is required"),
   funding_source: yup.string().required("This is required"),
-  disapproved_or_withdrawn_explain: yup.string().when("disapproved_or_withdrawn", {
-    is: (value) => value === "Yes",
-    then: () => yup.string().required("This is required"),
-    otherwise: () => yup.string().notRequired(),
-  }),
+  disapproved_or_withdrawn_explain: yup
+    .string()
+    .when("disapproved_or_withdrawn", {
+      is: (value) => value === "Yes",
+      then: () => yup.string().required("This is required"),
+      otherwise: () => yup.string().notRequired(),
+    }),
   oversite_explain: yup.string().when("oversite", {
     is: (value) => value === "Yes",
     then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().notRequired(),
   }),
-  protocol_file: yup.mixed().test("fileReuired", "This is required", (value) => {
-    return value && value.length > 0;
-  })
+  protocol_file: yup
+    .mixed()
+    .test("fileReuired", "This is required", (value) => {
+      return value && value.length > 0;
+    }),
 });
 
-function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
-  const [loader, setLoader] = useState(false)
+function ProtocolInformationForm({
+  protocolTypeDetails,
+  protocolInformation,
+  handleNextTab,
+}) {
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -116,7 +124,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
       console.log("formData", formData);
@@ -143,22 +151,30 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
         }
 
         dispatch(
-          createProtocolInformation({ ...formData, protocol_file }),
+          createProtocolInformation({ ...formData, protocol_file })
         ).then((data) => {
           if (data.payload.status === 200) {
-            setLoader(false)
-
+            setLoader(false);
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
             });
-            // setFormData({});
-            e.target.reset();
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
+            handleNextTab(1);
           }
         });
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
 
       console.log("error", error);
 
@@ -196,24 +212,31 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           })) || [],
       });
       setShowAdditionalQuestion(
-        protocolInformation?.first_time_protocol === "No",
+        protocolInformation?.first_time_protocol === "No"
       );
       setShowDisapproveAdditionTextArea(
-        protocolInformation?.disapproved_or_withdrawn === "Yes",
+        protocolInformation?.disapproved_or_withdrawn === "Yes"
       );
       setShowOversiteAdditionTextArea(protocolInformation?.oversite === "Yes");
     }
   }, [protocolInformation, protocolTypeDetails]);
 
-
-  console.log("protocolInformation loader", loader);
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
-
 
   return (
     <Row>
@@ -255,7 +278,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                   onChange={(event) =>
                     handleRadioButtonSelectDisapproved(
                       event,
-                      "disapproved_or_withdrawn",
+                      "disapproved_or_withdrawn"
                     )
                   }
                 >
@@ -467,8 +490,9 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
             <Grid item xs={10}>
               <Button
                 component="label"
-                variant="contained"
+                variant="outlined"
                 startIcon={<CloudUploadIcon />}
+                color="secondary"
               >
                 Upload file
                 <VisuallyHiddenInput

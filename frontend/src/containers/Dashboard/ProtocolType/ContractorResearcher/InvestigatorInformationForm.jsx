@@ -85,6 +85,7 @@ const investigatorInfoSchema = yup.object().shape({
 function InvestigatorInformationForm({
   protocolTypeDetails,
   investigatorInformation,
+  handleNextTab,
 }) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -375,8 +376,7 @@ function InvestigatorInformationForm({
               formData.protocol_id,
               protocolTypeDetails.researchType
             );
-            // setFormData({});
-            // e.target.reset();
+            handleNextTab(2);
           }
         });
       }
@@ -985,6 +985,7 @@ function InvestigatorInformationForm({
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
+            style={{ textAlign: "right" }}
           >
             <Button variant="contained" color="primary" type="Submit">
               SAVE AND CONTINUE

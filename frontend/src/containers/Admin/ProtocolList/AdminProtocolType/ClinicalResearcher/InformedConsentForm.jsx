@@ -291,9 +291,9 @@ function InformedConsentForm({ consentInformation, type }) {
             className="mt-mb-20"
             style={{ textAlign: "right" }}
           >
-            <Button variant="contained" color="primary" type="Submit" disabled>
+            {/* <Button variant="contained" color="primary" type="Submit" disabled>
               SAVE AND CONTINUE
-            </Button>
+            </Button> */}
           </Form.Group>
         )}
       </form>
