@@ -23,6 +23,7 @@ import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -80,7 +81,11 @@ const protocolProcedureInfoSchema = yup.object().shape({
     }),
 });
 
-function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
+function ProtocolProceduresForm({
+  protocolTypeDetails,
+  protocolProcedure,
+  handleNextTab,
+}) {
   const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
@@ -224,24 +229,6 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
     setLoader(true);
     e.preventDefault();
     try {
-      // if (formData.enrolled_study_type.includes('20') && formData.enrolled_type_explain === "") {
-      //     setExplainEnrolledTypeErrors('This is required')
-      //     return
-      // } else {
-      //     setExplainEnrolledTypeErrors('')
-      // }
-      // if (formData.enrolled_group.includes('9') && formData.enrolled_group_explain === "") {
-      //     setExplainEnrolledGroupErrors('This is required')
-      //     return
-      // } else {
-      //     setExplainEnrolledGroupErrors('')
-      // }
-      // if (formData.recurement_method.includes('10') && formData.recurement_method_explain === "") {
-      //     setExplainRecurementMethodErrors('This is required')
-      //     return
-      // } else {
-      //     setExplainRecurementMethodErrors('')
-      // }
       const getValidatedform = await protocolProcedureInfoSchema.validate(
         formData,
         { abortEarly: false }
@@ -283,8 +270,11 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
               progress: undefined,
               theme: "dark",
             });
-            // setFormData({});
-            // e.target.reset();
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
+            handleNextTab(5);
           }
         });
       }
@@ -363,7 +353,18 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
     protocolTypeDetails,
   });
 
-  console.log("protocol procedure form ======>", loader);
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
     return <Loader />;
@@ -1025,9 +1026,10 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedure }) {
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              color="secondary"
             >
               Upload file
               <VisuallyHiddenInput

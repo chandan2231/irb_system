@@ -13,11 +13,12 @@ import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import * as yup from "yup";
 import { Box, useTheme } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { createInformedConsent } from "../../../../services/ProtocolType/ClinicalResearcherService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+import { useDispatch, useSelector } from "react-redux";
 
 const informedConsentInfoSchema = yup.object().shape({
   principal_investigator_name: yup.string().required("This is required"),
@@ -26,8 +27,12 @@ const informedConsentInfoSchema = yup.object().shape({
   always_primary_phone: yup.string().required("This is required"),
 });
 
-function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
-  const [loader, setLoader] = useState(false)
+function InformedConsentForm({
+  protocolTypeDetails,
+  informedConsent,
+  handleNextTab,
+}) {
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -62,7 +67,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       });
 
       setShowElectronicConsentField(
-        informedConsent?.site_electronic_consent === "Yes",
+        informedConsent?.site_electronic_consent === "Yes"
       );
     }
   }, [informedConsent, protocolTypeDetails.protocolId]);
@@ -83,18 +88,18 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
       const getValidatedform = await informedConsentInfoSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid = await informedConsentInfoSchema.isValid(getValidatedform);
       if (isValid === true) {
         dispatch(createInformedConsent(formData)).then((data) => {
           if (data.payload.status === 200) {
-            setLoader(false)
+            setLoader(false);
             toast.success(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -105,13 +110,16 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
               progress: undefined,
               theme: "dark",
             });
-            // setFormData({});
-            e.target.reset();
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
+            handleNextTab(2);
           }
         });
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -119,7 +127,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -131,18 +139,21 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
     }
   };
 
-  console.log("informedConsentFormData", {
-    informedConsent,
-    formData,
-    errors,
-  });
-
-  console.log("informed consent form ======>", loader)
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (

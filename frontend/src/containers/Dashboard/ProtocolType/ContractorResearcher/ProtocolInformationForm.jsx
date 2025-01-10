@@ -24,6 +24,7 @@ import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -87,11 +88,16 @@ const protocoalInfoSchema = yup.object().shape({
     }),
 });
 
-function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
+function ProtocolInformationForm({
+  protocolTypeDetails,
+  protocolInformation,
+  handleNextTab,
+}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
+
   const [showAdditionalQuestion, setShowAdditionalQuestion] =
     React.useState(false);
   const [showDisapproveAdditionTextArea, setShowDisapproveAdditionTextArea] =
@@ -126,7 +132,20 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
 
   const [errors, setErrors] = useState({});
 
-  const [loader, setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
+
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   // Populate form data when protocolInformation changes
   useEffect(() => {
@@ -212,7 +231,7 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
 
     e.preventDefault();
     try {
@@ -240,14 +259,18 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
           createProtocolInformation({ ...formData, protocol_file })
         ).then((data) => {
           if (data.payload.status === 200) {
-            setLoader(false)
+            setLoader(false);
             toast.success(data.payload.data.msg, { position: "top-right" });
-            // setFormData({});
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
+            handleNextTab(1);
           }
         });
       }
     } catch (validationError) {
-      setLoader(false)
+      setLoader(false);
       const newErrors = {};
       console.log("validationError", validationError);
       validationError.inner.forEach((err) => {
@@ -282,12 +305,10 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
 
   // here on the client side
 
-  console.log("Loader protocolInfo ======>", loader)
+  // console.log("Loader protocolInfo ======>", loader)
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -563,9 +584,10 @@ function ProtocolInformationForm({ protocolTypeDetails, protocolInformation }) {
                   <Button
                     component="label"
                     role={undefined}
-                    variant="contained"
+                    variant="outlined"
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
+                    color="secondary"
                   >
                     Upload file
                     <VisuallyHiddenInput

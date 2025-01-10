@@ -213,7 +213,6 @@ function SubmissionForm({
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
-            style={{ textAlign: "right" }}
           >
             <Button
               variant="contained"
