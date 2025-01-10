@@ -401,12 +401,6 @@ function InvestigatorInformationForm({
     }
   };
 
-  console.log("Investigato InfoForm ======>", loader);
-
-  if (loader) {
-    return <Loader />;
-  }
-
   console.log("investigatorInformationFormData", {
     formData,
     errors,
@@ -425,7 +419,9 @@ function InvestigatorInformationForm({
     };
     dispatch(fetchProtocolDetailsById(data));
   };
-
+  if (loader) {
+    return <Loader />;
+  }
   return (
     <>
       <ToastContainer
