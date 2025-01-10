@@ -20,6 +20,7 @@ import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,12 +39,16 @@ const studyInfoSchema = yup.object().shape({
   research_type_explain: yup.string().when("research_type", {
     is: (val) => val === "Other",
     then: () => yup.string().required("This is required"),
-    otherwise: () => yup.string().notRequired()
+    otherwise: () => yup.string().notRequired(),
   }),
 });
 
-function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
-  const [loader, setLoader] = useState(false)
+function StudyInformationForm({
+  protocolTypeDetails,
+  studyInformation,
+  handleNextTab,
+}) {
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -77,19 +82,9 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
-      // if (
-      //   formData.research_type !== "" &&
-      //   formData.research_type === "Other" &&
-      //   formData.research_type_explain === ""
-      // ) {
-      //   setExplainErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainErrors("");
-      // }
       const getValidatedform = await studyInfoSchema.validate(formData, {
         abortEarly: false,
       });
@@ -111,7 +106,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
         dispatch(createStudyInformation({ ...formData, ingredient_list })).then(
           (data) => {
             if (data.payload.status === 200) {
-              setLoader(false)
+              setLoader(false);
               toast.success(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -122,13 +117,17 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                 progress: undefined,
                 theme: "dark",
               });
-              // setFormData({});
+              getProtocolDetailsById(
+                formData.protocol_id,
+                protocolTypeDetails.researchType
+              );
+              handleNextTab(3);
             }
-          },
+          }
         );
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -136,7 +135,7 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -171,17 +170,21 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
     }
   }, [studyInformation, protocolTypeDetails]);
 
-  console.log("studyInformation", {
-    studyInformation,
-    formData,
-  });
-
-  console.log("studyInformation loader", loader);
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -256,9 +259,9 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation }) {
                   onChange={handleChange}
                 />
               </Box>
-              {errors?.research_type_explain && <div className="error">{
-                errors?.research_type_explain
-              }</div>}
+              {errors?.research_type_explain && (
+                <div className="error">{errors?.research_type_explain}</div>
+              )}
             </Form.Group>
           )}
           <Form.Group

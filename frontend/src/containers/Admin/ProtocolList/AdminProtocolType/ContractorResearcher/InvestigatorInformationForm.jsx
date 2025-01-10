@@ -42,7 +42,7 @@ const investigatorInfoSchema = yup.object().shape({
 function InvestigatorInformationForm({
   protocolTypeDetails,
   investigatorInformation,
-  type
+  type,
 }) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -137,7 +137,7 @@ function InvestigatorInformationForm({
       updatedTrainingCompleted.push(value);
     } else {
       updatedTrainingCompleted = updatedTrainingCompleted.filter(
-        (training) => training !== value,
+        (training) => training !== value
       );
     }
     setFormData({ ...formData, training_completed: updatedTrainingCompleted });
@@ -370,7 +370,7 @@ function InvestigatorInformationForm({
                   label={trainingList.label}
                   value={trainingList.value}
                   checked={trainingCompletedArr?.find(
-                    (id) => Number(id) === Number(trainingList.value),
+                    (id) => Number(id) === Number(trainingList.value)
                   )}
                 />
               );
@@ -568,24 +568,22 @@ function InvestigatorInformationForm({
               }
             })}
         </Form.Group>
-        {
-          type !== 'member' && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
+        {type !== "member" && (
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+            style={{ textAlign: "right" }}
+          >
+            {/* <Button
                 variant="contained"
                 color="primary"
                 type="Submit"
               >
                 SAVE AND CONTINUE
-              </Button>
-            </Form.Group>
-          )
-        }
+              </Button> */}
+          </Form.Group>
+        )}
       </form>
     </Row>
   );

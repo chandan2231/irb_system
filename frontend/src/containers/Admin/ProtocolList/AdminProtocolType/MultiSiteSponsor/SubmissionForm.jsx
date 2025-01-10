@@ -10,7 +10,7 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 
-function SubmissionForm({type}) {
+function SubmissionForm({ type }) {
   const [termsSelected, setTermsSelected] = React.useState(false);
   const initialValues = {
     notificationName: "",
@@ -23,7 +23,7 @@ function SubmissionForm({type}) {
     if (!stopCall) {
       setTimeout(() => {
         let isConfirmed = window.confirm(
-          "Are you sure you want to submit the notification?",
+          "Are you sure you want to submit the notification?"
         );
         if (isConfirmed && !stopCall) {
           //dispatch(submitNotificationDetails(formData))
@@ -116,24 +116,22 @@ function SubmissionForm({type}) {
               </FormGroup>
             </FormControl>
           </Form.Group>
-          {
-            type !== 'member' && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20"
-                style={{ textAlign: "right" }}
-              >
-                <Button
+          {type !== "member" && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              {/* <Button
                   variant="contained"
                   color="primary"
                   type="Submit"
                 >
                   SUBMIT
-                </Button>
-              </Form.Group>
-            )
-          }
+                </Button> */}
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

@@ -12,7 +12,8 @@ import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
-
+import { useSelector } from "react-redux";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const contactInfoSchema = yup.object().shape({
   name: yup.string().required("This is required"),
@@ -31,8 +32,12 @@ const contactInfoSchema = yup.object().shape({
   secondary_contact_email: yup.string().required("This is required"),
 });
 
-function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
-  const [loader, setLoader] = useState(false)
+function ContactInformationForm({
+  protocolTypeDetails,
+  contactInformation,
+  handleNextTab,
+}) {
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -65,7 +70,7 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
       const getValidatedform = await contactInfoSchema.validate(formData, {
@@ -75,7 +80,7 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
       if (isValid === true) {
         dispatch(createContactInformation(formData)).then((data) => {
           if (data.payload.status === 200) {
-            setLoader(false)
+            setLoader(false);
 
             toast.success(data.payload.data.msg, {
               position: "top-right",
@@ -87,12 +92,16 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
               progress: undefined,
               theme: "dark",
             });
-            // setFormData({});
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
+            handleNextTab(2);
           }
         });
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
 
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -130,18 +139,21 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation }) {
     }
   }, [contactInformation, protocolTypeDetails]);
 
-  console.log("contactInformation", {
-    contactInformation,
-    formData,
-  });
-
-
-  console.log("contactInformation loader", loader);
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (

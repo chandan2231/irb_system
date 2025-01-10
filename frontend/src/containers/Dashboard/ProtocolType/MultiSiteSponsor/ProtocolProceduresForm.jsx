@@ -25,6 +25,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -44,64 +45,51 @@ const protocolProcedureInfoSchema = yup.object().shape({
     .min(0, "At least one study type must be selected"),
   enrolled_type_explain: yup.string().when("enrolled_study_type", {
     is: (val) => val.includes("20"),
-    then: () =>
-      yup.string().required("This is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  enrolled_group: yup
-    .array()
-    .min(0, "This is required"),
+  enrolled_group: yup.array().min(0, "This is required"),
   enrolled_group_explain: yup.string().when("enrolled_group", {
     is: (val) => val.includes("9"),
-    then: () =>
-      yup
-        .string()
-        .required("This is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
   study_excluded: yup.string().notRequired(),
   study_excluded_explain: yup.string().when("study_excluded", {
     is: (value) => value === "Yes",
-    then: () =>
-      yup.string().required("This is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  enrolled_subject: yup
-    .string()
-    .required("This is required"),
+  enrolled_subject: yup.string().required("This is required"),
   recurement_method: yup
     .array()
     .min(0, "At least one recruitment method must be selected"),
   recurement_method_explain: yup.string().when("recurement_method", {
     is: (val) => val.includes("10"),
-    then: () =>
-      yup
-        .string()
-        .required("This is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  irb_approval: yup
-    .string()
-    .notRequired(),
-  expected_number_sites: yup
-    .string()
-    .required("This is required"),
+  irb_approval: yup.string().notRequired(),
+  expected_number_sites: yup.string().required("This is required"),
   future_research: yup.string().notRequired(),
   future_research_explain: yup.string().when("future_research", {
     is: (value) => value === "Yes",
-    then: () =>
-      yup
-        .string()
-        .required("This is required"),
+    then: () => yup.string().required("This is required"),
     otherwise: () => yup.string().nullable(),
   }),
-  facing_materials: yup.mixed().test("fileRequired", "This is required", (value) => {
-    return value.length > 0;
-  })
+  facing_materials: yup
+    .mixed()
+    .test("fileRequired", "This is required", (value) => {
+      return value.length > 0;
+    }),
 });
 
-function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
-  const [loader, setLoader] = useState(false)
+function ProtocolProceduresForm({
+  protocolTypeDetails,
+  protocolProcedures,
+  handleNextTab,
+}) {
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -247,44 +235,15 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
     e.preventDefault();
     try {
-      // if (
-      //   formData.enrolled_study_type.includes("20") &&
-      //   formData.enrolled_type_explain === ""
-      // ) {
-      //   setExplainEnrolledTypeErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainEnrolledTypeErrors("");
-      // }
-      // if (
-      //   formData.enrolled_group.includes("9") &&
-      //   formData.enrolled_group_explain === ""
-      // ) {
-      //   setExplainEnrolledGroupErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainEnrolledGroupErrors("");
-      // }
-      // if (
-      //   formData.recurement_method.includes("10") &&
-      //   formData.recurement_method_explain === ""
-      // ) {
-      //   setExplainRecurementMethodErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainRecurementMethodErrors("");
-      // }
       const getValidatedform = await protocolProcedureInfoSchema.validate(
         formData,
         { abortEarly: false }
       );
-      console.log("getValidatedform", getValidatedform);
       const isValid =
         await protocolProcedureInfoSchema.isValid(getValidatedform);
-      console.log("isValid", isValid);
       if (isValid === true) {
         let facing_materials = [];
         if (!formData.facing_materials) {
@@ -306,7 +265,7 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
         }
         dispatch(createProtocolProcedures(formData)).then((data) => {
           if (data.payload.status === 200) {
-            setLoader(false)
+            setLoader(false);
 
             toast.success(data.payload.data.msg, {
               position: "top-right",
@@ -318,13 +277,16 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
               progress: undefined,
               theme: "dark",
             });
-            // setFormData({});
-            e.target.reset();
+            getProtocolDetailsById(
+              formData.protocol_id,
+              protocolTypeDetails.researchType
+            );
+            handleNextTab(5);
           }
         });
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
 
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -342,11 +304,6 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
           });
         }
       }
-
-      console.log("this is error", {
-        errors: newErrors,
-        formData
-      })
     }
   };
 
@@ -400,19 +357,22 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
     }
   }, [protocolProcedures, protocolTypeDetails]);
 
-  console.log("protocolProcedures", {
-    protocolProcedures,
-    formData,
-  });
-
-  console.log("protocolInformation loader", loader);
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
-
 
   return (
     <>
@@ -1054,9 +1014,10 @@ function ProtocolProceduresForm({ protocolTypeDetails, protocolProcedures }) {
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              color="secondary"
             >
               Upload file
               <VisuallyHiddenInput

@@ -32,7 +32,7 @@ const completedTraining = [
 function InvestigatorInformationForm({
   protocolTypeDetails,
   investicatorProtocolInformation,
-  type
+  type,
 }) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -54,7 +54,7 @@ function InvestigatorInformationForm({
     try {
       const getValidatedform = await investigatorAndProtocolInfoSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid =
         await investigatorAndProtocolInfoSchema.isValid(getValidatedform);
@@ -66,7 +66,7 @@ function InvestigatorInformationForm({
             if (data.payload.status === 200) {
             } else {
             }
-          },
+          }
         );
       }
     } catch (error) {
@@ -79,7 +79,7 @@ function InvestigatorInformationForm({
   };
   console.log(
     "investicatorProtocolInformation",
-    investicatorProtocolInformation,
+    investicatorProtocolInformation
   );
   const trainingCompletedArr =
     investicatorProtocolInformation?.training_completed?.split(",");
@@ -925,7 +925,7 @@ function InvestigatorInformationForm({
                   label={trainingList.label}
                   value={trainingList.value}
                   checked={trainingCompletedArr?.find(
-                    (id) => Number(id) === Number(trainingList.value),
+                    (id) => Number(id) === Number(trainingList.value)
                   )}
                 />
               );
@@ -1040,7 +1040,7 @@ function InvestigatorInformationForm({
                     </div>
                   );
                 }
-              },
+              }
             )}
         </Form.Group>
         <Form.Group
@@ -1067,7 +1067,7 @@ function InvestigatorInformationForm({
                     </div>
                   );
                 }
-              },
+              }
             )}
         </Form.Group>
         <Form.Group
@@ -1094,28 +1094,26 @@ function InvestigatorInformationForm({
                     </div>
                   );
                 }
-              },
+              }
             )}
         </Form.Group>
-        {
-          type !== 'member' && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
+        {type !== "member" && (
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+            style={{ textAlign: "right" }}
+          >
+            {/* <Button
                 variant="contained"
                 color="primary"
                 type="Submit"
                 disabled
               >
                 SAVE AND CONTINUE
-              </Button>
-            </Form.Group>
-          )
-        }
+              </Button> */}
+          </Form.Group>
+        )}
       </form>
     </Row>
   );

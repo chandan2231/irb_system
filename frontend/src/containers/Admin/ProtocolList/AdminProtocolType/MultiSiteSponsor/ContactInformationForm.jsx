@@ -41,7 +41,11 @@ const contactInfoSchema = yup.object().shape({
   secondary_contact_email: yup.string().required("This is required"),
 });
 
-function ContactInformationForm({ protocolTypeDetails, contactInformation, type }) {
+function ContactInformationForm({
+  protocolTypeDetails,
+  contactInformation,
+  type,
+}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -335,24 +339,22 @@ function ContactInformationForm({ protocolTypeDetails, contactInformation, type 
           )}
         </Form.Group>
 
-        {
-          type !== 'member' && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
+        {type !== "member" && (
+          <Form.Group
+            as={Col}
+            controlId="validationFormik010"
+            className="mt-mb-20"
+            style={{ textAlign: "right" }}
+          >
+            {/* <Button
                 variant="contained"
                 color="primary"
                 type="Submit"
               >
                 SAVE AND CONTINUE
-              </Button>
-            </Form.Group>
-          )
-        }
+              </Button> */}
+          </Form.Group>
+        )}
       </form>
     </Row>
   );

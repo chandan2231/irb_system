@@ -23,6 +23,7 @@ import { uploadFile } from "../../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
+import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -46,32 +47,29 @@ const informedConsentSchema = yup.object().shape({
     otherwise: () => yup.string().notRequired(),
   }),
   include_icf: yup.string().notRequired(),
-  participation_compensated: yup
-    .string()
-    .notRequired(),
-  other_language_selection: yup
-    .string()
-    .notRequired(),
+  participation_compensated: yup.string().notRequired(),
+  other_language_selection: yup.string().notRequired(),
   professional_translator: yup.string().notRequired(),
   professional_translator_explain: yup
     .string()
     .when("professional_translator", {
       is: (value) => value === "No",
-      then: () =>
-        yup
-          .string()
-          .required(
-            "This is required",
-          ),
+      then: () => yup.string().required("This is required"),
       otherwise: () => yup.string().nullable(),
     }),
-  consent_file: yup.mixed().test("fileRequired", "This is required", (value) => {
-    return value.length > 0;
-  })
+  consent_file: yup
+    .mixed()
+    .test("fileRequired", "This is required", (value) => {
+      return value.length > 0;
+    }),
 });
 
-function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
-  const [loader, setLoader] = useState(false)
+function InformedConsentForm({
+  protocolTypeDetails,
+  informedConsent,
+  handleNextTab,
+}) {
+  const [loader, setLoader] = useState(false);
 
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -125,7 +123,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       updatedConsentTypes.push(value);
     } else {
       updatedConsentTypes = updatedConsentTypes.filter(
-        (type) => type !== value,
+        (type) => type !== value
       );
     }
     setFormData({ ...formData, consent_type: updatedConsentTypes });
@@ -180,29 +178,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true)
+    setLoader(true);
 
     e.preventDefault();
     try {
-      // if (
-      //   formData.consent_type.includes("1") &&
-      //   formData.no_consent_explain === ""
-      // ) {
-      //   setExplainNoConsentErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainNoConsentErrors("");
-      // }
-      // if (
-      //   formData.professional_translator !== "" &&
-      //   formData.professional_translator === "No" &&
-      //   formData.professional_translator_explain === ""
-      // ) {
-      //   setExplainTranslatorErrors("This is required");
-      //   return;
-      // } else {
-      //   setExplainTranslatorErrors("");
-      // }
       const getValidatedform = await informedConsentSchema.validate(formData, {
         abortEarly: false,
       });
@@ -226,7 +205,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
         dispatch(createInformedConsent({ ...formData, consent_file })).then(
           (data) => {
             if (data.payload.status === 200) {
-              setLoader(false)
+              setLoader(false);
 
               toast.success(data.payload.data.msg, {
                 position: "top-right",
@@ -238,13 +217,17 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 progress: undefined,
                 theme: "dark",
               });
-              // setFormData({});
+              getProtocolDetailsById(
+                formData.protocol_id,
+                protocolTypeDetails.researchType
+              );
+              handleNextTab(4);
             }
-          },
+          }
         );
       }
     } catch (error) {
-      setLoader(false)
+      setLoader(false);
 
       console.log("error", error);
       const newErrors = {};
@@ -254,7 +237,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -294,26 +277,29 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
       setShowOtherQuestion(informedConsent?.consent_type?.includes("1"));
       setShowICF(informedConsent?.consent_type?.includes("6"));
       setShowOtherLangauageAdditionalQuestion(
-        informedConsent?.other_language_selection === "Yes",
+        informedConsent?.other_language_selection === "Yes"
       );
       setShowOtherLangauageAdditionalTextbox(
-        informedConsent?.professional_translator === "No",
+        informedConsent?.professional_translator === "No"
       );
     }
   }, [informedConsent, protocolTypeDetails]);
 
-  console.log("informedConsentFormData", {
-    informedConsent,
-    formData,
-    errors,
-  });
-
-  console.log("informedConsent ======>", loader)
+  const { protocolDetailsById, loading, error } = useSelector((state) => ({
+    error: state.admin.error,
+    protocolDetailsById: state.admin.protocolDetailsById,
+    loading: state.admin.loading,
+  }));
+  const getProtocolDetailsById = (protocolId, protocolType) => {
+    let data = {
+      protocolId: protocolId,
+      protocolType: protocolType,
+    };
+    dispatch(fetchProtocolDetailsById(data));
+  };
 
   if (loader) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   return (
@@ -470,7 +456,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 onChange={(event) =>
                   handleRadioButtonCompensated(
                     event,
-                    "participation_compensated",
+                    "participation_compensated"
                   )
                 }
               >
@@ -493,7 +479,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                 onChange={(event) =>
                   handleRadioButtonOtherLanguageSelection(
                     event,
-                    "other_language_selection",
+                    "other_language_selection"
                   )
                 }
               >
@@ -517,7 +503,7 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
                   onChange={(event) =>
                     handleRadioButtonProfessionalTranslator(
                       event,
-                      "professional_translator",
+                      "professional_translator"
                     )
                   }
                 >
@@ -571,9 +557,10 @@ function InformedConsentForm({ protocolTypeDetails, informedConsent }) {
             <Button
               component="label"
               role={undefined}
-              variant="contained"
+              variant="outlined"
               tabIndex={-1}
               startIcon={<CloudUploadIcon />}
+              color="secondary"
             >
               Upload file
               <VisuallyHiddenInput
