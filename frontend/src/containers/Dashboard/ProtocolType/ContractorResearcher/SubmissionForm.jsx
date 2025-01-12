@@ -20,6 +20,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../../components/Loader";
 
 function SubmissionForm({
   protocolTypeDetails,
@@ -29,7 +30,9 @@ function SubmissionForm({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const [loader, setLoader] = useState(false);
   const [termsSelected, setTermsSelected] = useState(false);
+  const [callSavedFormData, setCallSavedFormData] = useState(false);
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
@@ -53,13 +56,20 @@ function SubmissionForm({
       protocolTypeDetails?.researchType &&
       !loading && // Check if data is loading
       (!getAllClinicalSiteSavedProtocolType ||
-        getAllClinicalSiteSavedProtocolType.length === 0) // Ensure no redundant API calls
+        getAllClinicalSiteSavedProtocolType.length === 0) && // Ensure no redundant API calls
+      !callSavedFormData
     ) {
       const data = {
         protocolId: protocolTypeDetails.protocolId,
         protocolType: protocolTypeDetails.researchType,
       };
-      dispatch(getClinicalSiteSavedProtocolType(data));
+      setLoader(true);
+      dispatch(getClinicalSiteSavedProtocolType(data)).then((data) => {
+        if (data.payload.status === 200) {
+          setLoader(false);
+          setCallSavedFormData(true);
+        }
+      });
     }
   }, [
     dispatch,
@@ -67,6 +77,7 @@ function SubmissionForm({
     protocolTypeDetails?.researchType,
     getAllClinicalSiteSavedProtocolType, // Add this to avoid unnecessary calls if data already exists
     loading, // Prevent calls if already in loading state
+    !callSavedFormData,
   ]);
 
   const handleTermsChecked = (event) => {
@@ -145,6 +156,10 @@ function SubmissionForm({
       </ListItemButton>
     ));
   };
+
+  if (loader) {
+    return <Loader />;
+  }
 
   return (
     <>
