@@ -35,7 +35,17 @@ const communicationSchema = yup.object().shape({
   body: yup.string().required("This is required"),
 });
 
-function SendEmail({ protocolTypeDetails, enqueryUserType }) {
+const communicationSchemaForThreadReply = yup.object().shape({
+  body: yup.string().required("This is required"),
+});
+
+function SendEmail({
+  protocolTypeDetails,
+  enqueryUserType,
+  isReplyToThreadClicked,
+  selectedThread,
+  handleCancelReply,
+}) {
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [formData, setFormData] = useState({
@@ -54,65 +64,93 @@ function SendEmail({ protocolTypeDetails, enqueryUserType }) {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleCancelReplyButtonClicked = () => {
+    handleCancelReply();
+    setFormData({});
+  }
+
+  const handleReplySubmit = async () => {
+    const payload = {
+      ...formData,
+      ...selectedThread,
+      thread_id: selectedThread.id,
+      created_by: userDetails.id,
+      created_by_user_type: enqueryUserType === "user" ? "user" : "admin",
+    }
+    console.log("handleReplySubmit payload", payload);
+  }
+
+  const handleSaveEnquiry = async () => {
+    let attachments_file = [];
+    for (let file of formData.attachments_file) {
+      let id = await uploadFile(file, {
+        protocolId: formData.protocol_id,
+        createdBy: formData.created_by,
+        createdByUserType: enqueryUserType === "user" ? "user" : "admin",
+        protocolType: protocolTypeDetails.researchType,
+        informationType: "communication_attachments",
+        documentName: "communication_attachments",
+      });
+      attachments_file.push(id);
+    }
+    dispatch(saveEnquiry({ ...formData, attachments_file })).then(
+      (data) => {
+        if (data.payload.status === 200) {
+          toast.success(data.payload.data.msg, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          setFormData({});
+          setErrors({});
+        }
+      }
+    );
+  }
+
   const handleSubmitData = async (e) => {
     e.preventDefault();
+
     try {
-      const getValidatedform = await communicationSchema.validate(formData, {
-        abortEarly: false,
-      });
-      const isValid = await communicationSchema.isValid(getValidatedform);
+      const schema = isReplyToThreadClicked
+        ? communicationSchemaForThreadReply
+        : communicationSchema;
+
+      const getValidatedform = await schema.validate(formData, { abortEarly: false });
+
+      const isValid = await schema.isValid(getValidatedform);
+
       if (isValid === true) {
-        let attachments_file = [];
-        for (let file of formData.attachments_file) {
-          let id = await uploadFile(file, {
-            protocolId: formData.protocol_id,
-            createdBy: formData.created_by,
-            createdByUserType: enqueryUserType === "user" ? "user" : "admin",
-            protocolType: protocolTypeDetails.researchType,
-            informationType: "communication_attachments",
-            documentName: "communication_attachments",
-          });
-          attachments_file.push(id);
+        if (isReplyToThreadClicked) {
+          handleReplySubmit();
+        } else {
+          handleSaveEnquiry();
         }
-        dispatch(saveEnquiry({ ...formData, attachments_file })).then(
-          (data) => {
-            if (data.payload.status === 200) {
-              toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-              setFormData({});
-              setErrors({});
-            }
-          }
-        );
       }
     } catch (error) {
-      console.log("error", error);
+      console.log("Validation error:", error);
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
       });
       setErrors(newErrors);
+
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
           `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
-          firstErrorField.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
+          firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }
     }
   };
+
   return (
     <>
       <ToastContainer
@@ -138,11 +176,13 @@ function SendEmail({ protocolTypeDetails, enqueryUserType }) {
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
-                  label="Subject *"
+                  label={isReplyToThreadClicked ? `Sending Reply To Thread ${selectedThread?.id}` : "Subject"}
                   id="subject"
                   name="subject"
                   value={formData.subject || ""}
                   onChange={handleChange}
+                  disabled={isReplyToThreadClicked}
+                  variant={isReplyToThreadClicked ? "filled" : "outlined"}
                 />
               </Box>
               {errors.subject && <div className="error">{errors.subject}</div>}
@@ -214,6 +254,12 @@ function SendEmail({ protocolTypeDetails, enqueryUserType }) {
               className="mt-mb-20"
               style={{ textAlign: "right" }}
             >
+              {isReplyToThreadClicked && (<Button variant="outlined" color="error" type="button"
+                onClick={() => handleCancelReplyButtonClicked()}
+                sx={{ mr: 2 }}
+              >
+                CANCEL
+              </Button>)}
               <Button variant="contained" color="primary" type="Submit">
                 SEND
               </Button>

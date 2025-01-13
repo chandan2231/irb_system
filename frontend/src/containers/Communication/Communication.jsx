@@ -19,6 +19,21 @@ const Communication = () => {
     setValue(newValue);
   };
 
+  const [isReplyToThreadClicked, setIsReplyToThreadClicked] = React.useState(
+    false
+  );
+  const [selectedThread, setSelectedThread] = React.useState(null);
+  const handleReplyToThread = (threadDetails) => {
+    setIsReplyToThreadClicked(true);
+    setSelectedThread(threadDetails);
+    setValue(0);
+  }
+
+  const handleCancelReply = () => {
+    setIsReplyToThreadClicked(false);
+    setSelectedThread(null);
+  }
+
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -74,12 +89,16 @@ const Communication = () => {
         <SendEmail
           protocolTypeDetails={protocolTypeDetails}
           enqueryUserType={enqueryUserType}
+          isReplyToThreadClicked={isReplyToThreadClicked}
+          selectedThread={selectedThread}
+          handleCancelReply={handleCancelReply}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <CommunicationList
           protocolTypeDetails={protocolTypeDetails}
           enqueryUserType={enqueryUserType}
+          handleReplyToThread={handleReplyToThread}
         />
       </CustomTabPanel>
     </Box>

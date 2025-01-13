@@ -14,8 +14,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ReplyIcon from '@mui/icons-material/Reply';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ReplyIcon from "@mui/icons-material/Reply";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const CommunicationItem = ({ communication }) => {
   const formattedDate = moment(communication.created_at).format("DD-MM-YYYY");
@@ -43,49 +43,41 @@ const CommunicationItem = ({ communication }) => {
 };
 
 const CommunicationBody = ({ communication, attachments }) => {
-  return (<div>
-    <p>
-      <strong>Subject:</strong> {communication.subject}
-    </p>
+  return (
+    <div>
+      <p>
+        <strong>Subject:</strong> {communication.subject}
+      </p>
 
-    <p>
-      <strong>Body:</strong> {communication.body}
-    </p>
-    <p>
-      <strong>Created By:</strong>{" "}
-      {communication.created_by_user_type}
-    </p>
+      <p>
+        <strong>Body:</strong> {communication.body}
+      </p>
+      <p>
+        <strong>Created By:</strong> {communication.created_by_user_type}
+      </p>
 
-    {attachments.length > 0 && (
-      <div>
-        <h4>Attachments:</h4>
-        <ul>
-          {attachments.map((url, idx) => (
-            <li key={idx}>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Attachment {idx + 1}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </div>
+      {attachments.length > 0 && (
+        <div>
+          <h4>Attachments:</h4>
+          <ul>
+            {attachments.map((url, idx) => (
+              <li key={idx}>
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  Attachment {idx + 1}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 };
 
-const ShowOptions = ({ communication, attachments }) => {
-  const options = [
-    {
-      id: 1,
-      label: "Reply",
-      icon: <ReplyIcon />,
-    },
-  ];
+const ShowOptions = ({
+  communication,
+  handleReplyToThread
+}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -94,59 +86,84 @@ const ShowOptions = ({ communication, attachments }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  return <Box
-    sx={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      color: "text.secondary",
-      cursor: "pointer",
-      height: "48px",
-    }}
-  >
-    <IconButton
-      aria-label="more"
-      id="long-button"
-      aria-controls={open ? 'long-menu' : undefined}
-      aria-expanded={open ? 'true' : undefined}
-      aria-haspopup="true"
-      onClick={handleClick}
-    >
-      <MoreVertIcon />
-    </IconButton>
-    <Menu
-      id="long-menu"
-      MenuListProps={{
-        'aria-labelledby': 'long-button',
+
+  const handleReply = () => {
+    handleReplyToThread(communication);
+    handleClose();
+  };
+
+  const options = [
+    {
+      id: 1,
+      label: "Reply",
+      icon: <ReplyIcon />,
+      onClick: () => {
+        handleReply();
+      },
+    },
+  ];
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "text.secondary",
+        cursor: "pointer",
+        height: "48px",
       }}
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-      slotProps={{
-        paper: {
-          style: {
-            width: '14ch',
+    >
+      <IconButton
+        aria-label="more"
+        id="long-button"
+        aria-controls={open ? "long-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          "aria-labelledby": "long-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            style: {
+              width: "14ch",
+            },
           },
-        },
-      }}
-    >
-      {options.map((option) => (
-        <MenuItem key={option.id} selected={option === 'Pyxis'} onClick={handleClose}
-          sx={{
-            display: "flex",
-            alignItems: "start",
-            justifyContent: "start",
-            gap: 1,
-          }}
-        >
-          {option.icon} {option.label}
-        </MenuItem>
-      ))}
-    </Menu>
-  </Box>
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem
+            key={option.id}
+            selected={option === "Pyxis"}
+            onClick={option.onClick}
+            sx={{
+              display: "flex",
+              alignItems: "start",
+              justifyContent: "start",
+              gap: 1,
+            }}
+          >
+            {option.icon} {option.label}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
 };
 
-function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
+function CommunicationList({
+  protocolTypeDetails,
+  enqueryUserType,
+  handleReplyToThread
+}) {
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -170,7 +187,6 @@ function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
     };
     dispatch(getCommunicationListByProtocolId(data));
   }, [dispatch, userDetails.id]);
-
 
   const getAttachments = (attachments) => {
     return attachments ? attachments.split(",").map((url) => url.trim()) : [];
@@ -198,13 +214,14 @@ function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
               communicationList?.data?.map((communication, index) => {
                 const attachments = getAttachments(communication.attachments);
                 return (
-                  <Box sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    width: "100%",
-                    gap: 1,
-                  }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "center",
+                      width: "100%",
+                      gap: 1,
+                    }}
                     key={communication.id}
                   >
                     <Accordion
@@ -222,12 +239,16 @@ function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
                         <CommunicationItem communication={communication} />
                       </AccordionSummary>
                       <AccordionDetails>
-                        <CommunicationBody communication={communication}
+                        <CommunicationBody
+                          communication={communication}
                           attachments={attachments}
                         />
                       </AccordionDetails>
                     </Accordion>
-                    <ShowOptions communication={communication} attachments={attachments} />
+                    <ShowOptions
+                      communication={communication}
+                      handleReplyToThread={handleReplyToThread}
+                    />
                   </Box>
                 );
               })
