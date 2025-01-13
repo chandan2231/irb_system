@@ -8,6 +8,88 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import SendEmail from "./SendEmail";
 import CommunicationList from "./CommunicationList";
+import { IconButton, Menu, MenuItem } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+
+const ShowOptions = ({
+  protocolTypeDetails,
+  enqueryUserType,
+}) => {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDownloadCommunicationPDF = () => {
+    console.log("Download PDF", {
+      protocolTypeDetails,
+      enqueryUserType,
+    });
+    handleClose();
+  };
+
+  const options = [
+    {
+      id: 1,
+      label: "View Pdf",
+      icon: <PictureAsPdfIcon />,
+      onClick: () => {
+        handleDownloadCommunicationPDF();
+      },
+    },
+  ];
+  return (
+    <Box>
+      <IconButton
+        aria-label="more"
+        id="long-button"
+        aria-controls={open ? "long-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          "aria-labelledby": "long-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        slotProps={{
+          paper: {
+            style: {
+              width: "14ch",
+            },
+          },
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem
+            key={option.id}
+            selected={option === "Pyxis"}
+            onClick={option.onClick}
+            sx={{
+              display: "flex",
+              alignItems: "start",
+              justifyContent: "start",
+              gap: 1,
+            }}
+          >
+            {option.icon} {option.label}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
+};
 
 const Communication = () => {
   const location = useLocation();
@@ -72,18 +154,31 @@ const Communication = () => {
         {protocolTypeDetails.researchType}&nbsp;(
         {protocolTypeDetails.protocolId})
       </h2>
-      <Box className="ml-20" sx={{ borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          variant="scrollable"
-          scrollButtons="auto"
-          style={{ padding: 0 }}
-        >
-          <Tab label="Send Email" {...a11yProps(0)} />
-          <Tab label="Thread" {...a11yProps(1)} />
-        </Tabs>
+      <Box className="ml-20" sx={{ borderColor: "divider", }}>
+        <Box sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "between",
+        }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+            variant="scrollable"
+            scrollButtons="auto"
+            style={{
+              padding: 0,
+              width: "100%",
+            }}
+          >
+            <Tab label="Send Email" {...a11yProps(0)} />
+            <Tab label="Thread" {...a11yProps(1)} />
+          </Tabs>
+          <ShowOptions 
+            protocolTypeDetails={protocolTypeDetails}
+            enqueryUserType={enqueryUserType}
+          />
+        </Box>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <SendEmail
