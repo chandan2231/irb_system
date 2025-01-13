@@ -22,6 +22,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../../components/Loader";
+import ApiCall from "../../../../utility/ApiCall";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
@@ -34,43 +38,14 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     created_by: userDetails.id,
     paymentType: "Protocol Submission",
   });
+  const [loader, setLoader] = useState(false);
+  const [notSavedForms, setNotSavedForms] = useState([]);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
       state: { details: params, identifierType: "user" },
     });
   };
-
-  const { getAllPrincipalInvestigatorSavedProtocolType, loading, error } =
-    useSelector((state) => state.clinicalResearcher);
-
-  // Fetch unsaved forms on mount
-  const notSavedForms =
-    getAllPrincipalInvestigatorSavedProtocolType?.filter(
-      (form) => !form.filled
-    ) || [];
-
-  useEffect(() => {
-    if (
-      protocolTypeDetails?.protocolId &&
-      protocolTypeDetails?.researchType &&
-      !loading && // Check if data is loading
-      (!getAllPrincipalInvestigatorSavedProtocolType ||
-        getAllPrincipalInvestigatorSavedProtocolType.length === 0) // Ensure no redundant API calls
-    ) {
-      const data = {
-        protocolId: protocolTypeDetails.protocolId,
-        protocolType: protocolTypeDetails.researchType,
-      };
-      dispatch(getPrincipalInvestigatorSavedProtocolType(data));
-    }
-  }, [
-    dispatch,
-    protocolTypeDetails?.protocolId,
-    protocolTypeDetails?.researchType,
-    getAllPrincipalInvestigatorSavedProtocolType, // Add this to avoid unnecessary calls if data already exists
-    loading, // Prevent calls if already in loading state
-  ]);
 
   const handleTermsChange = (event) => {
     setTermsSelected(event.target.checked);
@@ -95,33 +70,6 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     } else {
       navigateToPaymentPage(formData);
     }
-    // try {
-    //   const response = await dispatch(
-    //     createClinicalSiteSubmission({ ...formData })
-    //   );
-    //   if (response.payload.status === 200) {
-    //     toast.success(response.payload.data.msg, {
-    //       position: "top-right",
-    //       autoClose: 5000,
-    //       hideProgressBar: false,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       theme: "dark",
-    //     });
-    //     setFormData({});
-    //   }
-    // } catch (error) {
-    //   toast.error("Error during submission", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     theme: "dark",
-    //   });
-    // }
   };
 
   // Utility function to format titles
@@ -132,6 +80,44 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
+
+  useEffect(() => {
+    const fetchProtocolTypeDetails = async () => {
+      try {
+        if (
+          protocolTypeDetails?.protocolId &&
+          protocolTypeDetails?.researchType &&
+          loader === false
+        ) {
+          const data = {
+            protocolId: protocolTypeDetails.protocolId,
+            protocolType: protocolTypeDetails.researchType,
+          };
+          setLoader(true);
+          const response = await ApiCall({
+            method: "POST",
+            url: `${baseURL}/researchInfo/getPrincipalInvestigatorSavedProtocolType`,
+            data,
+          });
+
+          if (response?.status === 200) {
+            const unsavedForms = response?.data?.filter((form) => !form.filled);
+            setNotSavedForms(unsavedForms);
+            setLoader(false);
+          }
+        }
+      } catch (error) {
+        setLoader(false);
+        console.error("Error fetching protocol type details:", error);
+      }
+    };
+
+    fetchProtocolTypeDetails();
+  }, []);
+
+  if (loader) {
+    return <Loader />;
+  }
 
   return (
     <>

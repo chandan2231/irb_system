@@ -21,6 +21,10 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ApiCall from "../../../../utility/ApiCall";
+import Loader from "../../../../components/Loader";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 // Helper function to convert string to title case
 const titleCase = (str) =>
@@ -43,42 +47,15 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     paymentType: "Protocol Submission",
   });
 
+  const [loader, setLoader] = useState(false);
+  const [notSavedForms, setNotSavedForms] = useState([]);
+
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
       state: { details: params, identifierType: "user" },
     });
   };
 
-  const { getAllMultiSiteSavedProtocolType, loading, error } = useSelector(
-    (state) => state.multiSiteSponsor
-  );
-
-  const notSavedForms =
-    getAllMultiSiteSavedProtocolType?.filter((form) => !form.filled) || [];
-
-  useEffect(() => {
-    if (
-      protocolTypeDetails?.protocolId &&
-      protocolTypeDetails?.researchType &&
-      !loading && // Check if data is loading
-      (!getAllMultiSiteSavedProtocolType ||
-        getAllMultiSiteSavedProtocolType.length === 0) // Ensure no redundant API calls
-    ) {
-      const data = {
-        protocolId: protocolTypeDetails.protocolId,
-        protocolType: protocolTypeDetails.researchType,
-      };
-      dispatch(getMultiSiteSavedProtocolType(data));
-    }
-  }, [
-    dispatch,
-    protocolTypeDetails?.protocolId,
-    protocolTypeDetails?.researchType,
-    getAllMultiSiteSavedProtocolType, // Add this to avoid unnecessary calls if data already exists
-    loading, // Prevent calls if already in loading state
-  ]);
-
-  // Handle terms checkbox change
   const handleTermsChange = (event) => setTermsSelected(event.target.checked);
 
   const handleSubmitData = async (e) => {
@@ -102,39 +79,44 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     }
   };
 
-  // Handle form submission
-  // const handleSubmitDataOld = async (e) => {
-  //   e.preventDefault();
+  useEffect(() => {
+    const fetchProtocolTypeDetails = async () => {
+      try {
+        if (
+          protocolTypeDetails?.protocolId &&
+          protocolTypeDetails?.researchType &&
+          loader === false
+        ) {
+          const data = {
+            protocolId: protocolTypeDetails.protocolId,
+            protocolType: protocolTypeDetails.researchType,
+          };
+          setLoader(true);
+          const response = await ApiCall({
+            method: "POST",
+            url: `${baseURL}/researchInfo/getMultiSiteSavedProtocolType`,
+            data,
+          });
 
-  //   // Show toast if there are unsaved forms
-  //   if (notSavedForms.length > 0) {
-  //     toast.error(
-  //       "Before final submission, you must fill in the required protocol information.",
-  //       {
-  //         position: "top-right",
-  //         autoClose: 5000,
-  //         theme: "dark",
-  //       }
-  //     );
-  //     return;
-  //   }
+          if (response?.status === 200) {
+            const unsavedForms = response?.data?.filter((form) => !form.filled);
+            setNotSavedForms(unsavedForms);
+            setLoader(false);
+          }
+        }
+      } catch (error) {
+        setLoader(false);
+        console.error("Error fetching protocol type details:", error);
+      }
+    };
 
-  //   try {
-  //     const response = await dispatch(createMultiSiteSubmission(formData));
-  //     if (response.payload.status === 200) {
-  //       toast.success(response.payload.data.msg, {
-  //         position: "top-right",
-  //         autoClose: 5000,
-  //         theme: "dark",
-  //       });
-  //       setFormData({}); // Clear form data after successful submission
-  //     }
-  //   } catch (error) {
-  //     console.error("Error during submission:", error);
-  //   }
-  // };
+    fetchProtocolTypeDetails();
+  }, []);
 
-  console.log("notSavedForms", notSavedForms);
+  if (loader) {
+    return <Loader />;
+  }
+
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
