@@ -17,6 +17,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../components/Loader";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -58,6 +59,7 @@ function SendEmail({
     created_by_user_type: enqueryUserType === "user" ? "user" : "admin",
   });
   const [errors, setErrors] = useState({});
+  const [loader, setLoader] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,54 +71,11 @@ function SendEmail({
     setFormData({});
   }
 
-  const handleReplySubmit = async () => {
-    const payload = {
-      ...formData,
-      ...selectedThread,
-      thread_id: selectedThread.id,
-      created_by: userDetails.id,
-      created_by_user_type: enqueryUserType === "user" ? "user" : "admin",
-    }
-    console.log("handleReplySubmit payload", payload);
-  }
-
-  const handleSaveEnquiry = async () => {
-    let attachments_file = [];
-    for (let file of formData.attachments_file) {
-      let id = await uploadFile(file, {
-        protocolId: formData.protocol_id,
-        createdBy: formData.created_by,
-        createdByUserType: enqueryUserType === "user" ? "user" : "admin",
-        protocolType: protocolTypeDetails.researchType,
-        informationType: "communication_attachments",
-        documentName: "communication_attachments",
-      });
-      attachments_file.push(id);
-    }
-    dispatch(saveEnquiry({ ...formData, attachments_file })).then(
-      (data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.data.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-          setFormData({});
-          setErrors({});
-        }
-      }
-    );
-  }
-
   const handleSubmitData = async (e) => {
     e.preventDefault();
 
     try {
+      setLoader(true);
       const schema = isReplyToThreadClicked
         ? communicationSchemaForThreadReply
         : communicationSchema;
@@ -127,12 +86,53 @@ function SendEmail({
 
       if (isValid === true) {
         if (isReplyToThreadClicked) {
-          handleReplySubmit();
+          const payload = {
+            ...formData,
+            ...selectedThread,
+            thread_id: selectedThread.id,
+            created_by: userDetails.id,
+            created_by_user_type: enqueryUserType === "user" ? "user" : "admin",
+          }
+          console.log("handleReplySubmit payload", payload);
+          setLoader(false);
         } else {
-          handleSaveEnquiry();
+          let attachments_file = [];
+          if (formData.attachments_file && formData.attachments_file.length > 0) {
+            for (let file of formData.attachments_file) {
+              let id = await uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                createdByUserType: enqueryUserType === "user" ? "user" : "admin",
+                protocolType: protocolTypeDetails.researchType,
+                informationType: "communication_attachments",
+                documentName: "communication_attachments",
+              });
+              attachments_file.push(id);
+            }
+          }
+          dispatch(saveEnquiry({ ...formData, attachments_file })).then(
+            (data) => {
+              if (data.payload.status === 200) {
+                toast.success(data.payload.data.msg, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+                setLoader(false);
+                setFormData({});
+                setErrors({});
+              }
+            }
+          );
         }
       }
     } catch (error) {
+      setLoader(false);
       console.log("Validation error:", error);
       const newErrors = {};
       error.inner.forEach((err) => {
@@ -150,6 +150,10 @@ function SendEmail({
       }
     }
   };
+
+  if (loader) {
+    return <Loader />
+  }
 
   return (
     <>

@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReplyIcon from "@mui/icons-material/Reply";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Loader from "../../components/Loader";
 
 const CommunicationItem = ({ communication }) => {
   const formattedDate = moment(communication.created_at).format("DD-MM-YYYY");
@@ -164,6 +165,7 @@ function CommunicationList({
   enqueryUserType,
   handleReplyToThread
 }) {
+  const [loader, setLoader] = useState(false);
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -181,16 +183,23 @@ function CommunicationList({
     })
   );
   useEffect(() => {
+    setLoader(true);
     const data = {
       protocol_id: protocolTypeDetails.protocolId,
       status: enqueryUserType === "user" ? 2 : 1,
     };
-    dispatch(getCommunicationListByProtocolId(data));
+    dispatch(getCommunicationListByProtocolId(data)).then(() => {
+      setLoader(false);
+    });
   }, [dispatch, userDetails.id]);
 
   const getAttachments = (attachments) => {
     return attachments ? attachments.split(",").map((url) => url.trim()) : [];
   };
+
+  if (loader) {
+    return <Loader />
+  }
 
   return (
     <>
