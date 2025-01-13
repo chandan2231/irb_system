@@ -6,9 +6,10 @@ import { getUserInfo } from '../userData.js'
 export const saveEnquiryRequest = async (req, res) => {
   try {
     const datetime = new Date()
-    const attachmentString = req.body.attachments_file
-      ? req.body.attachments_file.join(',')
-      : ''
+    const attachmentString =
+      req.body.attachments_file.length > 0
+        ? req.body.attachments_file.join(',')
+        : ''
 
     const que =
       'insert into communication (`protocol_id`, `attachments_id`, `protocol_type`, `subject`, `body`, `created_by_user_type`, `status`, `created_by`,`created_at`,`updated_at`) values (?)'
@@ -38,7 +39,6 @@ export const saveEnquiryRequest = async (req, res) => {
 
     // Fetch user info
     const user = await getUserInfo(req.body.created_by)
-
     // Fetch attachment info
     const getAttachement = await handleCommunicationRequest(result.insertId)
 
@@ -106,15 +106,15 @@ export const saveEnquiryRequest = async (req, res) => {
 export const getCommunicationListByProtocolId = async (req, res) => {
   const protocolId = req.body.protocol_id
   const status = req.body.status
-  const que = `SELECT cm.*, GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
-    FROM communication AS cm
-    JOIN communication_documents AS cd 
-      ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
-    WHERE cm.protocol_id = ? 
-      AND cm.status = ? 
-      AND cm.attachments_id IS NOT NULL 
-      AND cm.attachments_id != ''
-    GROUP BY cm.id`
+  const que = `SELECT cm.*, 
+       GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
+FROM communication AS cm
+LEFT JOIN communication_documents AS cd 
+    ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
+WHERE cm.protocol_id = ? 
+  AND cm.status = ? 
+  AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '' OR cm.attachments_id IS NULL OR cm.attachments_id = '')
+GROUP BY cm.id`
 
   try {
     // Execute the query using async/await
@@ -172,14 +172,14 @@ export const handleCommunicationRequest = (id) => {
 // Get Communication List by Protocol ID
 export const getCommunicationDetailsById = async (req, res) => {
   const id = req.body.id
-  const que = `SELECT cm.*, GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
-    FROM communication AS cm
-    JOIN communication_documents AS cd 
-      ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
-    WHERE cm.id = ? 
-      AND cm.attachments_id IS NOT NULL 
-      AND cm.attachments_id != ''
-    GROUP BY cm.id`
+  const que = `SELECT cm.*, 
+       GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
+FROM communication AS cm
+LEFT JOIN communication_documents AS cd 
+    ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
+WHERE cm.id = ? 
+  AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '')
+GROUP BY cm.id`
 
   try {
     // Execute the query using async/await
@@ -193,7 +193,7 @@ export const getCommunicationDetailsById = async (req, res) => {
       })
     })
 
-    if (data.length > 0) {
+    if (data.length >= 0) {
       return res.status(200).json(data)
     } else {
       return res.status(404).json({ message: 'No data found' })

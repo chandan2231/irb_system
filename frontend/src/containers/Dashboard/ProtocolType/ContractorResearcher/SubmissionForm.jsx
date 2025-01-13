@@ -20,6 +20,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
+import Loader from "../../../../components/Loader";
+import ApiCall from "../../../../utility/ApiCall";
+
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function SubmissionForm({
   protocolTypeDetails,
@@ -29,45 +33,16 @@ function SubmissionForm({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const [loader, setLoader] = useState(false);
   const [termsSelected, setTermsSelected] = useState(false);
+  const [callSavedFormData, setCallSavedFormData] = useState(false);
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
     paymentType: "Protocol Submission",
   });
-
-  const { getAllClinicalSiteSavedProtocolType, loading, error } = useSelector(
-    (state) => state.contractorResearcher
-  );
-
-  // Extract unsaved forms directly from the API data
-  const unsavedForms =
-    getAllClinicalSiteSavedProtocolType?.filter((form) => !form.filled) || [];
-
-  useEffect(() => {
-    // Log to verify the protocolTypeDetails values
-
-    if (
-      protocolTypeDetails?.protocolId &&
-      protocolTypeDetails?.researchType &&
-      !loading && // Check if data is loading
-      (!getAllClinicalSiteSavedProtocolType ||
-        getAllClinicalSiteSavedProtocolType.length === 0) // Ensure no redundant API calls
-    ) {
-      const data = {
-        protocolId: protocolTypeDetails.protocolId,
-        protocolType: protocolTypeDetails.researchType,
-      };
-      dispatch(getClinicalSiteSavedProtocolType(data));
-    }
-  }, [
-    dispatch,
-    protocolTypeDetails?.protocolId,
-    protocolTypeDetails?.researchType,
-    getAllClinicalSiteSavedProtocolType, // Add this to avoid unnecessary calls if data already exists
-    loading, // Prevent calls if already in loading state
-  ]);
+  const [unsavedForms, setUnsavedForms] = useState([]);
 
   const handleTermsChecked = (event) => {
     setTermsSelected(event.target.checked);
@@ -98,33 +73,6 @@ function SubmissionForm({
     } else {
       navigateToPaymentPage(formData);
     }
-    // try {
-    //   const response = await dispatch(
-    //     createClinicalSiteSubmission({ ...formData })
-    //   );
-    //   if (response.payload.status === 200) {
-    //     toast.success(response.payload.data.msg, {
-    //       position: "top-right",
-    //       autoClose: 5000,
-    //       hideProgressBar: false,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       theme: "dark",
-    //     });
-    //     setFormData({});
-    //   }
-    // } catch (error) {
-    //   toast.error("Error during submission", {
-    //     position: "top-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     theme: "dark",
-    //   });
-    // }
   };
 
   const titleCase = (str) => {
@@ -145,6 +93,45 @@ function SubmissionForm({
       </ListItemButton>
     ));
   };
+
+  useEffect(() => {
+    const fetchProtocolTypeDetails = async () => {
+      try {
+        if (
+          protocolTypeDetails?.protocolId &&
+          protocolTypeDetails?.researchType &&
+          loader === false
+        ) {
+          const data = {
+            protocolId: protocolTypeDetails.protocolId,
+            protocolType: protocolTypeDetails.researchType,
+          };
+          setLoader(true);
+          const response = await ApiCall({
+            method: "POST",
+            url: `${baseURL}/researchInfo/getClinicalSiteSavedProtocolType`,
+            data,
+          });
+
+          if (response?.status === 200) {
+            const unsavedForms = response?.data?.filter((form) => !form.filled);
+            setUnsavedForms(unsavedForms);
+            setLoader(false);
+          }
+        }
+      } catch (error) {
+        setLoader(false);
+        console.error("Error fetching protocol type details:", error);
+      }
+    };
+
+    fetchProtocolTypeDetails();
+  }, []);
+
+
+  if (loader) {
+    return <Loader />;
+  }
 
   return (
     <>
