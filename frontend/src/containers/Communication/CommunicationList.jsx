@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import { styled } from "@mui/material/styles";
 import * as yup from "yup";
 import { getCommunicationListByProtocolId } from "../../services/Communication/CommunicationService";
-import { Box, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
+import { Box, Button, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import Accordion from "@mui/material/Accordion";
@@ -18,7 +18,7 @@ import ReplyIcon from "@mui/icons-material/Reply";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Loader from "../../components/Loader";
 
-const CommunicationItem = ({ communication }) => {
+const CommunicationItem = ({ communication, handleReplyToThread }) => {
   const formattedDate = moment(communication.created_at).format("DD-MM-YYYY");
 
   return (
@@ -32,13 +32,19 @@ const CommunicationItem = ({ communication }) => {
       }}
     >
       <Typography component="span">{communication.subject}</Typography>
-      <Typography
-        component="span"
-        color="text.secondary"
-        sx={{ marginRight: 2 }}
-      >
-        {formattedDate}
-      </Typography>
+      <Box>
+        <Typography
+          component="span"
+          color="text.secondary"
+          sx={{ marginRight: 2 }}
+        >
+          {formattedDate}
+        </Typography>
+        <ShowOptions
+          communication={communication}
+          handleReplyToThread={handleReplyToThread}
+        />
+      </Box>
     </Box>
   );
 };
@@ -79,84 +85,15 @@ const ShowOptions = ({
   communication,
   handleReplyToThread
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleReply = () => {
     handleReplyToThread(communication);
-    handleClose();
   };
 
-  const options = [
-    {
-      id: 1,
-      label: "Reply",
-      icon: <ReplyIcon />,
-      onClick: () => {
-        handleReply();
-      },
-    },
-  ];
   return (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "text.secondary",
-        cursor: "pointer",
-        height: "48px",
-      }}
-    >
-      <IconButton
-        aria-label="more"
-        id="long-button"
-        aria-controls={open ? "long-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        MenuListProps={{
-          "aria-labelledby": "long-button",
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        slotProps={{
-          paper: {
-            style: {
-              width: "14ch",
-            },
-          },
-        }}
-      >
-        {options.map((option) => (
-          <MenuItem
-            key={option.id}
-            selected={option === "Pyxis"}
-            onClick={option.onClick}
-            sx={{
-              display: "flex",
-              alignItems: "start",
-              justifyContent: "start",
-              gap: 1,
-            }}
-          >
-            {option.icon} {option.label}
-          </MenuItem>
-        ))}
-      </Menu>
-    </Box>
+    <Button onClick={() => handleReply()}>
+      <ReplyIcon />
+    </Button>
   );
 };
 
@@ -245,7 +182,9 @@ function CommunicationList({
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                       >
-                        <CommunicationItem communication={communication} />
+                        <CommunicationItem communication={communication}
+                          handleReplyToThread={handleReplyToThread}
+                        />
                       </AccordionSummary>
                       <AccordionDetails>
                         <CommunicationBody
@@ -254,10 +193,6 @@ function CommunicationList({
                         />
                       </AccordionDetails>
                     </Accordion>
-                    <ShowOptions
-                      communication={communication}
-                      handleReplyToThread={handleReplyToThread}
-                    />
                   </Box>
                 );
               })

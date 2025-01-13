@@ -180,7 +180,7 @@ function SendEmail({
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
-                  label={isReplyToThreadClicked ? `Sending Reply To Thread ${selectedThread?.id}` : "Subject"}
+                  label={isReplyToThreadClicked ? `${selectedThread?.subject}` : "Subject"}
                   id="subject"
                   name="subject"
                   value={formData.subject || ""}
