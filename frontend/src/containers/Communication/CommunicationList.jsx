@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import { styled } from "@mui/material/styles";
 import * as yup from "yup";
 import { getCommunicationListByProtocolId } from "../../services/Communication/CommunicationService";
-import { Box, useTheme } from "@mui/material";
+import { Box, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import Accordion from "@mui/material/Accordion";
@@ -14,6 +14,137 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ReplyIcon from '@mui/icons-material/Reply';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+const CommunicationItem = ({ communication }) => {
+  const formattedDate = moment(communication.created_at).format("DD-MM-YYYY");
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        flexShrink: 0,
+      }}
+    >
+      <Typography component="span">{communication.subject}</Typography>
+      <Typography
+        component="span"
+        color="text.secondary"
+        sx={{ marginRight: 2 }}
+      >
+        {formattedDate}
+      </Typography>
+    </Box>
+  );
+};
+
+const CommunicationBody = ({ communication, attachments }) => {
+  return (<div>
+    <p>
+      <strong>Subject:</strong> {communication.subject}
+    </p>
+
+    <p>
+      <strong>Body:</strong> {communication.body}
+    </p>
+    <p>
+      <strong>Created By:</strong>{" "}
+      {communication.created_by_user_type}
+    </p>
+
+    {attachments.length > 0 && (
+      <div>
+        <h4>Attachments:</h4>
+        <ul>
+          {attachments.map((url, idx) => (
+            <li key={idx}>
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Attachment {idx + 1}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+  );
+};
+
+const ShowOptions = ({ communication, attachments }) => {
+  const options = [
+    {
+      id: 1,
+      label: "Reply",
+      icon: <ReplyIcon />,
+    },
+  ];
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  return <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "text.secondary",
+      cursor: "pointer",
+      height: "48px",
+    }}
+  >
+    <IconButton
+      aria-label="more"
+      id="long-button"
+      aria-controls={open ? 'long-menu' : undefined}
+      aria-expanded={open ? 'true' : undefined}
+      aria-haspopup="true"
+      onClick={handleClick}
+    >
+      <MoreVertIcon />
+    </IconButton>
+    <Menu
+      id="long-menu"
+      MenuListProps={{
+        'aria-labelledby': 'long-button',
+      }}
+      anchorEl={anchorEl}
+      open={open}
+      onClose={handleClose}
+      slotProps={{
+        paper: {
+          style: {
+            width: '14ch',
+          },
+        },
+      }}
+    >
+      {options.map((option) => (
+        <MenuItem key={option.id} selected={option === 'Pyxis'} onClick={handleClose}
+          sx={{
+            display: "flex",
+            alignItems: "start",
+            justifyContent: "start",
+            gap: 1,
+          }}
+        >
+          {option.icon} {option.label}
+        </MenuItem>
+      ))}
+    </Menu>
+  </Box>
+};
 
 function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
   const [expanded, setExpanded] = React.useState(false);
@@ -40,7 +171,6 @@ function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
     dispatch(getCommunicationListByProtocolId(data));
   }, [dispatch, userDetails.id]);
 
-  console.log("communicationList", communicationList);
 
   const getAttachments = (attachments) => {
     return attachments ? attachments.split(",").map((url) => url.trim()) : [];
@@ -64,72 +194,41 @@ function CommunicationList({ protocolTypeDetails, enqueryUserType }) {
         <Box>
           <div className="mt-mb-20">
             {communicationList !== null &&
-            communicationList?.data?.length > 0 ? (
+              communicationList?.data?.length > 0 ? (
               communicationList?.data?.map((communication, index) => {
                 const attachments = getAttachments(communication.attachments);
                 return (
-                  <>
+                  <Box sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "center",
+                    width: "100%",
+                    gap: 1,
+                  }}
+                    key={communication.id}
+                  >
                     <Accordion
+                      sx={{
+                        width: "100%",
+                      }}
                       expanded={expanded === `panel${index}`}
                       onChange={handleChange(`panel${index}`)}
-                      key={communication.id}
                     >
                       <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                       >
-                        <Typography
-                          component="span"
-                          sx={{ width: "90%", flexShrink: 0 }}
-                        >
-                          {communication.subject}
-                        </Typography>
-                        <Typography
-                          component="span"
-                          sx={{ color: "text.secondary" }}
-                        >
-                          {moment(communication.created_at).format(
-                            "DD-MM-YYYY"
-                          )}
-                        </Typography>
+                        <CommunicationItem communication={communication} />
                       </AccordionSummary>
                       <AccordionDetails>
-                        <div>
-                          <p>
-                            <strong>Subject:</strong> {communication.subject}
-                          </p>
-
-                          <p>
-                            <strong>Body:</strong> {communication.body}
-                          </p>
-                          <p>
-                            <strong>Created By:</strong>{" "}
-                            {communication.created_by_user_type}
-                          </p>
-
-                          {attachments.length > 0 && (
-                            <div>
-                              <h4>Attachments:</h4>
-                              <ul>
-                                {attachments.map((url, idx) => (
-                                  <li key={idx}>
-                                    <a
-                                      href={url}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      Attachment {idx + 1}
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
+                        <CommunicationBody communication={communication}
+                          attachments={attachments}
+                        />
                       </AccordionDetails>
                     </Accordion>
-                  </>
+                    <ShowOptions communication={communication} attachments={attachments} />
+                  </Box>
                 );
               })
             ) : (
