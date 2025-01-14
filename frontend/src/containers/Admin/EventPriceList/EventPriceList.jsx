@@ -25,7 +25,7 @@ function EventPriceList() {
   const [open, setOpen] = useState(false);
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
-  const [userDataList, setUserDataList] = useState([]);
+  const [eventPriceDataList, setEventPriceDataList] = useState([]);
 
   const columns = [
     {
@@ -121,7 +121,7 @@ function EventPriceList() {
         };
         uListArr.push(listObject);
       });
-      setUserDataList(uListArr);
+      setEventPriceDataList(uListArr);
     }
   }, [eventPriceList]);
 
@@ -271,7 +271,7 @@ function EventPriceList() {
         </Box>
         <Box sx={{ mt: 5 }}>
           <DataGrid
-            rows={userDataList}
+            rows={eventPriceDataList}
             columns={columns}
             rowCount={rowCount}
             loading={loading}
