@@ -109,7 +109,7 @@ function SubmissionForm({
           setLoader(true);
           const response = await ApiCall({
             method: "POST",
-            url: `${baseURL}/researchInfo/getClinicalSiteSavedProtocolType`,
+            url: `${baseURL}/researchInfo/getDocumentReviewSavedProtocolType`,
             data,
           });
 

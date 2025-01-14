@@ -59,18 +59,18 @@ function EventPriceList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
-        <GridActionsCellItem
-          icon={<LockResetIcon />}
-          label="Change Password"
-          onClick={() => handleChangePassword(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleItemDelete(params)}
-          showInMenu
-        />,
+        // <GridActionsCellItem
+        //   icon={<LockResetIcon />}
+        //   label="Change Password"
+        //   onClick={() => handleChangePassword(params)}
+        //   showInMenu
+        // />,
+        // <GridActionsCellItem
+        //   icon={<DeleteIcon />}
+        //   label="Delete"
+        //   onClick={handleItemDelete(params)}
+        //   showInMenu
+        // />,
         // <GridActionsCellItem
         //     icon={<EditNoteIcon />}
         //     label="Edit"
@@ -93,11 +93,11 @@ function EventPriceList() {
       eventPriceList: state.eventPrice.eventPriceList,
       loading: state.eventPrice.loading,
       eventPriceCreated: state.eventPrice.eventPriceCreated,
-    }),
+    })
   );
 
   if (eventPriceList !== "" && eventPriceList?.length > 0) {
-    totalElements = eventPriceList.totalElements;
+    totalElements = eventPriceList?.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -116,8 +116,8 @@ function EventPriceList() {
           eventName: uList.event_type,
           price: uList.price,
           status: uList.status,
-          createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
+          createdDate: moment(uList.created_at).format("DD-MM-YYYY"),
+          updatedDate: moment(uList.updated_at).format("DD-MM-YYYY"),
         };
         uListArr.push(listObject);
       });

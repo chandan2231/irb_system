@@ -16,6 +16,8 @@ const AddEventPrice = ({ open, onClose, addNewData, title }) => {
   const [values, setValues] = useState(defaultInputValues);
   const [eventTypeList, setEventTypeList] = React.useState([
     { name: "Protocol Submission", id: "Protocol Submission" },
+    { name: "Multi-Site Sponsor", id: "Multi-Site Sponsor" },
+    { name: "Document Review", id: "Document Review" },
     { name: "Protocol Revision", id: "Protocol Revision" },
     { name: "Continue Yearly Review", id: "Continue Yearly Review" },
   ]);

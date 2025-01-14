@@ -293,6 +293,20 @@ function ProtocolInformationForm({
     }
   };
 
+  // console.log("protocolInformation form", {
+  //   formData,
+  //   protocolInformation,
+  // });
+
+  // console.log("protocolInformationFormData", {
+  //   formData,
+  //   errors,
+  // });
+
+  // here on the client side
+
+  // console.log("Loader protocolInfo ======>", loader)
+
   if (loader) {
     return <Loader />;
   }

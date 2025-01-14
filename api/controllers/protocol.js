@@ -369,318 +369,569 @@ export const continueinReviewGeneratePdf = async (req, res) => {
   return
 }
 
-export const protocolGeneratePdf = async (req, res) => {
+// export const protocolGeneratePdf = async (req, res) => {
+//   const protocolDetailsObj = {}
+//   if (req.body.protocolType === 'Clinical Site') {
+//     const que1 = 'select * from protocol_information where protocol_id = ?'
+//     db.query(que1, [req.body.protocolId], (err, data) => {
+//       if (data.length >= 0) {
+//         protocolDetailsObj.protocol_information = data[0] || {}
+//         const docQue =
+//           'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//         db.query(
+//           docQue,
+//           [req.body.protocolId, 'protocol_information'],
+//           async (err, data) => {
+//             if (data.length >= 0) {
+//               protocolDetailsObj.protocol_information.documents = data || {}
+//             } else {
+//               protocolDetailsObj.protocol_information.documents = []
+//             }
+//           }
+//         )
+//         const que2 =
+//           'select * from investigator_information where protocol_id = ?'
+//         db.query(que2, [req.body.protocolId], (err, data) => {
+//           if (data.length >= 0) {
+//             protocolDetailsObj.investigator_information = data[0] || {}
+//             const docQue =
+//               'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//             db.query(
+//               docQue,
+//               [req.body.protocolId, 'investigator_information'],
+//               async (err, data) => {
+//                 if (data.length >= 0) {
+//                   protocolDetailsObj.investigator_information.documents =
+//                     data || {}
+//                 } else {
+//                   protocolDetailsObj.investigator_information.documents = []
+//                 }
+//               }
+//             )
+//             const que3 = 'select * from study_information where protocol_id = ?'
+//             db.query(que3, [req.body.protocolId], (err, data) => {
+//               if (data.length >= 0) {
+//                 protocolDetailsObj.study_information = data[0] || {}
+//                 const docQue =
+//                   'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                 db.query(
+//                   docQue,
+//                   [req.body.protocolId, 'study_information'],
+//                   async (err, data) => {
+//                     if (data.length >= 0) {
+//                       protocolDetailsObj.study_information.documents =
+//                         data || {}
+//                     } else {
+//                       protocolDetailsObj.study_information.documents = []
+//                     }
+//                   }
+//                 )
+//                 const que4 =
+//                   'select * from informed_consent where protocol_id = ?'
+//                 db.query(que4, [req.body.protocolId], (err, data) => {
+//                   if (data.length >= 0) {
+//                     protocolDetailsObj.informed_consent = data[0] || {}
+//                     const docQue =
+//                       'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                     db.query(
+//                       docQue,
+//                       [req.body.protocolId, 'informed_consent'],
+//                       async (err, data) => {
+//                         if (data.length >= 0) {
+//                           protocolDetailsObj.informed_consent.documents = data
+//                         } else {
+//                           protocolDetailsObj.informed_consent.documents = []
+//                         }
+//                       }
+//                     )
+//                     const que5 =
+//                       'select * from protocol_procedure where protocol_id = ?'
+//                     db.query(que5, [req.body.protocolId], (err, data) => {
+//                       if (data.length >= 0) {
+//                         protocolDetailsObj.protocol_procedure = data[0] || {}
+//                         const docQue =
+//                           'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                         db.query(
+//                           docQue,
+//                           [req.body.protocolId, 'protocol_procedure'],
+//                           async (err, data) => {
+//                             if (data.length >= 0) {
+//                               protocolDetailsObj.protocol_procedure.documents =
+//                                 data
+//                             } else {
+//                               protocolDetailsObj.protocol_procedure.documents =
+//                                 []
+//                             }
+//                             try {
+//                               const protocolId = req.body
+//                               const template =
+//                                 await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
+//                                   protocolDetailsObj,
+//                                   protocolId
+//                                 )
+//                               let filePath = await generatePdfFromHTML(template)
+//                               console.log('filePath', filePath)
+//                               let sRL = await s3Service.uploadFile(filePath)
+//                               console.log('sRL', sRL)
+//                               let pdfUrl = sRL.cdnUrl
+//                               // Remove the file from the local server
+//                               fs.unlinkSync(filePath)
+//                               return res.status(200).json({ pdfUrl })
+//                             } catch (error) {
+//                               console.log(error)
+//                               return res
+//                                 .status(500)
+//                                 .json({ message: 'Internal Server Error' })
+//                             }
+//                           }
+//                         )
+//                       }
+//                     })
+//                   }
+//                 })
+//               }
+//             })
+//           }
+//         })
+//       }
+//     })
+//   } else if (req.body.protocolType === 'Multi-Site Sponsor') {
+//     const que1 = 'select * from protocol_information where protocol_id = ?'
+//     db.query(que1, [req.body.protocolId], (err, data) => {
+//       if (data.length >= 0) {
+//         protocolDetailsObj.protocol_information = data[0] || {}
+//         const docQue =
+//           'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//         db.query(
+//           docQue,
+//           [req.body.protocolId, 'protocol_information'],
+//           async (err, data) => {
+//             if (data.length >= 0) {
+//               protocolDetailsObj.protocol_information.documents = data
+//             } else {
+//               protocolDetailsObj.protocol_information.documents = []
+//             }
+//           }
+//         )
+//         const que2 = 'select * from contact_information where protocol_id = ?'
+//         db.query(que2, [req.body.protocolId], (err, data) => {
+//           if (data.length >= 0) {
+//             protocolDetailsObj.contact_information = data[0] || {}
+//             const docQue =
+//               'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//             db.query(
+//               docQue,
+//               [req.body.protocolId, 'contact_information'],
+//               async (err, data) => {
+//                 if (data.length >= 0) {
+//                   protocolDetailsObj.contact_information.documents = data
+//                 } else {
+//                   protocolDetailsObj.contact_information.documents = []
+//                 }
+//               }
+//             )
+//             const que3 = 'select * from study_information where protocol_id = ?'
+//             db.query(que3, [req.body.protocolId], (err, data) => {
+//               if (data.length >= 0) {
+//                 protocolDetailsObj.study_information = data[0] || {}
+//                 const docQue =
+//                   'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                 db.query(
+//                   docQue,
+//                   [req.body.protocolId, 'study_information'],
+//                   async (err, data) => {
+//                     if (data.length >= 0) {
+//                       protocolDetailsObj.study_information.documents = data
+//                     } else {
+//                       protocolDetailsObj.study_information.documents = []
+//                     }
+//                   }
+//                 )
+//                 const que4 =
+//                   'select * from informed_consent where protocol_id = ?'
+//                 db.query(que4, [req.body.protocolId], (err, data) => {
+//                   if (data.length >= 0) {
+//                     protocolDetailsObj.informed_consent = data[0] || {}
+//                     const docQue =
+//                       'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                     db.query(
+//                       docQue,
+//                       [req.body.protocolId, 'informed_consent'],
+//                       async (err, data) => {
+//                         if (data.length >= 0) {
+//                           protocolDetailsObj.informed_consent.documents = data
+//                         } else {
+//                           protocolDetailsObj.informed_consent.documents = []
+//                         }
+//                       }
+//                     )
+//                     const que5 =
+//                       'select * from protocol_procedure where protocol_id = ?'
+//                     db.query(que5, [req.body.protocolId], (err, data) => {
+//                       if (data.length >= 0) {
+//                         protocolDetailsObj.protocol_procedure = data[0] || {}
+//                         const docQue =
+//                           'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                         db.query(
+//                           docQue,
+//                           [req.body.protocolId, 'protocol_procedure'],
+//                           async (err, data) => {
+//                             if (data.length >= 0) {
+//                               protocolDetailsObj.protocol_procedure.documents =
+//                                 data
+//                             } else {
+//                               protocolDetailsObj.protocol_procedure.documents =
+//                                 []
+//                             }
+//                             // return res.status(200).json(protocolDetailsObj);
+//                             try {
+//                               const protocolId = req.body
+//                               const template =
+//                                 await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
+//                                   protocolDetailsObj,
+//                                   protocolId
+//                                 )
+//                               let filePath = await generatePdfFromHTML(template)
+//                               console.log('filePath', filePath)
+//                               let sRL = await s3Service.uploadFile(filePath)
+//                               console.log('sRL', sRL)
+//                               let pdfUrl = sRL.cdnUrl
+//                               // Remove the file from the local server
+//                               fs.unlinkSync(filePath)
+//                               return res.status(200).json({ pdfUrl })
+//                             } catch (error) {
+//                               console.log(error)
+//                               return res
+//                                 .status(500)
+//                                 .json({ message: 'Internal Server Error' })
+//                             }
+//                           }
+//                         )
+//                       }
+//                     })
+//                   }
+//                 })
+//               }
+//             })
+//           }
+//         })
+//       }
+//     })
+//   } else if (req.body.protocolType === 'Document Review') {
+//     const que1 = 'select * from protocol_information where protocol_id = ?'
+//     db.query(que1, [req.body.protocolId], (err, data) => {
+//       if (data.length >= 0) {
+//         protocolDetailsObj.protocol_information = data[0] || {}
+//         const docQue =
+//           'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//         db.query(
+//           docQue,
+//           [req.body.protocolId, 'protocol_information'],
+//           async (err, data) => {
+//             if (data.length >= 0) {
+//               protocolDetailsObj.protocol_information.documents = data
+//             } else {
+//               protocolDetailsObj.protocol_information.documents = []
+//             }
+//           }
+//         )
+//         const que2 =
+//           'select * from investigator_information where protocol_id = ?'
+//         db.query(que2, [req.body.protocolId], (err, data) => {
+//           if (data.length >= 0) {
+//             protocolDetailsObj.investigator_information = data[0] || {}
+//             const docQue =
+//               'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//             db.query(
+//               docQue,
+//               [req.body.protocolId, 'investigator_information'],
+//               async (err, data) => {
+//                 if (data.length >= 0) {
+//                   protocolDetailsObj.investigator_information.documents = data
+//                 } else {
+//                   protocolDetailsObj.investigator_information.documents = []
+//                 }
+//               }
+//             )
+//             const que3 = 'select * from informed_consent where protocol_id = ?'
+//             db.query(que3, [req.body.protocolId], (err, data) => {
+//               if (data.length >= 0) {
+//                 protocolDetailsObj.informed_consent = data[0] || {}
+//                 const docQue =
+//                   'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//                 db.query(
+//                   docQue,
+//                   [req.body.protocolId, 'informed_consent'],
+//                   async (err, data) => {
+//                     if (data.length >= 0) {
+//                       protocolDetailsObj.informed_consent.documents = data
+//                     } else {
+//                       protocolDetailsObj.informed_consent.documents = []
+//                     }
+//                     try {
+//                       const protocolId = req.body
+//                       const template =
+//                         await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
+//                           protocolDetailsObj,
+//                           protocolId
+//                         )
+//                       let filePath = await generatePdfFromHTML(template)
+//                       console.log('filePath', filePath)
+//                       let sRL = await s3Service.uploadFile(filePath)
+//                       console.log('sRL', sRL)
+//                       let pdfUrl = sRL.cdnUrl
+//                       // Remove the file from the local server
+//                       fs.unlinkSync(filePath)
+//                       return res.status(200).json({ pdfUrl })
+//                     } catch (error) {
+//                       console.log(error)
+//                       return res
+//                         .status(500)
+//                         .json({ message: 'Internal Server Error' })
+//                     }
+//                   }
+//                 )
+//               }
+//             })
+//           }
+//         })
+//       }
+//     })
+//   } else {
+//     const que1 =
+//       'select * from investigator_protocol_information where protocol_id = ?'
+//     db.query(que1, [req.body.protocolId], (err, data) => {
+//       if (data.length >= 0) {
+//         protocolDetailsObj.investigator_protocol_information = data[0] || {}
+//         const docQue =
+//           'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//         db.query(
+//           docQue,
+//           [req.body.protocolId, 'investigator_protocol_information'],
+//           async (err, data) => {
+//             if (data.length >= 0) {
+//               protocolDetailsObj.investigator_protocol_information.documents =
+//                 data
+//             } else {
+//               protocolDetailsObj.investigator_protocol_information.documents =
+//                 []
+//             }
+//           }
+//         )
+//         const que2 =
+//           'select * from clinical_consent_information where protocol_id = ?'
+//         db.query(que2, [req.body.protocolId], (err, data) => {
+//           if (data.length >= 0) {
+//             protocolDetailsObj.consent_information = data[0] || {}
+//             const docQue =
+//               'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+//             db.query(
+//               docQue,
+//               [req.body.protocolId, 'consent_information'],
+//               async (err, data) => {
+//                 if (data.length >= 0) {
+//                   protocolDetailsObj.consent_information.documents = data
+//                 } else {
+//                   protocolDetailsObj.consent_information.documents = []
+//                 }
+//                 // return res.status(200).json(protocolDetailsObj);
+//                 try {
+//                   const protocolId = req.body
+//                   const template =
+//                     await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
+//                       protocolDetailsObj,
+//                       protocolId
+//                     )
+//                   let filePath = await generatePdfFromHTML(template)
+//                   console.log('filePath', filePath)
+//                   let sRL = await s3Service.uploadFile(filePath)
+//                   console.log('sRL', sRL)
+//                   let pdfUrl = sRL.cdnUrl
+//                   // Remove the file from the local server
+//                   fs.unlinkSync(filePath)
+//                   return res.status(200).json({ pdfUrl })
+//                 } catch (error) {
+//                   console.log(error)
+//                   return res
+//                     .status(500)
+//                     .json({ message: 'Internal Server Error' })
+//                 }
+//               }
+//             )
+//           }
+//         })
+//       }
+//     })
+//   }
+// }
+
+const getProtocolDocuments = async (protocolId, informationType) => {
+  const query =
+    'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+  return new Promise((resolve, reject) => {
+    db.query(query, [protocolId, informationType], (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data.length > 0 ? data : [])
+      }
+    })
+  })
+}
+
+const getProtocolDetails = async (protocolId, protocolType) => {
   const protocolDetailsObj = {}
-  if (req.body.protocolType === 'Clinical Site') {
-    const que1 = 'select * from protocol_information where protocol_id = ?'
-    db.query(que1, [req.body.protocolId], (err, data) => {
-      if (data.length >= 0) {
-        protocolDetailsObj.protocol_information = data[0] || {}
-        const docQue =
-          'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-        db.query(
-          docQue,
-          [req.body.protocolId, 'protocol_information'],
-          async (err, data) => {
-            if (data.length >= 0) {
-              protocolDetailsObj.protocol_information.documents = data || {}
-            } else {
-              protocolDetailsObj.protocol_information.documents = []
-            }
-          }
-        )
-        const que2 =
-          'select * from investigator_information where protocol_id = ?'
-        db.query(que2, [req.body.protocolId], (err, data) => {
-          if (data.length >= 0) {
-            protocolDetailsObj.investigator_information = data[0] || {}
-            const docQue =
-              'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-            db.query(
-              docQue,
-              [req.body.protocolId, 'investigator_information'],
-              async (err, data) => {
-                if (data.length >= 0) {
-                  protocolDetailsObj.investigator_information.documents =
-                    data || {}
-                } else {
-                  protocolDetailsObj.investigator_information.documents = []
-                }
-              }
-            )
-            const que3 = 'select * from study_information where protocol_id = ?'
-            db.query(que3, [req.body.protocolId], (err, data) => {
-              if (data.length >= 0) {
-                protocolDetailsObj.study_information = data[0] || {}
-                const docQue =
-                  'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-                db.query(
-                  docQue,
-                  [req.body.protocolId, 'study_information'],
-                  async (err, data) => {
-                    if (data.length >= 0) {
-                      protocolDetailsObj.study_information.documents =
-                        data || {}
-                    } else {
-                      protocolDetailsObj.study_information.documents = []
-                    }
-                  }
-                )
-                const que4 =
-                  'select * from informed_consent where protocol_id = ?'
-                db.query(que4, [req.body.protocolId], (err, data) => {
-                  if (data.length >= 0) {
-                    protocolDetailsObj.informed_consent = data[0] || {}
-                    const docQue =
-                      'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-                    db.query(
-                      docQue,
-                      [req.body.protocolId, 'informed_consent'],
-                      async (err, data) => {
-                        if (data.length >= 0) {
-                          protocolDetailsObj.informed_consent.documents = data
-                        } else {
-                          protocolDetailsObj.informed_consent.documents = []
-                        }
-                      }
-                    )
-                    const que5 =
-                      'select * from protocol_procedure where protocol_id = ?'
-                    db.query(que5, [req.body.protocolId], (err, data) => {
-                      if (data.length >= 0) {
-                        protocolDetailsObj.protocol_procedure = data[0] || {}
-                        const docQue =
-                          'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-                        db.query(
-                          docQue,
-                          [req.body.protocolId, 'protocol_procedure'],
-                          async (err, data) => {
-                            if (data.length >= 0) {
-                              protocolDetailsObj.protocol_procedure.documents =
-                                data
-                            } else {
-                              protocolDetailsObj.protocol_procedure.documents =
-                                []
-                            }
-                            try {
-                              const protocolId = req.body
-                              const template =
-                                await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
-                                  protocolDetailsObj,
-                                  protocolId
-                                )
-                              let filePath = await generatePdfFromHTML(template)
-                              console.log('filePath', filePath)
-                              let sRL = await s3Service.uploadFile(filePath)
-                              console.log('sRL', sRL)
-                              let pdfUrl = sRL.cdnUrl
-                              // Remove the file from the local server
-                              fs.unlinkSync(filePath)
-                              return res.status(200).json({ pdfUrl })
-                            } catch (error) {
-                              console.log(error)
-                              return res
-                                .status(500)
-                                .json({ message: 'Internal Server Error' })
-                            }
-                          }
-                        )
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          }
-        })
+
+  const queries = {
+    'Clinical Site': [
+      {
+        key: 'protocol_information',
+        query: 'select * from protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'investigator_information',
+        query: 'select * from investigator_information where protocol_id = ?'
+      },
+      {
+        key: 'study_information',
+        query: 'select * from study_information where protocol_id = ?'
+      },
+      {
+        key: 'informed_consent',
+        query: 'select * from informed_consent where protocol_id = ?'
+      },
+      {
+        key: 'protocol_procedure',
+        query: 'select * from protocol_procedure where protocol_id = ?'
       }
-    })
-  } else if (req.body.protocolType === 'Multi-Site Sponsor') {
-    const que1 = 'select * from protocol_information where protocol_id = ?'
-    db.query(que1, [req.body.protocolId], (err, data) => {
-      if (data.length >= 0) {
-        protocolDetailsObj.protocol_information = data[0] || {}
-        const docQue =
-          'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-        db.query(
-          docQue,
-          [req.body.protocolId, 'protocol_information'],
-          async (err, data) => {
-            if (data.length >= 0) {
-              protocolDetailsObj.protocol_information.documents = data
-            } else {
-              protocolDetailsObj.protocol_information.documents = []
-            }
-          }
-        )
-        const que2 = 'select * from contact_information where protocol_id = ?'
-        db.query(que2, [req.body.protocolId], (err, data) => {
-          if (data.length >= 0) {
-            protocolDetailsObj.contact_information = data[0] || {}
-            const docQue =
-              'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-            db.query(
-              docQue,
-              [req.body.protocolId, 'contact_information'],
-              async (err, data) => {
-                if (data.length >= 0) {
-                  protocolDetailsObj.contact_information.documents = data
-                } else {
-                  protocolDetailsObj.contact_information.documents = []
-                }
-              }
-            )
-            const que3 = 'select * from study_information where protocol_id = ?'
-            db.query(que3, [req.body.protocolId], (err, data) => {
-              if (data.length >= 0) {
-                protocolDetailsObj.study_information = data[0] || {}
-                const docQue =
-                  'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-                db.query(
-                  docQue,
-                  [req.body.protocolId, 'study_information'],
-                  async (err, data) => {
-                    if (data.length >= 0) {
-                      protocolDetailsObj.study_information.documents = data
-                    } else {
-                      protocolDetailsObj.study_information.documents = []
-                    }
-                  }
-                )
-                const que4 =
-                  'select * from informed_consent where protocol_id = ?'
-                db.query(que4, [req.body.protocolId], (err, data) => {
-                  if (data.length >= 0) {
-                    protocolDetailsObj.informed_consent = data[0] || {}
-                    const docQue =
-                      'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-                    db.query(
-                      docQue,
-                      [req.body.protocolId, 'informed_consent'],
-                      async (err, data) => {
-                        if (data.length >= 0) {
-                          protocolDetailsObj.informed_consent.documents = data
-                        } else {
-                          protocolDetailsObj.informed_consent.documents = []
-                        }
-                      }
-                    )
-                    const que5 =
-                      'select * from protocol_procedure where protocol_id = ?'
-                    db.query(que5, [req.body.protocolId], (err, data) => {
-                      if (data.length >= 0) {
-                        protocolDetailsObj.protocol_procedure = data[0] || {}
-                        const docQue =
-                          'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-                        db.query(
-                          docQue,
-                          [req.body.protocolId, 'protocol_procedure'],
-                          async (err, data) => {
-                            if (data.length >= 0) {
-                              protocolDetailsObj.protocol_procedure.documents =
-                                data
-                            } else {
-                              protocolDetailsObj.protocol_procedure.documents =
-                                []
-                            }
-                            // return res.status(200).json(protocolDetailsObj);
-                            try {
-                              const protocolId = req.body
-                              const template =
-                                await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
-                                  protocolDetailsObj,
-                                  protocolId
-                                )
-                              let filePath = await generatePdfFromHTML(template)
-                              console.log('filePath', filePath)
-                              let sRL = await s3Service.uploadFile(filePath)
-                              console.log('sRL', sRL)
-                              let pdfUrl = sRL.cdnUrl
-                              // Remove the file from the local server
-                              fs.unlinkSync(filePath)
-                              return res.status(200).json({ pdfUrl })
-                            } catch (error) {
-                              console.log(error)
-                              return res
-                                .status(500)
-                                .json({ message: 'Internal Server Error' })
-                            }
-                          }
-                        )
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          }
-        })
+    ],
+    'Multi-Site Sponsor': [
+      {
+        key: 'protocol_information',
+        query: 'select * from protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'contact_information',
+        query: 'select * from contact_information where protocol_id = ?'
+      },
+      {
+        key: 'study_information',
+        query: 'select * from study_information where protocol_id = ?'
+      },
+      {
+        key: 'informed_consent',
+        query: 'select * from informed_consent where protocol_id = ?'
+      },
+      {
+        key: 'protocol_procedure',
+        query: 'select * from protocol_procedure where protocol_id = ?'
       }
-    })
-  } else {
-    const que1 =
-      'select * from investigator_protocol_information where protocol_id = ?'
-    db.query(que1, [req.body.protocolId], (err, data) => {
-      if (data.length >= 0) {
-        protocolDetailsObj.investigator_protocol_information = data[0] || {}
-        const docQue =
-          'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-        db.query(
-          docQue,
-          [req.body.protocolId, 'investigator_protocol_information'],
-          async (err, data) => {
-            if (data.length >= 0) {
-              protocolDetailsObj.investigator_protocol_information.documents =
-                data
-            } else {
-              protocolDetailsObj.investigator_protocol_information.documents =
-                []
-            }
-          }
-        )
-        const que2 =
+    ],
+    'Document Review': [
+      {
+        key: 'protocol_information',
+        query: 'select * from protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'investigator_information',
+        query: 'select * from investigator_information where protocol_id = ?'
+      },
+      {
+        key: 'informed_consent',
+        query: 'select * from informed_consent where protocol_id = ?'
+      }
+    ],
+    default: [
+      {
+        key: 'investigator_protocol_information',
+        query:
+          'select * from investigator_protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'consent_information',
+        query:
           'select * from clinical_consent_information where protocol_id = ?'
-        db.query(que2, [req.body.protocolId], (err, data) => {
-          if (data.length >= 0) {
-            protocolDetailsObj.consent_information = data[0] || {}
-            const docQue =
-              'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-            db.query(
-              docQue,
-              [req.body.protocolId, 'consent_information'],
-              async (err, data) => {
-                if (data.length >= 0) {
-                  protocolDetailsObj.consent_information.documents = data
-                } else {
-                  protocolDetailsObj.consent_information.documents = []
-                }
-                // return res.status(200).json(protocolDetailsObj);
-                try {
-                  const protocolId = req.body
-                  const template =
-                    await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
-                      protocolDetailsObj,
-                      protocolId
-                    )
-                  let filePath = await generatePdfFromHTML(template)
-                  console.log('filePath', filePath)
-                  let sRL = await s3Service.uploadFile(filePath)
-                  console.log('sRL', sRL)
-                  let pdfUrl = sRL.cdnUrl
-                  // Remove the file from the local server
-                  fs.unlinkSync(filePath)
-                  return res.status(200).json({ pdfUrl })
-                } catch (error) {
-                  console.log(error)
-                  return res
-                    .status(500)
-                    .json({ message: 'Internal Server Error' })
-                }
-              }
-            )
-          }
-        })
       }
-    })
+    ]
+  }
+
+  const selectedQueries = queries[protocolType] || queries['default']
+
+  try {
+    // Fetch all details for the protocol
+    for (const { key, query } of selectedQueries) {
+      const data = await new Promise((resolve, reject) => {
+        db.query(query, [protocolId], (err, data) => {
+          if (err) reject(err)
+          else resolve(data.length > 0 ? data[0] : {})
+        })
+      })
+      protocolDetailsObj[key] = data
+
+      // Fetch associated documents for each key
+      const documents = await getProtocolDocuments(protocolId, key)
+      protocolDetailsObj[key].documents = documents
+    }
+    return protocolDetailsObj
+  } catch (error) {
+    throw new Error(`Error fetching protocol details: ${error.message}`)
+  }
+}
+
+export const protocolGeneratePdf = async (req, res) => {
+  const { protocolId, protocolType } = req.body
+
+  try {
+    // Fetch protocol details
+    const protocolDetailsObj = await getProtocolDetails(
+      protocolId,
+      protocolType
+    )
+
+    // Generate PDF
+    let template
+    if (protocolType === 'Clinical Site') {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    } else if (protocolType === 'Multi-Site Sponsor') {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    } else if (protocolType === 'Document Review') {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.DocumentReviewPdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    } else {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    }
+
+    // Generate the PDF from template HTML
+    const filePath = await generatePdfFromHTML(template)
+    console.log('filePath', filePath)
+
+    // Upload the PDF to S3
+    const sRL = await s3Service.uploadFile(filePath)
+    console.log('sRL', sRL)
+    const pdfUrl = sRL.cdnUrl
+
+    // Remove the file from the local server
+    fs.unlinkSync(filePath)
+
+    // Respond with the generated PDF URL
+    return res.status(200).json({ pdfUrl })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
