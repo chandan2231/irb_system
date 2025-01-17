@@ -47,7 +47,8 @@ const CommunicationItem = ({ communication, handleReplyToThread }) => {
         >
           {formattedDate}
         </Typography>
-        {communication.reply_thread_parent_id === "" ? (
+        {communication.replied_by === "" &&
+        communication.reply_thread_parent_id === "" ? (
           <ShowOptions
             communication={communication}
             handleReplyToThread={handleReplyToThread}
