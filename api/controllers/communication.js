@@ -12,7 +12,7 @@ export const saveEnquiryRequest = async (req, res) => {
         : ''
 
     const que =
-      'insert into communication (`protocol_id`, `attachments_id`, `protocol_type`, `subject`, `body`, `created_by_user_type`, `status`, `created_by`,`created_at`,`updated_at`) values (?)'
+      'insert into communication (`protocol_id`, `attachments_id`, `protocol_type`, `subject`, `body`, `created_by_user_type`, `status`, `reply_thread_parent_id`, `created_by`,`created_at`,`updated_at`) values (?)'
     const values = [
       req.body.protocol_id,
       attachmentString,
@@ -21,6 +21,7 @@ export const saveEnquiryRequest = async (req, res) => {
       req.body.body,
       req.body.created_by_user_type,
       req.body.status,
+      req.body.reply_thread_parent_id,
       req.body.created_by,
       datetime.toISOString(),
       datetime.toISOString()
