@@ -7,12 +7,13 @@ export const saveEnquiryRequest = async (req, res) => {
   try {
     const datetime = new Date()
     const attachmentString =
-      req.body.attachments_file.length > 0
+      req.body.attachments_file?.length > 0
         ? req.body.attachments_file.join(',')
         : ''
 
-    const que =
-      'insert into communication (`protocol_id`, `attachments_id`, `protocol_type`, `subject`, `body`, `created_by_user_type`, `status`, `reply_thread_parent_id`, `created_by`,`created_at`,`updated_at`) values (?)'
+    const query =
+      'INSERT INTO communication (`protocol_id`, `attachments_id`, `protocol_type`, `subject`, `body`, `created_by_user_type`, `status`, `reply_thread_parent_id`, `created_by`, `created_at`, `updated_at`) VALUES (?)'
+
     const values = [
       req.body.protocol_id,
       attachmentString,
@@ -27,31 +28,37 @@ export const saveEnquiryRequest = async (req, res) => {
       datetime.toISOString()
     ]
 
-    // Wrap the db query in a promise to use async/await
-    const result = await new Promise((resolve, reject) => {
-      db.query(que, [values], (err, data) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data)
-        }
-      })
-    })
+    // Perform the insert query
+    const result = await db.promise().query(query, [values])
+
+    // Handle reply thread update if necessary
+    if (
+      req.body.reply_thread_parent_id != null &&
+      req.body.reply_thread_parent_id !== ''
+    ) {
+      const updateQuery = 'UPDATE communication SET replied_by = ? WHERE id = ?'
+      const updateValues = [
+        req.body.created_by_user_type,
+        req.body.reply_thread_parent_id
+      ]
+      await db.promise().query(updateQuery, updateValues)
+    }
 
     // Fetch user info
     const user = await getUserInfo(req.body.created_by)
+
     // Fetch attachment info
-    const getAttachement = await handleCommunicationRequest(result.insertId)
+    const getAttachment = await handleCommunicationRequest(result[0].insertId)
 
-    // Extract the URLs (if there are any)
-    const attachmentUrls = getAttachement
+    // Extract and clean the attachment URLs
+    const attachmentUrls = getAttachment
       .map((item) => item.attachments)
-      .join(',') // If it's an array of URLs, join them into a single string
-      .split(',') // Split the string into an array by commas
-      .map((url) => url.trim()) // Trim any leading/trailing whitespace from each URL
-      .filter(Boolean) // Filter out any empty or invalid URLs
+      .join(',') // Join the URLs into a single string
+      .split(',') // Split the string by commas
+      .map((url) => url.trim()) // Trim whitespace from each URL
+      .filter(Boolean) // Remove any empty strings or invalid URLs
 
-    // Build HTML for attachments (if any)
+    // Create HTML for attachments
     let attachmentHtml = ''
     if (attachmentUrls.length > 0) {
       attachmentHtml = '<p>Attachments:</p><ul>'
@@ -68,23 +75,21 @@ export const saveEnquiryRequest = async (req, res) => {
     }
 
     // Define email parameters
-    const to = req.body.status === 2 ? user.email : 'goswamiempire@gmail.com' // The user's email address
+    const to = req.body.status === 2 ? user.email : 'goswamiempire@gmail.com'
     const subject = req.body.subject
 
-    // Create protocol and body HTML
-    var protocolNumberHtml = `<p>Protocol Number:${req.body.protocol_id}</p>`
-    var bodyHtml = `<p>${req.body.body}</p>`
+    // Create the email HTML body
+    const protocolNumberHtml = `<p>Protocol Number: ${req.body.protocol_id}</p>`
+    const bodyHtml = `<p>${req.body.body}</p>`
 
-    // Create attachment HTML if there are attachments
-
-    // Combine all email content into one HTML
     const emailHtml = `
-  <div>
-    ${protocolNumberHtml}
-    ${bodyHtml}
-    ${attachmentHtml}
-  </div>
-`
+      <div>
+        ${protocolNumberHtml}
+        ${bodyHtml}
+        ${attachmentHtml}
+      </div>
+    `
+
     const text = emailHtml
     const html = emailHtml
 
@@ -114,7 +119,7 @@ LEFT JOIN communication_documents AS cd
 WHERE cm.protocol_id = ? 
   AND cm.status = ? 
   AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '' OR cm.attachments_id IS NULL OR cm.attachments_id = '')
-GROUP BY cm.id`
+GROUP BY cm.id ORDER BY cm.id DESC`
 
   try {
     // Execute the query using async/await
