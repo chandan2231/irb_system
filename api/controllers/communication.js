@@ -4,6 +4,7 @@ import { getUserInfo } from '../userData.js'
 
 // Save Enquiry Request function
 export const saveEnquiryRequest = async (req, res) => {
+  console.log('saveEnquiryRequest', req.body)
   try {
     const datetime = new Date()
     const attachmentString =
@@ -21,10 +22,10 @@ export const saveEnquiryRequest = async (req, res) => {
       req.body.body,
       req.body.created_by_user_type,
       req.body.status,
-      req.body.reply_thread_parent_id,
+      req.body.reply_thread_parent_id ?? '',
       req.body.created_by,
-      datetime.toISOString(),
-      datetime.toISOString()
+      datetime,
+      datetime
     ]
 
     // Wrap the db query in a promise to use async/await
@@ -69,7 +70,7 @@ export const saveEnquiryRequest = async (req, res) => {
 
     // Define email parameters
     const to =
-      req.body.status === 2 ? user.email : 'neuroheadachecenter@gmail.com' // The user's email address
+      req.body.status === 2 ? user.email : 'goswamiempire@gmail.com' // The user's email address
     const subject = req.body.subject
 
     // Create protocol and body HTML
