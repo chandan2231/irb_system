@@ -832,6 +832,36 @@ export const getClinicalSiteSavedProtocolType = (req, res) => {
     })
   }
 }
+export const getDocumentReviewSavedProtocolType = (req, res) => {
+  const protocolTypeObj = {}
+  if (req.body.protocolType === 'Document Review') {
+    const que1 = 'select * from protocol_information where protocol_id = ?'
+    db.query(que1, [req.body.protocolId], (err, data) => {
+      if (data.length >= 0) {
+        protocolTypeObj.protocol_information = data.length > 0 ? true : false
+        const que2 =
+          'select * from investigator_information where protocol_id = ?'
+        db.query(que2, [req.body.protocolId], (err, data) => {
+          if (data.length >= 0) {
+            protocolTypeObj.investigator_information =
+              data.length > 0 ? true : false
+            const que3 = 'select * from informed_consent where protocol_id = ?'
+            db.query(que3, [req.body.protocolId], (err, data) => {
+              if (data.length >= 0) {
+                protocolTypeObj.document_review = data.length > 0 ? true : false
+                let result = Object.keys(protocolTypeObj).map((key) => ({
+                  form: key,
+                  filled: protocolTypeObj[key]
+                }))
+                return res.status(200).json(result)
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+}
 
 export const saveMultiSiteSubmission = (req, res) => {
   const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'

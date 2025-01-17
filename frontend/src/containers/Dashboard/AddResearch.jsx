@@ -17,6 +17,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     { name: "Clinical Site", id: "Clinical Site" },
     { name: "Multi-Site Sponsor", id: "Multi-Site Sponsor" },
     { name: "Principal Investigator", id: "Principal Investigator" },
+    { name: "Document Review", id: "Document Review" },
   ];
   const modalStyles = {
     inputFields: {
