@@ -12,10 +12,7 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
-const ShowOptions = ({
-  protocolTypeDetails,
-  enqueryUserType,
-}) => {
+const ShowOptions = ({ protocolTypeDetails, enqueryUserType }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -101,20 +98,19 @@ const Communication = () => {
     setValue(newValue);
   };
 
-  const [isReplyToThreadClicked, setIsReplyToThreadClicked] = React.useState(
-    false
-  );
+  const [isReplyToThreadClicked, setIsReplyToThreadClicked] =
+    React.useState(false);
   const [selectedThread, setSelectedThread] = React.useState(null);
   const handleReplyToThread = (threadDetails) => {
     setIsReplyToThreadClicked(true);
     setSelectedThread(threadDetails);
     setValue(0);
-  }
+  };
 
   const handleCancelReply = () => {
     setIsReplyToThreadClicked(false);
     setSelectedThread(null);
-  }
+  };
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -154,12 +150,14 @@ const Communication = () => {
         {protocolTypeDetails.researchType}&nbsp;(
         {protocolTypeDetails.protocolId})
       </h2>
-      <Box className="ml-20" sx={{ borderColor: "divider", }}>
-        <Box sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "between",
-        }}>
+      <Box className="ml-20" sx={{ borderColor: "divider" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "between",
+          }}
+        >
           <Tabs
             value={value}
             onChange={handleChange}
@@ -174,7 +172,7 @@ const Communication = () => {
             <Tab label="Send Email" {...a11yProps(0)} />
             <Tab label="Thread" {...a11yProps(1)} />
           </Tabs>
-          <ShowOptions 
+          <ShowOptions
             protocolTypeDetails={protocolTypeDetails}
             enqueryUserType={enqueryUserType}
           />
