@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import ClinicalResearcherDetails from "../Dashboard/ClinicalResearcherDetails";
 import ContractorResearcherDetails from "../Dashboard/ContractorResearcherDetails";
 import MultiSiteSponsorDetails from "../Dashboard/MultiSiteSponsorDetails";
+import DocumentReviewDetails from "../Dashboard/DocumentReviewDetails";
 import { fetchProtocolDetailsById } from "../../services/Admin/ProtocolListService";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -31,6 +32,7 @@ const ProtocolDetails = () => {
     protocolDetailsById: state.admin.protocolDetailsById,
     loading: state.admin.loading,
   }));
+
   return (
     <>
       {protocolTypeDetails.researchType === "Clinical Site" ? (
@@ -40,6 +42,11 @@ const ProtocolDetails = () => {
         />
       ) : protocolTypeDetails.researchType === "Multi-Site Sponsor" ? (
         <MultiSiteSponsorDetails
+          protocolTypeDetails={protocolTypeDetails}
+          protocolDetailsById={protocolDetailsById}
+        />
+      ) : protocolTypeDetails.researchType === "Document Review" ? (
+        <DocumentReviewDetails
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsById}
         />

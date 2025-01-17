@@ -100,10 +100,31 @@ const PrincipalInvestigatorPdfTemplate = (
   return template
 }
 
+const DocumentReviewPdfTemplate = (clinicalSiteDetailObj, protocolIdObj) => {
+  const { protocolId, protocolType } = protocolIdObj
+  const { protocol_information, investigator_information, informed_consent } =
+    clinicalSiteDetailObj
+  const templatePayload = {
+    headerText: 'Document Review Details',
+    protocolId,
+    protocolType,
+    protocol_information,
+    investigator_information,
+    informed_consent
+  }
+  const template = {
+    content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.DocumentReviewHTMLTemplate(
+      templatePayload
+    )}`
+  }
+  return template
+}
+
 const protocolAmendmentRequestPdfTemplate = {
   ClinicalSitePdfTemplate,
   MultiSiteSponsorPdfTemplate,
-  PrincipalInvestigatorPdfTemplate
+  PrincipalInvestigatorPdfTemplate,
+  DocumentReviewPdfTemplate
 }
 
 const PdfTemplates = {

@@ -15,7 +15,8 @@ import {
   saveMultiSiteSubmission,
   getMultiSiteSavedProtocolType,
   getPrincipalInvestigatorSavedProtocolType,
-  savePrincipalInvestigatorSubmission
+  savePrincipalInvestigatorSubmission,
+  getDocumentReviewSavedProtocolType
 } from '../controllers/researchInfo.js'
 
 const router = express.Router()
@@ -49,6 +50,10 @@ router.post(
 router.post(
   '/getPrincipalInvestigatorSavedProtocolType',
   getPrincipalInvestigatorSavedProtocolType
+)
+router.post(
+  '/getDocumentReviewSavedProtocolType',
+  getDocumentReviewSavedProtocolType
 )
 
 export default router

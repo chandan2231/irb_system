@@ -4,13 +4,12 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import ProtocolInformationForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/ProtocolInformationForm";
-import ContactInformationForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/ContactInformationForm";
-import StudyInformationForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/StudyInformationForm";
-import InformedConsentForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/InformedConsentForm";
-import SubmissionForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/SubmissionForm";
-import ProtocolProceduresForm from "../ProtocolList/AdminProtocolType/MultiSiteSponsor/ProtocolProceduresForm";
+import ProtocolInformationForm from "../ProtocolList/AdminProtocolType/DocumentReview/ProtocolInformationForm";
+import InvestigatorInformationForm from "../ProtocolList/AdminProtocolType/DocumentReview/InvestigatorInformationForm";
+import InformedConsentForm from "../ProtocolList/AdminProtocolType/DocumentReview/InformedConsentForm";
+import SubmissionForm from "../ProtocolList/AdminProtocolType/DocumentReview/SubmissionForm";
 import { votingMemberApprovalProtocol } from "../../../services/Admin/MembersService";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -23,11 +22,10 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
 const memberProtocolSchema = yup.object().shape({
   protocol: yup.string().required("This is required"),
@@ -36,11 +34,12 @@ const memberProtocolSchema = yup.object().shape({
   electronic_signature: yup.string().required("This is required"),
 });
 
-const MultiSiteSponsorDetails = ({
+const AdminDocumentReviewDetails = ({
   protocolTypeDetails,
   protocolDetailsById,
   type,
 }) => {
+  console.log("sadsadasdasdasdas");
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -73,9 +72,9 @@ const MultiSiteSponsorDetails = ({
     };
   }
   const location = useLocation();
-  const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     protocol: "",
     consent: "",
@@ -92,11 +91,6 @@ const MultiSiteSponsorDetails = ({
     setValue(newValue);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
   const handleRadioButtonProtocol = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -111,6 +105,7 @@ const MultiSiteSponsorDetails = ({
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
@@ -155,9 +150,16 @@ const MultiSiteSponsorDetails = ({
       }
     }
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleButtonClick = (index) => {
     setValue(index);
   };
+
   return (
     <Box sx={{ width: "100%" }}>
       <ToastContainer
@@ -360,6 +362,8 @@ const MultiSiteSponsorDetails = ({
                   ? "primary.dark"
                   : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
             },
+            flex: 2,
+            marginRight: "15px",
           }}
         >
           Protocol Information
@@ -382,13 +386,16 @@ const MultiSiteSponsorDetails = ({
                   ? "primary.dark"
                   : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
             },
+            flex: 2,
+            marginRight: "15px",
           }}
         >
-          Contact Information
+          Investigator Information
         </Button>
+
         <Button
           endIcon={<DoubleArrowIcon />}
-          variant={value === 2 ? "contained" : "text"}
+          variant={value === 3 ? "contained" : "text"}
           onClick={() => handleButtonClick(2)}
           sx={{
             whiteSpace: "nowrap",
@@ -404,12 +411,13 @@ const MultiSiteSponsorDetails = ({
                   ? "primary.dark"
                   : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
             },
+            flex: 2,
+            marginRight: "15px",
           }}
         >
-          Study Type
+          Document Review
         </Button>
         <Button
-          endIcon={<DoubleArrowIcon />}
           variant={value === 3 ? "contained" : "text"}
           onClick={() => handleButtonClick(3)}
           sx={{
@@ -426,55 +434,14 @@ const MultiSiteSponsorDetails = ({
                   ? "primary.dark"
                   : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
             },
-          }}
-        >
-          Informed Consent
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 4 ? "contained" : "text"}
-          onClick={() => handleButtonClick(4)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 4 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 4 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 4 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 4
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Protocol Procedures
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 5 ? "contained" : "text"}
-          onClick={() => handleButtonClick(5)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 5 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 5 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 5 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 5
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
+            flex: 1,
+            marginRight: "15px",
           }}
         >
           Submission
         </Button>
       </Box>
+      {/* here */}
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
@@ -483,38 +450,28 @@ const MultiSiteSponsorDetails = ({
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <ContactInformationForm
+        <InvestigatorInformationForm
           protocolTypeDetails={protocolTypeDetails}
-          contactInformation={protocolDetailsById?.contact_information}
+          investigatorInformation={
+            protocolDetailsById?.investigator_information
+          }
           type={type}
         />
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={2}>
-        <StudyInformationForm
-          protocolTypeDetails={protocolTypeDetails}
-          studyInformation={protocolDetailsById?.study_information}
-          type={type}
-        />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsById?.informed_consent}
           type={type}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
-        <ProtocolProceduresForm
-          protocolTypeDetails={protocolTypeDetails}
-          protocolProcedures={protocolDetailsById?.protocol_procedure}
-          type={type}
-        />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+
+      <CustomTabPanel value={value} index={3}>
         <SubmissionForm protocolTypeDetails={protocolTypeDetails} type={type} />
       </CustomTabPanel>
     </Box>
   );
 };
 
-export default MultiSiteSponsorDetails;
+export default AdminDocumentReviewDetails;

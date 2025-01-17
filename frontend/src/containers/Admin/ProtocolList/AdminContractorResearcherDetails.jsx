@@ -27,6 +27,7 @@ import Button from "@mui/material/Button";
 import * as yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
 const memberProtocolSchema = yup.object().shape({
   protocol: yup.string().required("This is required"),
@@ -38,7 +39,7 @@ const memberProtocolSchema = yup.object().shape({
 const ContractorResearcherDetails = ({
   protocolTypeDetails,
   protocolDetailsById,
-  type
+  type,
 }) => {
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -109,10 +110,9 @@ const ContractorResearcherDetails = ({
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
-      const getValidatedform = await memberProtocolSchema.validate(
-        formData,
-        { abortEarly: false },
-      );
+      const getValidatedform = await memberProtocolSchema.validate(formData, {
+        abortEarly: false,
+      });
       const isValid = await memberProtocolSchema.isValid(getValidatedform);
       if (isValid === true) {
         dispatch(votingMemberApprovalProtocol(formData)).then((data) => {
@@ -140,7 +140,7 @@ const ContractorResearcherDetails = ({
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -150,6 +150,10 @@ const ContractorResearcherDetails = ({
         }
       }
     }
+  };
+
+  const handleButtonClick = (index) => {
+    setValue(index);
   };
 
   const handleInputChange = (e) => {
@@ -175,88 +179,111 @@ const ContractorResearcherDetails = ({
         {protocolTypeDetails.researchType} Details(
         {protocolTypeDetails.protocolId})
       </h2>
-      {
-        type === 'member' && (
-          <Row className="ml-20">
-            <h3>Protocol Approval Voting</h3>
-            <form onSubmit={handleSubmitData}>
+      {type === "member" && (
+        <Row className="ml-20">
+          <h3>Protocol Approval Voting</h3>
+          <form onSubmit={handleSubmitData}>
             <Grid container>
               <Grid item xs={12} md={5} lg={5}>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-10"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Protocol
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="protocol"
-                    value={formData.protocol}
-                    onChange={handleRadioButtonProtocol}
-                  >
-                    <FormControlLabel value="Approve" control={<Radio />} label="Approve" />
-                    <FormControlLabel value="Not Approve" control={<Radio />} label="Not Approve" />
-                  </RadioGroup>
-                </FormControl>
-                {errors.protocol && (
-                  <div className="error">{errors.protocol}</div>
-                )}
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik02"
-                className="mt-mb-10"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Consent
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="consent"
-                    value={formData.consent}
-                    onChange={handleRadioButtonConsent}
-                  >
-                    <FormControlLabel value="Approve" control={<Radio />} label="Approve" />
-                    <FormControlLabel value="Not Approve" control={<Radio />} label="Not Approve" />
-                  </RadioGroup>
-                </FormControl>
-                {errors.consent && (
-                  <div className="error">{errors.consent}</div>
-                )}
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-10"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Supported Documents
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="supported_documents"
-                    value={formData.supported_documents}
-                    onChange={handleRadioButtonSupportedDocument}
-                  >
-                    <FormControlLabel value="Approve" control={<Radio />} label="Approve" />
-                    <FormControlLabel value="Not Approve" control={<Radio />} label="Not Approve" />
-                  </RadioGroup>
-                </FormControl>
-                {errors.supported_documents && (
-                  <div className="error">{errors.supported_documents}</div>
-                )}
-              </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-10"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Protocol
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="protocol"
+                      value={formData.protocol}
+                      onChange={handleRadioButtonProtocol}
+                    >
+                      <FormControlLabel
+                        value="Approve"
+                        control={<Radio />}
+                        label="Approve"
+                      />
+                      <FormControlLabel
+                        value="Not Approve"
+                        control={<Radio />}
+                        label="Not Approve"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  {errors.protocol && (
+                    <div className="error">{errors.protocol}</div>
+                  )}
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik02"
+                  className="mt-mb-10"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Consent
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="consent"
+                      value={formData.consent}
+                      onChange={handleRadioButtonConsent}
+                    >
+                      <FormControlLabel
+                        value="Approve"
+                        control={<Radio />}
+                        label="Approve"
+                      />
+                      <FormControlLabel
+                        value="Not Approve"
+                        control={<Radio />}
+                        label="Not Approve"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  {errors.consent && (
+                    <div className="error">{errors.consent}</div>
+                  )}
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik03"
+                  className="mt-mb-10"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Supported Documents
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="supported_documents"
+                      value={formData.supported_documents}
+                      onChange={handleRadioButtonSupportedDocument}
+                    >
+                      <FormControlLabel
+                        value="Approve"
+                        control={<Radio />}
+                        label="Approve"
+                      />
+                      <FormControlLabel
+                        value="Not Approve"
+                        control={<Radio />}
+                        label="Not Approve"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  {errors.supported_documents && (
+                    <div className="error">{errors.supported_documents}</div>
+                  )}
+                </Form.Group>
               </Grid>
               <Grid item xs={12} md={7} lg={7} className="pr-25">
-              <Form.Group
+                <Form.Group
                   as={Col}
                   controlId="validationFormik04"
                   className="mt-mb-10"
@@ -298,38 +325,157 @@ const ContractorResearcherDetails = ({
               </Grid>
             </Grid>
             <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20 pr-25"
-                style={{ textAlign: "right" }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="Submit"
-                >
-                  SUBMIT
-                </Button>
-              </Form.Group>
-            </form>
-          </Row>
-        )
-      }
-      <Box sx={{ borderBottom: 1, borderColor: "divider", marginLeft: "5px" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          variant="scrollable"
-          scrollButtons="auto"
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20 pr-25"
+              style={{ textAlign: "right" }}
+            >
+              <Button variant="contained" color="primary" type="Submit">
+                SUBMIT
+              </Button>
+            </Form.Group>
+          </form>
+        </Row>
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          borderColor: "divider",
+        }}
+        style={{ padding: "0px 0px 0px 24px" }}
+      >
+        <Button
+          endIcon={<DoubleArrowIcon />}
+          variant={value === 0 ? "contained" : "text"}
+          onClick={() => handleButtonClick(0)}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: value === 0 ? "primary.main" : "transparent", // Active color for active button
+            backgroundImage:
+              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+            color: value === 0 ? "white" : "white",
+            "&:hover": {
+              backgroundColor:
+                value === 0
+                  ? "primary.dark"
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+            },
+          }}
         >
-          <Tab label="Protocol Information" {...a11yProps(0)} />
-          <Tab label="Investigator Information" {...a11yProps(1)} />
-          <Tab label="Study Type" {...a11yProps(2)} />
-          <Tab label="Informed Consent" {...a11yProps(3)} />
-          <Tab label="Protocol Procedures" {...a11yProps(4)} />
-          <Tab label="Submission" {...a11yProps(5)} />
-        </Tabs>
+          Protocol Information
+        </Button>
+        <Button
+          endIcon={<DoubleArrowIcon />}
+          variant={value === 1 ? "contained" : "text"}
+          onClick={() => handleButtonClick(1)}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: value === 1 ? "primary.main" : "transparent", // Active color for active button
+            backgroundImage:
+              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+            color: value === 1 ? "white" : "white",
+            "&:hover": {
+              backgroundColor:
+                value === 1
+                  ? "primary.dark"
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+            },
+          }}
+        >
+          Investigator Information
+        </Button>
+        <Button
+          endIcon={<DoubleArrowIcon />}
+          variant={value === 2 ? "contained" : "text"}
+          onClick={() => handleButtonClick(2)}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: value === 2 ? "primary.main" : "transparent", // Active color for active button
+            backgroundImage:
+              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+            color: value === 2 ? "white" : "white",
+            "&:hover": {
+              backgroundColor:
+                value === 2
+                  ? "primary.dark"
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+            },
+          }}
+        >
+          Study Type
+        </Button>
+        <Button
+          endIcon={<DoubleArrowIcon />}
+          variant={value === 3 ? "contained" : "text"}
+          onClick={() => handleButtonClick(3)}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: value === 3 ? "primary.main" : "transparent", // Active color for active button
+            backgroundImage:
+              value === 3 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+            color: value === 3 ? "white" : "white",
+            "&:hover": {
+              backgroundColor:
+                value === 3
+                  ? "primary.dark"
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+            },
+          }}
+        >
+          Informed Consent
+        </Button>
+        <Button
+          endIcon={<DoubleArrowIcon />}
+          variant={value === 4 ? "contained" : "text"}
+          onClick={() => handleButtonClick(4)}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: value === 4 ? "primary.main" : "transparent", // Active color for active button
+            backgroundImage:
+              value === 4 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+            color: value === 4 ? "white" : "white",
+            "&:hover": {
+              backgroundColor:
+                value === 4
+                  ? "primary.dark"
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+            },
+          }}
+        >
+          Protocol Procedures
+        </Button>
+        <Button
+          variant={value === 5 ? "contained" : "text"}
+          onClick={() => handleButtonClick(5)}
+          sx={{
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: value === 5 ? "primary.main" : "transparent", // Active color for active button
+            backgroundImage:
+              value === 5 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+            color: value === 5 ? "white" : "white",
+            "&:hover": {
+              backgroundColor:
+                value === 5
+                  ? "primary.dark"
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+            },
+          }}
+        >
+          Submission
+        </Button>
       </Box>
       {/* here */}
       <CustomTabPanel value={value} index={0}>
