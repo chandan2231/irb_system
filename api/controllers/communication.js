@@ -204,3 +204,39 @@ GROUP BY cm.id`
     res.status(500).json({ message: 'Database query error', error: err })
   }
 }
+
+export const getCommunicationListByProtocolIdForPdf = async (req, res) => {
+  const protocolId = req.body.protocol_id
+  const status = req.body.status
+  const que = `SELECT cm.*, 
+       GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
+FROM communication AS cm
+LEFT JOIN communication_documents AS cd 
+    ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
+WHERE cm.protocol_id = ? 
+  AND cm.status = ? 
+  AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '' OR cm.attachments_id IS NULL OR cm.attachments_id = '')
+GROUP BY cm.id`
+
+  try {
+    // Execute the query using async/await
+    const data = await new Promise((resolve, reject) => {
+      db.query(que, [protocolId, status], (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+
+    if (data.length > 0) {
+      return res.status(200).json(data)
+    } else {
+      return res.status(404).json({ message: 'No data found' })
+    }
+  } catch (err) {
+    console.error('Database query error:', err)
+    res.status(500).json({ message: 'Database query error', error: err })
+  }
+}
