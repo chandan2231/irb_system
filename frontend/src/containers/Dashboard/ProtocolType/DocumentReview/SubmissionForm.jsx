@@ -40,7 +40,7 @@ function SubmissionForm({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
-    paymentType: "Protocol Submission",
+    paymentType: "Document Review",
   });
   const [unsavedForms, setUnsavedForms] = useState([]);
 
@@ -186,7 +186,10 @@ function SubmissionForm({
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={termsSelected}
+                    checked={
+                      termsSelected ||
+                      protocolTypeDetails?.protocolStatus !== "Created"
+                    }
                     onChange={handleTermsChecked}
                   />
                 }
@@ -195,21 +198,23 @@ function SubmissionForm({
             </FormControl>
           </Form.Group>
 
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={!termsSelected}
+          {protocolTypeDetails?.protocolStatus === "Created" && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
             >
-              Submit And Pay
-            </Button>
-          </Form.Group>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={!termsSelected}
+              >
+                Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

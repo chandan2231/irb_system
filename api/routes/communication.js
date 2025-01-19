@@ -2,7 +2,7 @@ import express from 'express'
 import {
   saveEnquiryRequest,
   getCommunicationListByProtocolId,
-  getCommunicationListByProtocolIdForPdf
+  downloadCommunicationPdf
 } from '../controllers/communication.js'
 
 const router = express.Router()
@@ -12,9 +12,6 @@ router.post(
   '/getCommunicationListByProtocolId',
   getCommunicationListByProtocolId
 )
-router.post(
-  '/getCommunicationListByProtocolIdForPdf',
-  getCommunicationListByProtocolIdForPdf
-)
+router.post('/downloadCommunicationPdf', downloadCommunicationPdf)
 
 export default router

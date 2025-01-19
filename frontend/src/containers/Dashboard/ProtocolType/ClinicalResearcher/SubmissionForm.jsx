@@ -220,6 +220,10 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
               <FormGroup onChange={handleTermsChange}>
                 <FormControlLabel
                   control={<Checkbox />}
+                  checked={
+                    termsSelected ||
+                    protocolTypeDetails?.protocolStatus !== "Created"
+                  }
                   label="Your initials below signify that you have read and agree to the terms listed above"
                 />
               </FormGroup>
@@ -227,21 +231,23 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           </Form.Group>
 
           {/* Submit button */}
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              type="Submit"
-              disabled={!termsSelected}
+          {protocolTypeDetails?.protocolStatus === "Created" && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
             >
-              SUBMIT AND PAY
-            </Button>
-          </Form.Group>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={!termsSelected}
+              >
+                Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>
