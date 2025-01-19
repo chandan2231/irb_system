@@ -75,7 +75,7 @@ export const saveEnquiryRequest = async (req, res) => {
     }
 
     // Define email parameters
-    const to = req.body.status === 2 ? user.email : 'goswamiempire@gmail.com'
+    const to = req.body.status === 2 ? user.email : 'help.irbhub@gmail.com'
     const subject = req.body.subject
 
     // Create the email HTML body
@@ -209,23 +209,24 @@ GROUP BY cm.id`
   }
 }
 
-export const getCommunicationListByProtocolIdForPdf = async (req, res) => {
-  const protocolId = req.body.protocol_id
-  const status = req.body.status
+export const downloadCommunicationPdf = async (req, res) => {
+  const protocolId = req.body.protocolId
+
+  // SQL query to get communications with attachments
   const que = `SELECT cm.*, 
-       GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
-FROM communication AS cm
-LEFT JOIN communication_documents AS cd 
-    ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
-WHERE cm.protocol_id = ? 
-  AND cm.status = ? 
-  AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '' OR cm.attachments_id IS NULL OR cm.attachments_id = '')
-GROUP BY cm.id`
+                  GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
+              FROM communication AS cm
+              LEFT JOIN communication_documents AS cd 
+                  ON FIND_IN_SET(cd.id, cm.attachments_id) >= 0
+              WHERE cm.protocol_id = ? 
+                AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '' 
+                     OR cm.attachments_id IS NULL OR cm.attachments_id = '')
+              GROUP BY cm.id`
 
   try {
     // Execute the query using async/await
     const data = await new Promise((resolve, reject) => {
-      db.query(que, [protocolId, status], (err, data) => {
+      db.query(que, [protocolId], (err, data) => {
         if (err) {
           reject(err)
         } else {
@@ -235,7 +236,38 @@ GROUP BY cm.id`
     })
 
     if (data.length > 0) {
-      return res.status(200).json(data)
+      // To store the final grouped data
+      const quariedGroupedData = []
+
+      // Loop through the data to group and aggregate root threads
+      data.forEach((item) => {
+        if (item.reply_thread_parent_id === '') {
+          // Add an empty replies array to the current item (root thread)
+          item.replies = [] // Initializing as an array for storing replies
+
+          // Push the root item into the quariedGroupedData array
+          quariedGroupedData.push(item)
+        }
+      })
+
+      // Loop through the data again to associate replies with their parent threads
+      data.forEach((innerItem) => {
+        if (innerItem.reply_thread_parent_id !== '') {
+          // Find the parent thread by comparing the reply_thread_parent_id with the root thread's id
+          const parentThread = quariedGroupedData.find(
+            (parent) =>
+              String(parent.id) === String(innerItem.reply_thread_parent_id)
+          )
+
+          if (parentThread) {
+            // Add the innerItem as a reply to the parent's replies array
+            parentThread.replies.push(innerItem)
+          }
+        }
+      })
+
+      // Send the grouped results as the response
+      return res.status(200).json(quariedGroupedData)
     } else {
       return res.status(404).json({ message: 'No data found' })
     }

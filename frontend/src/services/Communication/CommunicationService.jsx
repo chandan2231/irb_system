@@ -37,13 +37,13 @@ export const getCommunicationListByProtocolId = createAsyncThunk(
   }
 );
 
-export const investigatorAndinstuationSave = createAsyncThunk(
-  "Communication/investigatorAndinstuationSave",
+export const downloadCommunicationPdf = createAsyncThunk(
+  "Communication/downloadCommunicationPdf",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/continuinReview/investigatorAndinstuationSave`,
+        url: `${baseURL}/communication/downloadCommunicationPdf`,
         data,
         // headers: { withCredentials: true },
       });
