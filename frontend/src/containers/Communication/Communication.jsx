@@ -14,86 +14,6 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { downloadCommunicationPdf } from "../../services/Communication/CommunicationService";
 import Loader from "../../components/Loader";
 
-const ShowOptions = ({ protocolTypeDetails, enqueryUserType }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const [loader, setLoader] = React.useState(false);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleDownloadCommunicationPDF = () => {
-    // setLoader(true);
-    let data = { protocolId: protocolTypeDetails.protocolId };
-    dispatch(downloadCommunicationPdf(data)).then(() => {
-      // setLoader(false);
-    });
-    handleClose();
-  };
-
-  const options = [
-    {
-      id: 1,
-      label: "View Pdf",
-      icon: <PictureAsPdfIcon />,
-      onClick: () => {
-        handleDownloadCommunicationPDF();
-      },
-    },
-  ];
-  return (
-    <Box>
-      <IconButton
-        aria-label="more"
-        id="long-button"
-        aria-controls={open ? "long-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        MenuListProps={{
-          "aria-labelledby": "long-button",
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        slotProps={{
-          paper: {
-            style: {
-              width: "14ch",
-            },
-          },
-        }}
-      >
-        {options.map((option) => (
-          <MenuItem
-            key={option.id}
-            selected={option === "Pyxis"}
-            onClick={option.onClick}
-            sx={{
-              display: "flex",
-              alignItems: "start",
-              justifyContent: "start",
-              gap: 1,
-            }}
-          >
-            {option.icon} {option.label}
-          </MenuItem>
-        ))}
-      </Menu>
-    </Box>
-  );
-};
-
 const Communication = () => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -151,6 +71,89 @@ const Communication = () => {
     };
   }
 
+  const ShowOptions = ({ protocolTypeDetails }) => {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [loader, setLoader] = React.useState(false);
+    const dispatch = useDispatch();
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    const handleDownloadCommunicationPDF = () => {
+      let data = { protocolId: protocolTypeDetails.protocolId };
+      dispatch(downloadCommunicationPdf(data)).then(() => {
+        setLoader(false);
+      });
+      handleClose();
+    };
+
+    const options = [
+      {
+        id: 1,
+        label: "View Pdf",
+        icon: <PictureAsPdfIcon />,
+        onClick: () => {
+          setLoader(true);
+          handleDownloadCommunicationPDF();
+        },
+      },
+    ];
+
+    if (loader) {
+      return <Loader />;
+    }
+
+    return (
+      <Box>
+        <IconButton
+          aria-label="more"
+          id="long-button"
+          aria-controls={open ? "long-menu" : undefined}
+          aria-expanded={open ? "true" : undefined}
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          MenuListProps={{
+            "aria-labelledby": "long-button",
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          slotProps={{
+            paper: {
+              style: {
+                width: "14ch",
+              },
+            },
+          }}
+        >
+          {options.map((option) => (
+            <MenuItem
+              key={option.id}
+              selected={option === "Pyxis"}
+              onClick={option.onClick}
+              sx={{
+                display: "flex",
+                alignItems: "start",
+                justifyContent: "start",
+                gap: 1,
+              }}
+            >
+              {option.icon} {option.label}
+            </MenuItem>
+          ))}
+        </Menu>
+      </Box>
+    );
+  };
+
   if (loader) {
     return <Loader />;
   }
@@ -185,7 +188,6 @@ const Communication = () => {
           </Tabs>
           <ShowOptions
             protocolTypeDetails={protocolTypeDetails}
-            enqueryUserType={enqueryUserType}
           />
         </Box>
       </Box>

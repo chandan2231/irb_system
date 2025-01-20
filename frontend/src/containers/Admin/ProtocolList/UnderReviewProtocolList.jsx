@@ -24,11 +24,13 @@ import {
   assignProtocolToMember,
 } from "../../../services/Admin/MembersService";
 import AssignProtocolToMember from "./AssignProtocolToMember";
+import Loader from "../../../components/Loader";
 
 function UnderReviewProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   const [open, setOpen] = useState(false);
@@ -210,9 +212,16 @@ function UnderReviewProtocolList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await protocolReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await protocolReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log(error);
     }
   };
 
@@ -366,6 +375,10 @@ function UnderReviewProtocolList() {
   //     //console.log('Edit Item', params)
   // }
 
+  if (loader) {
+    return <Loader />
+  }
+
   return (
     <>
       <ToastContainer
@@ -415,7 +428,7 @@ function UnderReviewProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>

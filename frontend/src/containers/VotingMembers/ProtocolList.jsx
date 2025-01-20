@@ -12,12 +12,15 @@ import { protocolReport } from "../../services/UserManagement/UserService";
 import ToggleStatus from "../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../components/Loader";
 
 function VotingMemberProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [protocolDataList, setProtocolDataList] = React.useState([]);
+  const [loader, setLoader] = React.useState(false);
+
   const [user, setUser] = useState([]);
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -94,7 +97,7 @@ function VotingMemberProtocolList() {
   ];
 
   useEffect(() => {
-    let data = {'memberId': user.id}
+    let data = { 'memberId': user.id }
     dispatch(fetchAssignMemberProtocolList(data));
   }, [dispatch, user.id]);
 
@@ -104,7 +107,7 @@ function VotingMemberProtocolList() {
     assignMemberProtocolList: state.member.assignMemberProtocolList,
     loading: state.member.loading,
   }));
-  
+
   if (assignMemberProtocolList?.data !== "" && assignMemberProtocolList?.data?.length > 0) {
     totalElements = assignMemberProtocolList?.data.length;
   }
@@ -119,17 +122,17 @@ function VotingMemberProtocolList() {
   useEffect(() => {
     const pListArr = [];
     if (assignMemberProtocolList?.data && assignMemberProtocolList?.data?.length > 0) {
-        assignMemberProtocolList?.data?.map((pList, index) => {
-            let protocolObject = {
-                id: pList.id,
-                protocolId: pList.protocol_id,
-                researchType: pList.protocol_name,
-                assignedDate: moment(pList.created_at).format("DD-MM-YYYY"),
-                updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
-            }
-            pListArr.push(protocolObject);
-        });
-        setProtocolDataList(pListArr);
+      assignMemberProtocolList?.data?.map((pList, index) => {
+        let protocolObject = {
+          id: pList.id,
+          protocolId: pList.protocol_id,
+          researchType: pList.protocol_name,
+          assignedDate: moment(pList.created_at).format("DD-MM-YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+        }
+        pListArr.push(protocolObject);
+      });
+      setProtocolDataList(pListArr);
     }
   }, [assignMemberProtocolList?.data]);
 
@@ -140,9 +143,16 @@ function VotingMemberProtocolList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await protocolReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true)
+      let pdfResponse = await protocolReport(protocolReportPayload);
+      setLoader(false)
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false)
+      console.log('error', error)
     }
   };
 
@@ -160,6 +170,11 @@ function VotingMemberProtocolList() {
   // const handleItemEdit = (params) => {
   //     //console.log('Edit Item', params)
   // }
+
+  if (loader) {
+    return <Loader />
+  }
+
   return (
     <>
       <ToastContainer

@@ -24,12 +24,15 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { protocolReport } from "../../services/UserManagement/UserService";
+import Loader from "../../components/Loader";
 
 function Dashboard() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [loader, setLoader] = React.useState(false);
+
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   useEffect(() => {
@@ -216,9 +219,19 @@ function Dashboard() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await protocolReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+
+      let pdfResponse = await protocolReport(protocolReportPayload);
+      setLoader(false);
+
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+
+      console.log(error)
     }
   };
 
@@ -233,6 +246,11 @@ function Dashboard() {
   // const handleItemEdit = (params) => {
   //     //console.log('Edit Item', params)
   // }
+
+  if (loader) {
+    return <Loader />
+  }
+
   return (
     <>
       <ToastContainer
@@ -283,7 +301,7 @@ function Dashboard() {
             loading={loading}
             paginationMode="server"
             onCellClick={(param) => handleChangeStatus(param)}
-            // onRowClick={(param) => handleChangeStatus(param)}
+          // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
