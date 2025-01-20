@@ -15,11 +15,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { continueinReviewReport } from "../../../services/UserManagement/UserService";
+import Loader from "../../../components/Loader";
 
 function ContinuinReviewList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [protocolDataList, setProtocolDataList] = useState([]);
   const [user, setUser] = useState([]);
@@ -153,9 +155,16 @@ function ContinuinReviewList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await continueinReviewReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await continueinReviewReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log("error", error);
     }
   };
 
@@ -176,6 +185,10 @@ function ContinuinReviewList() {
   // const handleItemEdit = (params) => {
   //     //console.log('Edit Item', params)
   // }
+
+  if (loader) {
+    return <Loader />
+  }
   return (
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>
@@ -194,8 +207,8 @@ function ContinuinReviewList() {
           rowCount={rowCount}
           loading={loading}
           paginationMode="server"
-          // onCellClick={(param) => handleChangeStatus(param)}
-          // onRowClick={(param) => handleChangeStatus(param)}
+        // onCellClick={(param) => handleChangeStatus(param)}
+        // onRowClick={(param) => handleChangeStatus(param)}
         />
       </Box>
     </Box>

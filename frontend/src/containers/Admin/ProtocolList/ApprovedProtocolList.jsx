@@ -17,11 +17,13 @@ import { protocolReport } from "../../../services/UserManagement/UserService";
 import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../../components/Loader";
 
 function ApprovedProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   useEffect(() => {
@@ -195,9 +197,16 @@ function ApprovedProtocolList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await protocolReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await protocolReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log(error);
     }
   };
 
@@ -250,6 +259,11 @@ function ApprovedProtocolList() {
   // const handleItemEdit = (params) => {
   //     //console.log('Edit Item', params)
   // }
+
+  if (loader) {
+    return <Loader />
+  }
+
   return (
     <>
       <ToastContainer
@@ -282,7 +296,7 @@ function ApprovedProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>

@@ -15,11 +15,13 @@ import {
   fetchAllProtocolList,
 } from "../../services/Admin/ProtocolListService";
 import { protocolReport } from "../../services/UserManagement/UserService";
+import Loader from "../../components/Loader";
 
 function CommitteeChairProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   useEffect(() => {
@@ -150,11 +152,22 @@ function CommitteeChairProtocolList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await protocolReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await protocolReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log("error", error);
     }
   };
+
+  if (loader) {
+    return <Loader />
+  }
 
   return (
     <>
@@ -187,7 +200,7 @@ function CommitteeChairProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
