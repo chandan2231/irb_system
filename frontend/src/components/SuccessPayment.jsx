@@ -8,8 +8,14 @@ function SuccessPayment() {
   const theme = useTheme();
   const [loader, setLoader] = React.useState(false);
   const location = useLocation();
-  const protocolTypeDetails = location.state.details;
-  const amount = location.state.amount;
+  const protocolTypeDetails = location?.state?.details;
+  const amount = location?.state?.amount;
+
+  React.useEffect(() => {
+    if (protocolTypeDetails === undefined) {
+      window.location.replace("/dashboard");
+    }
+  }, [protocolTypeDetails === undefined]);
 
   const handleViewPdf = async () => {
     const {
@@ -35,6 +41,10 @@ function SuccessPayment() {
 
   if (loader) {
     return <Loader />;
+  }
+
+  if (protocolTypeDetails === undefined) {
+    return <Loader />
   }
 
   return (
