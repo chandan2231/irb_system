@@ -13,6 +13,102 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { downloadCommunicationPdf } from "../../services/Communication/CommunicationService";
 import Loader from "../../components/Loader";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+const generatePDF = ({ apiResponseData }) => {
+  const doc = new jsPDF();
+
+  apiResponseData.forEach((item, index) => {
+    // Add a new page for every protocol except the first one
+    if (index > 0) {
+      doc.addPage();
+    }
+
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    if (index === 0) {
+      // Main Title
+      doc.text(`Communication Details of ${item.protocol_id}`, 105, 15, {
+        align: "center",
+      });
+
+      // Subheading
+      doc.setFontSize(12); // Smaller font size for subheading
+      doc.setFont("helvetica", "normal"); // Normal font style for subheading
+      doc.text(`Research Type: ${item.protocol_type}`, 105, 25, {
+        align: "center",
+      }); // Adjusted Y-coordinate for spacing
+    }
+
+    // Show Query Send BY :-
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text(
+      `Query Sent By: ${item.created_by_user_type === "user" ? "Applicant" : "Admin"}`,
+      20,
+      30
+    );
+
+    // Show Subject
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Subject:", 20, 40);
+
+    // Show Subject Value
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(item.subject, 40, 40);
+
+    // Show Body
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Body:", 20, 50);
+
+    // Show Body Value
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text(item.body, 40, 50);
+
+    // Show Attachments
+    if (item.attachments) {
+      const attachments = item.attachments.split(", ");
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Attachments:", 20, 60);
+
+      // Show Attachments as Links in Blue Color
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(0, 0, 255); // Set text color to blue (RGB format)
+      attachments.forEach((link, idx) => {
+        const yPosition = 60 + idx * 10; // Adjust y-position for each link
+        const linkText = `Attachment ${idx + 1}`;
+        doc.text(linkText, 50, yPosition);
+
+        // Add a clickable link
+        const textWidth = doc.getTextWidth(linkText); // Get text width to define link area
+        doc.link(50, yPosition - 4, textWidth, 8, { url: link });
+      });
+    }
+  });
+
+  // Add Footer with Page Numbers
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(10);
+    doc.text(
+      `Page ${i} of ${pageCount}`,
+      doc.internal.pageSize.width / 2,
+      doc.internal.pageSize.height - 10,
+      { align: "center" }
+    );
+  }
+
+  // Save the PDF
+  doc.save("communication-details.pdf");
+};
 
 const Communication = () => {
   const location = useLocation();
@@ -82,12 +178,25 @@ const Communication = () => {
     const handleClose = () => {
       setAnchorEl(null);
     };
-    const handleDownloadCommunicationPDF = () => {
+    const handleDownloadCommunicationPDF = async () => {
       let data = { protocolId: protocolTypeDetails.protocolId };
-      dispatch(downloadCommunicationPdf(data)).then(() => {
+      try {
+        setLoader(true);
+        dispatch(downloadCommunicationPdf(data)).then((res) => {
+          // HERE WE GO
+          const pdfResponse = res?.payload?.data || [];
+          console.log("pdfResponse", pdfResponse);
+          generatePDF({ apiResponseData: pdfResponse });
+          setLoader(false);
+          // if (pdfResponse !== "") {
+          //   window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+          // }
+        });
+        handleClose();
+      } catch (error) {
         setLoader(false);
-      });
-      handleClose();
+        console.log("error", error);
+      }
     };
 
     const options = [
@@ -96,7 +205,6 @@ const Communication = () => {
         label: "View Pdf",
         icon: <PictureAsPdfIcon />,
         onClick: () => {
-          setLoader(true);
           handleDownloadCommunicationPDF();
         },
       },
@@ -186,9 +294,7 @@ const Communication = () => {
             <Tab label="Send Email" {...a11yProps(0)} />
             <Tab label="Thread" {...a11yProps(1)} />
           </Tabs>
-          <ShowOptions
-            protocolTypeDetails={protocolTypeDetails}
-          />
+          <ShowOptions protocolTypeDetails={protocolTypeDetails} />
         </Box>
       </Box>
       <CustomTabPanel value={value} index={0}>
