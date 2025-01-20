@@ -38,58 +38,155 @@ const generatePDF = ({ apiResponseData }) => {
       doc.setFont("helvetica", "normal"); // Normal font style for subheading
       doc.text(`Research Type: ${item.protocol_type}`, 105, 25, {
         align: "center",
-      }); // Adjusted Y-coordinate for spacing
+      });
     }
 
-    // Show Query Send BY :-
+    let yPosition = 30; // Start Y-position for the first protocol
+
+    // Show Query Sent BY:
+    doc.setTextColor(0, 0, 0);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
     doc.text(
       `Query Sent By: ${item.created_by_user_type === "user" ? "Applicant" : "Admin"}`,
       20,
-      30
+      yPosition
     );
 
     // Show Subject
     doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("Subject:", 20, 40);
+    doc.setFont("helvetica", "normal");
+    doc.text("Subject:", 20, yPosition + 10);
 
     // Show Subject Value
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    doc.text(item.subject, 40, 40);
+    doc.text(item.subject, 40, yPosition + 10);
 
     // Show Body
     doc.setFontSize(12);
-    doc.setFont("helvetica", "bold");
-    doc.text("Body:", 20, 50);
+    doc.setFont("helvetica", "normal");
+    doc.text("Body:", 20, yPosition + 20);
 
     // Show Body Value
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
-    doc.text(item.body, 40, 50);
+    doc.text(item.body, 40, yPosition + 20);
 
     // Show Attachments
-    if (item.attachments) {
+    if (item.attachments !== null) {
       const attachments = item.attachments.split(", ");
       doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text("Attachments:", 20, 60);
-
-      // Show Attachments as Links in Blue Color
-      doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
-      doc.setTextColor(0, 0, 255); // Set text color to blue (RGB format)
-      attachments.forEach((link, idx) => {
-        const yPosition = 60 + idx * 10; // Adjust y-position for each link
-        const linkText = `Attachment ${idx + 1}`;
-        doc.text(linkText, 50, yPosition);
+      doc.text("Attachments:", 20, yPosition + 30);
+      doc.setTextColor(0, 0, 0);
 
-        // Add a clickable link
-        const textWidth = doc.getTextWidth(linkText); // Get text width to define link area
-        doc.link(50, yPosition - 4, textWidth, 8, { url: link });
+      // Check if there are no attachments
+      if (attachments.length === 0) {
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        doc.text("No Attachments", 50, yPosition + 30); // Display "No Attachments"
+      } else {
+        // Show Attachments as Links in Blue Color
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 255);
+        attachments.forEach((link, idx) => {
+          const linkYPosition = yPosition + 40 + idx * 10; // Adjust y-position for each link
+          const linkText = `Attachment ${idx + 1}`;
+          doc.text(linkText, 50, linkYPosition);
+
+          // Add a clickable link
+          const textWidth = doc.getTextWidth(linkText); // Get text width to define link area
+          doc.link(50, linkYPosition - 4, textWidth, 8, { url: link });
+        });
+      }
+      yPosition += 40 + attachments.length * 10; // Adjust yPosition after attachments
+    } else {
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(0, 0, 0);
+      doc.text("No Attachments", 20, yPosition + 30); // Display "No Attachments"
+      yPosition += 40; // Adjust yPosition after "No Attachments"
+    }
+
+    // Show Replies
+    if (item.replies.length > 0) {
+      item.replies.forEach((reply, idx) => {
+        doc.setTextColor(0, 0, 0); // Set text color back to black
+
+        const replyYPosition = yPosition + 10 + idx * 50; // Adjust y-position for each reply
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(
+          `Reply Sent By: ${reply.created_by_user_type === "user" ? "Applicant" : "Admin"}`,
+          20,
+          replyYPosition
+        );
+
+        // Show Subject
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Subject:", 20, replyYPosition + 10);
+
+        // Show Subject Value
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(reply.subject, 40, replyYPosition + 10);
+
+        // Show Body
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Body:", 20, replyYPosition + 20);
+
+        // Show Body Value
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(reply.body, 40, replyYPosition + 20);
+
+        // Show Attachments for reply
+        if (reply.attachments !== null) {
+          const replyAttachments = reply.attachments.split(", ");
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "normal");
+          doc.text("Attachments:", 20, replyYPosition + 30);
+
+          // Check if there are no reply attachments
+          if (replyAttachments.length === 0) {
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("No Attachments", 50, replyYPosition + 30); // Display "No Attachments"
+          } else {
+            // Show Reply Attachments as Links in Blue Color
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(0, 0, 255); // Set text color to blue (RGB format)
+            replyAttachments.forEach((link, idx) => {
+              const replyLinkYPosition = replyYPosition + 40 + idx * 10; // Adjust y-position for each link
+              const linkText = `Attachment ${idx + 1}`;
+              doc.text(linkText, 50, replyLinkYPosition);
+
+              // Add a clickable link
+              const textWidth = doc.getTextWidth(linkText); // Get text width to define link area
+              doc.link(50, replyLinkYPosition - 4, textWidth, 8, { url: link });
+            });
+          }
+          yPosition = replyYPosition + 40 + replyAttachments.length * 10; // Adjust yPosition after reply attachments
+        } else {
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(0, 0, 0);
+          doc.text("No Attachments", 20, replyYPosition + 30); // Display "No Attachments"
+          yPosition = replyYPosition + 40; // Adjust yPosition after "No Attachments"
+        }
       });
+    } else {
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(0, 0, 0); // Set text color back to black
+      doc.text("No Reply", 20, yPosition + 10); // Display "No Replies"
+      yPosition += 30; // Adjust yPosition after "No Replies"
     }
   });
 
@@ -183,14 +280,9 @@ const Communication = () => {
       try {
         setLoader(true);
         dispatch(downloadCommunicationPdf(data)).then((res) => {
-          // HERE WE GO
           const pdfResponse = res?.payload?.data || [];
-          console.log("pdfResponse", pdfResponse);
           generatePDF({ apiResponseData: pdfResponse });
           setLoader(false);
-          // if (pdfResponse !== "") {
-          //   window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
-          // }
         });
         handleClose();
       } catch (error) {
