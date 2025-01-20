@@ -190,7 +190,7 @@ function SignIn() {
                     <div className="error_msg">{errors?.password?.message}</div>
                   )}
                 </FormControl>
-                <Box style={{ marginTop: "40px" }}>
+                {/* <Box style={{ marginTop: "40px" }}>
                   <Grid
                     item
                     xs={12}
@@ -210,7 +210,43 @@ function SignIn() {
                   <Button variant="contained" type="submit">
                     Submit
                   </Button>
-                </Box>
+                </Box> */}
+                <Grid
+                  container
+                  spacing={2}
+                  style={{
+                    marginTop: "40px",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                  <Grid container xs={12}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: "15px",
+                        width: "100%",
+                      }}
+                    >
+                      Not a member ?
+                      &nbsp;
+                      <Link to="/signup">Sign Up Now</Link>
+                    </Box>
+                  </Grid>
+                </Grid>
               </CardContent>
             </form>
           </Card>

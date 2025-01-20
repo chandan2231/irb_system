@@ -13,6 +13,7 @@ import {
   Button,
   CardHeader,
   FormControl,
+  Box,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -84,13 +85,28 @@ function SignUp() {
     //     setResearchTypeError("")
     // }
   };
+  const modalStyles = {
+    inputFields: {
+      display: "flex",
+      flexDirection: "column",
+      marginTop: "20px",
+      marginBottom: "15px",
+      ".MuiFormControl-root": {
+        marginBottom: "10px",
+      },
+    },
+  };
 
   return (
-    <React.Fragment>
-      <Grid container spacing={1} className="center-card">
-        <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
-        <Grid item lg={6} md={6} sm={12} xs={12}>
-          <Card>
+    <Box m={theme.layoutContainer.layoutSection}>
+      <Box sx={modalStyles.inputFields}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+        >
+          <Card sx={{ width: 700 }}>
             <CardHeader title="REGISTER"></CardHeader>
             {successMessage !== "" && (
               <span className="success_msg">{successMessage}</span>
@@ -118,7 +134,7 @@ function SignUp() {
                         {err && err}
                       </p>
                       <Grid item container spacing={1}>
-                        <Grid item xs={12} sm={6} md={6}>
+                        <Grid item xs={12} sm={12} md={12}>
                           <Field
                             label="Name"
                             variant="outlined"
@@ -128,7 +144,9 @@ function SignUp() {
                             component={TextField}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6}>
+                        <Grid item xs={12} sm={12} md={12}
+                          style={{ marginTop: "10px" }}
+                        >
                           <Field
                             label="Email"
                             variant="outlined"
@@ -141,9 +159,9 @@ function SignUp() {
                         <Grid
                           item
                           xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "10px" }}
                         >
                           <Field
                             label="Password"
@@ -158,9 +176,10 @@ function SignUp() {
                         <Grid
                           item
                           xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "10px" }}
+
                         >
                           <Field
                             label="Confirm Password"
@@ -175,9 +194,10 @@ function SignUp() {
                         <Grid
                           item
                           xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "10px" }}
+
                         >
                           <Field
                             label="Mobile"
@@ -188,30 +208,6 @@ function SignUp() {
                             component={TextField}
                           />
                         </Grid>
-
-                        {/* <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
-                                <FormControl fullWidth variant="outlined">
-                                    <InputLabel id="demo-simple-select-outlined-label">
-                                    Researcher Type
-                                    </InputLabel>
-                                    <Select
-                                    labelId="demo-simple-select-outlined-label"
-                                    id="demo-simple-select-outlined"
-                                    label="Researcher Type"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.researcherType}
-                                    name="researcherType"
-                                    >
-                                    {options.map((item) => (
-                                        <MenuItem key={item.value} value={item.value}>
-                                        {item.label}
-                                        </MenuItem>
-                                    ))}
-                                    </Select>
-                                    <span className="error">{researchTypeError}</span>
-                                </FormControl>
-                            </Grid> */}
                       </Grid>
                     </CardContent>
                     <Grid
@@ -219,9 +215,67 @@ function SignUp() {
                       container
                       spacing={1}
                       justify="center"
+                    >
+                      <Grid
+                        item xs={12}
+                        sm={12}
+                        md={12}
+                        style={{
+                          marginLeft: "15px",
+                          marginRight: "15px",
+                        }}
+                      >
+                        <Button
+                          disabled={!dirty || !isValid}
+                          variant="contained"
+                          color="primary"
+                          type="Submit"
+                          sx={{
+                            width: "100%",
+                          }}
+                        >
+                          REGISTER
+                        </Button>
+                      </Grid>
+                      <Grid item xs={12}
+                        sm={12}
+                        md={12}
+                        style={{
+                          marginLeft: "15px",
+                          marginRight: "15px",
+                          marginTop: "15px",
+                          marginBottom: "20px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <CardActions style={{
+                          padding: "0px",
+                          width: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}>
+                          <span>Do you have an account?</span>
+                          <Link to="/signin"
+                            style={{
+                              textDecoration: "none",
+                            }}
+                          >
+                            LOGIN
+                          </Link>
+                        </CardActions>
+                      </Grid>
+                    </Grid>
+                    {/* <Grid
+                      item
+                      container
+                      spacing={1}
+                      justify="center"
                       style={{ paddingBottom: "25px", paddingTop: "25px" }}
                     >
-                      <Grid item xs={12} sm={6} md={6}>
+                      <Grid item xs={12} sm={12} md={12}>
                         <CardActions style={{ paddingLeft: "15px" }}>
                           <Button
                             disabled={!dirty || !isValid}
@@ -236,8 +290,8 @@ function SignUp() {
                       <Grid
                         item
                         xs={12}
-                        sm={6}
-                        md={6}
+                        sm={12}
+                        md={12}
                         style={{
                           float: "right",
                           paddingLeft: "85px",
@@ -253,16 +307,15 @@ function SignUp() {
                           </Link>
                         </CardActions>
                       </Grid>
-                    </Grid>
+                    </Grid> */}
                   </Form>
                 );
               }}
             </Formik>
           </Card>
         </Grid>
-        <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
-      </Grid>
-    </React.Fragment>
+      </Box>
+    </Box>
   );
 }
 
