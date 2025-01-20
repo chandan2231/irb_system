@@ -8,6 +8,7 @@ import {
   canclePayment,
 } from "../services/Payment/PaymentService";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 const PayPalButton = () => {
   const location = useLocation();
@@ -141,6 +142,10 @@ const PayPalButton = () => {
       document.body.appendChild(script);
     }
   }, [paymentAmount, dispatch]);
+
+  if (protocolTypeDetails === undefined) {
+    return <Loader />
+  }
 
   return (
     <div

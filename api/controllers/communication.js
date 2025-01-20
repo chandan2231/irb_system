@@ -217,7 +217,7 @@ export const downloadCommunicationPdf = async (req, res) => {
                   GROUP_CONCAT(cd.file_url SEPARATOR ', ') AS attachments
               FROM communication AS cm
               LEFT JOIN communication_documents AS cd 
-                  ON FIND_IN_SET(cd.id, cm.attachments_id) >= 0
+                  ON FIND_IN_SET(cd.id, cm.attachments_id) > 0
               WHERE cm.protocol_id = ? 
                 AND (cm.attachments_id IS NOT NULL AND cm.attachments_id != '' 
                      OR cm.attachments_id IS NULL OR cm.attachments_id = '')

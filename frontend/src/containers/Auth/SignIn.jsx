@@ -141,7 +141,7 @@ function SignIn() {
                   <></>
                 )}
                 <Typography sx={{ mt: 2, mb: 5 }}>
-                  <h2 sx={styles.title}>LOGIN</h2>
+                  <h2 sx={styles.title}>Welcome to IRBHUB</h2>
                 </Typography>
                 <FormControl fullWidth variant="outlined">
                   <TextField
@@ -190,27 +190,48 @@ function SignIn() {
                     <div className="error_msg">{errors?.password?.message}</div>
                   )}
                 </FormControl>
-                <Box style={{ marginTop: "40px" }}>
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={6}
-                    style={{ float: "right", paddingLeft: "0px" }}
-                  >
-                    <CardActions style={{ padding: "0px" }}>
-                      <span>Don't you have an account?</span>
-                      <Link to="/signup">
-                        <Button variant="contained" color="primary">
-                          REGISTER
-                        </Button>
-                      </Link>
-                    </CardActions>
+                <Grid
+                  container
+                  spacing={2}
+                  style={{
+                    marginTop: "15px",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      LOGIN
+                    </Button>
                   </Grid>
-                  <Button variant="contained" type="submit">
-                    Submit
-                  </Button>
-                </Box>
+                  <Grid container xs={12}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginTop: "15px",
+                        width: "100%",
+                      }}
+                    >
+                      Not a member ? &nbsp;
+                      <Link
+                        to="/signup"
+                        style={{
+                          textDecoration: "none",
+                        }}
+                      >
+                        Sign Up
+                      </Link>
+                    </Box>
+                  </Grid>
+                </Grid>
               </CardContent>
             </form>
           </Card>
