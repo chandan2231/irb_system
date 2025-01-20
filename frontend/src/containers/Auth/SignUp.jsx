@@ -6,14 +6,12 @@ import {
   Grid,
   Card,
   CardContent,
-  MenuItem,
-  InputLabel,
-  Select,
   CardActions,
   Button,
   CardHeader,
-  FormControl,
   Box,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -21,6 +19,8 @@ import { TextField } from "formik-material-ui";
 import { userSignUp } from "../../services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -29,6 +29,8 @@ function SignUp() {
   const [err, setErr] = useState(null);
   // const [researchTypeError, setResearchTypeError] = useState('')
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
   const initialValues = {
     name: "",
     mobile: "",
@@ -77,13 +79,6 @@ function SignUp() {
         setSuccessMessage(false);
       }
     });
-    // const { researcherType } = values
-    // if(researcherType === ''){
-    //     setResearchTypeError("Required!")
-    //     return
-    // } else {
-    //     setResearchTypeError("")
-    // }
   };
   const modalStyles = {
     inputFields: {
@@ -94,6 +89,21 @@ function SignUp() {
       ".MuiFormControl-root": {
         marginBottom: "10px",
       },
+    },
+  };
+  const styles = {
+    title: {
+      paddingTop: "50px",
+      paddingBottom: "10px",
+      display: "flex",
+      top: "50%",
+      left: "50%",
+      margin: "auto",
+    },
+    buttonStyle: {
+      margin: "0 auto",
+      display: "flex",
+      marginTop: "25px",
     },
   };
 
@@ -107,7 +117,6 @@ function SignUp() {
           alignItems="center"
         >
           <Card sx={{ width: 700 }}>
-            <CardHeader title="REGISTER"></CardHeader>
             {successMessage !== "" && (
               <span className="success_msg">{successMessage}</span>
             )}
@@ -127,6 +136,9 @@ function SignUp() {
                 return (
                   <Form onSubmit={handleSubmit}>
                     <CardContent>
+                      <Typography sx={{ mt: 2, mb: 5 }}>
+                        <h2 sx={styles.title}>SIGNUP</h2>
+                      </Typography>
                       <p
                         className="error_text"
                         style={{ marginBottom: "15px" }}
@@ -144,8 +156,12 @@ function SignUp() {
                             component={TextField}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12}
-                          style={{ marginTop: "10px" }}
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Email"
@@ -161,7 +177,7 @@ function SignUp() {
                           xs={12}
                           sm={12}
                           md={12}
-                          style={{ marginTop: "10px" }}
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Password"
@@ -169,8 +185,22 @@ function SignUp() {
                             fullWidth
                             name="password"
                             value={values.password}
-                            type="password"
+                            type={showPassword ? "text" : "password"} // Toggle password visibility
                             component={TextField}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              ),
+                            }}
                           />
                         </Grid>
                         <Grid
@@ -178,8 +208,7 @@ function SignUp() {
                           xs={12}
                           sm={12}
                           md={12}
-                          style={{ marginTop: "10px" }}
-
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Confirm Password"
@@ -187,8 +216,24 @@ function SignUp() {
                             fullWidth
                             name="confirmPassword"
                             value={values.confirmPassword}
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
                             component={TextField}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton
+                                  onClick={() =>
+                                    setShowConfirmPassword(!showConfirmPassword)
+                                  }
+                                  edge="end"
+                                >
+                                  {showConfirmPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              ),
+                            }}
                           />
                         </Grid>
                         <Grid
@@ -196,8 +241,7 @@ function SignUp() {
                           xs={12}
                           sm={12}
                           md={12}
-                          style={{ marginTop: "10px" }}
-
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Mobile"
@@ -210,14 +254,10 @@ function SignUp() {
                         </Grid>
                       </Grid>
                     </CardContent>
-                    <Grid
-                      item
-                      container
-                      spacing={1}
-                      justify="center"
-                    >
+                    <Grid item container spacing={1} justify="center">
                       <Grid
-                        item xs={12}
+                        item
+                        xs={12}
                         sm={12}
                         md={12}
                         style={{
@@ -234,10 +274,12 @@ function SignUp() {
                             width: "100%",
                           }}
                         >
-                          REGISTER
+                          SIGNUP
                         </Button>
                       </Grid>
-                      <Grid item xs={12}
+                      <Grid
+                        item
+                        xs={12}
                         sm={12}
                         md={12}
                         style={{
@@ -250,64 +292,27 @@ function SignUp() {
                           justifyContent: "center",
                         }}
                       >
-                        <CardActions style={{
-                          padding: "0px",
-                          width: "100%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}>
+                        <CardActions
+                          style={{
+                            padding: "0px",
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
                           <span>Do you have an account?</span>
-                          <Link to="/signin"
+                          <Link
+                            to="/signin"
                             style={{
                               textDecoration: "none",
                             }}
                           >
-                            LOGIN
+                            Login
                           </Link>
                         </CardActions>
                       </Grid>
                     </Grid>
-                    {/* <Grid
-                      item
-                      container
-                      spacing={1}
-                      justify="center"
-                      style={{ paddingBottom: "25px", paddingTop: "25px" }}
-                    >
-                      <Grid item xs={12} sm={12} md={12}>
-                        <CardActions style={{ paddingLeft: "15px" }}>
-                          <Button
-                            disabled={!dirty || !isValid}
-                            variant="contained"
-                            color="primary"
-                            type="Submit"
-                          >
-                            REGISTER
-                          </Button>
-                        </CardActions>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        sm={12}
-                        md={12}
-                        style={{
-                          float: "right",
-                          paddingLeft: "85px",
-                          marginTop: "10px",
-                        }}
-                      >
-                        <CardActions style={{ padding: "0px" }}>
-                          <span>Do you have an account?</span>
-                          <Link to="/signin">
-                            <Button variant="contained" color="primary">
-                              LOGIN
-                            </Button>
-                          </Link>
-                        </CardActions>
-                      </Grid>
-                    </Grid> */}
                   </Form>
                 );
               }}

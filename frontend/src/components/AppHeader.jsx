@@ -51,7 +51,7 @@ function AppHeader() {
                             src='/src/assets/irb_logo.png'
                         /> */}
           <Box className="center-card">
-            <h2>IRB HUB</h2>
+            <h2>IRBHUB</h2>
           </Box>
         </Toolbar>
       ) : (
@@ -61,7 +61,7 @@ function AppHeader() {
           >
             <MenuTwoToneIcon sx={styles.iconColor} />
           </IconButton>
-          <h2>IRB HUB</h2>
+          <h2>IRBHUB</h2>
           <Box className="center-card">
             <h2>
               {userDetails.user_type === "admin"
