@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { protocolReport } from "../../services/UserManagement/UserService";
+import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import Loader from "../../components/Loader";
 
 function Dashboard() {
@@ -51,6 +52,20 @@ function Dashboard() {
       state: { details: params.row, identifierType: "user" },
     });
   };
+
+  const handleUploadDocument = (params) => {
+    const { row } = params;
+    const { protocolId, researchType } = row;
+
+    if (!protocolId || !researchType) {
+      console.error("Missing required parameters for navigation");
+      return;
+    }
+
+    const route = `/upload-document/${protocolId}/${researchType}`;
+    navigate(route);
+  };
+
   const columns = [
     {
       field: "protocolId",
@@ -98,6 +113,12 @@ function Dashboard() {
           icon={<CompareArrowsIcon />}
           label="Communication"
           onClick={() => navigateToCommunicationDetails(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<DriveFolderUploadIcon />}
+          label="Upload Document"
+          onClick={() => handleUploadDocument(params)}
           showInMenu
         />,
         // <GridActionsCellItem
@@ -231,7 +252,7 @@ function Dashboard() {
     } catch (error) {
       setLoader(false);
 
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -248,7 +269,7 @@ function Dashboard() {
   // }
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (

@@ -48,6 +48,8 @@ import SuccessPayment from "./components/SuccessPayment";
 import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
+import UploadDocument from "./containers/UploadDoc";
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
@@ -146,6 +148,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/protocol-details" element={<ProtocolDetails />} />
               <Route path="/communication" element={<Communication />} />
+              <Route path="/upload-document/:protocolId/:researchType" element={<UploadDocument />} />
               <Route path="/payment" element={<PayPalButton />} />
               <Route path="/success" element={<SuccessPayment />} />
               <Route path="/cancel" element={<CanclePayment />} />
