@@ -8,6 +8,7 @@ import {
   Toolbar,
   IconButton,
   Badge,
+  useMediaQuery,
 } from "@mui/material";
 import MenuTwoToneIcon from "@mui/icons-material/MenuTwoTone";
 import NotificationIcon from "@mui/icons-material/Notifications";
@@ -23,20 +24,21 @@ function AppHeader() {
   const [err, setErr] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const userDetails = JSON.parse(localStorage.getItem("user")) || {};
+
   const handleCloseUserMenu = () => {
     dispatch(userLogout()).then((data) => {
-      console.log("data.payload.status", data.payload.status);
       if (data.payload.status === 200) {
-        console.log("in", data.payload.status);
         removeCookie("accessToken");
         window.localStorage.clear();
         window.location.replace("/signin");
-        // window.location.reload();
       } else {
-        setErr(err.respone.data);
+        setErr(err.response.data);
       }
     });
   };
+
+  // Media query for responsiveness (mobile/tablet)
+  const isMobileOrTablet = useMediaQuery("(max-width: 768px)");
 
   return (
     <AppBar position="sticky" sx={styles.appBar}>
@@ -45,58 +47,78 @@ function AppHeader() {
       window.location.pathname === "/signin" ||
       window.location.pathname === "/signup" ? (
         <Toolbar>
-          {/* <Box
-                            component='img'
-                            sx={styles.appLogo}
-                            src='/src/assets/irb_logo.png'
-                        /> */}
           <Box className="center-card">
             <h2>IRBHUB</h2>
           </Box>
         </Toolbar>
       ) : (
         <Toolbar>
+          {/* Sidebar toggle for mobile/tablet */}
           <IconButton
             onClick={() => (broken ? toggleSidebar() : collapseSidebar())}
           >
             <MenuTwoToneIcon sx={styles.iconColor} />
           </IconButton>
-          <h2>IRBHUB</h2>
-          <Box className="center-card">
-            <h2>
-              {userDetails.user_type === "admin"
-                ? "Super Admin Portal"
-                : userDetails.user_type === "Voting Member"
-                  ? "Voting Member Portal"
-                  : userDetails.user_type === "Committee Chair"
-                    ? "Committee Chair Portal"
-                    : ""}
-            </h2>
+
+          {/* Title */}
+          {!isMobileOrTablet && (
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" sx={{ display: "inline" }}>
+                IRBHUB
+              </Typography>
+            </Box>
+          )}
+
+          {/* User Type Info */}
+          {!isMobileOrTablet ? (
+            <Box className="center-card">
+              <h2>
+                {userDetails.user_type === "admin"
+                  ? "Super Admin Portal"
+                  : userDetails.user_type === "Voting Member"
+                    ? "Voting Member Portal"
+                    : userDetails.user_type === "Committee Chair"
+                      ? "Committee Chair Portal"
+                      : ""}
+              </h2>
+            </Box>
+          ) : (
+            <Box sx={{ flex: 1, textAlign: "center" }}>
+              <Typography variant="body1">
+                {userDetails.user_type === "admin"
+                  ? "Super Admin"
+                  : userDetails.user_type === "Voting Member"
+                    ? "Voting Member"
+                    : userDetails.user_type === "Committee Chair"
+                      ? "Committee Chair"
+                      : ""}
+              </Typography>
+            </Box>
+          )}
+
+          {/* Icons for mobile/tablet */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {!isMobileOrTablet && (
+              <>
+                <IconButton title="Notification" sx={styles.iconColor}>
+                  <Badge badgeContent={14} color="error">
+                    <NotificationIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton title="Settings" sx={styles.iconColor}>
+                  <SettingsIcon />
+                </IconButton>
+              </>
+            )}
+            <IconButton title="Logout" sx={styles.iconColor}>
+              <LogoutIcon onClick={handleCloseUserMenu} />
+            </IconButton>
           </Box>
-          {/* <Box
-                            component='img'
-                            sx={styles.appLogo}
-                            src='/src/assets/irb_logo.png'
-                        /> */}
-          <Box sx={{ flexGrow: 1 }} />
-          <IconButton title="Notification" sx={styles.iconColor}>
-            <Badge badgeContent={14} color="error">
-              <NotificationIcon />
-            </Badge>
-          </IconButton>
-          <IconButton title="Settings" sx={styles.iconColor}>
-            <SettingsIcon />
-          </IconButton>
-          <IconButton title="Logout" sx={styles.iconColor}>
-            <LogoutIcon onClick={handleCloseUserMenu} />
-          </IconButton>
         </Toolbar>
       )}
     </AppBar>
   );
 }
-
-/* @type {import("@mui/icons-material").SxProps } */
 
 const styles = {
   appBar: {
