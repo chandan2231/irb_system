@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
+import { uploadFile } from "../../services/UserManagement/UserService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -28,6 +29,8 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const UploadDocument = () => {
+  const userDetails = JSON.parse(localStorage.getItem("user"));
+
   const navigate = useNavigate();
   const location = useLocation();
   const [errors, setErrors] = React.useState({});
@@ -35,6 +38,7 @@ const UploadDocument = () => {
   const [formData, setFormData] = React.useState({
     subject: "",
     attachments_file: [],
+    created_by: userDetails.id,
   });
   const [subjectOptions, setSubjectOptions] = React.useState([]);
   const [protocolDetails, setProtocolDetails] = React.useState({});
@@ -48,10 +52,9 @@ const UploadDocument = () => {
       setProtocolDetails(protocolTypeDetails);
       try {
         setLoader(true);
-        const response =
-          CONSTANTS.getDropDownOptionsByResearchType(researchType).filter(
-            (source) => source.isUploadMandatory === true
-          );
+        const response = CONSTANTS.getDropDownOptionsByResearchType(
+          researchType
+        ).filter((source) => source.isUploadMandatory === true);
         setSubjectOptions(response);
       } catch (error) {
         toast.error("Failed to fetch subject options");
@@ -92,11 +95,9 @@ const UploadDocument = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.subject) {
       newErrors.subject = "Subject is required";
     }
-
     if (
       isUploadMandatory &&
       (!formData.attachments_file || formData.attachments_file.length === 0)
@@ -110,17 +111,46 @@ const UploadDocument = () => {
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
+
+    if (!validateForm()) return;
 
     try {
       setLoader(true);
+      await uploadFilesIfNeeded();
+      setFormData({
+        subject: "",
+        attachments_file: [],
+        created_by: userDetails.id,
+      });
       toast.success("Form submitted successfully");
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast.error("Failed to submit form");
     } finally {
+      setFormData({
+        subject: "",
+        attachments_file: [],
+        created_by: userDetails.id,
+      });
       setLoader(false);
+    }
+  };
+
+  // Helper function to handle file uploads
+  const uploadFilesIfNeeded = async () => {
+    if (formData.attachments_file && formData.attachments_file.length > 0) {
+      const uploadPromises = Array.from(formData.attachments_file).map((file) =>
+        uploadFile(file, {
+          protocolId: protocolDetails.protocolId,
+          protocolType: protocolDetails.researchType,
+          informationType: formData.subject,
+          documentName: uploadDocumentKey,
+          createdBy: userDetails.id,
+        })
+      );
+
+      // Wait for all files to upload
+      await Promise.all(uploadPromises);
     }
   };
 

@@ -121,10 +121,10 @@ const getDropDownOptionsByResearchType = (type) => {
         uploadDocumentKey: "investigator_cv",
       },
       {
-        value: "document_review",
+        value: "informed_consent",
         label: "Document Review",
         isUploadMandatory: true,
-        uploadDocumentKey: "document_review",
+        uploadDocumentKey: "consent_files",
       },
     ];
   }
