@@ -263,7 +263,7 @@ function CreatedProtocolList() {
   // }
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -283,8 +283,15 @@ function CreatedProtocolList() {
       <Box m={theme.layoutContainer.layoutSection}>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={5} sm={5} md={8} lg={8}>
-              <Typography variant="h5" mb={2}>
+            {/* Title Grid Item */}
+            <Grid item xs={12} sm={10} md={8} lg={8}>
+              <Typography
+                variant="h5"
+                mb={2}
+                sx={{
+                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                }}
+              >
                 Created Protocol List
               </Typography>
             </Grid>
@@ -298,7 +305,7 @@ function CreatedProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-          // onCellClick={(param) => handleChangeStatus(param)}
+            // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>

@@ -243,17 +243,27 @@ function EventPriceList() {
       <Box m={theme.layoutContainer.layoutSection}>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={5} sm={5} md={8} lg={8}>
-              <Typography variant="h5" mb={2}>
+            {/* Title Grid Item */}
+            <Grid item xs={12} sm={8} md={8} lg={8}>
+              <Typography
+                variant="h5"
+                mb={2}
+                sx={{
+                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                }}
+              >
                 Event Price List
               </Typography>
             </Grid>
-            <Grid item xs={7} sm={7} md={4} lg={4}>
+
+            {/* Button Grid Item */}
+            <Grid item xs={12} sm={4} md={4} lg={4}>
               <Box display="flex" justifyContent="flex-end">
                 <CommonButton
                   variant="contained"
                   onClick={addNew}
                   startIcon={<AddOutlinedIcon />}
+                  sx={{ width: { xs: "100%", sm: "auto" } }} // Full width on mobile, auto width on tablet/desktop
                 >
                   Add New Event Price
                 </CommonButton>

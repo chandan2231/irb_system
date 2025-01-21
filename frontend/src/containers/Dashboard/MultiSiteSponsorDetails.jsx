@@ -1,7 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import { Box, Button, Typography } from "@mui/material";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import ProtocolInformationForm from "../Dashboard/ProtocolType/MultiSiteSponsor/ProtocolInformationForm";
 import ContactInformationForm from "../Dashboard/ProtocolType/MultiSiteSponsor/ContactInformationForm";
 import StudyInformationForm from "../Dashboard/ProtocolType/MultiSiteSponsor/StudyInformationForm";
@@ -9,8 +9,6 @@ import InformedConsentForm from "../Dashboard/ProtocolType/MultiSiteSponsor/Info
 import ProtocolProceduresForm from "../Dashboard/ProtocolType/MultiSiteSponsor/ProtocolProceduresForm";
 import SubmissionForm from "../Dashboard/ProtocolType/MultiSiteSponsor/SubmissionForm";
 import { useLocation } from "react-router-dom";
-import { Box, Button, Typography } from "@mui/material";
-import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
 const MultiSiteSponsorDetails = ({
   protocolTypeDetails,
@@ -48,17 +46,11 @@ const MultiSiteSponsorDetails = ({
     value: PropTypes.number.isRequired,
   };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
   const location = useLocation();
-  // console.log('location', location)
   const [value, setValue] = React.useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+
+  const handleButtonClick = (index) => {
+    setValue(index);
   };
 
   React.useEffect(() => {
@@ -67,161 +59,77 @@ const MultiSiteSponsorDetails = ({
     }
   }, [protocolDetailsById]);
 
-  const handleButtonClick = (index) => {
-    setValue(index);
-  };
-
   return (
     <Box sx={{ width: "100%" }}>
-      <h2 className="ml-20">
+      {/* Title Section */}
+      <Typography
+        variant="h4"
+        sx={{
+          mb: 3,
+          textAlign: "center",
+          fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Adjust title size
+        }}
+      >
         {protocolTypeDetails.researchType}&nbsp;(
         {protocolTypeDetails.protocolId})
-      </h2>
+      </Typography>
+
+      {/* Buttons for Tab Navigation */}
       <Box
         sx={{
           display: "flex",
+          flexWrap: "wrap", // Stack buttons on small screens
           justifyContent: "space-between",
-          borderColor: "divider",
+          gap: 2,
+          padding: { xs: "0 8px", sm: "0 24px" }, // Adjust padding on smaller screens
         }}
-        style={{ padding: "0px 0px 0px 24px" }}
       >
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 0 ? "contained" : "text"}
-          onClick={() => handleButtonClick(0)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 0 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 0 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 0
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Protocol Information
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 1 ? "contained" : "text"}
-          onClick={() => handleButtonClick(1)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 1 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 1 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 1
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Contact Information
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 2 ? "contained" : "text"}
-          onClick={() => handleButtonClick(2)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 2 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 2 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 2
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Study Type
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 3 ? "contained" : "text"}
-          onClick={() => handleButtonClick(3)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 3 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 3 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 3 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 3
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Informed Consent
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 4 ? "contained" : "text"}
-          onClick={() => handleButtonClick(4)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 4 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 4 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 4 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 4
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Protocol Procedures
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 5 ? "contained" : "text"}
-          onClick={() => handleButtonClick(5)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 5 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 5 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 5 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 5
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Submission
-        </Button>
+        {[...Array(6).keys()].map((index) => (
+          <Button
+            key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
+            onClick={() => handleButtonClick(index)}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              backgroundColor: value === index ? "primary.main" : "transparent",
+              backgroundImage:
+                value === index
+                  ? "none"
+                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
+              color: value === index ? "white" : "white",
+              "&:hover": {
+                backgroundColor:
+                  value === index
+                    ? "primary.dark"
+                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
+              },
+              flex: 1,
+              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
+              marginBottom: { xs: "10px", sm: "0px" }, // Adjust margin for small screens
+            }}
+          >
+            {
+              [
+                "Protocol Information",
+                "Contact Information",
+                "Study Type",
+                "Informed Consent",
+                "Protocol Procedures",
+                "Submission",
+              ][index]
+            }
+          </Button>
+        ))}
       </Box>
+
+      {/* Content for each tab */}
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
-          protocolInformation={protocolDetailsById?.protocol_information}
+          protocolInformation={protocolDetailsByIdState?.protocol_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -229,7 +137,7 @@ const MultiSiteSponsorDetails = ({
       <CustomTabPanel value={value} index={1}>
         <ContactInformationForm
           protocolTypeDetails={protocolTypeDetails}
-          contactInformation={protocolDetailsById?.contact_information}
+          contactInformation={protocolDetailsByIdState?.contact_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -237,7 +145,7 @@ const MultiSiteSponsorDetails = ({
       <CustomTabPanel value={value} index={2}>
         <StudyInformationForm
           protocolTypeDetails={protocolTypeDetails}
-          studyInformation={protocolDetailsById?.study_information}
+          studyInformation={protocolDetailsByIdState?.study_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -245,7 +153,7 @@ const MultiSiteSponsorDetails = ({
       <CustomTabPanel value={value} index={3}>
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
-          informedConsent={protocolDetailsById?.informed_consent}
+          informedConsent={protocolDetailsByIdState?.informed_consent}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -253,7 +161,7 @@ const MultiSiteSponsorDetails = ({
       <CustomTabPanel value={value} index={4}>
         <ProtocolProceduresForm
           protocolTypeDetails={protocolTypeDetails}
-          protocolProcedures={protocolDetailsById?.protocol_procedure}
+          protocolProcedures={protocolDetailsByIdState?.protocol_procedure}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -261,7 +169,7 @@ const MultiSiteSponsorDetails = ({
       <CustomTabPanel value={value} index={5}>
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
-          protocolDetailsById={protocolDetailsById}
+          protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />

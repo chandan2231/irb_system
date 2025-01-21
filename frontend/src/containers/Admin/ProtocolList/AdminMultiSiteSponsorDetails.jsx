@@ -337,143 +337,51 @@ const MultiSiteSponsorDetails = ({
       <Box
         sx={{
           display: "flex",
+          flexWrap: "wrap", // Stack buttons on small screens
           justifyContent: "space-between",
-          borderColor: "divider",
+          gap: 2,
+          padding: { xs: "0 8px", sm: "0 24px" }, // Adjust padding on smaller screens
         }}
-        style={{ padding: "0px 0px 0px 24px" }}
       >
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 0 ? "contained" : "text"}
-          onClick={() => handleButtonClick(0)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 0 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 0 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 0
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Protocol Information
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 1 ? "contained" : "text"}
-          onClick={() => handleButtonClick(1)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 1 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 1 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 1
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Contact Information
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 2 ? "contained" : "text"}
-          onClick={() => handleButtonClick(2)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 2 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 2 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 2
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Study Type
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 3 ? "contained" : "text"}
-          onClick={() => handleButtonClick(3)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 3 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 3 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 3 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 3
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Informed Consent
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 4 ? "contained" : "text"}
-          onClick={() => handleButtonClick(4)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 4 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 4 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 4 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 4
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Protocol Procedures
-        </Button>
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 5 ? "contained" : "text"}
-          onClick={() => handleButtonClick(5)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 5 ? "primary.main" : "transparent", // Active color for active button
-            backgroundImage:
-              value === 5 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
-            color: value === 5 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 5
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
-            },
-          }}
-        >
-          Submission
-        </Button>
+        {[...Array(6).keys()].map((index) => (
+          <Button
+            key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
+            onClick={() => handleButtonClick(index)}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              backgroundColor: value === index ? "primary.main" : "transparent",
+              backgroundImage:
+                value === index
+                  ? "none"
+                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
+              color: value === index ? "white" : "white",
+              "&:hover": {
+                backgroundColor:
+                  value === index
+                    ? "primary.dark"
+                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
+              },
+              flex: 1,
+              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
+              marginBottom: { xs: "10px", sm: "0px" }, // Adjust margin for small screens
+            }}
+          >
+            {
+              [
+                "Protocol Information",
+                "Contact Information",
+                "Study Type",
+                "Informed Consent",
+                "Protocol Procedures",
+                "Submission",
+              ][index]
+            }
+          </Button>
+        ))}
       </Box>
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
