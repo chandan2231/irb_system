@@ -56,20 +56,31 @@ const DocumentReviewDetails = ({
 
   return (
     <Box sx={{ width: "100%" }}>
-      <h2 className="ml-20">
+      {/* Title Section */}
+      <Typography
+        variant="h4"
+        sx={{
+          mb: 3,
+          textAlign: "center",
+          fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Adjust font size for responsiveness
+        }}
+      >
         {protocolTypeDetails.researchType}&nbsp;(
         {protocolTypeDetails.protocolId})
-      </h2>
+      </Typography>
 
       {/* Buttons as tabs with icons */}
       <Box
         sx={{
           display: "flex",
+          flexWrap: "wrap", // Stack buttons on smaller screens
           justifyContent: "space-between",
+          gap: 2,
           borderColor: "divider",
+          padding: { xs: "0 8px", sm: "0 24px" }, // Adjust padding on smaller screens
         }}
-        style={{ padding: "0px 0px 0px 24px" }}
       >
+        {/* Button for Protocol Information */}
         <Button
           endIcon={<DoubleArrowIcon />}
           variant={value === 0 ? "contained" : "text"}
@@ -78,22 +89,25 @@ const DocumentReviewDetails = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 0 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 0 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 0 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 0
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
-            flex: 2,
-            marginRight: "15px",
+            flex: 1,
+            minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
+            marginBottom: { xs: "10px", sm: "0px" }, // Adjust margin for small screens
           }}
         >
           Protocol Information
         </Button>
+
+        {/* Button for Investigator Information */}
         <Button
           endIcon={<DoubleArrowIcon />}
           variant={value === 1 ? "contained" : "text"}
@@ -102,47 +116,52 @@ const DocumentReviewDetails = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 1 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 1 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 1 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 1
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
-            flex: 2,
-            marginRight: "15px",
+            flex: 1,
+            minWidth: { xs: "100%", sm: "auto" },
+            marginBottom: { xs: "10px", sm: "0px" },
           }}
         >
           Investigator Information
         </Button>
 
+        {/* Button for Document Review */}
         <Button
           endIcon={<DoubleArrowIcon />}
-          variant={value === 3 ? "contained" : "text"}
+          variant={value === 2 ? "contained" : "text"}
           onClick={() => handleButtonClick(2)}
           sx={{
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 2 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 2 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 2 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 2
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
-            flex: 2,
-            marginRight: "15px",
+            flex: 1,
+            minWidth: { xs: "100%", sm: "auto" },
+            marginBottom: { xs: "10px", sm: "0px" },
           }}
         >
           Document Review
         </Button>
+
+        {/* Button for Submission */}
         <Button
           variant={value === 3 ? "contained" : "text"}
           onClick={() => handleButtonClick(3)}
@@ -150,18 +169,19 @@ const DocumentReviewDetails = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 3 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 3 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 3 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 3 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 3 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 3
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
             flex: 1,
-            marginRight: "15px",
+            minWidth: { xs: "100%", sm: "auto" },
+            marginBottom: { xs: "10px", sm: "0px" },
           }}
         >
           Submission
@@ -177,6 +197,7 @@ const DocumentReviewDetails = ({
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={1}>
         <InvestigatorInformationForm
           protocolTypeDetails={protocolTypeDetails}
