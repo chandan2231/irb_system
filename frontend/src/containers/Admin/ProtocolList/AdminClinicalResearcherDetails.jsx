@@ -335,10 +335,12 @@ const ClinicalResearcherDetails = ({
       <Box
         sx={{
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           borderColor: "divider",
+          gap: 2,
+          padding: { xs: "0 8px", sm: "0 24px" },
         }}
-        style={{ padding: "0px 0px 0px 24px" }}
       >
         <Button
           endIcon={<DoubleArrowIcon />}
@@ -348,18 +350,25 @@ const ClinicalResearcherDetails = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 0 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 0 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 0 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 0
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
-            flex: 2,
-            marginRight: "15px",
+            flex: 1,
+            minWidth: { xs: "100%", sm: "auto" },
+            marginBottom: { xs: "10px", sm: "0px" },
+            fontSize: {
+              xs: "0.8rem",
+              sm: "0.8rem",
+              md: "0.850rem",
+              lg: "0.850rem",
+            },
           }}
         >
           Investigator and Protocol Information
@@ -372,18 +381,25 @@ const ClinicalResearcherDetails = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 1 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 1 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 1 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 1
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
-            flex: 2,
-            marginRight: "15px",
+            flex: 1,
+            minWidth: { xs: "100%", sm: "auto" },
+            marginBottom: { xs: "10px", sm: "0px" },
+            fontSize: {
+              xs: "0.8rem",
+              sm: "0.8rem",
+              md: "0.850rem",
+              lg: "0.850rem",
+            },
           }}
         >
           Informed Consent Document Information
@@ -396,18 +412,24 @@ const ClinicalResearcherDetails = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            backgroundColor: value === 2 ? "primary.main" : "transparent", // Active color for active button
+            backgroundColor: value === 2 ? "primary.main" : "transparent",
             backgroundImage:
-              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)", // Gradient background for inactive button
+              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
             color: value === 2 ? "white" : "white",
             "&:hover": {
               backgroundColor:
                 value === 2
                   ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)", // Hover effect for inactive gradient button
+                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
             },
             flex: 1,
-            marginRight: "15px",
+            minWidth: { xs: "100%", sm: "auto" },
+            fontSize: {
+              xs: "0.8rem",
+              sm: "0.8rem",
+              md: "0.850rem",
+              lg: "0.850rem",
+            },
           }}
         >
           Submission

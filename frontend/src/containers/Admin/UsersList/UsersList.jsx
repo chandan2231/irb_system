@@ -33,7 +33,9 @@ function UsersList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/protocol-details", { state: { details: params.row, type: 'user' } });
+    navigate("/protocol-details", {
+      state: { details: params.row, type: "user" },
+    });
   };
   const columns = [
     {
@@ -256,8 +258,13 @@ function UsersList() {
       />
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={5} sm={5} md={8} lg={8}>
-            <Typography variant="h5" mb={2}>
+          {/* Title Grid Item */}
+          <Grid item xs={12} sm={8} md={8} lg={8}>
+            <Typography
+              variant="h5"
+              mb={2}
+              sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" } }}
+            >
               Users List
             </Typography>
           </Grid>
