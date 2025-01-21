@@ -19,6 +19,7 @@ import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import AddResearch from "./AddResearch";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -48,6 +49,11 @@ function Dashboard() {
   };
   const navigateToCommunicationDetails = (params) => {
     navigate("/communication", {
+      state: { details: params.row, identifierType: "user" },
+    });
+  };
+  const navigateToUploadDocument = (params) => {
+    navigate("/upload-protocol-document", {
       state: { details: params.row, identifierType: "user" },
     });
   };
@@ -98,6 +104,12 @@ function Dashboard() {
           icon={<CompareArrowsIcon />}
           label="Communication"
           onClick={() => navigateToCommunicationDetails(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CloudUploadIcon />}
+          label="Upload Document"
+          onClick={() => navigateToUploadDocument(params)}
           showInMenu
         />,
         // <GridActionsCellItem
@@ -231,7 +243,7 @@ function Dashboard() {
     } catch (error) {
       setLoader(false);
 
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -248,7 +260,7 @@ function Dashboard() {
   // }
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -301,7 +313,7 @@ function Dashboard() {
             loading={loading}
             paginationMode="server"
             onCellClick={(param) => handleChangeStatus(param)}
-          // onRowClick={(param) => handleChangeStatus(param)}
+            // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
