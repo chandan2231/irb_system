@@ -96,7 +96,7 @@ const UploadDocument = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.subject) {
-      newErrors.subject = "Subject is required";
+      newErrors.subject = "Category is required";
     }
     if (
       isUploadMandatory &&
@@ -177,10 +177,11 @@ const UploadDocument = () => {
         theme="dark"
       />
       <Box sx={{ width: "100%" }}>
-        <h2 className="ml-20">
+        <h2 className="ml-20">Upload Document</h2>
+        <h3 className="ml-20">
           {protocolDetails?.protocolId || ""}&nbsp;(
           {protocolDetails?.researchType || ""})
-        </h2>
+        </h3>
         <Box
           className="ml-20"
           sx={{
@@ -196,7 +197,7 @@ const UploadDocument = () => {
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
                   <InputLabel id="demo-simple-select-autowidth-label">
-                    Funding source *
+                    Select Category *
                   </InputLabel>
                   <Select
                     autoWidth
