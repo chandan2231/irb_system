@@ -45,6 +45,7 @@ import Communication from "./containers/Communication/Communication";
 import PayPalButton from "./components/PaymentPage";
 import CanclePayment from "./components/CanclePayment";
 import SuccessPayment from "./components/SuccessPayment";
+import UploadProtocolDocument from "./containers/Dashboard/UploadProtocolDocument";
 import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
@@ -143,6 +144,10 @@ function App() {
           <Box sx={styles.mainSection} component={"main"}>
             <Routes>
               {/* <Route element={<PrivateRoutes />}> */}
+              <Route
+                path="/upload-protocol-document"
+                element={<UploadProtocolDocument />}
+              />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/protocol-details" element={<ProtocolDetails />} />
               <Route path="/communication" element={<Communication />} />
