@@ -76,7 +76,22 @@ export const checkMultisiteProtocolExist = createAsyncThunk(
         url: `${baseURL}/protocol/checkMultisiteProtocolExist`,
         data,
       });
-      console.log("responseresponse", response);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getMultiSiteChildProtocols = createAsyncThunk(
+  "Dashboard/getMultiSiteChildProtocols",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/protocol/getMultiSiteChildProtocols`,
+        data,
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

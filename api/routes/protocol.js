@@ -8,10 +8,12 @@ import {
   createProtocol,
   getApprovedProtocolCheck,
   getApprovedProtocolList,
-  checkMultisiteProtocolExist
+  checkMultisiteProtocolExist,
+  multiSiteChildProtocolsList
 } from '../controllers/protocol.js'
 
 const router = express.Router()
+router.post('/multiSiteChildProtocolsList', multiSiteChildProtocolsList)
 router.post('/checkMultisiteProtocolExist', checkMultisiteProtocolExist)
 router.post('/approvedListCheck', getApprovedProtocolCheck)
 router.post('/approved/list', getApprovedProtocolList)

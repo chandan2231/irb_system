@@ -142,9 +142,10 @@ export const capturePayment = async (req, res) => {
             const newProtocolId = `${baseProtocolId}-${String(i).padStart(2, '0')}`
             const randomString = generateRandomString(10)
             const insertQuery =
-              'INSERT INTO protocols (`protocol_id`, `research_type`, `status`, `varification_code`) VALUES (?)'
+              'INSERT INTO protocols (`protocol_id`, `parent_protocol_id`, `research_type`, `status`, `varification_code`) VALUES (?)'
             const newGeneratedProtocol = [
               newProtocolId,
+              baseProtocolId,
               researchType,
               2,
               randomString
