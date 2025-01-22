@@ -18,7 +18,9 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const CommonModal = ({ open, onClose, title, subTitle, content, onSubmit }) => {
+const CommonModal = ({ open, onClose, title, subTitle, content, onSubmit,
+  hideSubmitButton = false, hideCancelButton = false
+}) => {
   return (
     <React.Fragment>
       <BootstrapDialog
@@ -51,12 +53,17 @@ const CommonModal = ({ open, onClose, title, subTitle, content, onSubmit }) => {
           {content}
         </DialogContent>
         <DialogActions>
-          <CommonButton onClick={onClose} variant="outlined" sx={{ mr: 1 }}>
-            Cancel
-          </CommonButton>
-          <CommonButton variant="contained" onClick={onSubmit}>
-            Submit
-          </CommonButton>
+          {
+            hideCancelButton === true ? null : <CommonButton onClick={onClose} variant="outlined" sx={{ mr: 1 }}>
+              Cancel
+            </CommonButton>
+          }
+          {
+            hideSubmitButton === true ? null :
+              <CommonButton variant="contained" onClick={onSubmit}>
+                Submit
+              </CommonButton>
+          }
         </DialogActions>
       </BootstrapDialog>
     </React.Fragment>

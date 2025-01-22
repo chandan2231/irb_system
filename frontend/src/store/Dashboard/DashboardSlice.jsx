@@ -4,6 +4,8 @@ import {
   createProtocol,
   approvedProtocolListCheck,
   fetchApprovedProtocolList,
+  checkMultisiteProtocolExist,
+  getMultiSiteChildProtocols,
 } from "../../services/Dashboard/DashboardService";
 const DashboardSlice = createSlice({
   name: "dashboard",
@@ -14,6 +16,8 @@ const DashboardSlice = createSlice({
     createdProtocol: null,
     approvedProtocolListCount: null,
     approvedProtocolList: null,
+    multisiteProtocolExist: null,
+    multiSiteChildProtocolsList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -63,6 +67,30 @@ const DashboardSlice = createSlice({
         state.approvedProtocolList = action.payload;
       })
       .addCase(fetchApprovedProtocolList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(checkMultisiteProtocolExist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkMultisiteProtocolExist.fulfilled, (state, action) => {
+        state.loading = false;
+        state.multisiteProtocolExist = action.payload;
+      })
+      .addCase(checkMultisiteProtocolExist.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getMultiSiteChildProtocols.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMultiSiteChildProtocols.fulfilled, (state, action) => {
+        state.loading = false;
+        state.multiSiteChildProtocolsList = action.payload;
+      })
+      .addCase(getMultiSiteChildProtocols.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

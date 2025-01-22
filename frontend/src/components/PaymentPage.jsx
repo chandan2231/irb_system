@@ -104,6 +104,7 @@ const PayPalButton = () => {
                     currencyCode: "USD",
                     amount: paymentAmount?.data[0]?.price,
                     protocolId: protocolTypeDetails?.protocol_id,
+                    researchType: protocolTypeDetails?.protocol_type,
                   })
                 );
                 if (response.payload.status === 200) {
@@ -144,7 +145,7 @@ const PayPalButton = () => {
   }, [paymentAmount, dispatch]);
 
   if (protocolTypeDetails === undefined) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (

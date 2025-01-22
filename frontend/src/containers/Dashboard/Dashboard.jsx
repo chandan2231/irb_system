@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  checkMultisiteProtocolExist,
   createProtocol,
   fetchProtocolList,
-  changeStatus,
 } from "../../services/Dashboard/DashboardService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -26,6 +26,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { protocolReport } from "../../services/UserManagement/UserService";
 import Loader from "../../components/Loader";
+import PreviewIcon from '@mui/icons-material/Preview';
+import CommonModal from "../../components/CommonModal/Modal";
+import MultisiteChildProtocol from "./MultisiteAllProtocol";
 
 function Dashboard() {
   const theme = useTheme();
@@ -33,6 +36,8 @@ function Dashboard() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loader, setLoader] = React.useState(false);
+  const [isViewChildProtocolModalOpen, setIsViewChildProtocolModalOpen] = React.useState(false);
+  const [viewChildProtocolData, setViewChildProtocolData] = React.useState(null);
 
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
@@ -57,6 +62,14 @@ function Dashboard() {
       state: { details: params.row, identifierType: "user" },
     });
   };
+  const handleViewChildProtocol = (params) => {
+    setIsViewChildProtocolModalOpen(true)
+    setViewChildProtocolData(params.row)
+  }
+  const handleCloseViewChildProtocol = () => {
+    setIsViewChildProtocolModalOpen(false)
+    setViewChildProtocolData(null)
+  }
   const columns = [
     {
       field: "protocolId",
@@ -93,44 +106,72 @@ function Dashboard() {
       field: "actions",
       type: "actions",
       width: 80,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<PictureAsPdfIcon />}
-          label="View Pdf"
-          onClick={() => handleViewPdf(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CompareArrowsIcon />}
-          label="Communication"
-          onClick={() => navigateToCommunicationDetails(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CloudUploadIcon />}
-          label="Upload Document"
-          onClick={() => navigateToUploadDocument(params)}
-          showInMenu
-        />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<DeleteIcon />}
-        //     label="Delete"
-        //     onClick={handleItemDelete(params)}
-        //     showInMenu
-        // />,
-      ],
+      getActions: (params) => params.row.protocolStatus !== "Created"
+        &&
+        params.row.researchType === "Multi-Site Sponsor"
+        ? [
+          <GridActionsCellItem
+            icon={<PictureAsPdfIcon />}
+            label="View Pdf"
+            onClick={() => handleViewPdf(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CompareArrowsIcon />}
+            label="Communication"
+            onClick={() => navigateToCommunicationDetails(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CloudUploadIcon />}
+            label="Upload Document"
+            onClick={() => navigateToUploadDocument(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<PreviewIcon />}
+            label="View Child Protocol"
+            onClick={() => handleViewChildProtocol(params)}
+            showInMenu
+          />
+        ] : [
+          <GridActionsCellItem
+            icon={<PictureAsPdfIcon />}
+            label="View Pdf"
+            onClick={() => handleViewPdf(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CompareArrowsIcon />}
+            label="Communication"
+            onClick={() => navigateToCommunicationDetails(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CloudUploadIcon />}
+            label="Upload Document"
+            onClick={() => navigateToUploadDocument(params)}
+            showInMenu
+          />,
+          // <GridActionsCellItem
+          //     icon={<EditNoteIcon />}
+          //     label="Edit"
+          //     onClick={handleItemEdit(params)}
+          //     showInMenu
+          // />,
+          // <GridActionsCellItem
+          //     icon={<SettingsSuggestIcon />}
+          //     label="Details"
+          //     onClick={handleItemDetail(params)}
+          //     showInMenu
+          // />,
+          // <GridActionsCellItem
+          //     icon={<DeleteIcon />}
+          //     label="Delete"
+          //     onClick={handleItemDelete(params)}
+          //     showInMenu
+          // />,
+        ],
     },
   ];
 
@@ -188,26 +229,65 @@ function Dashboard() {
     }
   }, [protocolList]);
 
-  const addNewData = (data) => {
-    let dataObj = {
-      research_type_id: data.research_type_id,
-      login_id: user.id,
-    };
-    dispatch(createProtocol(dataObj)).then((data) => {
-      if (data.payload.status === 200) {
-        setOpen(false);
-        toast.success(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
-    });
+  const addNewData = (data, haveProtocolId = "") => {
+    setLoader(true);
+    if (haveProtocolId === "") {
+      let dataObj = {
+        research_type_id: data.research_type_id,
+        login_id: user.id,
+      };
+      dispatch(createProtocol(dataObj)).then((data) => {
+        if (data.payload.status === 200) {
+          setOpen(false);
+          toast.success(data.payload.data.msg, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
+      });
+      setLoader(false);
+      return;
+    } else {
+      const updatedPayload = {
+        ...data,
+        loggedinUserId: user.id,
+      };
+      dispatch(checkMultisiteProtocolExist(updatedPayload)).then((data) => {
+        console.log("datadatadata", data);
+        if (data.payload.status === 200) {
+          setOpen(false);
+          toast.success(data.payload.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        } else {
+          // setOpen(false);
+          toast.error(data.payload.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
+      });
+      setLoader(false);
+    }
   };
 
   useEffect(() => {
@@ -216,13 +296,6 @@ function Dashboard() {
       dispatch(fetchProtocolList(data));
     }
   }, [createdProtocol]);
-
-  const handleChangeStatus = (status) => {
-    if (status.value === true || status.value === false) {
-      let data = { id: status.id, status: status.row.status };
-      dispatch(changeStatus(data));
-    }
-  };
 
   const handleViewPdf = async (params) => {
     const { row } = params;
@@ -312,10 +385,17 @@ function Dashboard() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
-            // onRowClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
+          // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
+      </Box>
+      <Box>
+        <MultisiteChildProtocol
+          open={isViewChildProtocolModalOpen}
+          data={viewChildProtocolData}
+          onClose={() => handleCloseViewChildProtocol()}
+        />
       </Box>
     </>
   );
