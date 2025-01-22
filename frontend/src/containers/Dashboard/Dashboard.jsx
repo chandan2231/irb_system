@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  checkMultisiteProtocolExist,
   createProtocol,
   fetchProtocolList,
 } from "../../services/Dashboard/DashboardService";
@@ -187,26 +188,49 @@ function Dashboard() {
     }
   }, [protocolList]);
 
-  const addNewData = (data) => {
-    let dataObj = {
-      research_type_id: data.research_type_id,
-      login_id: user.id,
-    };
-    dispatch(createProtocol(dataObj)).then((data) => {
-      if (data.payload.status === 200) {
-        setOpen(false);
-        toast.success(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+  const addNewData = (data, haveProtocolId = "") => {
+    if (haveProtocolId === "") {
+      let dataObj = {
+        research_type_id: data.research_type_id,
+        login_id: user.id,
+      };
+      dispatch(createProtocol(dataObj)).then((data) => {
+        if (data.payload.status === 200) {
+          setOpen(false);
+          toast.success(data.payload.data.msg, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
+      });
+      return
+    } else {
+      const updatedPayload = {
+        ...data,
+        loggedinUserId: user.id
       }
-    });
+      dispatch(checkMultisiteProtocolExist(updatedPayload)).then((data) => {
+        if (data.payload.status === 200) {
+          setOpen(false);
+          toast.success(data.payload.data.msg, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -304,8 +328,8 @@ function Dashboard() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
-            // onRowClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
+          // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
