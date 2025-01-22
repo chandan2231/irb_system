@@ -106,69 +106,72 @@ function Dashboard() {
       field: "actions",
       type: "actions",
       width: 80,
-      getActions: (params) => params.row.protocolStatus !== "Created" ? [
-        <GridActionsCellItem
-          icon={<PictureAsPdfIcon />}
-          label="View Pdf"
-          onClick={() => handleViewPdf(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CompareArrowsIcon />}
-          label="Communication"
-          onClick={() => navigateToCommunicationDetails(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CloudUploadIcon />}
-          label="Upload Document"
-          onClick={() => navigateToUploadDocument(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<PreviewIcon />}
-          label="View Child Protocol"
-          onClick={() => handleViewChildProtocol(params)}
-          showInMenu
-        />
-      ] : [
-        <GridActionsCellItem
-          icon={<PictureAsPdfIcon />}
-          label="View Pdf"
-          onClick={() => handleViewPdf(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CompareArrowsIcon />}
-          label="Communication"
-          onClick={() => navigateToCommunicationDetails(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CloudUploadIcon />}
-          label="Upload Document"
-          onClick={() => navigateToUploadDocument(params)}
-          showInMenu
-        />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<DeleteIcon />}
-        //     label="Delete"
-        //     onClick={handleItemDelete(params)}
-        //     showInMenu
-        // />,
-      ],
+      getActions: (params) => params.row.protocolStatus !== "Created"
+        &&
+        params.row.researchType === "Multi-Site Sponsor"
+        ? [
+          <GridActionsCellItem
+            icon={<PictureAsPdfIcon />}
+            label="View Pdf"
+            onClick={() => handleViewPdf(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CompareArrowsIcon />}
+            label="Communication"
+            onClick={() => navigateToCommunicationDetails(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CloudUploadIcon />}
+            label="Upload Document"
+            onClick={() => navigateToUploadDocument(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<PreviewIcon />}
+            label="View Child Protocol"
+            onClick={() => handleViewChildProtocol(params)}
+            showInMenu
+          />
+        ] : [
+          <GridActionsCellItem
+            icon={<PictureAsPdfIcon />}
+            label="View Pdf"
+            onClick={() => handleViewPdf(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CompareArrowsIcon />}
+            label="Communication"
+            onClick={() => navigateToCommunicationDetails(params)}
+            showInMenu
+          />,
+          <GridActionsCellItem
+            icon={<CloudUploadIcon />}
+            label="Upload Document"
+            onClick={() => navigateToUploadDocument(params)}
+            showInMenu
+          />,
+          // <GridActionsCellItem
+          //     icon={<EditNoteIcon />}
+          //     label="Edit"
+          //     onClick={handleItemEdit(params)}
+          //     showInMenu
+          // />,
+          // <GridActionsCellItem
+          //     icon={<SettingsSuggestIcon />}
+          //     label="Details"
+          //     onClick={handleItemDetail(params)}
+          //     showInMenu
+          // />,
+          // <GridActionsCellItem
+          //     icon={<DeleteIcon />}
+          //     label="Delete"
+          //     onClick={handleItemDelete(params)}
+          //     showInMenu
+          // />,
+        ],
     },
   ];
 
