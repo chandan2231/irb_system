@@ -7,8 +7,18 @@ import sendEmail from '../emailService.js'
 import { getUserInfo } from '../userData.js'
 
 export const multiSiteChildProtocolsList = (req, res) => {
-  const que =
-    'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps LEFT JOIN users ON ps.added_by = users.id AND ps.parent_protocol_id=?'
+  const que = `SELECT 
+      ps.protocol_id, 
+      ps.parent_protocol_id, 
+      users.name, 
+      users.mobile, 
+      users.email
+    FROM 
+      protocols AS ps
+    LEFT JOIN 
+      users ON ps.added_by = users.id
+    WHERE 
+      ps.parent_protocol_id = ?`
   db.query(que, [req.body.protocolId], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {

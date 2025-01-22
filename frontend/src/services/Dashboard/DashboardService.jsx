@@ -89,7 +89,7 @@ export const getMultiSiteChildProtocols = createAsyncThunk(
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/protocol/getMultiSiteChildProtocols`,
+        url: `${baseURL}/protocol/multiSiteChildProtocolsList`,
         data,
       });
       return response.data;
