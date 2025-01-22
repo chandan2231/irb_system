@@ -6,14 +6,59 @@ import PdfTemplates from '../templates/generate-pdf.js'
 import sendEmail from '../emailService.js'
 import { getUserInfo } from '../userData.js'
 
+export const checkMultisiteProtocolExist = (req, res) => {
+  const que =
+    'SELECT * FROM protocols WHERE protocol_id = ? AND varification_code = ?'
+  db.query(
+    que,
+    [req.body.protocolId, req.body.varificationCode],
+    (err, data) => {
+      if (err) {
+        // Handle error from the database query
+        return res.status(500).json({ message: 'Database error', error: err })
+      }
+
+      if (data.length > 0) {
+        // If the protocol is found, proceed with the update
+        const updateQuery = `
+        UPDATE protocols 
+        SET added_by = ? 
+        WHERE protocol_id = ? AND varification_code = ?
+      `
+        const updateValues = [
+          req.body.loggedinUserId,
+          req.body.protocolId,
+          req.body.varificationCode
+        ]
+
+        db.query(updateQuery, updateValues, (err, result) => {
+          if (err) {
+            // Handle error from the database query
+            return res
+              .status(500)
+              .json({ message: 'Failed to update protocol', error: err })
+          }
+
+          // If update is successful, return a success message
+          return res
+            .status(200)
+            .json({ message: 'Protocol Verified successfully' })
+        })
+      } else {
+        // If no data is found with the provided protocol_id and varification_code, return an error
+        return res.status(404).json({
+          message:
+            'Entered Protocol Id And Verification Code not found. Please check your input and try again.'
+        })
+      }
+    }
+  )
+}
+
 export const createProtocol = async (req, res) => {
   try {
     const prefix = 'IRBH'
-
-    // Query to find the latest IRB number to increment
     const que1 = 'SELECT protocol_id FROM protocols ORDER BY id DESC LIMIT 1'
-
-    // Wrap the db query in a promise to use async/await
     const result = await new Promise((resolve, reject) => {
       db.query(que1, (err, data) => {
         if (err) {
@@ -26,18 +71,14 @@ export const createProtocol = async (req, res) => {
     const data = Array.isArray(result) ? result : [result]
     let newProtocolNumber
     if (data && data.length > 0) {
-      // Extract the last IRB number and increment it
       const lastProtocolNumber = data[0].protocol_id
       const lastNumber = parseInt(lastProtocolNumber.replace(prefix, ''), 10) // Remove the prefix and convert to number
-      // Increment the number, and format with leading zeros
       const incrementedNumber = lastNumber + 1
       newProtocolNumber = prefix + incrementedNumber.toString().padStart(5, '0') // Ensure the number has leading zeros
     } else {
-      // If no protocol exists yet, start with IRBH00001
       newProtocolNumber = prefix + '00001'
     }
 
-    // Now, insert the new protocol with the generated IRB number
     const que2 =
       'INSERT INTO protocols (`protocol_id`, `research_type`, `added_by`) VALUES (?)'
     const protocolValue = [
