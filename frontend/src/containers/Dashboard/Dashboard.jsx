@@ -210,6 +210,7 @@ function Dashboard() {
           });
         }
       });
+      setLoader(false);
       return;
     } else {
       const updatedPayload = {
