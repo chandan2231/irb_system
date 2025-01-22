@@ -189,6 +189,7 @@ function Dashboard() {
   }, [protocolList]);
 
   const addNewData = (data, haveProtocolId = "") => {
+    setLoader(true);
     if (haveProtocolId === "") {
       let dataObj = {
         research_type_id: data.research_type_id,
@@ -243,6 +244,7 @@ function Dashboard() {
           });
         }
       });
+      setLoader(false);
     }
   };
 
