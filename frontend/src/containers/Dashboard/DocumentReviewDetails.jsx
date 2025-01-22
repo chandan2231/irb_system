@@ -73,119 +73,55 @@ const DocumentReviewDetails = ({
       <Box
         sx={{
           display: "flex",
-          flexWrap: "wrap", // Stack buttons on smaller screens
+          flexWrap: "wrap",
           justifyContent: "space-between",
           gap: 2,
-          borderColor: "divider",
-          padding: { xs: "0 8px", sm: "0 24px" }, // Adjust padding on smaller screens
+          padding: { xs: "0 8px", sm: "0 24px" },
         }}
       >
-        {/* Button for Protocol Information */}
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 0 ? "contained" : "text"}
-          onClick={() => handleButtonClick(0)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 0 ? "primary.main" : "transparent",
-            backgroundImage:
-              value === 0 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-            color: value === 0 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 0
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
-            },
-            flex: 1,
-            minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
-            marginBottom: { xs: "10px", sm: "0px" }, // Adjust margin for small screens
-          }}
-        >
-          Protocol Information
-        </Button>
-
-        {/* Button for Investigator Information */}
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 1 ? "contained" : "text"}
-          onClick={() => handleButtonClick(1)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 1 ? "primary.main" : "transparent",
-            backgroundImage:
-              value === 1 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-            color: value === 1 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 1
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
-            },
-            flex: 1,
-            minWidth: { xs: "100%", sm: "auto" },
-            marginBottom: { xs: "10px", sm: "0px" },
-          }}
-        >
-          Investigator Information
-        </Button>
-
-        {/* Button for Document Review */}
-        <Button
-          endIcon={<DoubleArrowIcon />}
-          variant={value === 2 ? "contained" : "text"}
-          onClick={() => handleButtonClick(2)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 2 ? "primary.main" : "transparent",
-            backgroundImage:
-              value === 2 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-            color: value === 2 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 2
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
-            },
-            flex: 1,
-            minWidth: { xs: "100%", sm: "auto" },
-            marginBottom: { xs: "10px", sm: "0px" },
-          }}
-        >
-          Document Review
-        </Button>
-
-        {/* Button for Submission */}
-        <Button
-          variant={value === 3 ? "contained" : "text"}
-          onClick={() => handleButtonClick(3)}
-          sx={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: value === 3 ? "primary.main" : "transparent",
-            backgroundImage:
-              value === 3 ? "none" : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-            color: value === 3 ? "white" : "white",
-            "&:hover": {
-              backgroundColor:
-                value === 3
-                  ? "primary.dark"
-                  : "linear-gradient(45deg, #4f5db3, #0094c4)",
-            },
-            flex: 1,
-            minWidth: { xs: "100%", sm: "auto" },
-            marginBottom: { xs: "10px", sm: "0px" },
-          }}
-        >
-          Submission
-        </Button>
+        {[...Array(4).keys()].map((index) => (
+          <Button
+            key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
+            onClick={() => handleButtonClick(index)}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              backgroundColor: value === index ? "primary.main" : "transparent",
+              backgroundImage:
+                value === index
+                  ? "none"
+                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
+              color: value === index ? "white" : "white",
+              "&:hover": {
+                backgroundColor:
+                  value === index
+                    ? "primary.dark"
+                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
+              },
+              flex: 1,
+              minWidth: { xs: "100%", sm: "48%", md: "25%", lg: "25%" },
+              marginBottom: { xs: "10px", sm: "0px" },
+              fontSize: {
+                xs: "0.8rem",
+                sm: "0.85rem",
+                md: "0.9rem",
+                lg: "1rem",
+              },
+            }}
+          >
+            {
+              [
+                "Protocol Information",
+                "Investigator Information",
+                "Document Review",
+                "Submission",
+              ][index]
+            }
+          </Button>
+        ))}
       </Box>
 
       {/* Content for each tab */}
