@@ -3,16 +3,18 @@ import { upload } from '../utils/middleware.js'
 import {
   saveFile,
   continueinReviewGeneratePdf,
-  protocolGeneratePdf
-} from '../controllers/protocol.js'
-import {
+  protocolGeneratePdf,
   getProtocolList,
   createProtocol,
   getApprovedProtocolCheck,
-  getApprovedProtocolList
+  getApprovedProtocolList,
+  checkMultisiteProtocolExist,
+  multiSiteChildProtocolsList
 } from '../controllers/protocol.js'
 
 const router = express.Router()
+router.post('/multiSiteChildProtocolsList', multiSiteChildProtocolsList)
+router.post('/checkMultisiteProtocolExist', checkMultisiteProtocolExist)
 router.post('/approvedListCheck', getApprovedProtocolCheck)
 router.post('/approved/list', getApprovedProtocolList)
 router.post('/list', getProtocolList)
