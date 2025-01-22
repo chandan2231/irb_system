@@ -11,15 +11,13 @@ export const checkMultisiteProtocolExist = (req, res) => {
     'SELECT * FROM protocols WHERE protocol_id = ? AND varification_code = ?'
   db.query(
     que,
-    [req.body.protocolId, req.body.varificationCode],
+    [req.body.protocolId, req.body.verificationCode],
     (err, data) => {
       if (err) {
-        // Handle error from the database query
         return res.status(500).json({ message: 'Database error', error: err })
       }
 
       if (data.length > 0) {
-        // If the protocol is found, proceed with the update
         const updateQuery = `
         UPDATE protocols 
         SET added_by = ? 
@@ -28,27 +26,24 @@ export const checkMultisiteProtocolExist = (req, res) => {
         const updateValues = [
           req.body.loggedinUserId,
           req.body.protocolId,
-          req.body.varificationCode
+          req.body.verificationCode
         ]
 
         db.query(updateQuery, updateValues, (err, result) => {
           if (err) {
-            // Handle error from the database query
             return res
               .status(500)
               .json({ message: 'Failed to update protocol', error: err })
           }
 
-          // If update is successful, return a success message
           return res
             .status(200)
             .json({ message: 'Protocol Verified successfully' })
         })
       } else {
-        // If no data is found with the provided protocol_id and varification_code, return an error
         return res.status(404).json({
           message:
-            'Entered Protocol Id And Verification Code not found. Please check your input and try again.'
+            'Entered protocol id and verification code not matched. Please check your input and try again.'
         })
       }
     }

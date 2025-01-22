@@ -76,6 +76,7 @@ export const checkMultisiteProtocolExist = createAsyncThunk(
         url: `${baseURL}/protocol/checkMultisiteProtocolExist`,
         data,
       });
+      console.log("responseresponse", response);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);

@@ -209,16 +209,17 @@ function Dashboard() {
           });
         }
       });
-      return
+      return;
     } else {
       const updatedPayload = {
         ...data,
-        loggedinUserId: user.id
-      }
+        loggedinUserId: user.id,
+      };
       dispatch(checkMultisiteProtocolExist(updatedPayload)).then((data) => {
+        console.log("datadatadata", data);
         if (data.payload.status === 200) {
           setOpen(false);
-          toast.success(data.payload.data.msg, {
+          toast.success(data.payload.message, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -229,8 +230,8 @@ function Dashboard() {
             theme: "dark",
           });
         } else {
-          setOpen(false);
-          toast.error(data.payload.data.msg, {
+          // setOpen(false);
+          toast.error(data.payload.message, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -340,8 +341,8 @@ function Dashboard() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-          // onCellClick={(param) => handleChangeStatus(param)}
-          // onRowClick={(param) => handleChangeStatus(param)}
+            // onCellClick={(param) => handleChangeStatus(param)}
+            // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>
