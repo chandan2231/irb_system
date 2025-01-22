@@ -78,10 +78,10 @@ const MultiSiteSponsorDetails = ({
       <Box
         sx={{
           display: "flex",
-          flexWrap: "wrap", // Stack buttons on small screens
+          flexWrap: "wrap",
           justifyContent: "space-between",
           gap: 2,
-          padding: { xs: "0 8px", sm: "0 24px" }, // Adjust padding on smaller screens
+          padding: { xs: "0 8px", sm: "0 24px" },
         }}
       >
         {[...Array(6).keys()].map((index) => (
@@ -107,8 +107,14 @@ const MultiSiteSponsorDetails = ({
                     : "linear-gradient(45deg, #4f5db3, #0094c4)",
               },
               flex: 1,
-              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
-              marginBottom: { xs: "10px", sm: "0px" }, // Adjust margin for small screens
+              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
+              marginBottom: { xs: "10px", sm: "0px" },
+              fontSize: {
+                xs: "0.8rem",
+                sm: "0.85rem",
+                md: "0.9rem",
+                lg: "1rem",
+              },
             }}
           >
             {

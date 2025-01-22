@@ -29,6 +29,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
+// Validation schema
 const memberProtocolSchema = yup.object().shape({
   protocol: yup.string().required("This is required"),
   consent: yup.string().required("This is required"),
@@ -66,12 +67,6 @@ const MultiSiteSponsorDetails = ({
     value: PropTypes.number.isRequired,
   };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
   const location = useLocation();
   const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
@@ -111,6 +106,7 @@ const MultiSiteSponsorDetails = ({
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
@@ -131,8 +127,6 @@ const MultiSiteSponsorDetails = ({
               progress: undefined,
               theme: "dark",
             });
-            // setFormData({});
-            // e.target.reset();
           }
         });
       }
@@ -155,9 +149,11 @@ const MultiSiteSponsorDetails = ({
       }
     }
   };
+
   const handleButtonClick = (index) => {
     setValue(index);
   };
+
   return (
     <Box sx={{ width: "100%" }}>
       <ToastContainer
@@ -176,171 +172,140 @@ const MultiSiteSponsorDetails = ({
         {protocolTypeDetails.researchType} Details(
         {protocolTypeDetails.protocolId})
       </h2>
+
       {type === "member" && (
         <Row className="ml-20">
           <h3>Protocol Approval Voting</h3>
           <form onSubmit={handleSubmitData}>
-            <Grid container>
-              <Grid item xs={12} md={5} lg={5}>
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik01"
-                  className="mt-mb-10"
-                >
-                  <FormControl>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Protocol
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="protocol"
-                      value={formData.protocol}
-                      onChange={handleRadioButtonProtocol}
-                    >
-                      <FormControlLabel
-                        value="Approve"
-                        control={<Radio />}
-                        label="Approve"
-                      />
-                      <FormControlLabel
-                        value="Not Approve"
-                        control={<Radio />}
-                        label="Not Approve"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                  {errors.protocol && (
-                    <div className="error">{errors.protocol}</div>
-                  )}
-                </Form.Group>
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik02"
-                  className="mt-mb-10"
-                >
-                  <FormControl>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Consent
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="consent"
-                      value={formData.consent}
-                      onChange={handleRadioButtonConsent}
-                    >
-                      <FormControlLabel
-                        value="Approve"
-                        control={<Radio />}
-                        label="Approve"
-                      />
-                      <FormControlLabel
-                        value="Not Approve"
-                        control={<Radio />}
-                        label="Not Approve"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                  {errors.consent && (
-                    <div className="error">{errors.consent}</div>
-                  )}
-                </Form.Group>
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-10"
-                >
-                  <FormControl>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Supported Documents
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="supported_documents"
-                      value={formData.supported_documents}
-                      onChange={handleRadioButtonSupportedDocument}
-                    >
-                      <FormControlLabel
-                        value="Approve"
-                        control={<Radio />}
-                        label="Approve"
-                      />
-                      <FormControlLabel
-                        value="Not Approve"
-                        control={<Radio />}
-                        label="Not Approve"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                  {errors.supported_documents && (
-                    <div className="error">{errors.supported_documents}</div>
-                  )}
-                </Form.Group>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={5} lg={5}>
+                <FormControl fullWidth>
+                  <FormLabel>Protocol</FormLabel>
+                  <RadioGroup
+                    row
+                    name="protocol"
+                    value={formData.protocol}
+                    onChange={handleRadioButtonProtocol}
+                  >
+                    <FormControlLabel
+                      value="Approve"
+                      control={<Radio />}
+                      label="Approve"
+                    />
+                    <FormControlLabel
+                      value="Not Approve"
+                      control={<Radio />}
+                      label="Not Approve"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                {errors.protocol && (
+                  <div className="error">{errors.protocol}</div>
+                )}
               </Grid>
-              <Grid item xs={12} md={7} lg={7} className="pr-25">
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik04"
-                  className="mt-mb-10"
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your comment"
-                    label="Comment"
-                    id="comment"
-                    name="comment"
-                    onChange={handleInputChange}
-                    defaultValue={formData.comment}
-                    multiline
-                    rows={4}
-                    maxRows={10}
-                  />
-                  {errors.comment && (
-                    <div className="error">{errors.comment}</div>
-                  )}
-                </Form.Group>
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik05"
-                  className="mt-mb-10"
-                >
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your name"
-                    label="Electronic Signature *"
-                    id="electronic_signature"
-                    name="electronic_signature"
-                    onChange={handleInputChange}
-                    defaultValue={formData.electronic_signature}
-                  />
-                  {errors.electronic_signature && (
-                    <div className="error">{errors.electronic_signature}</div>
-                  )}
-                </Form.Group>
+
+              <Grid item xs={12} sm={6} md={5} lg={5}>
+                <FormControl fullWidth>
+                  <FormLabel>Consent</FormLabel>
+                  <RadioGroup
+                    row
+                    name="consent"
+                    value={formData.consent}
+                    onChange={handleRadioButtonConsent}
+                  >
+                    <FormControlLabel
+                      value="Approve"
+                      control={<Radio />}
+                      label="Approve"
+                    />
+                    <FormControlLabel
+                      value="Not Approve"
+                      control={<Radio />}
+                      label="Not Approve"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                {errors.consent && (
+                  <div className="error">{errors.consent}</div>
+                )}
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={5} lg={5}>
+                <FormControl fullWidth>
+                  <FormLabel>Supported Documents</FormLabel>
+                  <RadioGroup
+                    row
+                    name="supported_documents"
+                    value={formData.supported_documents}
+                    onChange={handleRadioButtonSupportedDocument}
+                  >
+                    <FormControlLabel
+                      value="Approve"
+                      control={<Radio />}
+                      label="Approve"
+                    />
+                    <FormControlLabel
+                      value="Not Approve"
+                      control={<Radio />}
+                      label="Not Approve"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                {errors.supported_documents && (
+                  <div className="error">{errors.supported_documents}</div>
+                )}
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={7} lg={7}>
+                <TextField
+                  fullWidth
+                  placeholder="Enter your comment"
+                  label="Comment"
+                  id="comment"
+                  name="comment"
+                  onChange={handleInputChange}
+                  value={formData.comment}
+                  multiline
+                  rows={4}
+                  maxRows={10}
+                />
+                {errors.comment && (
+                  <div className="error">{errors.comment}</div>
+                )}
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={7} lg={7}>
+                <TextField
+                  fullWidth
+                  placeholder="Enter your name"
+                  label="Electronic Signature *"
+                  id="electronic_signature"
+                  name="electronic_signature"
+                  onChange={handleInputChange}
+                  value={formData.electronic_signature}
+                />
+                {errors.electronic_signature && (
+                  <div className="error">{errors.electronic_signature}</div>
+                )}
+              </Grid>
+
+              <Grid item xs={12} style={{ textAlign: "right" }}>
+                <Button variant="contained" color="primary" type="Submit">
+                  Submit
+                </Button>
               </Grid>
             </Grid>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20 pr-25"
-              style={{ textAlign: "right" }}
-            >
-              <Button variant="contained" color="primary" type="Submit">
-                SUBMIT
-              </Button>
-            </Form.Group>
           </form>
         </Row>
       )}
+
       <Box
         sx={{
           display: "flex",
-          flexWrap: "wrap", // Stack buttons on small screens
+          flexWrap: "wrap",
           justifyContent: "space-between",
           gap: 2,
-          padding: { xs: "0 8px", sm: "0 24px" }, // Adjust padding on smaller screens
+          padding: { xs: "0 8px", sm: "0 24px" },
         }}
       >
         {[...Array(6).keys()].map((index) => (
@@ -366,8 +331,14 @@ const MultiSiteSponsorDetails = ({
                     : "linear-gradient(45deg, #4f5db3, #0094c4)",
               },
               flex: 1,
-              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
-              marginBottom: { xs: "10px", sm: "0px" }, // Adjust margin for small screens
+              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
+              marginBottom: { xs: "10px", sm: "0px" },
+              fontSize: {
+                xs: "0.8rem",
+                sm: "0.85rem",
+                md: "0.9rem",
+                lg: "1rem",
+              },
             }}
           >
             {
@@ -383,6 +354,7 @@ const MultiSiteSponsorDetails = ({
           </Button>
         ))}
       </Box>
+
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
