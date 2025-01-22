@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createProtocol,
   fetchProtocolList,
-  changeStatus,
 } from "../../services/Dashboard/DashboardService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -217,13 +216,6 @@ function Dashboard() {
     }
   }, [createdProtocol]);
 
-  const handleChangeStatus = (status) => {
-    if (status.value === true || status.value === false) {
-      let data = { id: status.id, status: status.row.status };
-      dispatch(changeStatus(data));
-    }
-  };
-
   const handleViewPdf = async (params) => {
     const { row } = params;
     const { protocolId, researchType } = row;
@@ -312,7 +304,7 @@ function Dashboard() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
+            // onCellClick={(param) => handleChangeStatus(param)}
             // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
