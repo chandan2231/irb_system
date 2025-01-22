@@ -78,18 +78,10 @@ const ContractorResearcherDetails = ({
           flexWrap: "wrap",
           justifyContent: "space-between",
           gap: 2,
-          borderColor: "divider",
           padding: { xs: "0 8px", sm: "0 24px" },
         }}
       >
-        {[
-          "Protocol Information",
-          "Investigator Information",
-          "Study Type",
-          "Informed Consent",
-          "Protocol Procedures",
-          "Submission",
-        ].map((label, index) => (
+        {[...Array(6).keys()].map((index) => (
           <Button
             key={index}
             endIcon={<DoubleArrowIcon />}
@@ -112,11 +104,26 @@ const ContractorResearcherDetails = ({
                     : "linear-gradient(45deg, #4f5db3, #0094c4)",
               },
               flex: 1,
-              minWidth: { xs: "100%", sm: "auto" },
+              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
               marginBottom: { xs: "10px", sm: "0px" },
+              fontSize: {
+                xs: "0.8rem",
+                sm: "0.85rem",
+                md: "0.9rem",
+                lg: "1rem",
+              },
             }}
           >
-            {label}
+            {
+              [
+                "Protocol Information",
+                "Investigator Information",
+                "Study Type",
+                "Informed Consent",
+                "Protocol Procedures",
+                "Submission",
+              ][index]
+            }
           </Button>
         ))}
       </Box>
