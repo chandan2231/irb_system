@@ -7,12 +7,12 @@ import {
   getProtocolList,
   createProtocol,
   getApprovedProtocolCheck,
-  getApprovedProtocolList
-  // checkMultisiteProtocolExist
+  getApprovedProtocolList,
+  checkMultisiteProtocolExist
 } from '../controllers/protocol.js'
 
 const router = express.Router()
-// router.post('/checkMultisiteProtocolExist', checkMultisiteProtocolExist)
+router.post('/checkMultisiteProtocolExist', checkMultisiteProtocolExist)
 router.post('/approvedListCheck', getApprovedProtocolCheck)
 router.post('/approved/list', getApprovedProtocolList)
 router.post('/list', getProtocolList)
