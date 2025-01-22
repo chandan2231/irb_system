@@ -4,7 +4,7 @@ import DropdownWithSearch from "../../components/DropdownWithSearch";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Checkbox, TextField, Typography, } from "@mui/material";
+import { Box, Checkbox, TextField, Typography } from "@mui/material";
 
 const defaultInputValues = {
   research_type_id: "",
@@ -17,7 +17,9 @@ const defaultInputValuesForHaveProtocolId = {
 
 const AddResearch = ({ open, onClose, addNewData }) => {
   const [values, setValues] = useState(defaultInputValues);
-  const [valuesForHaveProtocolId, setValuesForHaveProtocolId] = useState(defaultInputValuesForHaveProtocolId);
+  const [valuesForHaveProtocolId, setValuesForHaveProtocolId] = useState(
+    defaultInputValuesForHaveProtocolId
+  );
   const [isHaveProtocolIdChecked, setIsHaveProtocolIdChecked] = useState(false);
   const [researchTypeError, setResearchTypeError] = useState("");
   const options = [
@@ -71,7 +73,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
   const handleCheckBoxChange = (e) => {
     const { checked } = e.target;
     setIsHaveProtocolIdChecked(checked);
-  }
+  };
 
   const handleChange = (value) => {
     setValues(value);
@@ -116,7 +118,6 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     </Box>
   );
 
-
   const getContentForHaveProtocolId = () => (
     <Box sx={modalStyles.inputFields}>
       <TextField
@@ -157,11 +158,10 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     </Box>
   );
 
-
   return (
     <React.Fragment>
-      {
-        isHaveProtocolIdChecked ? <CommonModal
+      {isHaveProtocolIdChecked ? (
+        <CommonModal
           open={open}
           onClose={() => {
             onClose();
@@ -171,7 +171,9 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           subTitle=""
           content={getContentForHaveProtocolId()}
           onSubmit={handleSubmitForHaveProtocolId(handleHaveProtocolIdSubmit)}
-        /> : <CommonModal
+        />
+      ) : (
+        <CommonModal
           open={open}
           onClose={onClose}
           title="Create New Research Type"
@@ -179,7 +181,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           content={getContent()}
           onSubmit={handleSubmit(addNew)}
         />
-      }
+      )}
     </React.Fragment>
   );
 };

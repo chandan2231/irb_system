@@ -26,6 +26,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { protocolReport } from "../../services/UserManagement/UserService";
 import Loader from "../../components/Loader";
+import PreviewIcon from '@mui/icons-material/Preview';
+import CommonModal from "../../components/CommonModal/Modal";
+import MultisiteChildProtocol from "./MultisiteAllProtocol";
 
 function Dashboard() {
   const theme = useTheme();
@@ -33,6 +36,8 @@ function Dashboard() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [loader, setLoader] = React.useState(false);
+  const [isViewChildProtocolModalOpen, setIsViewChildProtocolModalOpen] = React.useState(false);
+  const [viewChildProtocolData, setViewChildProtocolData] = React.useState(null);
 
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
@@ -57,6 +62,14 @@ function Dashboard() {
       state: { details: params.row, identifierType: "user" },
     });
   };
+  const handleViewChildProtocol = (params) => {
+    setIsViewChildProtocolModalOpen(true)
+    setViewChildProtocolData(params.row)
+  }
+  const handleCloseViewChildProtocol = () => {
+    setIsViewChildProtocolModalOpen(false)
+    setViewChildProtocolData(null)
+  }
   const columns = [
     {
       field: "protocolId",
@@ -93,7 +106,32 @@ function Dashboard() {
       field: "actions",
       type: "actions",
       width: 80,
-      getActions: (params) => [
+      getActions: (params) => params.row.protocolStatus !== "Created" ? [
+        <GridActionsCellItem
+          icon={<PictureAsPdfIcon />}
+          label="View Pdf"
+          onClick={() => handleViewPdf(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CompareArrowsIcon />}
+          label="Communication"
+          onClick={() => navigateToCommunicationDetails(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CloudUploadIcon />}
+          label="Upload Document"
+          onClick={() => navigateToUploadDocument(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<PreviewIcon />}
+          label="View Child Protocol"
+          onClick={() => handleViewChildProtocol(params)}
+          showInMenu
+        />
+      ] : [
         <GridActionsCellItem
           icon={<PictureAsPdfIcon />}
           label="View Pdf"
@@ -344,10 +382,17 @@ function Dashboard() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
-            // onRowClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
+          // onRowClick={(param) => handleChangeStatus(param)}
           />
         </Box>
+      </Box>
+      <Box>
+        <MultisiteChildProtocol
+          open={isViewChildProtocolModalOpen}
+          data={viewChildProtocolData}
+          onClose={() => handleCloseViewChildProtocol()}
+        />
       </Box>
     </>
   );
