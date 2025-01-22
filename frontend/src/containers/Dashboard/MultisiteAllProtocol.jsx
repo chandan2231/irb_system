@@ -32,7 +32,40 @@ const MultisiteChildProtocol = ({ open, onClose, data = {} }) => {
     console.group("multiSiteChildProtocolsList ====>", multiSiteChildProtocolsList)
 
     const getContentForHaveProtocolId = () => {
-        return <>hiiii</>;
+        return (
+            <div>
+                {
+                    multiSiteChildProtocolsList?.length > 0 ? (
+                        <div>
+                            <table className="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Protocol ID</th>
+                                        <th>Protocol Name</th>
+                                        <th>Protocol Version</th>
+                                        <th>Protocol Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        multiSiteChildProtocolsList?.map((item, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{item?.protocolId}</td>
+                                                    <td>{item?.protocolName}</td>
+                                                    <td>{item?.protocolVersion}</td>
+                                                    <td>{item?.protocolStatus}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : <div>No Data Found</div>
+                }
+            </div>
+        )
     };
 
     if (loader) {
