@@ -335,6 +335,17 @@ export const getUnderReviewProtocolList = (req, res) => {
   })
 }
 
+export const getRejectedProtocolList = (req, res) => {
+  const que =
+    'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=4'
+  db.query(que, {}, (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
 export const getCreatedProtocolList = (req, res) => {
   const que =
     'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=1'
