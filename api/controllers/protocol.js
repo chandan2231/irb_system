@@ -937,42 +937,47 @@ const getProtocolDetails = async (protocolId, protocolType) => {
 
 export const protocolGeneratePdf = async (req, res) => {
   const { protocolId, protocolType } = req.body
-
+  console.log('protocolId', protocolId)
+  console.log('protocolType', protocolType)
   try {
     // Fetch protocol details
     const protocolDetailsObj = await getProtocolDetails(
       protocolId,
       protocolType
     )
-
+    console.log('protocolDetailsObj', protocolDetailsObj)
     // Generate PDF
     let template
     if (protocolType === 'Clinical Site') {
+      console.log('Clinical Site')
       template =
         await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
           protocolDetailsObj,
           req.body
         )
     } else if (protocolType === 'Multi-Site Sponsor') {
+      console.log('Multi-Site Sponsor')
       template =
         await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
           protocolDetailsObj,
           req.body
         )
     } else if (protocolType === 'Document Review') {
+      console.log('Document Review')
       template =
         await PdfTemplates.protocolAmendmentRequestPdfTemplate.DocumentReviewPdfTemplate(
           protocolDetailsObj,
           req.body
         )
     } else {
+      console.log('principle')
       template =
         await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
           protocolDetailsObj,
           req.body
         )
     }
-
+    console.log('template', template)
     // Generate the PDF from template HTML
     const filePath = await generatePdfFromHTML(template)
     console.log('filePath', filePath)
