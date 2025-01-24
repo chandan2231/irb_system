@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-
+import PreviewIcon from '@mui/icons-material/Preview';
 import { useNavigate } from "react-router-dom";
 import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
@@ -25,6 +25,7 @@ import {
 } from "../../../services/Admin/MembersService";
 import AssignProtocolToMember from "./AssignProtocolToMember";
 import Loader from "../../../components/Loader";
+import MultisiteChildProtocol from "../../Dashboard/MultisiteAllProtocol";
 
 function UnderReviewProtocolList() {
   const theme = useTheme();
@@ -36,6 +37,9 @@ function UnderReviewProtocolList() {
   const [open, setOpen] = useState(false);
   const [assignedMemberOpen, setAssignedMemberOpen] = useState(false);
   const [protocolDetails, setProtocolDetails] = useState();
+  const [isViewChildProtocolModalOpen, setIsViewChildProtocolModalOpen] = React.useState(false);
+  const [viewChildProtocolData, setViewChildProtocolData] = React.useState(null);
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
     if (userDetails) {
@@ -52,6 +56,16 @@ function UnderReviewProtocolList() {
       state: { details: params.row, identifierType: "admin" },
     });
   };
+
+  const handleViewChildProtocol = (params) => {
+    setIsViewChildProtocolModalOpen(true)
+    setViewChildProtocolData(params.row)
+  }
+  const handleCloseViewChildProtocol = () => {
+    setIsViewChildProtocolModalOpen(false)
+    setViewChildProtocolData(null)
+  }
+
   const columns = [
     {
       field: "protocolId",
@@ -110,50 +124,85 @@ function UnderReviewProtocolList() {
       field: "actions",
       type: "actions",
       width: 80,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<EditCalendarOutlinedIcon />}
-          label="Assign Members"
-          onClick={() => handleAssignedMemberToProtocol(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<EditCalendarOutlinedIcon />}
-          label="Add Event"
-          onClick={() => handleAddProtocolEvent(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<PictureAsPdfIcon />}
-          label="View Pdf"
-          onClick={() => handleViewPdf(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<CompareArrowsIcon />}
-          label="Communication"
-          onClick={() => navigateToCommunicationDetails(params)}
-          showInMenu
-        />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<DeleteIcon />}
-        //     label="Delete"
-        //     onClick={handleItemDelete(params)}
-        //     showInMenu
-        // />,
-      ],
+      getActions: (params) =>
+        params.row.researchType === "Multi-Site Sponsor" &&
+          params.row.isParent
+          ? [
+            <GridActionsCellItem
+              icon={<EditCalendarOutlinedIcon />}
+              label="Assign Members"
+              onClick={() => handleAssignedMemberToProtocol(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<EditCalendarOutlinedIcon />}
+              label="Add Event"
+              onClick={() => handleAddProtocolEvent(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View Child Protocol"
+              onClick={() => handleViewChildProtocol(params)}
+              showInMenu
+            />
+          ]
+          : [
+            <GridActionsCellItem
+              icon={<EditCalendarOutlinedIcon />}
+              label="Assign Members"
+              onClick={() => handleAssignedMemberToProtocol(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<EditCalendarOutlinedIcon />}
+              label="Add Event"
+              onClick={() => handleAddProtocolEvent(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            // <GridActionsCellItem
+            //     icon={<EditNoteIcon />}
+            //     label="Edit"
+            //     onClick={handleItemEdit(params)}
+            //     showInMenu
+            // />,
+            // <GridActionsCellItem
+            //     icon={<SettingsSuggestIcon />}
+            //     label="Details"
+            //     onClick={handleItemDetail(params)}
+            //     showInMenu
+            // />,
+            // <GridActionsCellItem
+            //     icon={<DeleteIcon />}
+            //     label="Delete"
+            //     onClick={handleItemDelete(params)}
+            //     showInMenu
+            // />,
+          ],
     },
   ];
 
@@ -198,6 +247,7 @@ function UnderReviewProtocolList() {
                   : "Rejected",
           createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          isParent: pList.parent_protocol_id === "" ? true : false,
         };
         pListArr.push(protocolObject);
       });
@@ -436,9 +486,16 @@ function UnderReviewProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
+      </Box>
+      <Box>
+        <MultisiteChildProtocol
+          open={isViewChildProtocolModalOpen}
+          data={viewChildProtocolData}
+          onClose={() => handleCloseViewChildProtocol()}
+        />
       </Box>
     </>
   );
