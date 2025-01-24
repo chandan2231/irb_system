@@ -655,6 +655,67 @@ export const getProtocolDetailsById = (req, res) => {
         })
       }
     })
+  } else if (req.body.protocolType === 'Document Review') {
+    const que1 = 'select * from protocol_information where protocol_id = ?'
+    db.query(que1, [req.body.protocolId], (err, data) => {
+      if (data.length >= 0) {
+        protocolDetailsObj.protocol_information = data[0] || {}
+        const docQue =
+          'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+        db.query(
+          docQue,
+          [req.body.protocolId, 'protocol_information'],
+          (err, data) => {
+            if (data.length >= 0) {
+              protocolDetailsObj.protocol_information.documents = data || {}
+            } else {
+              protocolDetailsObj.protocol_information.documents = []
+            }
+          }
+        )
+        const que2 =
+          'select * from investigator_information where protocol_id = ?'
+        db.query(que2, [req.body.protocolId], (err, data) => {
+          if (data.length >= 0) {
+            protocolDetailsObj.investigator_information = data[0] || {}
+            const docQue =
+              'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+            db.query(
+              docQue,
+              [req.body.protocolId, 'investigator_information'],
+              (err, data) => {
+                if (data.length >= 0) {
+                  protocolDetailsObj.investigator_information.documents =
+                    data || {}
+                } else {
+                  protocolDetailsObj.investigator_information.documents = []
+                }
+              }
+            )
+            const que3 = 'select * from informed_consent where protocol_id = ?'
+            db.query(que3, [req.body.protocolId], (err, data) => {
+              if (data.length >= 0) {
+                protocolDetailsObj.informed_consent = data[0] || {}
+                const docQue =
+                  'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+                db.query(
+                  docQue,
+                  [req.body.protocolId, 'informed_consent'],
+                  (err, data) => {
+                    if (data.length >= 0) {
+                      protocolDetailsObj.informed_consent.documents = data || {}
+                    } else {
+                      protocolDetailsObj.informed_consent.documents = []
+                    }
+                    return res.status(200).json(protocolDetailsObj)
+                  }
+                )
+              }
+            })
+          }
+        })
+      }
+    })
   } else {
     const que1 =
       'select * from investigator_protocol_information where protocol_id = ?'

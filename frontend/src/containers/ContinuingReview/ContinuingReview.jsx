@@ -13,6 +13,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useNavigate } from "react-router-dom";
 import { fetchApprovedProtocolList } from "../../services/Dashboard/DashboardService";
 import { continueinReviewReport } from "../../services/UserManagement/UserService";
+import Loader from "../../components/Loader";
 
 function ContinuingReview() {
   const theme = useTheme();
@@ -21,6 +22,8 @@ function ContinuingReview() {
   const [open, setOpen] = useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
+  const [loader, setLoader] = React.useState(false);
+
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
     if (userDetails) {
@@ -145,9 +148,16 @@ function ContinuingReview() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await continueinReviewReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await continueinReviewReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.error("Error fetching continuing review report: ", error);
     }
   };
 
@@ -165,6 +175,10 @@ function ContinuingReview() {
   // const handleItemEdit = (params) => {
   //     //console.log('Edit Item', params)
   // }
+
+  if (loader) {
+    return <Loader />
+  }
   return (
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>
@@ -183,8 +197,8 @@ function ContinuingReview() {
           rowCount={rowCount}
           loading={loading}
           paginationMode="server"
-          // onCellClick={(param) => handleChangeStatus(param)}
-          // onRowClick={(param) => handleChangeStatus(param)}
+        // onCellClick={(param) => handleChangeStatus(param)}
+        // onRowClick={(param) => handleChangeStatus(param)}
         />
       </Box>
     </Box>

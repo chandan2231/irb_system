@@ -2,15 +2,13 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import { Box, Button, Typography } from "@mui/material";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
-import ProtocolInformationForm from "../Dashboard/ProtocolType/ContractorResearcher/ProtocolInformationForm";
-import InvestigatorInformationForm from "../Dashboard/ProtocolType/ContractorResearcher/InvestigatorInformationForm";
-import StudyInformationForm from "../Dashboard/ProtocolType/ContractorResearcher/StudyInformationForm";
-import InformedConsentForm from "../Dashboard/ProtocolType/ContractorResearcher/InformedConsentForm";
-import ProtocolProceduresForm from "../Dashboard/ProtocolType/ContractorResearcher/ProtocolProceduresForm";
-import SubmissionForm from "../Dashboard/ProtocolType/ContractorResearcher/SubmissionForm";
+import ProtocolInformationForm from "../Dashboard/ProtocolType/DocumentReview/ProtocolInformationForm";
+import InvestigatorInformationForm from "../Dashboard/ProtocolType/DocumentReview/InvestigatorInformationForm";
+import InformedConsentForm from "../Dashboard/ProtocolType/DocumentReview/InformedConsentForm";
+import SubmissionForm from "../Dashboard/ProtocolType/DocumentReview/SubmissionForm";
 import { useLocation } from "react-router-dom";
 
-const ContractorResearcherDetails = ({
+const DocumentReviewDetails = ({
   protocolTypeDetails,
   protocolDetailsById,
 }) => {
@@ -19,8 +17,8 @@ const ContractorResearcherDetails = ({
   const [apiCallIdentifier, setApiCallIdentifier] = React.useState(false);
 
   const location = useLocation();
-  const [value, setValue] = React.useState(0); // Active tab state
 
+  const [value, setValue] = React.useState(0); // Active tab state
   const handleButtonClick = (index) => {
     setValue(index);
   };
@@ -64,14 +62,14 @@ const ContractorResearcherDetails = ({
         sx={{
           mb: 3,
           textAlign: "center",
-          fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" },
+          fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Adjust font size for responsiveness
         }}
       >
         {protocolTypeDetails.researchType}&nbsp;(
         {protocolTypeDetails.protocolId})
       </Typography>
 
-      {/* Button Tabs (Horizontal on larger screens, stacked on smaller screens) */}
+      {/* Buttons as tabs with icons */}
       <Box
         sx={{
           display: "flex",
@@ -81,7 +79,7 @@ const ContractorResearcherDetails = ({
           padding: { xs: "0 8px", sm: "0 24px" },
         }}
       >
-        {[...Array(6).keys()].map((index) => (
+        {[...Array(4).keys()].map((index) => (
           <Button
             key={index}
             endIcon={<DoubleArrowIcon />}
@@ -104,7 +102,7 @@ const ContractorResearcherDetails = ({
                     : "linear-gradient(45deg, #4f5db3, #0094c4)",
               },
               flex: 1,
-              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
+              minWidth: { xs: "100%", sm: "48%", md: "25%", lg: "25%" },
               marginBottom: { xs: "10px", sm: "0px" },
               fontSize: {
                 xs: "0.8rem",
@@ -118,9 +116,7 @@ const ContractorResearcherDetails = ({
               [
                 "Protocol Information",
                 "Investigator Information",
-                "Study Type",
-                "Informed Consent",
-                "Protocol Procedures",
+                "Document Review",
                 "Submission",
               ][index]
             }
@@ -137,6 +133,7 @@ const ContractorResearcherDetails = ({
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={1}>
         <InvestigatorInformationForm
           protocolTypeDetails={protocolTypeDetails}
@@ -147,15 +144,8 @@ const ContractorResearcherDetails = ({
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={2}>
-        <StudyInformationForm
-          protocolTypeDetails={protocolTypeDetails}
-          studyInformation={protocolDetailsByIdState?.study_information}
-          apiCallIdentifier={apiCallIdentifier}
-          handleNextTab={handleButtonClick}
-        />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsByIdState?.informed_consent}
@@ -163,15 +153,8 @@ const ContractorResearcherDetails = ({
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
-        <ProtocolProceduresForm
-          protocolTypeDetails={protocolTypeDetails}
-          protocolProcedure={protocolDetailsByIdState?.protocol_procedure}
-          apiCallIdentifier={apiCallIdentifier}
-          handleNextTab={handleButtonClick}
-        />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+
+      <CustomTabPanel value={value} index={3}>
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsByIdState}
@@ -183,4 +166,4 @@ const ContractorResearcherDetails = ({
   );
 };
 
-export default ContractorResearcherDetails;
+export default DocumentReviewDetails;

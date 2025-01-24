@@ -47,6 +47,7 @@ function SendEmail({
   selectedThread,
   handleCancelReply,
 }) {
+  console.log(selectedThread, "selectedThread");
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [formData, setFormData] = useState({
@@ -69,7 +70,7 @@ function SendEmail({
   const handleCancelReplyButtonClicked = () => {
     handleCancelReply();
     setFormData({});
-  }
+  };
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
@@ -80,29 +81,25 @@ function SendEmail({
         ? communicationSchemaForThreadReply
         : communicationSchema;
 
-      const getValidatedform = await schema.validate(formData, { abortEarly: false });
+      const getValidatedform = await schema.validate(formData, {
+        abortEarly: false,
+      });
 
       const isValid = await schema.isValid(getValidatedform);
 
       if (isValid === true) {
         if (isReplyToThreadClicked) {
-          const payload = {
-            ...formData,
-            ...selectedThread,
-            thread_id: selectedThread.id,
-            created_by: userDetails.id,
-            created_by_user_type: enqueryUserType === "user" ? "user" : "admin",
-          }
-          console.log("handleReplySubmit payload", payload);
-          setLoader(false);
-        } else {
           let attachments_file = [];
-          if (formData.attachments_file && formData.attachments_file.length > 0) {
+          if (
+            formData.attachments_file &&
+            formData.attachments_file.length > 0
+          ) {
             for (let file of formData.attachments_file) {
               let id = await uploadFile(file, {
                 protocolId: formData.protocol_id,
                 createdBy: formData.created_by,
-                createdByUserType: enqueryUserType === "user" ? "user" : "admin",
+                createdByUserType:
+                  enqueryUserType === "user" ? "user" : "admin",
                 protocolType: protocolTypeDetails.researchType,
                 informationType: "communication_attachments",
                 documentName: "communication_attachments",
@@ -110,25 +107,92 @@ function SendEmail({
               attachments_file.push(id);
             }
           }
-          dispatch(saveEnquiry({ ...formData, attachments_file })).then(
-            (data) => {
-              if (data.payload.status === 200) {
-                toast.success(data.payload.data.msg, {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "dark",
-                });
-                setLoader(false);
-                setFormData({});
-                setErrors({});
-              }
+          const updatedPayload = {
+            ...formData,
+            subject: selectedThread.subject,
+            reply_thread_parent_id: selectedThread.id,
+            attachments_file,
+          };
+          console.log(updatedPayload, "updatedPayload");
+          dispatch(saveEnquiry({ ...updatedPayload })).then((data) => {
+            if (data.payload.status === 200) {
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+              setLoader(false);
+              setFormData({
+                subject: "",
+                body: "",
+                protocol_id: protocolTypeDetails.protocolId,
+                created_by: userDetails.id,
+                status: enqueryUserType === "user" ? 1 : 2,
+                protocol_type: protocolTypeDetails.researchType,
+                created_by_user_type:
+                  enqueryUserType === "user" ? "user" : "admin",
+                attachments_file: [],
+              });
+              handleCancelReply();
+              setErrors({});
             }
-          );
+          });
+        } else {
+          let attachments_file = [];
+          if (
+            formData.attachments_file &&
+            formData.attachments_file.length > 0
+          ) {
+            for (let file of formData.attachments_file) {
+              let id = await uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                createdByUserType:
+                  enqueryUserType === "user" ? "user" : "admin",
+                protocolType: protocolTypeDetails.researchType,
+                informationType: "communication_attachments",
+                documentName: "communication_attachments",
+              });
+              attachments_file.push(id);
+            }
+          }
+          const updatedPayload = {
+            ...formData,
+            reply_thread_parent_id: "",
+            attachments_file,
+          };
+          dispatch(saveEnquiry({ ...updatedPayload })).then((data) => {
+            if (data.payload.status === 200) {
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+              setLoader(false);
+              setFormData({
+                subject: "",
+                body: "",
+                protocol_id: protocolTypeDetails.protocolId,
+                created_by: userDetails.id,
+                status: enqueryUserType === "user" ? 1 : 2,
+                protocol_type: protocolTypeDetails.researchType,
+                created_by_user_type:
+                  enqueryUserType === "user" ? "user" : "admin",
+                attachments_file: [],
+              });
+              setErrors({});
+            }
+          });
         }
       }
     } catch (error) {
@@ -145,14 +209,17 @@ function SendEmail({
           `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
-          firstErrorField.scrollIntoView({ behavior: "smooth", block: "center" });
+          firstErrorField.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
         }
       }
     }
   };
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -180,7 +247,11 @@ function SendEmail({
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
-                  label={isReplyToThreadClicked ? `${selectedThread?.subject}` : "Subject"}
+                  label={
+                    isReplyToThreadClicked
+                      ? `${selectedThread?.subject}`
+                      : "Subject"
+                  }
                   id="subject"
                   name="subject"
                   value={formData.subject || ""}
@@ -258,12 +329,17 @@ function SendEmail({
               className="mt-mb-20"
               style={{ textAlign: "right" }}
             >
-              {isReplyToThreadClicked && (<Button variant="outlined" color="error" type="button"
-                onClick={() => handleCancelReplyButtonClicked()}
-                sx={{ mr: 2 }}
-              >
-                CANCEL
-              </Button>)}
+              {isReplyToThreadClicked && (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  type="button"
+                  onClick={() => handleCancelReplyButtonClicked()}
+                  sx={{ mr: 2 }}
+                >
+                  CANCEL
+                </Button>
+              )}
               <Button variant="contained" color="primary" type="Submit">
                 SEND
               </Button>

@@ -3,7 +3,14 @@ import Row from "react-bootstrap/Row";
 import { styled } from "@mui/material/styles";
 import * as yup from "yup";
 import { getCommunicationListByProtocolId } from "../../services/Communication/CommunicationService";
-import { Box, Button, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  useTheme,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import Accordion from "@mui/material/Accordion";
@@ -40,10 +47,17 @@ const CommunicationItem = ({ communication, handleReplyToThread }) => {
         >
           {formattedDate}
         </Typography>
-        <ShowOptions
-          communication={communication}
-          handleReplyToThread={handleReplyToThread}
-        />
+        {communication.replied_by === "" &&
+        communication.reply_thread_parent_id === "" ? (
+          <ShowOptions
+            communication={communication}
+            handleReplyToThread={handleReplyToThread}
+          />
+        ) : (
+          <Button disabled>
+            <ReplyIcon />
+          </Button>
+        )}
       </Box>
     </Box>
   );
@@ -60,7 +74,10 @@ const CommunicationBody = ({ communication, attachments }) => {
         <strong>Body:</strong> {communication.body}
       </p>
       <p>
-        <strong>Created By:</strong> {communication.created_by_user_type}
+        <strong>
+          {`${communication.reply_thread_parent_id === "" ? "Created" : "Replied"} By:`}
+        </strong>{" "}
+        {communication.created_by_user_type}
       </p>
 
       {attachments.length > 0 && (
@@ -81,11 +98,7 @@ const CommunicationBody = ({ communication, attachments }) => {
   );
 };
 
-const ShowOptions = ({
-  communication,
-  handleReplyToThread
-}) => {
-
+const ShowOptions = ({ communication, handleReplyToThread }) => {
   const handleReply = () => {
     handleReplyToThread(communication);
   };
@@ -100,7 +113,7 @@ const ShowOptions = ({
 function CommunicationList({
   protocolTypeDetails,
   enqueryUserType,
-  handleReplyToThread
+  handleReplyToThread,
 }) {
   const [loader, setLoader] = useState(false);
   const [expanded, setExpanded] = React.useState(false);
@@ -135,7 +148,7 @@ function CommunicationList({
   };
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -156,7 +169,7 @@ function CommunicationList({
         <Box>
           <div className="mt-mb-20">
             {communicationList !== null &&
-              communicationList?.data?.length > 0 ? (
+            communicationList?.data?.length > 0 ? (
               communicationList?.data?.map((communication, index) => {
                 const attachments = getAttachments(communication.attachments);
                 return (
@@ -182,7 +195,8 @@ function CommunicationList({
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                       >
-                        <CommunicationItem communication={communication}
+                        <CommunicationItem
+                          communication={communication}
                           handleReplyToThread={handleReplyToThread}
                         />
                       </AccordionSummary>

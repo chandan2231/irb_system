@@ -11,7 +11,7 @@ export const createStudyCloseoutRequest = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/eventAndRequest/createStudyCloseoutRequest`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -28,7 +28,7 @@ export const createPromptlyReportableEvent = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/eventAndRequest/createPromptlyReportableEvent`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -45,7 +45,7 @@ export const createAdverseEvent = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/eventAndRequest/createAdverseEvent`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -62,7 +62,7 @@ export const createProtocolAmendmentRequest = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/eventAndRequest/createProtocolAmendmentRequest`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {

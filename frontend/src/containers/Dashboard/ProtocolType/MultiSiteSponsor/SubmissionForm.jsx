@@ -44,7 +44,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
-    paymentType: "Protocol Submission",
+    paymentType: "Multi-Site Sponsor",
   });
 
   const [loader, setLoader] = useState(false);
@@ -185,7 +185,10 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={termsSelected}
+                    checked={
+                      termsSelected ||
+                      protocolTypeDetails?.protocolStatus !== "Created"
+                    }
                     onChange={handleTermsChange}
                   />
                 }
@@ -194,20 +197,23 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             </FormControl>
           </Form.Group>
 
-          <Form.Group
-            as={Col}
-            controlId="submit-button"
-            style={{ textAlign: "right" }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={!termsSelected}
+          {protocolTypeDetails?.protocolStatus === "Created" && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
             >
-              SUBMIT AND PAY
-            </Button>
-          </Form.Group>
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={!termsSelected}
+              >
+                Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

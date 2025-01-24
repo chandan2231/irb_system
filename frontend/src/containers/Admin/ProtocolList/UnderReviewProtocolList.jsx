@@ -24,11 +24,13 @@ import {
   assignProtocolToMember,
 } from "../../../services/Admin/MembersService";
 import AssignProtocolToMember from "./AssignProtocolToMember";
+import Loader from "../../../components/Loader";
 
 function UnderReviewProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
   const [open, setOpen] = useState(false);
@@ -210,9 +212,16 @@ function UnderReviewProtocolList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await protocolReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await protocolReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log(error);
     }
   };
 
@@ -366,6 +375,10 @@ function UnderReviewProtocolList() {
   //     //console.log('Edit Item', params)
   // }
 
+  if (loader) {
+    return <Loader />;
+  }
+
   return (
     <>
       <ToastContainer
@@ -383,13 +396,21 @@ function UnderReviewProtocolList() {
       <Box m={theme.layoutContainer.layoutSection}>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={5} sm={5} md={8} lg={8}>
-              <Typography variant="h5" mb={2}>
+            {/* Title Grid Item */}
+            <Grid item xs={12} sm={10} md={8} lg={8}>
+              <Typography
+                variant="h5"
+                mb={2}
+                sx={{
+                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                }}
+              >
                 Under Review Protocol List
               </Typography>
             </Grid>
           </Grid>
         </Box>
+
         <Box>
           <AddProtocolEvent
             open={open}

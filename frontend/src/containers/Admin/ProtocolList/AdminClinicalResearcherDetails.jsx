@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
 const memberProtocolSchema = yup.object().shape({
   protocol: yup.string().required("This is required"),
@@ -34,7 +35,7 @@ const memberProtocolSchema = yup.object().shape({
 const ClinicalResearcherDetails = ({
   protocolTypeDetails,
   protocolDetailsById,
-  type
+  type,
 }) => {
   const [value, setValue] = React.useState(0);
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -70,8 +71,6 @@ const ClinicalResearcherDetails = ({
     };
   }
 
-  
-  
   const [formData, setFormData] = useState({
     protocol: "",
     consent: "",
@@ -111,10 +110,9 @@ const ClinicalResearcherDetails = ({
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
-      const getValidatedform = await memberProtocolSchema.validate(
-        formData,
-        { abortEarly: false },
-      );
+      const getValidatedform = await memberProtocolSchema.validate(formData, {
+        abortEarly: false,
+      });
       const isValid = await memberProtocolSchema.isValid(getValidatedform);
       if (isValid === true) {
         dispatch(votingMemberApprovalProtocol(formData)).then((data) => {
@@ -142,7 +140,7 @@ const ClinicalResearcherDetails = ({
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -152,6 +150,10 @@ const ClinicalResearcherDetails = ({
         }
       }
     }
+  };
+
+  const handleButtonClick = (index) => {
+    setValue(index);
   };
 
   return (
@@ -169,90 +171,114 @@ const ClinicalResearcherDetails = ({
         theme="dark"
       />
       <h2 className="ml-20">
-        {protocolTypeDetails.researchType} Details({protocolTypeDetails.protocolId})
+        {protocolTypeDetails.researchType} Details(
+        {protocolTypeDetails.protocolId})
       </h2>
-      {
-        type === 'member' && (
-          <Row className="ml-20">
-            <h3>Protocol Approval Voting</h3>
-            <form onSubmit={handleSubmitData}>
+      {type === "member" && (
+        <Row className="ml-20">
+          <h3>Protocol Approval Voting</h3>
+          <form onSubmit={handleSubmitData}>
             <Grid container>
               <Grid item xs={12} md={5} lg={5}>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-10"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Protocol
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="protocol"
-                    value={formData.protocol}
-                    onChange={handleRadioButtonProtocol}
-                  >
-                    <FormControlLabel value="Approve" control={<Radio />} label="Approve" />
-                    <FormControlLabel value="Not Approve" control={<Radio />} label="Not Approve" />
-                  </RadioGroup>
-                </FormControl>
-                {errors.protocol && (
-                  <div className="error">{errors.protocol}</div>
-                )}
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik02"
-                className="mt-mb-10"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Consent
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="consent"
-                    value={formData.consent}
-                    onChange={handleRadioButtonConsent}
-                  >
-                    <FormControlLabel value="Approve" control={<Radio />} label="Approve" />
-                    <FormControlLabel value="Not Approve" control={<Radio />} label="Not Approve" />
-                  </RadioGroup>
-                </FormControl>
-                {errors.consent && (
-                  <div className="error">{errors.consent}</div>
-                )}
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-10"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Supported Documents
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="supported_documents"
-                    value={formData.supported_documents}
-                    onChange={handleRadioButtonSupportedDocument}
-                  >
-                    <FormControlLabel value="Approve" control={<Radio />} label="Approve" />
-                    <FormControlLabel value="Not Approve" control={<Radio />} label="Not Approve" />
-                  </RadioGroup>
-                </FormControl>
-                {errors.supported_documents && (
-                  <div className="error">{errors.supported_documents}</div>
-                )}
-              </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-10"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Protocol
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="protocol"
+                      value={formData.protocol}
+                      onChange={handleRadioButtonProtocol}
+                    >
+                      <FormControlLabel
+                        value="Approve"
+                        control={<Radio />}
+                        label="Approve"
+                      />
+                      <FormControlLabel
+                        value="Not Approve"
+                        control={<Radio />}
+                        label="Not Approve"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  {errors.protocol && (
+                    <div className="error">{errors.protocol}</div>
+                  )}
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik02"
+                  className="mt-mb-10"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Consent
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="consent"
+                      value={formData.consent}
+                      onChange={handleRadioButtonConsent}
+                    >
+                      <FormControlLabel
+                        value="Approve"
+                        control={<Radio />}
+                        label="Approve"
+                      />
+                      <FormControlLabel
+                        value="Not Approve"
+                        control={<Radio />}
+                        label="Not Approve"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  {errors.consent && (
+                    <div className="error">{errors.consent}</div>
+                  )}
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik03"
+                  className="mt-mb-10"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Supported Documents
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="supported_documents"
+                      value={formData.supported_documents}
+                      onChange={handleRadioButtonSupportedDocument}
+                    >
+                      <FormControlLabel
+                        value="Approve"
+                        control={<Radio />}
+                        label="Approve"
+                      />
+                      <FormControlLabel
+                        value="Not Approve"
+                        control={<Radio />}
+                        label="Not Approve"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  {errors.supported_documents && (
+                    <div className="error">{errors.supported_documents}</div>
+                  )}
+                </Form.Group>
               </Grid>
               <Grid item xs={12} md={7} lg={7} className="pr-25">
-              <Form.Group
+                <Form.Group
                   as={Col}
                   controlId="validationFormik04"
                   className="mt-mb-10"
@@ -294,47 +320,77 @@ const ClinicalResearcherDetails = ({
               </Grid>
             </Grid>
             <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20 pr-25"
-                style={{ textAlign: "right" }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="Submit"
-                >
-                  SUBMIT
-                </Button>
-              </Form.Group>
-            </form>
-          </Row>
-        )
-      }
-      <Box className="ml-20" sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          <Tab
-            label="Investigator and Protocol Information"
-            {...a11yProps(0)}
-          />
-          <Tab
-            label="Informed Consent Document Information"
-            {...a11yProps(1)}
-          />
-          <Tab label="Submission" {...a11yProps(5)} />
-        </Tabs>
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20 pr-25"
+              style={{ textAlign: "right" }}
+            >
+              <Button variant="contained" color="primary" type="Submit">
+                SUBMIT
+              </Button>
+            </Form.Group>
+          </form>
+        </Row>
+      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          gap: 2,
+          padding: { xs: "0 8px", sm: "0 24px" },
+        }}
+      >
+        {[...Array(3).keys()].map((index) => (
+          <Button
+            key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
+            onClick={() => handleButtonClick(index)}
+            sx={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              backgroundColor: value === index ? "primary.main" : "transparent",
+              backgroundImage:
+                value === index
+                  ? "none"
+                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
+              color: value === index ? "white" : "white",
+              "&:hover": {
+                backgroundColor:
+                  value === index
+                    ? "primary.dark"
+                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
+              },
+              flex: 1,
+              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
+              marginBottom: { xs: "10px", sm: "0px" },
+              fontSize: {
+                xs: "0.8rem",
+                sm: "0.85rem",
+                md: "0.9rem",
+                lg: "1rem",
+              },
+            }}
+          >
+            {
+              [
+                "Investigator and Protocol Info",
+                "Informed Consent Document info",
+                "Submission",
+              ][index]
+            }
+          </Button>
+        ))}
       </Box>
 
       <CustomTabPanel value={value} index={0}>
         <InvestigatorInformationForm
           protocolTypeDetails={protocolTypeDetails}
-          investicatorProtocolInformation={protocolDetailsById?.investigator_protocol_information}
+          investicatorProtocolInformation={
+            protocolDetailsById?.investigator_protocol_information
+          }
           type={type}
         />
       </CustomTabPanel>
@@ -346,10 +402,7 @@ const ClinicalResearcherDetails = ({
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <SubmissionForm 
-          protocolTypeDetails={protocolTypeDetails} 
-          type={type}
-        />
+        <SubmissionForm protocolTypeDetails={protocolTypeDetails} type={type} />
       </CustomTabPanel>
     </Box>
   );

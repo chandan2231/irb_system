@@ -11,7 +11,7 @@ export const saveEnquiry = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/communication/saveEnquiry`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -28,7 +28,7 @@ export const getCommunicationListByProtocolId = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/communication/getCommunicationListByProtocolId`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -37,15 +37,15 @@ export const getCommunicationListByProtocolId = createAsyncThunk(
   }
 );
 
-export const investigatorAndinstuationSave = createAsyncThunk(
-  "Communication/investigatorAndinstuationSave",
+export const downloadCommunicationPdf = createAsyncThunk(
+  "Communication/downloadCommunicationPdf",
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/continuinReview/investigatorAndinstuationSave`,
+        url: `${baseURL}/communication/downloadCommunicationPdf`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -62,7 +62,7 @@ export const researchProcessSave = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/continuinReview/researchProcessSave`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {

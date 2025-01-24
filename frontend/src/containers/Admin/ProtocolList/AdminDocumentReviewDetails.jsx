@@ -4,12 +4,10 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import ProtocolInformationForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/ProtocolInformationForm";
-import InvestigatorInformationForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/InvestigatorInformationForm";
-import StudyInformationForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/StudyInformationForm";
-import InformedConsentForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/InformedConsentForm";
-import ProtocolProceduresForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/ProtocolProceduresForm";
-import SubmissionForm from "../ProtocolList/AdminProtocolType/ContractorResearcher/SubmissionForm";
+import ProtocolInformationForm from "../ProtocolList/AdminProtocolType/DocumentReview/ProtocolInformationForm";
+import InvestigatorInformationForm from "../ProtocolList/AdminProtocolType/DocumentReview/InvestigatorInformationForm";
+import InformedConsentForm from "../ProtocolList/AdminProtocolType/DocumentReview/InformedConsentForm";
+import SubmissionForm from "../ProtocolList/AdminProtocolType/DocumentReview/SubmissionForm";
 import { votingMemberApprovalProtocol } from "../../../services/Admin/MembersService";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -25,9 +23,9 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
 const memberProtocolSchema = yup.object().shape({
   protocol: yup.string().required("This is required"),
@@ -36,11 +34,12 @@ const memberProtocolSchema = yup.object().shape({
   electronic_signature: yup.string().required("This is required"),
 });
 
-const ContractorResearcherDetails = ({
+const AdminDocumentReviewDetails = ({
   protocolTypeDetails,
   protocolDetailsById,
   type,
 }) => {
+  console.log("sadsadasdasdasdas");
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -152,13 +151,13 @@ const ContractorResearcherDetails = ({
     }
   };
 
-  const handleButtonClick = (index) => {
-    setValue(index);
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleButtonClick = (index) => {
+    setValue(index);
   };
 
   return (
@@ -337,7 +336,6 @@ const ContractorResearcherDetails = ({
           </form>
         </Row>
       )}
-
       <Box
         sx={{
           display: "flex",
@@ -347,7 +345,7 @@ const ContractorResearcherDetails = ({
           padding: { xs: "0 8px", sm: "0 24px" },
         }}
       >
-        {[...Array(6).keys()].map((index) => (
+        {[...Array(4).keys()].map((index) => (
           <Button
             key={index}
             endIcon={<DoubleArrowIcon />}
@@ -384,15 +382,14 @@ const ContractorResearcherDetails = ({
               [
                 "Protocol Information",
                 "Investigator Information",
-                "Study Type",
-                "Informed Consent",
-                "Protocol Procedures",
+                "Document Review",
                 "Submission",
               ][index]
             }
           </Button>
         ))}
       </Box>
+
       {/* here */}
       <CustomTabPanel value={value} index={0}>
         <ProtocolInformationForm
@@ -410,32 +407,20 @@ const ContractorResearcherDetails = ({
           type={type}
         />
       </CustomTabPanel>
+
       <CustomTabPanel value={value} index={2}>
-        <StudyInformationForm
-          protocolTypeDetails={protocolTypeDetails}
-          studyInformation={protocolDetailsById?.study_information}
-          type={type}
-        />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsById?.informed_consent}
           type={type}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
-        <ProtocolProceduresForm
-          protocolTypeDetails={protocolTypeDetails}
-          protocolProcedures={protocolDetailsById?.protocol_procedure}
-          type={type}
-        />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={5}>
+
+      <CustomTabPanel value={value} index={3}>
         <SubmissionForm protocolTypeDetails={protocolTypeDetails} type={type} />
       </CustomTabPanel>
     </Box>
   );
 };
 
-export default ContractorResearcherDetails;
+export default AdminDocumentReviewDetails;

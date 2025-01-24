@@ -15,11 +15,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { continueinReviewReport } from "../../../services/UserManagement/UserService";
+import Loader from "../../../components/Loader";
 
 function ContinuinReviewList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [loader, setLoader] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [protocolDataList, setProtocolDataList] = useState([]);
   const [user, setUser] = useState([]);
@@ -153,9 +155,16 @@ function ContinuinReviewList() {
       protocolId: protocolId,
       protocolType: researchType,
     };
-    let pdfResponse = await continueinReviewReport(protocolReportPayload);
-    if (pdfResponse !== "") {
-      window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+    try {
+      setLoader(true);
+      let pdfResponse = await continueinReviewReport(protocolReportPayload);
+      setLoader(false);
+      if (pdfResponse !== "") {
+        window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
+      }
+    } catch (error) {
+      setLoader(false);
+      console.log("error", error);
     }
   };
 
@@ -176,12 +185,23 @@ function ContinuinReviewList() {
   // const handleItemEdit = (params) => {
   //     //console.log('Edit Item', params)
   // }
+
+  if (loader) {
+    return <Loader />;
+  }
   return (
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={5} sm={5} md={8} lg={8}>
-            <Typography variant="h5" mb={2}>
+          {/* Title Grid Item */}
+          <Grid item xs={12} sm={8} md={8} lg={8}>
+            <Typography
+              variant="h5"
+              mb={2}
+              sx={{
+                fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+              }}
+            >
               Continuing Review
             </Typography>
           </Grid>

@@ -6,13 +6,12 @@ import {
   Grid,
   Card,
   CardContent,
-  MenuItem,
-  InputLabel,
-  Select,
   CardActions,
   Button,
   CardHeader,
-  FormControl,
+  Box,
+  IconButton,
+  Typography,
 } from "@mui/material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -20,6 +19,8 @@ import { TextField } from "formik-material-ui";
 import { userSignUp } from "../../services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ function SignUp() {
   const [err, setErr] = useState(null);
   // const [researchTypeError, setResearchTypeError] = useState('')
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
   const initialValues = {
     name: "",
     mobile: "",
@@ -76,22 +79,44 @@ function SignUp() {
         setSuccessMessage(false);
       }
     });
-    // const { researcherType } = values
-    // if(researcherType === ''){
-    //     setResearchTypeError("Required!")
-    //     return
-    // } else {
-    //     setResearchTypeError("")
-    // }
+  };
+  const modalStyles = {
+    inputFields: {
+      display: "flex",
+      flexDirection: "column",
+      marginTop: "20px",
+      marginBottom: "15px",
+      ".MuiFormControl-root": {
+        marginBottom: "10px",
+      },
+    },
+  };
+  const styles = {
+    title: {
+      paddingTop: "50px",
+      paddingBottom: "10px",
+      display: "flex",
+      top: "50%",
+      left: "50%",
+      margin: "auto",
+    },
+    buttonStyle: {
+      margin: "0 auto",
+      display: "flex",
+      marginTop: "25px",
+    },
   };
 
   return (
-    <React.Fragment>
-      <Grid container spacing={1} className="center-card">
-        <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
-        <Grid item lg={6} md={6} sm={12} xs={12}>
-          <Card>
-            <CardHeader title="REGISTER"></CardHeader>
+    <Box m={theme.layoutContainer.layoutSection}>
+      <Box sx={modalStyles.inputFields}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-evenly"
+          alignItems="center"
+        >
+          <Card sx={{ width: 700 }}>
             {successMessage !== "" && (
               <span className="success_msg">{successMessage}</span>
             )}
@@ -111,6 +136,9 @@ function SignUp() {
                 return (
                   <Form onSubmit={handleSubmit}>
                     <CardContent>
+                      <Typography sx={{ mt: 2, mb: 5 }}>
+                        <h2 sx={styles.title}>SIGNUP</h2>
+                      </Typography>
                       <p
                         className="error_text"
                         style={{ marginBottom: "15px" }}
@@ -118,7 +146,7 @@ function SignUp() {
                         {err && err}
                       </p>
                       <Grid item container spacing={1}>
-                        <Grid item xs={12} sm={6} md={6}>
+                        <Grid item xs={12} sm={12} md={12}>
                           <Field
                             label="Name"
                             variant="outlined"
@@ -128,7 +156,13 @@ function SignUp() {
                             component={TextField}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "5px" }}
+                        >
                           <Field
                             label="Email"
                             variant="outlined"
@@ -141,9 +175,9 @@ function SignUp() {
                         <Grid
                           item
                           xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Password"
@@ -151,16 +185,30 @@ function SignUp() {
                             fullWidth
                             name="password"
                             value={values.password}
-                            type="password"
+                            type={showPassword ? "text" : "password"} // Toggle password visibility
                             component={TextField}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              ),
+                            }}
                           />
                         </Grid>
                         <Grid
                           item
                           xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Confirm Password"
@@ -168,16 +216,32 @@ function SignUp() {
                             fullWidth
                             name="confirmPassword"
                             value={values.confirmPassword}
-                            type="password"
+                            type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
                             component={TextField}
+                            InputProps={{
+                              endAdornment: (
+                                <IconButton
+                                  onClick={() =>
+                                    setShowConfirmPassword(!showConfirmPassword)
+                                  }
+                                  edge="end"
+                                >
+                                  {showConfirmPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              ),
+                            }}
                           />
                         </Grid>
                         <Grid
                           item
                           xs={12}
-                          sm={6}
-                          md={6}
-                          style={{ marginTop: "15px" }}
+                          sm={12}
+                          md={12}
+                          style={{ marginTop: "5px" }}
                         >
                           <Field
                             label="Mobile"
@@ -188,68 +252,63 @@ function SignUp() {
                             component={TextField}
                           />
                         </Grid>
-
-                        {/* <Grid item xs={12} sm={6} md={6} style={{marginTop: '15px'}}>
-                                <FormControl fullWidth variant="outlined">
-                                    <InputLabel id="demo-simple-select-outlined-label">
-                                    Researcher Type
-                                    </InputLabel>
-                                    <Select
-                                    labelId="demo-simple-select-outlined-label"
-                                    id="demo-simple-select-outlined"
-                                    label="Researcher Type"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.researcherType}
-                                    name="researcherType"
-                                    >
-                                    {options.map((item) => (
-                                        <MenuItem key={item.value} value={item.value}>
-                                        {item.label}
-                                        </MenuItem>
-                                    ))}
-                                    </Select>
-                                    <span className="error">{researchTypeError}</span>
-                                </FormControl>
-                            </Grid> */}
                       </Grid>
                     </CardContent>
-                    <Grid
-                      item
-                      container
-                      spacing={1}
-                      justify="center"
-                      style={{ paddingBottom: "25px", paddingTop: "25px" }}
-                    >
-                      <Grid item xs={12} sm={6} md={6}>
-                        <CardActions style={{ paddingLeft: "15px" }}>
-                          <Button
-                            disabled={!dirty || !isValid}
-                            variant="contained"
-                            color="primary"
-                            type="Submit"
-                          >
-                            REGISTER
-                          </Button>
-                        </CardActions>
+                    <Grid item container spacing={1} justify="center">
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        style={{
+                          marginLeft: "15px",
+                          marginRight: "15px",
+                        }}
+                      >
+                        <Button
+                          disabled={!dirty || !isValid}
+                          variant="contained"
+                          color="primary"
+                          type="Submit"
+                          sx={{
+                            width: "100%",
+                          }}
+                        >
+                          SIGNUP
+                        </Button>
                       </Grid>
                       <Grid
                         item
                         xs={12}
-                        sm={6}
-                        md={6}
+                        sm={12}
+                        md={12}
                         style={{
-                          float: "right",
-                          paddingLeft: "85px",
-                          marginTop: "10px",
+                          marginLeft: "15px",
+                          marginRight: "15px",
+                          marginTop: "15px",
+                          marginBottom: "20px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
-                        <CardActions style={{ padding: "0px" }}>
+                        <CardActions
+                          style={{
+                            padding: "0px",
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
                           <span>Do you have an account?</span>
-                          <Link to="/signin">
-                            <Button variant="contained" color="primary">
-                              LOGIN
-                            </Button>
+                          <Link
+                            to="/signin"
+                            style={{
+                              textDecoration: "none",
+                            }}
+                          >
+                            Login
                           </Link>
                         </CardActions>
                       </Grid>
@@ -260,9 +319,8 @@ function SignUp() {
             </Formik>
           </Card>
         </Grid>
-        <Grid item lg={3} md={3} sm={12} xs={12}></Grid>
-      </Grid>
-    </React.Fragment>
+      </Box>
+    </Box>
   );
 }
 

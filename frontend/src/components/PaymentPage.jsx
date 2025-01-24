@@ -8,12 +8,14 @@ import {
   canclePayment,
 } from "../services/Payment/PaymentService";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 const PayPalButton = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const protocolTypeDetails = location.state.details;
+  const protocolTypeDetails = location?.state?.details;
+  console.log("protocolTypeDetails", protocolTypeDetails);
   //   const identifierType = location.state.identifierType;
 
   const navigateToCanclePayment = (protocolTypeDetails, amount) => {
@@ -37,7 +39,13 @@ const PayPalButton = () => {
   );
 
   useEffect(() => {
-    if (!paymentLoading) {
+    if (protocolTypeDetails === undefined) {
+      window.location.replace("/dashboard");
+    }
+  }, [protocolTypeDetails === undefined]);
+
+  useEffect(() => {
+    if (!paymentLoading && protocolTypeDetails !== undefined) {
       const data = { paymentType: protocolTypeDetails };
       dispatch(getPaymentAmountInfo(data)).then((response) => {
         if (response.payload.status === 200) {
@@ -46,9 +54,7 @@ const PayPalButton = () => {
         }
       });
     }
-  }, [dispatch, paymentLoading]);
-
-  console.log("paymentAmount", paymentAmount);
+  }, [dispatch, paymentLoading, protocolTypeDetails !== undefined]);
 
   useEffect(() => {
     // Dynamically load PayPal script
@@ -98,6 +104,7 @@ const PayPalButton = () => {
                     currencyCode: "USD",
                     amount: paymentAmount?.data[0]?.price,
                     protocolId: protocolTypeDetails?.protocol_id,
+                    researchType: protocolTypeDetails?.protocol_type,
                   })
                 );
                 if (response.payload.status === 200) {
@@ -136,6 +143,10 @@ const PayPalButton = () => {
       document.body.appendChild(script);
     }
   }, [paymentAmount, dispatch]);
+
+  if (protocolTypeDetails === undefined) {
+    return <Loader />;
+  }
 
   return (
     <div

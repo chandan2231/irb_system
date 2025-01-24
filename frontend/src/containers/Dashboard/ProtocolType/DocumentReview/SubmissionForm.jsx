@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Button from "@mui/material/Button";
-import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createPrincipalInvestigatorSubmission,
-  getPrincipalInvestigatorSavedProtocolType,
-} from "../../../../services/ProtocolType/ClinicalResearcherService";
+  createClinicalSiteSubmission,
+  getClinicalSiteSavedProtocolType,
+} from "../../../../services/ProtocolType/ContractorResearcherService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -27,19 +25,28 @@ import ApiCall from "../../../../utility/ApiCall";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-const SubmissionForm = ({ protocolTypeDetails }) => {
+function SubmissionForm({
+  protocolTypeDetails,
+  protocolDetailsById,
+  apiCallIdentifier,
+}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const [loader, setLoader] = useState(false);
   const [termsSelected, setTermsSelected] = useState(false);
+  const [callSavedFormData, setCallSavedFormData] = useState(false);
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
-    paymentType: "Protocol Submission",
+    paymentType: "Document Review",
   });
-  const [loader, setLoader] = useState(false);
-  const [notSavedForms, setNotSavedForms] = useState([]);
+  const [unsavedForms, setUnsavedForms] = useState([]);
+
+  const handleTermsChecked = (event) => {
+    setTermsSelected(event.target.checked);
+  };
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -47,13 +54,9 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     });
   };
 
-  const handleTermsChange = (event) => {
-    setTermsSelected(event.target.checked);
-  };
-
   const handleSubmitData = async (e) => {
     e.preventDefault();
-    if (notSavedForms.length > 0) {
+    if (unsavedForms.length > 0) {
       toast.error(
         "Before final submission, you have to fill protocol information",
         {
@@ -72,13 +75,23 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     }
   };
 
-  // Utility function to format titles
   const titleCase = (str) => {
     return str
       .toLowerCase()
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+  };
+
+  const renderUnsavedForms = () => {
+    return unsavedForms.map((form, index) => (
+      <ListItemButton key={index}>
+        <ListItemIcon>
+          <StarBorder />
+        </ListItemIcon>
+        <ListItemText primary={titleCase(form.form.replaceAll("_", " "))} />
+      </ListItemButton>
+    ));
   };
 
   useEffect(() => {
@@ -96,13 +109,13 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           setLoader(true);
           const response = await ApiCall({
             method: "POST",
-            url: `${baseURL}/researchInfo/getPrincipalInvestigatorSavedProtocolType`,
+            url: `${baseURL}/researchInfo/getDocumentReviewSavedProtocolType`,
             data,
           });
 
           if (response?.status === 200) {
             const unsavedForms = response?.data?.filter((form) => !form.filled);
-            setNotSavedForms(unsavedForms);
+            setUnsavedForms(unsavedForms);
             setLoader(false);
           }
         }
@@ -125,112 +138,66 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
         theme="dark"
       />
 
-      {/* Display list of unsaved forms */}
-      {notSavedForms.length > 0 && (
-        <List
-          sx={{ width: "100%", maxWidth: "50%", bgcolor: "background.paper" }}
-          component="nav"
-        >
-          <ListSubheader
-            component="div"
-            id="nested-list-subheader"
-            style={{ fontSize: "18px", color: "red" }}
+      <Row>
+        {unsavedForms.length > 0 && (
+          <List
+            sx={{ width: "100%", maxWidth: "50%", bgcolor: "background.paper" }}
           >
-            Before final submission you have to fill the below forms
-          </ListSubheader>
-          {notSavedForms.map((form, index) => (
-            <ListItemButton key={index}>
-              <ListItemIcon>
-                <StarBorder />
-              </ListItemIcon>
+            <ListItemButton>
               <ListItemText
-                primary={titleCase(form.form.replaceAll("_", " "))}
+                primary="Before final submission, you have to fill the following forms"
+                style={{ fontSize: "18px", color: "red" }}
               />
             </ListItemButton>
-          ))}
-        </List>
-      )}
+            {renderUnsavedForms()}
+          </List>
+        )}
 
-      {/* Submission Form */}
-      <Row>
         <form onSubmit={handleSubmitData}>
           <Form.Group
             as={Col}
             controlId="validationFormik01"
             className="ul-list"
           >
-            <p>By submitting this application you attest to the following:</p>
+            <p>By submitting this application, you attest to the following:</p>
             <ul>
-              <li>
-                Research will not commence prior to receiving the IRB approval
-                letter.
-              </li>
-              <li>
-                The principal investigator will personally supervise and/or
-                conduct the study.
-              </li>
-              <li>
-                The principal investigator ensures that all persons involved in
-                conducting the study are trained and have proper credentialing
-                for conducting research.
-              </li>
-              <li>
-                Only the most current IRB-approved consent form will be used to
-                enroll subjects.
-              </li>
-              <li>
-                No changes will be made to the research protocol, consents
-                forms, and all patient-facing materials without the approval of
-                the IRB.
-              </li>
-              <li>
-                The study procedures will comply with all applicable laws and
-                regulations regarding the conduct of research.
-              </li>
-              <li>
-                All findings from the study that directly affect subject safety
-                will be communicated to subjects, the sponsor, and to this IRB.
-              </li>
-              <li>
-                All serious adverse events (SAEs), whether related to the study
-                procedures or not, will be reported to this IRB within 2
-                business days of the investigator becoming aware of the event
-                for IRB safety review.
-              </li>
-              <li>
-                The investigator will submit annual reviews in compliance with
-                the sponsor.
-              </li>
+              {[
+                "Research will not commence prior to receiving the IRB approval letter.",
+                "The principal investigator will personally supervise and/or conduct the study.",
+                "The principal investigator ensures that all persons involved in conducting the study are trained and have proper credentialing for conducting research.",
+                "Only the most current IRB-approved consent form will be used to enroll subjects.",
+                "No changes will be made to the research protocol, consents forms, and all patient-facing materials without the approval of the IRB.",
+                "The study procedures will comply with all applicable laws and regulations regarding the conduct of research.",
+                "All findings from the study that directly affect subject safety will be communicated to subjects and to this IRB.",
+                "All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review.",
+                "The sponsor agrees to submit and provide payment to this IRB for annual review yearly.",
+              ].map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </Form.Group>
 
-          {/* Checkbox to confirm terms */}
           <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup onChange={handleTermsChange}>
-                <FormControlLabel
-                  control={<Checkbox />}
-                  checked={
-                    termsSelected ||
-                    protocolTypeDetails?.protocolStatus !== "Created"
-                  }
-                  label="Your initials below signify that you have read and agree to the terms listed above"
-                />
-              </FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={
+                      termsSelected ||
+                      protocolTypeDetails?.protocolStatus !== "Created"
+                    }
+                    onChange={handleTermsChecked}
+                  />
+                }
+                label="Your initials below signify that you have read and agree to the terms listed above"
+              />
             </FormControl>
           </Form.Group>
 
-          {/* Submit button */}
           {protocolTypeDetails?.protocolStatus === "Created" && (
             <Form.Group
               as={Col}
@@ -252,6 +219,6 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       </Row>
     </>
   );
-};
+}
 
 export default SubmissionForm;

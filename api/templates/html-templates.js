@@ -1056,10 +1056,155 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
   return RenderBody(children)
 }
 
+// Document Review
+const DocumentReviewHTMLTemplate = (templateProps) => {
+  const { protocolDetails } = questionsToRender
+  const { documentReviewQuestions } = protocolDetails
+  const {
+    headerText,
+    protocolId,
+    protocolType,
+    protocol_information,
+    investigator_information,
+    informed_consent
+  } = templateProps
+  const {
+    informedConsentForm,
+    investigatorInformation,
+    protocolInformation,
+    submissinForm
+  } = documentReviewQuestions
+  const children = `<main>
+       <h1>
+          ${headerText} (${protocolId})
+        </h1>
+         <div style="page-break-after: always;">
+         ${renderHeader(protocolInformation)}
+         ${RenderQuestion(1, protocolInformation.question1.text)}
+         ${RenderAnswer(
+           protocol_information,
+           protocolInformation.question1.answer
+         )}
+          ${protocolInformation.question1.subTexts
+            ?.map((subText, index) => {
+              return `<div>
+              ${subText?.text ? RenderQuestion(index + 2, subText.text) : ''}
+              ${
+                subText?.answer
+                  ? RenderAnswer(protocol_information, subText.answer)
+                  : ''
+              }
+              ${
+                subText?.explanation
+                  ? RenderElplanation(protocol_information, subText.explanation)
+                  : ''
+              }
+            </div>`
+            })
+            .join('')}
+          ${RenderDocuments(
+            protocol_information,
+            protocolInformation.question1.documentHeader,
+            protocolInformation.question1.documentName
+          )}
+        </div>
+
+          <div style="page-break-after: always;">
+            ${renderHeader(investigatorInformation)}
+            ${investigatorInformation.subTexts
+              ?.map((subText) => {
+                return `<div>
+              ${
+                subText?.text
+                  ? RenderQuestion(subText.sequence, subText.text)
+                  : ''
+              }
+              ${
+                subText?.answer
+                  ? RenderAnswer(investigator_information, subText.answer)
+                  : ''
+              }
+              ${
+                subText?.explanation
+                  ? RenderElplanation(
+                      investigator_information,
+                      subText.explanation
+                    )
+                  : ''
+              }
+              ${
+                subText?.checkboxes
+                  ? RenderCheckboxAnswer(
+                      investigator_information,
+                      subText.checkboxes
+                    )
+                  : ''
+              }
+            </div>`
+              })
+              .join('')}
+            ${investigatorInformation?.documentsUploadedList
+              ?.map((docListItem) => {
+                return `${RenderDocuments(
+                  investigator_information,
+                  docListItem.documentHeader,
+                  docListItem.documentName
+                )}`
+              })
+              .join('')}
+          </div>
+        <div style="page-break-after: always;">
+        ${renderHeader(informedConsentForm)}
+        ${RenderCheckboxAnswer(
+          informed_consent,
+          informedConsentForm.checkboxes
+        )}
+        ${informedConsentForm.subTexts
+          ?.map((subText) => {
+            return `<div>
+          ${subText?.text ? RenderQuestion(subText.sequence, subText.text) : ''}
+          ${
+            subText?.answer
+              ? RenderAnswer(informed_consent, subText.answer)
+              : ''
+          }
+          ${
+            subText?.explanation
+              ? RenderElplanation(informed_consent, subText.explanation)
+              : ''
+          }
+        </div>`
+          })
+          .join('')}
+        ${informedConsentForm.documentsUploadedList
+          ?.map((docListItem) => {
+            return `${RenderDocuments(
+              informed_consent,
+              docListItem.documentHeader,
+              docListItem.documentName
+            )}`
+          })
+          .join('')}
+          ${RenderTextOnly(informedConsentForm.declaration.header)}
+          ${RenderSingleCheckboxAnswer(
+            informed_consent,
+            informedConsentForm.declaration.checkBox
+          )}
+        </div>
+        <div style="page-break-after: always;">
+        ${renderHeader(submissinForm)}
+        ${RenderTextOnly(submissinForm.text)}
+        ${RenderSingleCheckboxAnswer(informed_consent, submissinForm.checkBox)}
+        </div>
+    </main>`
+  return RenderBody(children)
+}
+
 const protocolAmendmentRequestHTMLTemplate = {
   ClinicalSiteHTMLTemplate,
   MultiSiteSponsorHTMLTemplate,
-  PrincipalInvestigatorHTMLTemplate
+  PrincipalInvestigatorHTMLTemplate,
+  DocumentReviewHTMLTemplate
 }
 
 const htmlTemplates = {

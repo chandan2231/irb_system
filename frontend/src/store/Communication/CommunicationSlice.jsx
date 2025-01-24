@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   saveEnquiry,
   getCommunicationListByProtocolId,
+  downloadCommunicationPdf,
 } from "../../services/Communication/CommunicationService";
 
 const ContinuinReviewSlice = createSlice({
@@ -11,6 +12,7 @@ const ContinuinReviewSlice = createSlice({
     error: null,
     enquirySaved: null,
     communicationList: null,
+    communicationPdfDownloaded: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -36,6 +38,18 @@ const ContinuinReviewSlice = createSlice({
         state.communicationList = action.payload;
       })
       .addCase(getCommunicationListByProtocolId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(downloadCommunicationPdf.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(downloadCommunicationPdf.fulfilled, (state, action) => {
+        state.loading = false;
+        state.communicationPdfDownloaded = action.payload;
+      })
+      .addCase(downloadCommunicationPdf.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

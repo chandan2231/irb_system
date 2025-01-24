@@ -11,7 +11,7 @@ export const riskAssessmentSave = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/continuinReview/riskAssessmentSave`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -28,7 +28,7 @@ export const informedConsentSave = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/continuinReview/informedConsentSave`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -45,7 +45,7 @@ export const investigatorAndinstuationSave = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/continuinReview/investigatorAndinstuationSave`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
@@ -62,7 +62,7 @@ export const researchProcessSave = createAsyncThunk(
         method: "POST",
         url: `${baseURL}/continuinReview/researchProcessSave`,
         data,
-        headers: { withCredentials: true },
+        // headers: { withCredentials: true },
       });
       return response;
     } catch (error) {
