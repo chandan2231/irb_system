@@ -399,7 +399,10 @@ export const continueinReviewGeneratePdf = async (req, res) => {
                             continuinReviewDetailObj,
                             protocolId
                           )
-                        let filePath = await generatePdfFromHTML(template)
+                        let filePath = await generatePdfFromHTML(
+                          template,
+                          req.body.protocolId
+                        )
                         let sRL = await s3Service.uploadFile(filePath)
                         let pdfUrl = sRL.cdnUrl
                         // Remove the file from the local server
@@ -969,7 +972,11 @@ export const protocolGeneratePdf = async (req, res) => {
         )
     }
     // Generate the PDF from template HTML
-    const filePath = await generatePdfFromHTML(template)
+    const filePath = await generatePdfFromHTML(
+      template,
+      protocolId,
+      protocolType
+    )
 
     // Upload the PDF to S3
     const sRL = await s3Service.uploadFile(filePath)
