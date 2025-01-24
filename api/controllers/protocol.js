@@ -149,7 +149,7 @@ export const createProtocol = async (req, res) => {
       res.status(500).json({ status: 500, msg: 'Error sending email' })
     }
   } catch (err) {
-    console.error('Error in creating protocol:', err)
+    // console.error('Error in creating protocol:', err)
     return res.status(500).json({
       status: 500,
       msg: 'An error occurred while creating the protocol'
