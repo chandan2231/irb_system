@@ -149,7 +149,7 @@ export const createProtocol = async (req, res) => {
       res.status(500).json({ status: 500, msg: 'Error sending email' })
     }
   } catch (err) {
-    console.error('Error in creating protocol:', err)
+    // console.error('Error in creating protocol:', err)
     return res.status(500).json({
       status: 500,
       msg: 'An error occurred while creating the protocol'
@@ -399,10 +399,11 @@ export const continueinReviewGeneratePdf = async (req, res) => {
                             continuinReviewDetailObj,
                             protocolId
                           )
-                        let filePath = await generatePdfFromHTML(template)
-                        console.log('filePath', filePath)
+                        let filePath = await generatePdfFromHTML(
+                          template,
+                          req.body.protocolId
+                        )
                         let sRL = await s3Service.uploadFile(filePath)
-                        console.log('sRL', sRL)
                         let pdfUrl = sRL.cdnUrl
                         // Remove the file from the local server
                         fs.unlinkSync(filePath)
@@ -937,14 +938,12 @@ const getProtocolDetails = async (protocolId, protocolType) => {
 
 export const protocolGeneratePdf = async (req, res) => {
   const { protocolId, protocolType } = req.body
-
   try {
     // Fetch protocol details
     const protocolDetailsObj = await getProtocolDetails(
       protocolId,
       protocolType
     )
-
     // Generate PDF
     let template
     if (protocolType === 'Clinical Site') {
@@ -972,14 +971,15 @@ export const protocolGeneratePdf = async (req, res) => {
           req.body
         )
     }
-
     // Generate the PDF from template HTML
-    const filePath = await generatePdfFromHTML(template)
-    console.log('filePath', filePath)
+    const filePath = await generatePdfFromHTML(
+      template,
+      protocolId,
+      protocolType
+    )
 
     // Upload the PDF to S3
     const sRL = await s3Service.uploadFile(filePath)
-    console.log('sRL', sRL)
     const pdfUrl = sRL.cdnUrl
 
     // Remove the file from the local server
