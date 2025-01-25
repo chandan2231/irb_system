@@ -15,6 +15,7 @@ import ReorderIcon from "@mui/icons-material/Reorder";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
+import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 
 function SideNav() {
   const theme = useTheme();
@@ -106,6 +107,20 @@ function SideNav() {
                 style={{ fontWeight: "500", fontSize: "0.875rem" }}
               >
                 Approved Protocols
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={
+                location.pathname === "/admin/rejected-protocols" ? true : false
+              }
+              component={<Link to="/admin/rejected-protocols" />}
+              icon={<PlaylistRemoveIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Rejected Protocols
               </Typography>
             </MenuItem>
             <MenuItem
