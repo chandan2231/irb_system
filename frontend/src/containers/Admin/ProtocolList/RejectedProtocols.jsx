@@ -9,38 +9,31 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useNavigate } from "react-router-dom";
-import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
-import AddProtocolEvent from "./AddProtocolEvent";
+import Loader from "../../../components/Loader";
 import {
-  fetchUnderReviewProtocolList,
   allowProtocolEdit,
+  fetchRejectedProtocolList,
 } from "../../../services/Admin/ProtocolListService";
+import MultisiteChildProtocol from "../../Dashboard/MultisiteAllProtocol";
+import AddProtocolEvent from "./AddProtocolEvent";
+import AssignProtocolToMember from "./AssignProtocolToMember";
+import ToggleStatus from "../../../components/ToggleStatus";
 import { protocolReport } from "../../../services/UserManagement/UserService";
 import {
   createProtocolEvent,
   assignProtocolToMember,
 } from "../../../services/Admin/MembersService";
-import AssignProtocolToMember from "./AssignProtocolToMember";
-import Loader from "../../../components/Loader";
-import MultisiteChildProtocol from "../../Dashboard/MultisiteAllProtocol";
 
-function UnderReviewProtocolList() {
+function RejectedProtocols() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [assignedMemberOpen, setAssignedMemberOpen] = useState(false);
-  const [protocolDetails, setProtocolDetails] = useState();
-  const [isViewChildProtocolModalOpen, setIsViewChildProtocolModalOpen] =
-    React.useState(false);
-  const [viewChildProtocolData, setViewChildProtocolData] =
-    React.useState(null);
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -209,16 +202,18 @@ function UnderReviewProtocolList() {
   ];
 
   var totalElements = 0;
-  const { underReviewProtocolList, loading, error } = useSelector((state) => ({
+  const { rejectedProtocolList, loading, error } = useSelector((state) => ({
     error: state.admin.error,
-    underReviewProtocolList: state.admin.underReviewProtocolList,
     loading: state.admin.loading,
+    rejectedProtocolList: state.admin.rejectedProtocolList,
   }));
+
   useEffect(() => {
-    dispatch(fetchUnderReviewProtocolList());
+    dispatch(fetchRejectedProtocolList());
   }, [dispatch, user.id]);
-  if (underReviewProtocolList !== "" && underReviewProtocolList?.length > 0) {
-    totalElements = underReviewProtocolList.length;
+
+  if (rejectedProtocolList !== "" && rejectedProtocolList?.length > 0) {
+    totalElements = rejectedProtocolList.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -230,8 +225,8 @@ function UnderReviewProtocolList() {
 
   useEffect(() => {
     const pListArr = [];
-    if (underReviewProtocolList && underReviewProtocolList?.length > 0) {
-      underReviewProtocolList.map((pList, index) => {
+    if (rejectedProtocolList && rejectedProtocolList?.length > 0) {
+      rejectedProtocolList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
@@ -255,7 +250,7 @@ function UnderReviewProtocolList() {
       });
       setProtocolDataList(pListArr);
     }
-  }, [underReviewProtocolList]);
+  }, [rejectedProtocolList]);
 
   const handleViewPdf = async (params) => {
     const { row } = params;
@@ -419,20 +414,12 @@ function UnderReviewProtocolList() {
     });
   };
 
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
-
   if (loader) {
     return <Loader />;
   }
 
   return (
-    <>
+    <React.Fragment>
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -457,7 +444,7 @@ function UnderReviewProtocolList() {
                   fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
                 }}
               >
-                Under Review Protocol List
+                Rejected Protocol List
               </Typography>
             </Grid>
           </Grid>
@@ -481,6 +468,8 @@ function UnderReviewProtocolList() {
             protocolDetails={protocolDetails}
           />
         </Box>
+
+        {/* Table */}
         <Box sx={{ mt: 5 }}>
           <DataGrid
             rows={protocolDataList}
@@ -499,8 +488,8 @@ function UnderReviewProtocolList() {
           onClose={() => handleCloseViewChildProtocol()}
         />
       </Box>
-    </>
+    </React.Fragment>
   );
 }
 
-export default UnderReviewProtocolList;
+export default RejectedProtocols;
