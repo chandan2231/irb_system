@@ -49,6 +49,7 @@ import UploadProtocolDocument from "./containers/Dashboard/UploadProtocolDocumen
 import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
+import RejectedProtocols from "./containers/Admin/ProtocolList/RejectedProtocols";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
@@ -195,6 +196,10 @@ function App() {
               <Route
                 path="/admin/under-review-protocols"
                 element={<UnderReviewProtocolList />}
+              />
+               <Route
+                path="/admin/rejected-protocols"
+                element={<RejectedProtocols />}
               />
               <Route
                 path="/admin/created-protocols"
