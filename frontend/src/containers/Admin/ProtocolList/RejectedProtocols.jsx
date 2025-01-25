@@ -1,5 +1,9 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchRejectedProtocolList,
+  allowProtocolEdit,
+} from "../../../services/Admin/ProtocolListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -7,25 +11,13 @@ import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
-import PreviewIcon from "@mui/icons-material/Preview";
+
 import { useNavigate } from "react-router-dom";
+import { protocolReport } from "../../../services/UserManagement/UserService";
+import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
 import Loader from "../../../components/Loader";
-import {
-  allowProtocolEdit,
-  fetchRejectedProtocolList,
-} from "../../../services/Admin/ProtocolListService";
-import MultisiteChildProtocol from "../../Dashboard/MultisiteAllProtocol";
-import AddProtocolEvent from "./AddProtocolEvent";
-import AssignProtocolToMember from "./AssignProtocolToMember";
-import ToggleStatus from "../../../components/ToggleStatus";
-import { protocolReport } from "../../../services/UserManagement/UserService";
-import {
-  createProtocolEvent,
-  assignProtocolToMember,
-} from "../../../services/Admin/MembersService";
 
 function RejectedProtocols() {
   const theme = useTheme();
@@ -34,14 +26,12 @@ function RejectedProtocols() {
   const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
-
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
     if (userDetails) {
       setUser(userDetails);
     }
   }, []);
-
   const navigateProtocolDetails = (params) => {
     navigate("/admin/protocol-details", {
       state: { details: params.row, type: "admin" },
@@ -52,16 +42,6 @@ function RejectedProtocols() {
       state: { details: params.row, identifierType: "admin" },
     });
   };
-
-  const handleViewChildProtocol = (params) => {
-    setIsViewChildProtocolModalOpen(true);
-    setViewChildProtocolData(params.row);
-  };
-  const handleCloseViewChildProtocol = () => {
-    setIsViewChildProtocolModalOpen(false);
-    setViewChildProtocolData(null);
-  };
-
   const columns = [
     {
       field: "protocolId",
@@ -100,6 +80,7 @@ function RejectedProtocols() {
           }}
         />
       ),
+      // renderCell: (params) => <ToggleStatus status={params.row.allowEdit} />,
     },
     {
       field: "status",
@@ -120,98 +101,56 @@ function RejectedProtocols() {
       field: "actions",
       type: "actions",
       width: 80,
-      getActions: (params) =>
-        params.row.researchType === "Multi-Site Sponsor" && params.row.isParent
-          ? [
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Assign Members"
-                onClick={() => handleAssignedMemberToProtocol(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Add Event"
-                onClick={() => handleAddProtocolEvent(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View Child Protocol"
-                onClick={() => handleViewChildProtocol(params)}
-                showInMenu
-              />,
-            ]
-          : [
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Assign Members"
-                onClick={() => handleAssignedMemberToProtocol(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Add Event"
-                onClick={() => handleAddProtocolEvent(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              // <GridActionsCellItem
-              //     icon={<EditNoteIcon />}
-              //     label="Edit"
-              //     onClick={handleItemEdit(params)}
-              //     showInMenu
-              // />,
-              // <GridActionsCellItem
-              //     icon={<SettingsSuggestIcon />}
-              //     label="Details"
-              //     onClick={handleItemDetail(params)}
-              //     showInMenu
-              // />,
-              // <GridActionsCellItem
-              //     icon={<DeleteIcon />}
-              //     label="Delete"
-              //     onClick={handleItemDelete(params)}
-              //     showInMenu
-              // />,
-            ],
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<PictureAsPdfIcon />}
+          label="View Pdf"
+          onClick={() => handleViewPdf(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CompareArrowsIcon />}
+          label="Communication"
+          onClick={() => navigateToCommunicationDetails(params)}
+          showInMenu
+        />,
+        // <GridActionsCellItem
+        //     icon={<RadioButtonUncheckedIcon />}
+        //     label="Change Status"
+        //     onClick={handleChangeStatus(params)}
+        //     showInMenu
+        // />,
+        // <GridActionsCellItem
+        //     icon={<EditNoteIcon />}
+        //     label="Edit"
+        //     onClick={handleItemEdit(params)}
+        //     showInMenu
+        // />,
+        // <GridActionsCellItem
+        //     icon={<SettingsSuggestIcon />}
+        //     label="Details"
+        //     onClick={handleItemDetail(params)}
+        //     showInMenu
+        // />,
+        // <GridActionsCellItem
+        //     icon={<DeleteIcon />}
+        //     label="Delete"
+        //     onClick={handleItemDelete(params)}
+        //     showInMenu
+        // />,
+      ],
     },
   ];
 
   var totalElements = 0;
   const { rejectedProtocolList, loading, error } = useSelector((state) => ({
     error: state.admin.error,
-    loading: state.admin.loading,
     rejectedProtocolList: state.admin.rejectedProtocolList,
+    loading: state.admin.loading,
   }));
-
   useEffect(() => {
     dispatch(fetchRejectedProtocolList());
   }, [dispatch, user.id]);
-
   if (rejectedProtocolList !== "" && rejectedProtocolList?.length > 0) {
     totalElements = rejectedProtocolList.length;
   }
@@ -244,7 +183,6 @@ function RejectedProtocols() {
                   : "Rejected",
           createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
-          isParent: pList.parent_protocol_id === "" ? true : false,
         };
         pListArr.push(protocolObject);
       });
@@ -272,19 +210,20 @@ function RejectedProtocols() {
     }
   };
 
-  /* CHANGE STATUS API CALL */
-  const handleChangeStatus = async (id, editStatus) => {
-    if (Number(editStatus) === 1 || Number(editStatus) === 2) {
+  // console.log('rejectedProtocolList', rejectedProtocolList)
+
+  const handleChangeStatus = (status) => {
+    if (status.value === "1" || status.value === "2") {
       let allowEditvalue = "";
-      if (Number(editStatus) === 1) {
+      if (status.value === "1") {
         allowEditvalue = 2;
-      } else if (Number(editStatus) === 2) {
+      } else if (status.value === "2") {
         allowEditvalue = 1;
       }
-      let payloadData = { id: id, allow_edit: allowEditvalue };
-      dispatch(allowProtocolEdit(payloadData)).then((data) => {
+      let data = { id: status.id, status: allowEditvalue };
+      dispatch(allowProtocolEdit(data)).then((data) => {
         if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
+          toast.success(data.payload.data, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -294,14 +233,8 @@ function RejectedProtocols() {
             progress: undefined,
             theme: "dark",
           });
-          const updatedProtocolDataList = protocolDataList.map((element) =>
-            element.id === response.payload.data.id
-              ? { ...element, allow_edit: response.payload.data.allowEditvalue }
-              : element
-          );
-          setProtocolDataList(updatedProtocolDataList);
         } else {
-          toast.error(data.payload.msg, {
+          toast.error(data.payload.data, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -315,111 +248,24 @@ function RejectedProtocols() {
       });
     }
   };
+  // const handleItemDelete = (params) => {
+  //     //console.log('Delete Item', params)
+  // }
 
-  const handleAddProtocolEvent = (params) => {
-    setOpen(true);
-    setProtocolDetails(params?.row);
-  };
+  // const handleItemDetail = (params) => {
+  //     //console.log('Details Item', params)
+  // }
 
-  const addNewData = (addedData) => {
-    const { event_subject, event_msg, member_id } = addedData;
-    let membersArr = [];
-    member_id.map((pList) => {
-      membersArr.push(pList.id);
-    });
-    let data = {
-      event_subject: event_subject,
-      event_message: event_msg,
-      member_id: membersArr,
-      protocol_id: protocolDetails?.protocolId,
-      protocol_name: protocolDetails?.researchType,
-      created_by: user.id,
-    };
-    console.log("data ", data);
-    // return
-    dispatch(createProtocolEvent(data)).then((data) => {
-      console.log("data", data);
-      if (data.payload.status === 200) {
-        setOpen(false);
-        toast.success(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else {
-        setOpen(false);
-        toast.error(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
-    });
-  };
-
-  const handleAssignedMemberToProtocol = (params) => {
-    setAssignedMemberOpen(true);
-    setProtocolDetails(params?.row);
-  };
-
-  const addAssignedMemberData = (addedData) => {
-    const { member_id } = addedData;
-    let membersArr = [];
-    member_id.map((pList) => {
-      membersArr.push(pList.id);
-    });
-    let data = {
-      member_id: membersArr,
-      protocol_id: protocolDetails?.protocolId,
-      protocol_name: protocolDetails?.researchType,
-      created_by: user.id,
-    };
-
-    dispatch(assignProtocolToMember(data)).then((data) => {
-      if (data.payload.status === 200) {
-        setAssignedMemberOpen(false);
-        toast.success(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else {
-        setAssignedMemberOpen(false);
-        toast.error(data.payload.data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      }
-    });
-  };
+  // const handleItemEdit = (params) => {
+  //     //console.log('Edit Item', params)
+  // }
 
   if (loader) {
     return <Loader />;
   }
 
   return (
-    <React.Fragment>
+    <>
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -450,26 +296,6 @@ function RejectedProtocols() {
           </Grid>
         </Box>
 
-        <Box>
-          <AddProtocolEvent
-            open={open}
-            onClose={() => setOpen(false)}
-            addNewData={addNewData}
-            title={"Create Protocol Event"}
-            protocolDetails={protocolDetails}
-          />
-        </Box>
-        <Box>
-          <AssignProtocolToMember
-            open={assignedMemberOpen}
-            onClose={() => setAssignedMemberOpen(false)}
-            addAssignedMemberData={addAssignedMemberData}
-            title={"Assign Protocol To Members"}
-            protocolDetails={protocolDetails}
-          />
-        </Box>
-
-        {/* Table */}
         <Box sx={{ mt: 5 }}>
           <DataGrid
             rows={protocolDataList}
@@ -481,14 +307,7 @@ function RejectedProtocols() {
           />
         </Box>
       </Box>
-      <Box>
-        <MultisiteChildProtocol
-          open={isViewChildProtocolModalOpen}
-          data={viewChildProtocolData}
-          onClose={() => handleCloseViewChildProtocol()}
-        />
-      </Box>
-    </React.Fragment>
+    </>
   );
 }
 
