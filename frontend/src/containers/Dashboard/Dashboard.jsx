@@ -108,7 +108,8 @@ function Dashboard() {
       width: 80,
       getActions: (params) => params.row.protocolStatus !== "Created"
         &&
-        params.row.researchType === "Multi-Site Sponsor"
+        params.row.researchType === "Multi-Site Sponsor" &&
+        params.row.isParent
         ? [
           <GridActionsCellItem
             icon={<PictureAsPdfIcon />}
@@ -222,6 +223,7 @@ function Dashboard() {
                   : "Rejected",
           createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          isParent: pList.parent_protocol_id === "" ? true : false,
         };
         pListArr.push(protocolObject);
       });

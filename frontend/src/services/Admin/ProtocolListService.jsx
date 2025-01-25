@@ -50,6 +50,22 @@ export const fetchUnderReviewProtocolList = createAsyncThunk(
   }
 );
 
+export const fetchRejectedProtocolList = createAsyncThunk(
+  "ProtocolList/fetchRejectedProtocolList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/admin/rejected/protocol/list`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const fetchCreatedProtocolList = createAsyncThunk(
   "ProtocolList/fetchCreatedProtocolList",
   async (data, { rejectWithValue }) => {

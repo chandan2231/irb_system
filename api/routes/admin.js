@@ -20,6 +20,7 @@ import {
   changeUserStatus,
   changeUserPassword,
   getUnderReviewProtocolList,
+  getRejectedProtocolList,
   getCreatedProtocolList,
   allowProtocolWaiveFee,
   getEventPriceList,
@@ -70,6 +71,7 @@ router.get('/member/list', getMemberList)
 router.get('/approved-protocol/list', getApprovedProtocolList)
 router.get('/all-protocol/list', getAllProtocolList)
 router.get('/under-review/protocol/list', getUnderReviewProtocolList)
+router.get('/rejected/protocol/list', getRejectedProtocolList)
 router.get('/created/protocol/list', getCreatedProtocolList)
 router.post('/protocol/allowEdit', allowProtocolEdit)
 router.post('/protocol/waiveFee', allowProtocolWaiveFee)
