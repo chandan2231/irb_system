@@ -10,6 +10,6 @@ export default defineConfig({
     hmr: {
       host: "0.0.0.0", // Match server.host for Hot Module Replacement
     },
-    port: 5173, // change here
+    port: 3000, // change here
   },
 });
