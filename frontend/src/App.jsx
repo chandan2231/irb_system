@@ -35,6 +35,7 @@ import AdminAdverseEvents from "./containers/Admin/AdverseEvents/AdverseEvents";
 import AdminAdverseEventsDetails from "./containers/Admin/AdverseEvents/AdminAdverseEventsDetails";
 import AdminProtocolAmendmentRequest from "./containers/Admin/ProtocolAmendmentRequest/ProtocolAmendmentRequest";
 import AdminProtocolAmendmentRequestDetails from "./containers/Admin/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
+import AdminRejectedProtocols from "./containers/Admin/ProtocolList/RejectedProtocols";
 import Members from "./containers/Admin/Members/Members";
 import EventPriceList from "./containers/Admin/EventPriceList/EventPriceList";
 import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList";
@@ -49,7 +50,24 @@ import UploadProtocolDocument from "./containers/Dashboard/UploadProtocolDocumen
 import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
-import RejectedProtocols from "./containers/Admin/ProtocolList/RejectedProtocols";
+
+import OfficeApprovedProtocolList from "./containers/OfficePortal/ProtocolList/ApprovedProtocolList";
+import OfficeUnderReviewProtocolList from "./containers/OfficePortal/ProtocolList/UnderReviewProtocolList";
+import OfficeCreatedProtocolList from "./containers/OfficePortal/ProtocolList/CreatedProtocolList";
+import OfficeContinuinReviewList from "./containers/OfficePortal/ContinuinReviewList/ContinuinReviewList";
+import OfficeUsersList from "./containers/OfficePortal/UsersList/UsersList";
+import OfficeProtocolDetails from "./containers/OfficePortal/ProtocolList/AdminProtocolDetails";
+import OfficeContinuingReviewDetails from "./containers/OfficePortal/ContinuinReviewList/AdminContinuingReviewDetails";
+import OfficePromptlyReportableEvent from "./containers/OfficePortal/PromptlyReportableEvent/PromptlyReportableEvent";
+import OfficePromptlyReportableEventDetails from "./containers/OfficePortal/PromptlyReportableEvent/AdminPromptlyReportableEventDetails";
+import OfficeStudyCloseoutRequest from "./containers/OfficePortal/StudyCloseoutRequest/StudyCloseoutRequest";
+import OfficeStudyCloseoutRequestDetails from "./containers/OfficePortal/StudyCloseoutRequest/AdminStudyCloseoutRequestDetails";
+import OfficeAdverseEvents from "./containers/OfficePortal/AdverseEvents/AdverseEvents";
+import OfficeAdverseEventsDetails from "./containers/OfficePortal/AdverseEvents/AdminAdverseEventsDetails";
+import OfficeProtocolAmendmentRequest from "./containers/OfficePortal/ProtocolAmendmentRequest/ProtocolAmendmentRequest";
+import OfficeProtocolAmendmentRequestDetails from "./containers/OfficePortal/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
+import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/RejectedProtocols";
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
@@ -197,9 +215,9 @@ function App() {
                 path="/admin/under-review-protocols"
                 element={<UnderReviewProtocolList />}
               />
-               <Route
+              <Route
                 path="/admin/rejected-protocols"
-                element={<RejectedProtocols />}
+                element={<AdminRejectedProtocols />}
               />
               <Route
                 path="/admin/created-protocols"
@@ -282,6 +300,68 @@ function App() {
               {/* </Route> */}
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
+
+              <Route
+                path="/office/approved-protocol-list"
+                element={<OfficeApprovedProtocolList />}
+              />
+              <Route
+                path="/office/under-review-protocols"
+                element={<OfficeUnderReviewProtocolList />}
+              />
+              <Route
+                path="/office/rejected-protocols"
+                element={<OfficeRejectedProtocols />}
+              />
+              <Route
+                path="/office/created-protocols"
+                element={<OfficeCreatedProtocolList />}
+              />
+              <Route
+                path="/office/protocol-details"
+                element={<OfficeProtocolDetails />}
+              />
+              <Route
+                path="/office/continuin-review-list"
+                element={<OfficeContinuinReviewList />}
+              />
+              <Route
+                path="/office/continuin-review-details"
+                element={<OfficeContinuingReviewDetails />}
+              />
+              <Route path="/office/users-list" element={<OfficeUsersList />} />
+              <Route
+                path="/office/protocol-amendment-request"
+                element={<OfficeProtocolAmendmentRequest />}
+              />
+              <Route
+                path="/office/protocol-amendment-request-details"
+                element={<OfficeProtocolAmendmentRequestDetails />}
+              />
+              <Route
+                path="/office/adverse-events"
+                element={<OfficeAdverseEvents />}
+              />
+              <Route
+                path="/office/adverse-events-details"
+                element={<OfficeAdverseEventsDetails />}
+              />
+              <Route
+                path="/office/promptly-reportable-event"
+                element={<OfficePromptlyReportableEvent />}
+              />
+              <Route
+                path="/office/promptly-reportable-event-details"
+                element={<OfficePromptlyReportableEventDetails />}
+              />
+              <Route
+                path="/office/study-close-request"
+                element={<OfficeStudyCloseoutRequest />}
+              />
+              <Route
+                path="/office/study-close-request-details"
+                element={<OfficeStudyCloseoutRequestDetails />}
+              />
             </Routes>
           </Box>
         </BrowserRouter>

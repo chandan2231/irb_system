@@ -79,7 +79,9 @@ function AppHeader() {
                     ? "Voting Member Portal"
                     : userDetails.user_type === "Committee Chair"
                       ? "Committee Chair Portal"
-                      : ""}
+                      : userDetails.user_type === "Office Staff"
+                        ? "Office Portal"
+                        : ""}
               </h2>
             </Box>
           ) : (

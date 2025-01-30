@@ -146,7 +146,7 @@ export const capturePayment = async (req, res) => {
             const newGeneratedProtocol = [
               newProtocolId,
               baseProtocolId,
-              researchType,
+              'Clinical Site',
               2,
               randomString
             ]
