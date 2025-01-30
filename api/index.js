@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 
 app.use(cookieParser())
 if (process.env.NODE_ENV === 'development') {
-  app.use(cors({ origin: 'http://localhost:5173' }))
+  app.use(cors({ origin: 'http://localhost:3000' }))
 } else {
   // Define allowed origins for production
   const allowedOrigins = ['https://app.irbhub.org']
