@@ -410,24 +410,174 @@ function SideNav() {
               Protocol List
             </Typography>
           </MenuItem>
-        ) : (
-          <MenuItem
-            active={
-              location.pathname === "/admin/approved-protocol-list" ||
-              location.pathname === "/admin/protocol-details"
-                ? true
-                : false
-            }
-            component={<Link to="/admin/approved-protocol-list" />}
-            icon={<ChecklistRtlIcon />}
-          >
-            <Typography
-              variant="body2"
+        ) : userDetails.user_type === "Office Staff" ? (
+          <>
+            <MenuItem
+              active={
+                location.pathname === "/office/created-protocols" ? true : false
+              }
+              component={<Link to="/office/created-protocols" />}
+              icon={<FormatListBulletedIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Created Protocols
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={
+                location.pathname === "/office/under-review-protocols"
+                  ? true
+                  : false
+              }
+              component={<Link to="/office/under-review-protocols" />}
+              icon={<GradingIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Under Review Protocols
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={
+                location.pathname === "/office/approved-protocol-list"
+                  ? true
+                  : false
+              }
+              component={<Link to="/office/approved-protocol-list" />}
+              icon={<ChecklistRtlIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Approved Protocols
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={
+                location.pathname === "/office/rejected-protocols"
+                  ? true
+                  : false
+              }
+              component={<Link to="/office/rejected-protocols" />}
+              icon={<PlaylistRemoveIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Rejected Protocols
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={location.pathname === "/office/users-list" ? true : false}
+              component={<Link to="/office/users-list" />}
+              icon={<ManageAccountsOutlinedIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Applicants
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={
+                location.pathname === "/office/continuin-review-list" ||
+                location.pathname === "/office/continuin-review-details"
+                  ? true
+                  : false
+              }
+              component={<Link to="/office/continuin-review-list" />}
+              icon={<ReorderIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Continuing Review List
+              </Typography>
+            </MenuItem>
+            <SubMenu
+              label="Event And Request"
+              icon={<AddBusinessOutlinedIcon />}
               style={{ fontWeight: "500", fontSize: "0.875rem" }}
             >
-              Approved Protocols
-            </Typography>
-          </MenuItem>
+              <MenuItem
+                active={
+                  location.pathname === "/office/protocol-amendment-request" ||
+                  location.pathname ===
+                    "/office/protocol-amendment-request-details"
+                    ? true
+                    : false
+                }
+                component={<Link to="/office/protocol-amendment-request" />}
+              >
+                <Typography
+                  variant="body2"
+                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                >
+                  Protocol Amendment Request
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                active={
+                  location.pathname === "/office/adverse-events" ||
+                  location.pathname === "/office/adverse-events-details"
+                    ? true
+                    : false
+                }
+                component={<Link to="/office/adverse-events" />}
+              >
+                <Typography
+                  variant="body2"
+                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                >
+                  Adverse Events
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                active={
+                  location.pathname === "/office/promptly-reportable-event" ||
+                  location.pathname ===
+                    "/office/promptly-reportable-event-details"
+                    ? true
+                    : false
+                }
+                component={<Link to="/office/promptly-reportable-event" />}
+              >
+                <Typography
+                  variant="body2"
+                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                >
+                  Promptly Reportable Event
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                active={
+                  location.pathname === "/office/study-close-request" ||
+                  location.pathname === "/office/study-close-request-details"
+                    ? true
+                    : false
+                }
+                component={<Link to="/office/study-close-request" />}
+              >
+                <Typography
+                  variant="body2"
+                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                >
+                  Study Closeout Request
+                </Typography>
+              </MenuItem>
+            </SubMenu>
+          </>
+        ) : (
+          <></>
         )}
       </Menu>
     </Sidebar>
