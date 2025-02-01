@@ -74,7 +74,7 @@ export const checkMultisiteProtocolExist = (req, res) => {
 export const createProtocol = async (req, res) => {
   try {
     const prefix = 'IRBH'
-    const que1 = 'SELECT protocol_id FROM protocols ORDER BY id DESC LIMIT 1'
+    const que1 = `SELECT protocol_id FROM protocols WHERE parent_protocol_id IS NULL OR parent_protocol_id = '' ORDER BY id DESC LIMIT 1`
     const result = await new Promise((resolve, reject) => {
       db.query(que1, (err, data) => {
         if (err) {
@@ -96,10 +96,11 @@ export const createProtocol = async (req, res) => {
     }
 
     const que2 =
-      'INSERT INTO protocols (`protocol_id`, `research_type`, `added_by`) VALUES (?)'
+      'INSERT INTO protocols (`protocol_id`, `research_type`, `protocol_user_type`, `added_by`) VALUES (?)'
     const protocolValue = [
       newProtocolNumber,
       req.body.research_type_id,
+      req.body.protocol_user_type,
       req.body.login_id
     ]
 

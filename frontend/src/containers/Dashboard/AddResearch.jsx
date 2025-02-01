@@ -8,6 +8,7 @@ import { Box, Checkbox, TextField, Typography } from "@mui/material";
 
 const defaultInputValues = {
   research_type_id: "",
+  protocol_user_type: "",
 };
 
 const defaultInputValuesForHaveProtocolId = {
@@ -29,6 +30,13 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     { name: "Document Review", id: "Document Review" },
   ];
 
+  const optionsForHaveProtocolId = [
+    { name: "High School", id: "High School" },
+    { name: "Under Graduate", id: "Under Graduate" },
+    { name: "Graduate", id: "Graduate" },
+    { name: "Commercial", id: "Commercial" },
+  ]
+
   const modalStyles = {
     inputFields: {
       display: "flex",
@@ -43,6 +51,11 @@ const AddResearch = ({ open, onClose, addNewData }) => {
 
   const validationSchema = Yup.object().shape({
     research_type_id: Yup.string().required("Research type is required"),
+    protocol_user_type: Yup.string().when("research_type_id", {
+      is: "Principal Investigator",
+      then: (schema) => schema.required("Please select type is required"),
+      otherwise: schema => schema
+    })
   });
 
   const validationSchemaForHaveProtocolId = Yup.object().shape({
@@ -83,23 +96,8 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     if (open) setValues(defaultInputValues);
   }, [open]);
 
-  const getContent = () => (
-    <Box
-      sx={{
-        marginTop: "-20px",
-        marginBottom: "-20px",
-      }}
-    >
-      <Box display="flex" alignItems="center">
-        <Checkbox
-          checked={isHaveProtocolIdChecked}
-          onChange={handleCheckBoxChange}
-        />
-        <Typography variant="body1">
-          Do You have Multi-site Protocol ID?
-        </Typography>
-      </Box>
-
+  const getContentIfIsHaveProtocolIdNotChecked = () => {
+    return (
       <Box sx={modalStyles.inputFields}>
         <DropdownWithSearch
           title={"Select Research Type"}
@@ -111,15 +109,50 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           labelId={"demo-simple-select-required-label"}
           id={"demo-simple-select-required"}
           activeListArr={options}
-          setOption={(id) => handleChange({ ...values, research_type_id: id })}
+          setOption={(id) => {
+            const payload = {
+              ...values,
+              research_type_id: id,
+              protocol_user_type: id !== "Principal Investigator" ? "" : values.protocol_user_type || ""
+            };
+            handleChange({ ...payload });
+          }}
           {...register("research_type_id")}
         />
+
+        {values.research_type_id === "Principal Investigator" ? (
+          <DropdownWithSearch
+            title={"Please select Type"}
+            name={"protocol_user_type"}
+            label={"Select select Type *"}
+            error={errors.protocol_user_type ? true : false}
+            helperText={errors.protocol_user_type?.message}
+            value={values.protocol_user_type}
+            labelId={"demo-simple-select-required-label"}
+            id={"demo-simple-select-required"}
+            activeListArr={optionsForHaveProtocolId}
+            setOption={(id) => handleChange({ ...values, protocol_user_type: id })}
+            {...register("protocol_user_type")}
+          />) : null
+        }
       </Box>
+    )
+  }
+
+  const getContent = () => (
+    <Box display="flex" alignItems="center">
+      <Checkbox
+        checked={isHaveProtocolIdChecked}
+        onChange={handleCheckBoxChange}
+      />
+      <Typography variant="body1">
+        Do You have Multi-site Protocol ID?
+      </Typography>
     </Box>
   );
 
-  const getContentForHaveProtocolId = () => (
-    <Box sx={modalStyles.inputFields}>
+  const getContentIfIsHaveProtocolIdChecked = () => {
+    return (<Box sx={modalStyles.inputFields}>
       <TextField
         id="outlined-basic"
         label="Multi-site Protocol ID"
@@ -155,12 +188,20 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           });
         }}
       />
+    </Box>)
+  }
+
+  const getContentForHaveProtocolId = () => (
+    <Box>
+      {getContent()}
+      {isHaveProtocolIdChecked ? getContentIfIsHaveProtocolIdChecked()
+        : getContentIfIsHaveProtocolIdNotChecked()}
     </Box>
   );
 
   return (
     <React.Fragment>
-      {isHaveProtocolIdChecked ? (
+      {/* {isHaveProtocolIdChecked ? (
         <CommonModal
           open={open}
           onClose={() => {
@@ -181,7 +222,23 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           content={getContent()}
           onSubmit={handleSubmit(addNew)}
         />
-      )}
+      )} */}
+      <CommonModal
+        open={open}
+        onClose={() => {
+          onClose();
+          isHaveProtocolIdChecked ?
+            setIsHaveProtocolIdChecked(false) : () => { }
+        }}
+        title="Create New Research Type"
+        subTitle=""
+        content={getContentForHaveProtocolId()}
+        onSubmit={
+          isHaveProtocolIdChecked
+            ? handleSubmitForHaveProtocolId(handleHaveProtocolIdSubmit)
+            : handleSubmit(addNew)
+        }
+      />
     </React.Fragment>
   );
 };

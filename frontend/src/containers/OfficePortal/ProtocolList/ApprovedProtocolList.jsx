@@ -68,20 +68,7 @@ function ApprovedProtocolList() {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "allowEdit",
-      headerName: "Allow Edit",
-      flex: 1,
-      renderCell: (params) => (
-        <ToggleStatus
-          status={params.row.allowEdit}
-          onStatusChange={(newAllowEdit) => {
-            handleChangeStatus(params.row.id, newAllowEdit);
-          }}
-        />
-      ),
-      // renderCell: (params) => <ToggleStatus status={params.row.allowEdit} />,
-    },
+
     {
       field: "status",
       headerName: "Status",
@@ -172,7 +159,6 @@ function ApprovedProtocolList() {
           researchType: pList.research_type,
           username: pList.name,
           email: pList.email,
-          allowEdit: pList.allow_edit,
           status:
             pList.status === "1"
               ? "Created"
@@ -210,44 +196,6 @@ function ApprovedProtocolList() {
     }
   };
 
-  // console.log('approvedProtocolList', approvedProtocolList)
-
-  const handleChangeStatus = (status) => {
-    if (status.value === "1" || status.value === "2") {
-      let allowEditvalue = "";
-      if (status.value === "1") {
-        allowEditvalue = 2;
-      } else if (status.value === "2") {
-        allowEditvalue = 1;
-      }
-      let data = { id: status.id, status: allowEditvalue };
-      dispatch(allowProtocolEdit(data)).then((data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.data, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        } else {
-          toast.error(data.payload.data, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
-  };
   // const handleItemDelete = (params) => {
   //     //console.log('Delete Item', params)
   // }
