@@ -74,6 +74,50 @@ const ContractorResearcherDetails = ({
       {/* Button Tabs (Horizontal on larger screens, stacked on smaller screens) */}
       <Box
         sx={{
+          borderBottom: 1,
+          borderColor: "#3f51b5",
+          display: "flex",
+          gap: 1,
+        }}
+      >
+        {[...Array(6).keys()].map((index) => (
+          <Button
+            key={index}
+            onClick={() => handleButtonClick(index)}
+            sx={{
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              borderBottom: 0, // No bottom border by default
+              "&:hover": {
+                borderBottom: "none", // Ensures no bottom border on hover
+                backgroundColor:
+                  value === index
+                    ? "primary.dark"
+                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
+              },
+              backgroundColor: value === index ? "primary.main" : "transparent",
+              backgroundImage:
+                value === index
+                  ? "none"
+                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
+              color: value === index ? "white" : "white",
+            }}
+          >
+            {
+              [
+                "Protocol Information",
+                "Investigator Information",
+                "Study Type",
+                "Informed Consent",
+                "Protocol Procedures",
+                "Submission",
+              ][index]
+            }
+          </Button>
+        ))}
+      </Box>
+      {/* <Box
+        sx={{
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "space-between",
@@ -126,7 +170,7 @@ const ContractorResearcherDetails = ({
             }
           </Button>
         ))}
-      </Box>
+      </Box> */}
 
       {/* Content for each tab */}
       <CustomTabPanel value={value} index={0}>
