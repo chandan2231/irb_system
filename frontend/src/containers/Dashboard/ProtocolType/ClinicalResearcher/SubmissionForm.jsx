@@ -24,20 +24,72 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import ApiCall from "../../../../utility/ApiCall";
+import * as Yup from "yup";
+import { Box, IconButton } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+const initialValues = {
+  name: "",
+  mobile: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
+const lowercaseRegEx = /(?=.*[a-z])/;
+const uppercaseRegEx = /(?=.*[A-Z])/;
+const numericRegEx = /(?=.*[0-9])/;
+const lengthRegEx = /(?=.{6,})/;
+
+let validationSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  mobile: Yup.string().required("Required"),
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string()
+    .matches(
+      lowercaseRegEx,
+      "Must contain one lowercase alphabetical character!"
+    )
+    .matches(
+      uppercaseRegEx,
+      "Must contain one uppercase alphabetical character!"
+    )
+    .matches(numericRegEx, "Must contain one numeric character!")
+    .matches(lengthRegEx, "Must contain 6 characters!")
+    .required("Required!"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm password is required!"),
+});
 
 const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [addExternalMonitorDetails, setAddExternalMonitorDetails] = useState(false)
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
     paymentType: "Protocol Submission",
   });
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
+
+  const [payloadFormData, setPayloadFormData] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [loader, setLoader] = useState(false);
   const [notSavedForms, setNotSavedForms] = useState([]);
 
@@ -51,7 +103,25 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     setTermsSelected(event.target.checked);
   };
 
+  const handleAddExternalMonitor = (event) => {
+    setAddExternalMonitorDetails(event.target.checked)
+    // if check is false, clear the external monitor details
+    if (!event.target.checked) {
+      setPayloadFormData({
+        ...initialValues
+      });
+    }
+  };
+
+  const handleChangeForExternalMonitor = (e) => {
+    setPayloadFormData({
+      ...payloadFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const handleSubmitData = async (e) => {
+    setLoader(true);
     e.preventDefault();
     if (notSavedForms.length > 0) {
       toast.error(
@@ -68,7 +138,49 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       );
       return;
     } else {
-      navigateToPaymentPage(formData);
+      if (addExternalMonitorDetails === true) {
+        try {
+          const getValidatedform = await validationSchema.validate(
+            payloadFormData,
+            { abortEarly: false }
+          );
+          const isValid = await validationSchema.isValid(getValidatedform);
+          if (isValid === true) {
+            setLoader(false); // Remove this line when API is integrated
+            console.log("payloadFormData ====>", {
+              ...payloadFormData,
+              ...formData
+            });
+            // api call here ....
+            // if (response.status === 200) {
+            //  setLoader(false);
+            //   navigateToPaymentPage(formData);
+            // }
+          }
+        }
+        catch (error) {
+          setLoader(false);
+          const newErrors = {};
+          error.inner.forEach((err) => {
+            newErrors[err.path] = err.message;
+          });
+          setErrors(newErrors);
+          console.error("Error submitting data:", error);
+          if (Object.keys(newErrors).length > 0) {
+            const firstErrorField = document.querySelector(
+              `[name="${Object.keys(newErrors)[0]}"]`
+            );
+            if (firstErrorField) {
+              firstErrorField.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            }
+          }
+        }
+      } else {
+        navigateToPaymentPage(formData);
+      }
     }
   };
 
@@ -160,9 +272,146 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
         </List>
       )}
 
-      {/* Submission Form */}
       <Row>
         <form onSubmit={handleSubmitData}>
+          <Form.Group as={Col} controlId="addExternalMinotorDetails">
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label-external-monitor"></FormLabel>
+              <FormGroup onChange={handleAddExternalMonitor}>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  checked={
+                    addExternalMonitorDetails
+                  }
+                  label="Add External Monitor Details"
+                />
+              </FormGroup>
+            </FormControl>
+          </Form.Group>
+
+          {/* Fields when  addExternalMonitorDetails is true */}
+          {
+            addExternalMonitorDetails && (
+              <Box
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                <Form.Group as={Col} controlId="validationFormik01">
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Name"
+                      name="name"
+                      value={payloadFormData.name}
+                      onChange={handleChangeForExternalMonitor}
+                    />
+                  </Box>
+                  {errors.name && (
+                    <div className="error">{errors.name}</div>
+                  )}
+                </Form.Group>
+
+                <Form.Group as={Col} controlId="validationFormik3">
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Email"
+                      name="email"
+                      value={payloadFormData.email}
+                      onChange={handleChangeForExternalMonitor}
+                    />
+                  </Box>
+                  {errors.email && (
+                    <div className="error">{errors.email}</div>
+                  )}
+                </Form.Group>
+
+                <Form.Group as={Col} controlId="validationFormik4">
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Password"
+                      name="password"
+                      value={payloadFormData.password}
+                      onChange={handleChangeForExternalMonitor}
+                      type={showPassword ? "text" : "password"} // Toggle password visibility
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        ),
+                      }}
+                    />
+                  </Box>
+                  {errors.password && (
+                    <div className="error">{errors.password}</div>
+                  )}
+                </Form.Group>
+
+                <Form.Group as={Col} controlId="validationFormik5">
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Confirm Password"
+                      name="confirmPassword"
+                      value={payloadFormData.confirmPassword}
+                      onChange={handleChangeForExternalMonitor}
+                      type={showConfirmPassword ? "text" : "password"} // Toggle password visibility
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            edge="end"
+                          >
+                            {showConfirmPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        ),
+                      }}
+                    />
+                  </Box>
+                  {errors.confirmPassword && (
+                    <div className="error">{errors.confirmPassword}</div>
+                  )}
+                </Form.Group>
+
+                <Form.Group as={Col} controlId="validationFormik2">
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Mobile"
+                      name="mobile"
+                      value={payloadFormData.mobile}
+                      onChange={handleChangeForExternalMonitor}
+                    />
+                  </Box>
+                  {errors.mobile && (
+                    <div className="error">{errors.mobile}</div>
+                  )}
+                </Form.Group>
+
+
+              </Box>
+            )
+          }
+
           <Form.Group
             as={Col}
             controlId="validationFormik01"

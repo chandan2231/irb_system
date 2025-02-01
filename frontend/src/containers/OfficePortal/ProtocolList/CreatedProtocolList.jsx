@@ -67,20 +67,7 @@ function CreatedProtocolList() {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "waiveFee",
-      headerName: "Waive Fee",
-      flex: 1,
-      renderCell: (params) => (
-        <ToggleStatus
-          status={params.row.waiveFee}
-          onStatusChange={(newWaiveFee) => {
-            handleChangeStatus(params.row.id, newWaiveFee);
-          }}
-        />
-      ),
-      // renderCell: (params) => <ToggleStatus status={params.row.waiveFee} />,
-    },
+
     {
       field: "status",
       headerName: "Status",
@@ -171,7 +158,6 @@ function CreatedProtocolList() {
           researchType: pList.research_type,
           username: pList.name,
           email: pList.email,
-          waiveFee: pList.waive_fee,
           status:
             pList.status === "1"
               ? "Created"
@@ -209,47 +195,6 @@ function CreatedProtocolList() {
     }
   };
 
-  // console.log('protocolList', protocolList)
-
-  const handleChangeStatus = (status) => {
-    // console.log('status', status)
-    // return
-    if (status.row.waiveFee === 1 || status.row.waiveFee === 2) {
-      let waiveFeevalue = "";
-      if (status.row.waiveFee === 1) {
-        waiveFeevalue = 2;
-      } else if (status.row.waiveFee === 2) {
-        waiveFeevalue = 1;
-      }
-      let data = { id: status.id, waive_fee: waiveFeevalue };
-      dispatch(allowProtocolWaiveFee(data)).then((data) => {
-        console.log("data", data);
-        if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        } else {
-          toast.error(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
-  };
   // const handleItemDelete = (params) => {
   //     //console.log('Delete Item', params)
   // }

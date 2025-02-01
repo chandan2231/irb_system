@@ -95,19 +95,7 @@ function UnderReviewProtocolList() {
       headerName: "Email",
       flex: 1,
     },
-    {
-      field: "allowEdit",
-      headerName: "Allow Edit",
-      flex: 1,
-      renderCell: (params) => (
-        <ToggleStatus
-          status={params.row.allowEdit}
-          onStatusChange={(newAllowEdit) => {
-            handleChangeStatus(params.row.id, newAllowEdit);
-          }}
-        />
-      ),
-    },
+
     {
       field: "status",
       headerName: "Status",
@@ -238,7 +226,6 @@ function UnderReviewProtocolList() {
           researchType: pList.research_type,
           username: pList.name,
           email: pList.email,
-          allowEdit: pList.allow_edit,
           status:
             pList.status === "1"
               ? "Created"
@@ -274,50 +261,6 @@ function UnderReviewProtocolList() {
     } catch (error) {
       setLoader(false);
       console.log(error);
-    }
-  };
-
-  /* CHANGE STATUS API CALL */
-  const handleChangeStatus = async (id, editStatus) => {
-    if (Number(editStatus) === 1 || Number(editStatus) === 2) {
-      let allowEditvalue = "";
-      if (Number(editStatus) === 1) {
-        allowEditvalue = 2;
-      } else if (Number(editStatus) === 2) {
-        allowEditvalue = 1;
-      }
-      let payloadData = { id: id, allow_edit: allowEditvalue };
-      dispatch(allowProtocolEdit(payloadData)).then((data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-          const updatedProtocolDataList = protocolDataList.map((element) =>
-            element.id === response.payload.data.id
-              ? { ...element, allow_edit: response.payload.data.allowEditvalue }
-              : element
-          );
-          setProtocolDataList(updatedProtocolDataList);
-        } else {
-          toast.error(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
     }
   };
 
