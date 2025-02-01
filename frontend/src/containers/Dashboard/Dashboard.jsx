@@ -238,6 +238,13 @@ function Dashboard() {
         research_type_id: data.research_type_id,
         login_id: user.id,
       };
+      if (data.research_type_id === "Principal Investigator") {
+        dataObj = {
+          ...dataObj,
+          protocol_user_type: data.protocol_user_type
+        }
+      }
+
       dispatch(createProtocol(dataObj)).then((data) => {
         if (data.payload.status === 200) {
           setOpen(false);
