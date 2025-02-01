@@ -1,3 +1,4 @@
+import React from "react";
 import SideNav from "./components/SideNav";
 import AppHeader from "./components/AppHeader";
 import { ProSidebarProvider } from "react-pro-sidebar";
