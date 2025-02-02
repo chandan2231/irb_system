@@ -3,6 +3,7 @@ import SideNav from "./components/SideNav";
 import AppHeader from "./components/AppHeader";
 import { ProSidebarProvider } from "react-pro-sidebar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ForgetPassword from "./containers/Auth/ForgetPassword";
 import SignIn from "./containers/Auth/SignIn";
 import SignUp from "./containers/Auth/SignUp";
 import Backdrop from "@mui/material/Backdrop";
@@ -68,6 +69,7 @@ import OfficeAdverseEventsDetails from "./containers/OfficePortal/AdverseEvents/
 import OfficeProtocolAmendmentRequest from "./containers/OfficePortal/ProtocolAmendmentRequest/ProtocolAmendmentRequest";
 import OfficeProtocolAmendmentRequestDetails from "./containers/OfficePortal/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/RejectedProtocols";
+
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -301,6 +303,7 @@ function App() {
               {/* </Route> */}
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/forget-password" element={<ForgetPassword />} />
 
               <Route
                 path="/office/approved-protocol-list"

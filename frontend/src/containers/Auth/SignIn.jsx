@@ -211,24 +211,49 @@ function SignIn() {
                     </Button>
                   </Grid>
                   <Grid container xs={12}>
-                    <Box
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: "15px",
-                        width: "100%",
-                      }}
-                    >
-                      Not a member ? &nbsp;
-                      <Link
-                        to="/signup"
+                    <Box style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      marginTop: "15px",
+                    }}>
+                      <Box
                         style={{
-                          textDecoration: "none",
+                          display: "flex",
+                          justifyContent: "start",
+                          alignItems: "flex-start",
+                          width: "100%",
+                          marginLeft: "20px",
                         }}
                       >
-                        Sign Up
-                      </Link>
+                        Not a member ? &nbsp;
+                        <Link
+                          to="/signup"
+                          style={{
+                            textDecoration: "none",
+                          }}
+                        >
+                          Sign Up
+                        </Link>
+                      </Box>
+                      <Box
+                        style={{
+                          display: "flex",
+                          justifyContent: "end",
+                          alignItems: "center",
+                          width: "100%",
+                        }}
+                      >
+                        <Link
+                          to="/forget-password"
+                          style={{
+                            textDecoration: "none",
+                          }}
+                        >
+                          Forgot Password ?
+                        </Link>
+                      </Box>
                     </Box>
                   </Grid>
                 </Grid>
