@@ -16,6 +16,7 @@ import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlin
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
 function SideNav() {
   const theme = useTheme();
@@ -280,6 +281,18 @@ function SideNav() {
                 style={{ fontWeight: "500", fontSize: "0.875rem" }}
               >
                 Protocol List
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={location.pathname === "/external-monitor" ? true : false}
+              component={<Link to="/external-monitor" />}
+              icon={<SupervisedUserCircleIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                External Monitor List
               </Typography>
             </MenuItem>
             {approvedProtocolListCount !== null &&

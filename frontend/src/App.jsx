@@ -69,7 +69,7 @@ import OfficeAdverseEventsDetails from "./containers/OfficePortal/AdverseEvents/
 import OfficeProtocolAmendmentRequest from "./containers/OfficePortal/ProtocolAmendmentRequest/ProtocolAmendmentRequest";
 import OfficeProtocolAmendmentRequestDetails from "./containers/OfficePortal/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/RejectedProtocols";
-
+import ExternalMonitor from "./containers/Dashboard/ExternalMonitor";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -166,17 +166,19 @@ function App() {
           <Box sx={styles.mainSection} component={"main"}>
             <Routes>
               {/* <Route element={<PrivateRoutes />}> */}
-              <Route
-                path="/upload-protocol-document"
-                element={<UploadProtocolDocument />}
-              />
+
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/external-monitor" element={<ExternalMonitor />} />
               <Route path="/protocol-details" element={<ProtocolDetails />} />
               <Route path="/communication" element={<Communication />} />
               <Route path="/payment" element={<PayPalButton />} />
               <Route path="/success" element={<SuccessPayment />} />
               <Route path="/cancel" element={<CanclePayment />} />
               <Route path="/continuin-review" element={<ContinuingReview />} />
+              <Route
+                path="/upload-protocol-document"
+                element={<UploadProtocolDocument />}
+              />
               <Route
                 path="/continuin-review-details"
                 element={<ContinuingReviewDetails />}
