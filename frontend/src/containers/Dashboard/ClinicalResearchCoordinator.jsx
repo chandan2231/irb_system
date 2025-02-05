@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createExternalMonitor,
-  fetchExternalMonitorList,
+  createCRC,
+  fetchCRCList,
 } from "../../services/Dashboard/DashboardService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -14,14 +14,14 @@ import moment from "moment";
 import ToggleStatus from "../../components/ToggleStatus";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddExternalMonitor from "./AddExternalMonitor";
+import AddClinicalResearchCoordinator from "./AddClinicalResearchCoordinator";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader";
 import LockResetIcon from "@mui/icons-material/LockReset";
 
-function ExternalMonitor() {
+function ClinicalResearchCoordinator() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -91,20 +91,19 @@ function ExternalMonitor() {
   ];
 
   var totalElements = 0;
-  const { externalMonitorList, loading, error, createdExternalMonitor } =
-    useSelector((state) => ({
-      error: state.dashboard.error,
-      externalMonitorList: state.dashboard.externalMonitorList,
-      loading: state.dashboard.loading,
-      createdExternalMonitor: state.dashboard.createdExternalMonitor,
-    }));
+  const { crcList, loading, error, createdCRC } = useSelector((state) => ({
+    error: state.dashboard.error,
+    crcList: state.dashboard.crcList,
+    loading: state.dashboard.loading,
+    createdCRC: state.dashboard.createdCRC,
+  }));
   useEffect(() => {
     const data = { added_by: user.id };
-    dispatch(fetchExternalMonitorList(data));
+    dispatch(fetchCRCList(data));
   }, [dispatch, user.id]);
 
-  if (externalMonitorList !== "" && externalMonitorList?.length > 0) {
-    totalElements = externalMonitorList.length;
+  if (crcList !== "" && crcList?.length > 0) {
+    totalElements = crcList.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -120,8 +119,8 @@ function ExternalMonitor() {
 
   useEffect(() => {
     const pListArr = [];
-    if (externalMonitorList && externalMonitorList?.length > 0) {
-      externalMonitorList.map((pList, index) => {
+    if (crcList && crcList?.length > 0) {
+      crcList.map((pList, index) => {
         let externalMonitorObject = {
           id: pList.id,
           name: pList.name,
@@ -135,14 +134,14 @@ function ExternalMonitor() {
       });
       setDataList(pListArr);
     }
-  }, [externalMonitorList]);
+  }, [crcList]);
 
   const addNewData = (externalData) => {
     externalData.researcher_type = "External Monitor";
     externalData.user_type = "external_monitor";
     externalData.added_by = user.id;
     setLoader(true);
-    dispatch(createExternalMonitor(externalData)).then((data) => {
+    dispatch(createCRC(externalData)).then((data) => {
       if (data.payload.status === 200) {
         setOpen(false);
         toast.success(data.payload.data.msg, {
@@ -173,11 +172,11 @@ function ExternalMonitor() {
   };
 
   useEffect(() => {
-    if (createdExternalMonitor) {
+    if (createdCRC) {
       const data = { login_id: user.id };
-      dispatch(fetchExternalMonitorList(data));
+      dispatch(fetchCRCList(data));
     }
-  }, [createdExternalMonitor]);
+  }, [createdCRC]);
 
   const handleItemDelete = (params) => {
     //console.log('Delete Item', params)
@@ -214,7 +213,7 @@ function ExternalMonitor() {
           <Grid container spacing={2}>
             <Grid item xs={5} sm={5} md={8} lg={8}>
               <Typography variant="h5" mb={2}>
-                External Monitor List
+                Clinical Research Coordinator List
               </Typography>
             </Grid>
             <Grid item xs={7} sm={7} md={4} lg={4}>
@@ -224,14 +223,14 @@ function ExternalMonitor() {
                   onClick={addNew}
                   startIcon={<AddOutlinedIcon />}
                 >
-                  Add External Monitor
+                  Add Clinical Research Coordinator
                 </CommonButton>
               </Box>
             </Grid>
           </Grid>
         </Box>
         <Box>
-          <AddExternalMonitor
+          <AddClinicalResearchCoordinator
             open={open}
             onClose={() => setOpen(false)}
             addNewData={addNewData}
@@ -251,4 +250,4 @@ function ExternalMonitor() {
   );
 }
 
-export default ExternalMonitor;
+export default ClinicalResearchCoordinator;

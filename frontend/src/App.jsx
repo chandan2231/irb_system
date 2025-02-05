@@ -70,6 +70,7 @@ import OfficeProtocolAmendmentRequest from "./containers/OfficePortal/ProtocolAm
 import OfficeProtocolAmendmentRequestDetails from "./containers/OfficePortal/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/RejectedProtocols";
 import ExternalMonitor from "./containers/Dashboard/ExternalMonitor";
+import ClinicalResearchCoordinator from "./containers/Dashboard/ClinicalResearchCoordinator";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -169,6 +170,7 @@ function App() {
 
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/external-monitor" element={<ExternalMonitor />} />
+              <Route path="/crc" element={<ClinicalResearchCoordinator />} />
               <Route path="/protocol-details" element={<ProtocolDetails />} />
               <Route path="/communication" element={<Communication />} />
               <Route path="/payment" element={<PayPalButton />} />

@@ -295,6 +295,18 @@ function SideNav() {
                 External Monitor List
               </Typography>
             </MenuItem>
+            <MenuItem
+              active={location.pathname === "/crc" ? true : false}
+              component={<Link to="/crc" />}
+              icon={<SupervisedUserCircleIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Clinical Research Coordinator
+              </Typography>
+            </MenuItem>
             {approvedProtocolListCount !== null &&
               approvedProtocolListCount > 0 && (
                 <>

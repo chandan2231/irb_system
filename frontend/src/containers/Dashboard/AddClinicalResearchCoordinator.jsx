@@ -29,16 +29,8 @@ const defaultInputValues = {
   license_number: "",
 };
 
-const AddExternalMonitor = ({ open, onClose, addNewData }) => {
+const AddClinicalResearchCoordinator = ({ open, onClose, addNewData }) => {
   const [values, setValues] = useState(defaultInputValues);
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowConfirmPassword = () =>
-    setShowConfirmPassword((show) => !show);
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   const modalStyles = {
     inputFields: {
       display: "flex",
@@ -53,9 +45,6 @@ const AddExternalMonitor = ({ open, onClose, addNewData }) => {
 
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  //password validation
-  const lowercaseRegEx = /(?=.*[a-z])/;
-  const lengthRegEx = /(?=.{6,})/;
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -63,16 +52,6 @@ const AddExternalMonitor = ({ open, onClose, addNewData }) => {
       .required("Email is required")
       .email("Email is invalid."),
     phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
-    password: Yup.string()
-      .matches(
-        lowercaseRegEx,
-        "Must contain one lowercase alphabetical character!"
-      )
-      .matches(lengthRegEx, "Must contain 6 characters!")
-      .required("Required!"),
-    confirm_password: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Confirm password is required!"),
     // country: Yup.string().required("Country is required"),
     // city: Yup.string().required("City is required"),
     // zip_code: Yup.string().required("Zip Code is required"),
@@ -133,66 +112,6 @@ const AddExternalMonitor = ({ open, onClose, addNewData }) => {
               handleChange({ ...values, email: event.target.value })
             }
           />
-        </Grid>
-
-        {/* Password */}
-        <Grid item xs={12} sm={6}>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Password</InputLabel>
-            <OutlinedInput
-              name="password"
-              label="Password"
-              required
-              {...register("password")}
-              error={!!errors.password}
-              type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {errors.password && (
-              <FormHelperText error>{errors.password?.message}</FormHelperText>
-            )}
-          </FormControl>
-        </Grid>
-
-        {/* Confirm Password */}
-        <Grid item xs={12} sm={6}>
-          <FormControl fullWidth variant="outlined">
-            <InputLabel>Confirm Password</InputLabel>
-            <OutlinedInput
-              name="confirm_password"
-              label="Confirm Password"
-              required
-              {...register("confirm_password")}
-              error={!!errors.confirm_password}
-              type={showConfirmPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={handleClickShowConfirmPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            {errors.confirm_password && (
-              <FormHelperText error>
-                {errors.confirm_password?.message}
-              </FormHelperText>
-            )}
-          </FormControl>
         </Grid>
 
         {/* Phone Number */}
@@ -306,7 +225,7 @@ const AddExternalMonitor = ({ open, onClose, addNewData }) => {
     <CommonModal
       open={open}
       onClose={onClose}
-      title="Create New External Monitor"
+      title="Create New Clinical Research Coordinator"
       subTitle=""
       content={getContent()}
       onSubmit={handleSubmit(addNew)}
@@ -315,4 +234,4 @@ const AddExternalMonitor = ({ open, onClose, addNewData }) => {
   );
 };
 
-export default AddExternalMonitor;
+export default AddClinicalResearchCoordinator;
