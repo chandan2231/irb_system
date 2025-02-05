@@ -6,6 +6,10 @@ import {
   fetchApprovedProtocolList,
   checkMultisiteProtocolExist,
   getMultiSiteChildProtocols,
+  createExternalMonitor,
+  fetchExternalMonitorList,
+  createCRC,
+  fetchCRCList,
 } from "../../services/Dashboard/DashboardService";
 const DashboardSlice = createSlice({
   name: "dashboard",
@@ -18,6 +22,10 @@ const DashboardSlice = createSlice({
     approvedProtocolList: null,
     multisiteProtocolExist: null,
     multiSiteChildProtocolsList: null,
+    createdExternalMonitor: null,
+    externalMonitorList: null,
+    createdCRC: null,
+    crcList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -46,6 +54,7 @@ const DashboardSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
+
       .addCase(approvedProtocolListCheck.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -91,6 +100,54 @@ const DashboardSlice = createSlice({
         state.multiSiteChildProtocolsList = action.payload;
       })
       .addCase(getMultiSiteChildProtocols.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(createExternalMonitor.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createExternalMonitor.fulfilled, (state, action) => {
+        state.loading = false;
+        state.createdExternalMonitor = action.payload;
+      })
+      .addCase(createExternalMonitor.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchExternalMonitorList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchExternalMonitorList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.externalMonitorList = action.payload;
+      })
+      .addCase(fetchExternalMonitorList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchCRCList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCRCList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.crcList = action.payload;
+      })
+      .addCase(fetchCRCList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(createCRC.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createCRC.fulfilled, (state, action) => {
+        state.loading = false;
+        state.createdCRC = action.payload;
+      })
+      .addCase(createCRC.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

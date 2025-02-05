@@ -5,6 +5,188 @@ import * as s3Service from '../utils/s3Service.js'
 import PdfTemplates from '../templates/generate-pdf.js'
 import sendEmail from '../emailService.js'
 import { getUserInfo } from '../userData.js'
+import bcrypt from 'bcryptjs'
+
+export const getCRCList = (req, res) => {
+  const que =
+    'select * from clinical_research_coordinator WHERE user_type=? AND status=? AND added_by=?'
+  db.query(que, ['external_monitor', 1, req.body.added_by], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
+export const createCRC = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      phone,
+      company_name,
+      city,
+      country,
+      zip_code,
+      license_number,
+      added_by
+    } = req.body
+
+    // Check if the email already exists
+    const checkEmailQuery =
+      'SELECT * FROM clinical_research_coordinator WHERE email = ?'
+    const existingUser = await new Promise((resolve, reject) => {
+      db.query(checkEmailQuery, [email], (err, data) => {
+        if (err) return reject(err)
+        resolve(data)
+      })
+    })
+
+    if (existingUser?.length > 0) {
+      return res.status(400).json({
+        status: 400,
+        msg: 'Email already exists. Please use a different email.'
+      })
+    }
+
+    // Insert new user into the database
+    const insertQuery = `
+      INSERT INTO clinical_research_coordinator 
+      (name, email, mobile, company_name, city, country, zip_code, license_number, added_by) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+    await new Promise((resolve, reject) => {
+      db.query(
+        insertQuery,
+        [
+          name,
+          email,
+          phone,
+          company_name,
+          city,
+          country,
+          zip_code,
+          license_number,
+          added_by
+        ],
+        (err, data) => {
+          if (err) return reject(err)
+          resolve(data)
+        }
+      )
+    })
+
+    // Send success response
+    return res.status(201).json({
+      status: 201,
+      msg: 'Clinical Research Coordinator has been created successfully.'
+    })
+  } catch (err) {
+    console.error('Error during registration:', err)
+    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
+  }
+}
+
+export const getExternalMonitorList = (req, res) => {
+  const que =
+    'select * from users WHERE user_type=? AND status=? AND added_by=?'
+  db.query(que, ['external_monitor', 1, req.body.added_by], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
+export const createExternalMonitor = async (req, res) => {
+  try {
+    // Check if the email already exists
+    const checkEmailQuery = 'SELECT * FROM users WHERE email = ?'
+    const existingUserData = await new Promise((resolve, reject) => {
+      db.query(checkEmailQuery, [req.body.email], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+    const existingUser = Array.isArray(existingUserData)
+      ? existingUserData
+      : [existingUserData]
+    // If email exists, return an error
+    if (existingUser.length > 0) {
+      return res.status(500).json({
+        status: 500,
+        msg: 'Email already exists. Please try with another email.'
+      })
+    }
+
+    // Hash the password
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt)
+
+    // Insert new user into the database
+    const insertQuery = `
+      INSERT INTO users (name, email, mobile, password, company_name, city, country, zip_code, researcher_type, user_type, license_number, added_by) 
+      VALUES (?)`
+    const values = [
+      req.body.name,
+      req.body.email,
+      req.body.phone,
+      hashedPassword,
+      req.body.company_name,
+      req.body.city,
+      req.body.country,
+      req.body.zip_code,
+      req.body.researcher_type,
+      req.body.user_type,
+      req.body.license_number,
+      req.body.added_by
+    ]
+
+    const insertResult = await new Promise((resolve, reject) => {
+      db.query(insertQuery, [values], (err, data) => {
+        if (err) reject(err)
+        resolve(data)
+      })
+    })
+
+    // Now, send the welcome email
+    const loginUrl = 'https://app.irbhub.org/signin'
+    const to = req.body.email
+    const subject = 'Welcome to IRBHUB'
+    const greetingHtml = `<p>Dear ${req.body.name},</p>`
+    let bodyHtml = `<p>You have successfully registered with IRBHUB as a ${req.body.researcher_type} role.</p>`
+    bodyHtml += `<p>Your login details are</p>`
+    bodyHtml += `<p>Email: ${req.body.email}</p>`
+    bodyHtml += `<p>Password: ${req.body.password}</p>`
+    bodyHtml += `<p>Login URL: <a href="${loginUrl}" target="_blank" rel="noopener noreferrer">
+              Click here
+            </a></p>`
+    const emailHtml = `
+      <div>
+        ${greetingHtml}
+        ${bodyHtml}
+      </div>`
+    const text = emailHtml
+    const html = emailHtml
+
+    // Send email
+    try {
+      await sendEmail(to, subject, text, html)
+      return res.status(200).json({
+        status: 200,
+        msg: 'External Monitor has been created and email sent'
+      })
+    } catch (emailError) {
+      console.error('Error sending email:', emailError)
+      return res
+        .status(500)
+        .json({ status: 500, msg: 'User created but failed to send email.' })
+    }
+  } catch (err) {
+    console.error('Error during registration:', err)
+    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
+  }
+}
 
 export const multiSiteChildProtocolsList = (req, res) => {
   const que = `SELECT 

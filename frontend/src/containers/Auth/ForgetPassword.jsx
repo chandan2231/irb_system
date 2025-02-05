@@ -11,7 +11,7 @@ import FormControl from "@mui/material/FormControl";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 
 const defaultInputValues = {
   username: "",
@@ -25,7 +25,7 @@ function ForgetPassword() {
   let [searchParams, setSearchParams] = useSearchParams();
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
+    email: Yup.string().email("Invalid email").required("Required"),
   });
 
   const {
@@ -35,17 +35,18 @@ function ForgetPassword() {
   } = useForm({ resolver: yupResolver(validationSchema) });
   // console.log('errors', errors)
   const onSubmit = (data) => {
-    let dataObject = {};
-    dataObject.username = data.username;
-    dataObject.redirect_url = searchParams.get("redirect_url");
-    dispatch(sendUsername(dataObject)).then((data) => {
-      // console.log("send username response", data)
-      if (data.payload.status) {
-        setSuccessMessage(true);
-      } else {
-        setSuccessMessage(false);
-      }
-    });
+    console.log("data ===>", data);
+    // let dataObject = {};
+    // dataObject.username = data.username;
+    // dataObject.redirect_url = searchParams.get("redirect_url");
+    // dispatch(sendUsername(dataObject)).then((data) => {
+    //   // console.log("send username response", data)
+    //   if (data.payload.status) {
+    //     setSuccessMessage(true);
+    //   } else {
+    //     setSuccessMessage(false);
+    //   }
+    // });
   };
 
   const handleChange = (value) => {
@@ -75,22 +76,34 @@ function ForgetPassword() {
     },
   };
 
+  const modalStyles = {
+    inputFields: {
+      display: "flex",
+      flexDirection: "column",
+      marginTop: "20px",
+      marginBottom: "15px",
+      ".MuiFormControl-root": {
+        marginBottom: "10px",
+      },
+    },
+  };
+
   return (
     <Box m={theme.layoutContainer.layoutSection}>
-      <Box>
+      <Box sx={modalStyles.inputFields}>
         <Grid
           container
           direction="row"
           justifyContent="space-evenly"
           alignItems="center"
         >
-          <Card sx={{ minWidth: 500 }}>
+          <Card sx={{ width: 700 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardContent>
                 {successMessage === true ? (
                   <Typography sx={{ mt: 2, mb: 5 }}>
                     <h4 sx={styles.title} className="success_msg">
-                      You will get and email to reset your password
+                      Login Successfull
                     </h4>
                   </Typography>
                 ) : successMessage === false ? (
@@ -103,30 +116,72 @@ function ForgetPassword() {
                   <></>
                 )}
                 <Typography sx={{ mt: 2, mb: 5 }}>
-                  <h2 sx={styles.title}>Forget Password</h2>
+                  <h2 sx={styles.title}>Welcome to IRBHUB</h2>
                 </Typography>
                 <FormControl fullWidth variant="outlined">
                   <TextField
-                    placeholder="Username"
-                    name="username"
-                    label="Username"
-                    {...register("username")}
-                    error={errors.username ? true : false}
-                    helperText={errors.username?.message}
-                    value={values.username}
+                    placeholder="Email"
+                    name="email"
+                    label="Email"
+                    {...register("email")}
+                    error={errors.email ? true : false}
+                    helperText={errors.email?.message}
+                    value={values.email}
                     onChange={(event) =>
-                      handleChange({ ...values, username: event.target.value })
+                      handleChange({ ...values, email: event.target.value })
                     }
                   />
                 </FormControl>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  size="large"
-                  sx={styles.buttonStyle}
+
+                <Grid
+                  container
+                  spacing={2}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
                 >
-                  Submit
-                </Button>
+                  <Grid item xs={12}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
+                  <Grid container xs={12}>
+                    <Box style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      marginTop: "15px",
+                    }}>
+                      <Box
+                        style={{
+                          display: "flex",
+                          justifyContent: "start",
+                          alignItems: "flex-start",
+                          width: "100%",
+                          marginLeft: "20px",
+                        }}
+                      >
+                        Already  have an account? &nbsp;
+                        <Link
+                          to="/signin"
+                          style={{
+                            textDecoration: "none",
+                          }}
+                        >
+                          Sign In
+                        </Link>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
               </CardContent>
             </form>
           </Card>
