@@ -18,8 +18,16 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const CommonModal = ({ open, onClose, title, subTitle, content, onSubmit,
-  hideSubmitButton = false, hideCancelButton = false
+const CommonModal = ({
+  open,
+  onClose,
+  title,
+  subTitle,
+  content,
+  onSubmit,
+  hideSubmitButton = false,
+  hideCancelButton = false,
+  identifier,
 }) => {
   return (
     <React.Fragment>
@@ -28,7 +36,7 @@ const CommonModal = ({ open, onClose, title, subTitle, content, onSubmit,
         aria-labelledby="customized-dialog-title"
         open={open}
         fullWidth={true}
-        maxWidth={"sm"}
+        maxWidth={identifier === "external" ? "xl" : "sm"}
       >
         <DialogTitle
           sx={{ m: 0, p: 2, fontSize: "1.5rem" }}
@@ -53,17 +61,16 @@ const CommonModal = ({ open, onClose, title, subTitle, content, onSubmit,
           {content}
         </DialogContent>
         <DialogActions>
-          {
-            hideCancelButton === true ? null : <CommonButton onClick={onClose} variant="outlined" sx={{ mr: 1 }}>
+          {hideCancelButton === true ? null : (
+            <CommonButton onClick={onClose} variant="outlined" sx={{ mr: 1 }}>
               Cancel
             </CommonButton>
-          }
-          {
-            hideSubmitButton === true ? null :
-              <CommonButton variant="contained" onClick={onSubmit}>
-                Submit
-              </CommonButton>
-          }
+          )}
+          {hideSubmitButton === true ? null : (
+            <CommonButton variant="contained" onClick={onSubmit}>
+              Submit
+            </CommonButton>
+          )}
         </DialogActions>
       </BootstrapDialog>
     </React.Fragment>
