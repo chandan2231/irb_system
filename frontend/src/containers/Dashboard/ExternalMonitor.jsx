@@ -174,7 +174,7 @@ function ExternalMonitor() {
 
   useEffect(() => {
     if (createdExternalMonitor) {
-      const data = { login_id: user.id };
+      const data = { added_by: user.id };
       dispatch(fetchExternalMonitorList(data));
     }
   }, [createdExternalMonitor]);
