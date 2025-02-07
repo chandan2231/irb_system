@@ -69,25 +69,25 @@ function ClinicalResearchCoordinator() {
       headerName: "Updated Date",
       flex: 1,
     },
-    {
-      field: "actions",
-      type: "actions",
-      width: 80,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<LockResetIcon />}
-          label="Change Password"
-          onClick={() => handleChangePassword(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleItemDelete(params)}
-          showInMenu
-        />,
-      ],
-    },
+    // {
+    //   field: "actions",
+    //   type: "actions",
+    //   width: 80,
+    //   getActions: (params) => [
+    //     <GridActionsCellItem
+    //       icon={<LockResetIcon />}
+    //       label="Change Password"
+    //       onClick={() => handleChangePassword(params)}
+    //       showInMenu
+    //     />,
+    //     <GridActionsCellItem
+    //       icon={<DeleteIcon />}
+    //       label="Delete"
+    //       onClick={handleItemDelete(params)}
+    //       showInMenu
+    //     />,
+    //   ],
+    // },
   ];
 
   var totalElements = 0;
@@ -137,8 +137,6 @@ function ClinicalResearchCoordinator() {
   }, [crcList]);
 
   const addNewData = (externalData) => {
-    externalData.researcher_type = "External Monitor";
-    externalData.user_type = "external_monitor";
     externalData.added_by = user.id;
     setLoader(true);
     dispatch(createCRC(externalData)).then((data) => {
