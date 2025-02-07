@@ -526,6 +526,20 @@ function SideNav() {
             </MenuItem>
             <MenuItem
               active={
+                location.pathname === "/office/master-list" ? true : false
+              }
+              component={<Link to="/office/master-list" />}
+              icon={<FormatListBulletedIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Master List
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={
                 location.pathname === "/office/continuin-review-list" ||
                 location.pathname === "/office/continuin-review-details"
                   ? true

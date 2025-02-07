@@ -72,6 +72,7 @@ import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/Reje
 import ExternalMonitor from "./containers/Dashboard/ExternalMonitor";
 import ClinicalResearchCoordinator from "./containers/Dashboard/ClinicalResearchCoordinator";
 import MasterList from "./containers/Admin/MasterList/MasterList";
+
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
@@ -372,6 +373,7 @@ function App() {
                 path="/office/study-close-request-details"
                 element={<OfficeStudyCloseoutRequestDetails />}
               />
+              <Route path="/office/master-list" element={<MasterList />} />
             </Routes>
           </Box>
         </BrowserRouter>
