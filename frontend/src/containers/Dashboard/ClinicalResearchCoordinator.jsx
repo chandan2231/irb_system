@@ -171,7 +171,7 @@ function ClinicalResearchCoordinator() {
 
   useEffect(() => {
     if (createdCRC) {
-      const data = { login_id: user.id };
+      const data = { added_by: user.id };
       dispatch(fetchCRCList(data));
     }
   }, [createdCRC]);
