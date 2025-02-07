@@ -3,6 +3,56 @@ import bcrypt from 'bcryptjs'
 import sendEmail from '../emailService.js'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
 
+export const getMasterDataListByType = (req, res) => {
+  const { selectedUserType } = req.body
+
+  let query = ''
+  let queryParams = []
+
+  switch (selectedUserType) {
+    case 'Clinical Researcher Coordinator':
+      query = 'SELECT * FROM clinical_research_coordinator'
+      break
+
+    case 'External Monitor':
+      query = 'SELECT * FROM users WHERE researcher_type = ?'
+      queryParams = ['External Monitor']
+      break
+
+    case 'Principle Investigator':
+    case 'Principle Sub Investigator':
+      const investigatorQueries = [
+        'SELECT id, investigator_name AS name, investigator_email AS email FROM investigator_protocol_information',
+        'SELECT id, investigator_name AS name, investigator_email AS email FROM investigator_information'
+      ]
+
+      return Promise.all(
+        investigatorQueries.map(
+          (q) =>
+            new Promise((resolve, reject) => {
+              db.query(q, [], (err, data) => {
+                if (err) return reject(err)
+                resolve(data)
+              })
+            })
+        )
+      )
+        .then((results) => {
+          const combinedResults = results.flat() // Merge both query results
+          return res.status(200).json(combinedResults)
+        })
+        .catch((err) => res.status(500).json({ error: err.message }))
+
+    default:
+      return res.status(400).json({ error: 'Invalid user type' })
+  }
+
+  db.query(query, queryParams, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message })
+    return res.status(200).json(data)
+  })
+}
+
 export const chairCommitteeApprovalProtocol = async (req, res) => {
   try {
     const datetime = new Date()

@@ -71,6 +71,7 @@ import OfficeProtocolAmendmentRequestDetails from "./containers/OfficePortal/Pro
 import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/RejectedProtocols";
 import ExternalMonitor from "./containers/Dashboard/ExternalMonitor";
 import ClinicalResearchCoordinator from "./containers/Dashboard/ClinicalResearchCoordinator";
+import MasterList from "./containers/Admin/MasterList/MasterList";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -284,6 +285,7 @@ function App() {
                 path="/admin/protocol-event-list"
                 element={<ProtocolEventList />}
               />
+              <Route path="/admin/master-list" element={<MasterList />} />
               <Route
                 path="/member/protocol-list"
                 element={<VotingMemberProtocolList />}
@@ -304,6 +306,7 @@ function App() {
                 path="/committee-chair/approval-member-details"
                 element={<ApprovalMemberDetails />}
               />
+
               {/* </Route> */}
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
@@ -370,6 +373,7 @@ function App() {
                 path="/office/study-close-request-details"
                 element={<OfficeStudyCloseoutRequestDetails />}
               />
+              <Route path="/office/master-list" element={<MasterList />} />
             </Routes>
           </Box>
         </BrowserRouter>
