@@ -9,8 +9,8 @@ import bcrypt from 'bcryptjs'
 
 export const getCRCList = (req, res) => {
   const que =
-    'select * from clinical_research_coordinator WHERE user_type=? AND status=? AND added_by=?'
-  db.query(que, ['external_monitor', 1, req.body.added_by], (err, data) => {
+    'select * from clinical_research_coordinator WHERE status=? AND added_by=?'
+  db.query(que, [1, req.body.added_by], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)
@@ -53,7 +53,7 @@ export const createCRC = async (req, res) => {
     const insertQuery = `
       INSERT INTO clinical_research_coordinator 
       (name, email, mobile, company_name, city, country, zip_code, license_number, added_by) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
     await new Promise((resolve, reject) => {
       db.query(
@@ -77,8 +77,8 @@ export const createCRC = async (req, res) => {
     })
 
     // Send success response
-    return res.status(201).json({
-      status: 201,
+    return res.status(200).json({
+      status: 200,
       msg: 'Clinical Research Coordinator has been created successfully.'
     })
   } catch (err) {

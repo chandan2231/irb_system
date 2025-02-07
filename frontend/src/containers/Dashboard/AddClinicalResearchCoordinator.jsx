@@ -5,23 +5,12 @@ import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import IconButton from "@mui/material/IconButton";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import FormControl from "@mui/material/FormControl";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import DropdownWithSearch from "../../components/DropdownWithSearch";
-import { FormHelperText } from "@mui/material";
 import { Grid, Button } from "@mui/material";
 
 const defaultInputValues = {
   name: "",
   email: "",
   phone: "",
-  password: "",
-  confirm_password: "",
   country: "",
   city: "",
   zip_code: "",
@@ -52,10 +41,10 @@ const AddClinicalResearchCoordinator = ({ open, onClose, addNewData }) => {
       .required("Email is required")
       .email("Email is invalid."),
     phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
+    company_name: Yup.string().required("Company Name is required"),
     // country: Yup.string().required("Country is required"),
     // city: Yup.string().required("City is required"),
     // zip_code: Yup.string().required("Zip Code is required"),
-    company_name: Yup.string().required("Company Name is required"),
   });
 
   const {
