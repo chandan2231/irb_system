@@ -78,6 +78,7 @@ function SideNav() {
                 Created Protocols
               </Typography>
             </MenuItem>
+
             <MenuItem
               active={
                 location.pathname === "/admin/under-review-protocols"
@@ -172,6 +173,18 @@ function SideNav() {
                 style={{ fontWeight: "500", fontSize: "0.875rem" }}
               >
                 Applicants
+              </Typography>
+            </MenuItem>
+            <MenuItem
+              active={location.pathname === "/admin/master-list" ? true : false}
+              component={<Link to="/admin/master-list" />}
+              icon={<FormatListBulletedIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Master List
               </Typography>
             </MenuItem>
             <MenuItem
