@@ -17,6 +17,7 @@ import {
   fetchUsersList,
   changeUserStatus,
   resetUserPassword,
+  fetchMasterListByType,
 } from "../../services/Admin/UsersListService";
 import {
   getStudyCloseoutRequest,
@@ -96,6 +97,7 @@ const AdminSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
+
       .addCase(fetchContinuinReviewProtocolList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -335,6 +337,18 @@ const AdminSlice = createSlice({
         state.protocolWaiveFee = action.payload;
       })
       .addCase(allowProtocolWaiveFee.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchMasterListByType.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMasterListByType.fulfilled, (state, action) => {
+        state.loading = false;
+        state.masterDataList = action.payload;
+      })
+      .addCase(fetchMasterListByType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
