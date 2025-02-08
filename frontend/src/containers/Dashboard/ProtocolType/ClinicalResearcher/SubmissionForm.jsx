@@ -9,12 +9,7 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createPrincipalInvestigatorSubmission,
-  getPrincipalInvestigatorSavedProtocolType,
-} from "../../../../services/ProtocolType/ClinicalResearcherService";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { createPrincipalInvestigatorSubmission } from "../../../../services/ProtocolType/ClinicalResearcherService";
 import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -26,6 +21,8 @@ import Loader from "../../../../components/Loader";
 import ApiCall from "../../../../utility/ApiCall";
 import { Box, IconButton } from "@mui/material";
 import { RadioGroup, Radio } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -47,13 +44,6 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     created_by: userDetails.id,
     paymentType: "Protocol Submission",
   });
-  const [payloadFormData, setPayloadFormData] = useState({
-    name: "",
-    mobile: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -67,15 +57,9 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
 
   const handleAddExternalMonitor = (event) => {
     setAddExternalMonitorDetails(event.target.checked);
-    if (!event.target.checked) {
-      setPayloadFormData({
-        ...initialValues,
-      });
-    }
   };
 
   const handleSubmitData = async (e) => {
-    setLoader(true);
     e.preventDefault();
     if (notSavedForms.length > 0) {
       toast.error(
@@ -94,42 +78,45 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     } else {
       if (addExternalMonitorDetails === true) {
         try {
-          const getValidatedform = await validationSchema.validate(
-            payloadFormData,
-            { abortEarly: false }
-          );
-          const isValid = await validationSchema.isValid(getValidatedform);
-          if (isValid === true) {
-            setLoader(false); // Remove this line when API is integrated
-            console.log("payloadFormData ====>", {
-              ...payloadFormData,
-              ...formData,
-            });
-            // api call here ....
-            // if (response.status === 200) {
-            //  setLoader(false);
-            //   navigateToPaymentPage(formData);
-            // }
+          if (selectedExternalMonitor !== "") {
+            formData.external_monitor_id = selectedExternalMonitor;
           }
+          setLoader(true);
+          dispatch(createPrincipalInvestigatorSubmission(formData)).then(
+            (data) => {
+              console.log("datadatadata", data);
+              if (data.payload.status === 200) {
+                setLoader(false);
+                toast.success(data.payload.data.msg, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+                const timer = setTimeout(() => {
+                  navigateToPaymentPage(formData);
+                }, 1000);
+                return () => clearTimeout(timer);
+              } else {
+                toast.error(data.payload.data.msg, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+              }
+            }
+          );
         } catch (error) {
           setLoader(false);
-          const newErrors = {};
-          error.inner.forEach((err) => {
-            newErrors[err.path] = err.message;
-          });
-          setErrors(newErrors);
-          console.error("Error submitting data:", error);
-          if (Object.keys(newErrors).length > 0) {
-            const firstErrorField = document.querySelector(
-              `[name="${Object.keys(newErrors)[0]}"]`
-            );
-            if (firstErrorField) {
-              firstErrorField.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-            }
-          }
         }
       } else {
         navigateToPaymentPage(formData);
@@ -230,7 +217,6 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
         pauseOnHover
         theme="dark"
       />
-
       {/* Display list of unsaved forms */}
       {notSavedForms.length > 0 && (
         <List
