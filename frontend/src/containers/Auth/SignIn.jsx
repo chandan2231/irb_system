@@ -151,10 +151,10 @@ function SignIn() {
                     {...register("email")}
                     error={errors.email ? true : false}
                     helperText={errors.email?.message}
-                    value={values.email}
-                    onChange={(event) =>
-                      handleChange({ ...values, email: event.target.value })
-                    }
+                    // value={values.email}
+                    // onChange={(event) =>
+                    //   handleChange({ ...values, email: event.target.value })
+                    // }
                   />
                 </FormControl>
                 <FormControl fullWidth variant="outlined">
@@ -170,15 +170,15 @@ function SignIn() {
                     helperText={errors.password?.message}
                     id="outlined-adornment-password"
                     type={showPassword ? "text" : "password"}
-                    onChange={(event) =>
-                      handleChange({ ...values, password: event.target.value })
-                    }
+                    // onChange={(event) =>
+                    //   handleChange({ ...values, password: event.target.value })
+                    // }
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
                           onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
+                          onMouseDown={(e) => e.preventDefault()}
                           edge="end"
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -211,13 +211,15 @@ function SignIn() {
                     </Button>
                   </Grid>
                   <Grid container xs={12}>
-                    <Box style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
-                      marginTop: "15px",
-                    }}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        marginTop: "15px",
+                      }}
+                    >
                       <Box
                         style={{
                           display: "flex",
