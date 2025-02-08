@@ -285,14 +285,15 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                   value={selectedExternalMonitor}
                   onChange={handleChange}
                 >
-                  {externalMonitorsList.map((user) => (
-                    <FormControlLabel
-                      key={user.id}
-                      value={user.id.toString()} // Convert ID to string for value
-                      control={<Radio />}
-                      label={user.name}
-                    />
-                  ))}
+                  {externalMonitorsList.length > 0 &&
+                    externalMonitorsList.map((user) => (
+                      <FormControlLabel
+                        key={user.id}
+                        value={user.id.toString()} // Convert ID to string for value
+                        control={<Radio />}
+                        label={user.name}
+                      />
+                    ))}
                 </RadioGroup>
               </FormControl>
             </Box>

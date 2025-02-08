@@ -37,7 +37,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const [errors, setErrors] = useState({});
   const [addExternalMonitorDetails, setAddExternalMonitorDetails] =
     useState(false);
-  const [externalMonitorsList, setExternalMonitorsList] = useState(false);
+  const [externalMonitorsList, setExternalMonitorsList] = useState([]);
   const [selectedExternalMonitor, setSelectedExternalMonitor] = useState("");
   const [loader, setLoader] = useState(false);
   const [notSavedForms, setNotSavedForms] = useState([]);
@@ -287,14 +287,15 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                   value={selectedExternalMonitor}
                   onChange={handleChange}
                 >
-                  {externalMonitorsList.map((user) => (
-                    <FormControlLabel
-                      key={user.id}
-                      value={user.id.toString()} // Convert ID to string for value
-                      control={<Radio />}
-                      label={user.name}
-                    />
-                  ))}
+                  {externalMonitorsList.length > 0 &&
+                    externalMonitorsList.map((user) => (
+                      <FormControlLabel
+                        key={user.id}
+                        value={user.id.toString()} // Convert ID to string for value
+                        control={<Radio />}
+                        label={user.name}
+                      />
+                    ))}
                 </RadioGroup>
               </FormControl>
             </Box>
