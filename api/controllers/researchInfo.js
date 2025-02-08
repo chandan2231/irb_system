@@ -863,41 +863,63 @@ export const getDocumentReviewSavedProtocolType = (req, res) => {
   }
 }
 
+// export const saveMultiSiteSubmission = (req, res) => {
+//   const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
+//   db.query(que, [req.body.protocol_id], (err, data) => {
+//     if (err) {
+//       return res.status(500).json(err)
+//     } else {
+//       let result = {}
+//       result.status = 200
+//       result.msg = 'Multi-Site Sponsor has been saved successfully'
+//       return res.json(result)
+//     }
+//   })
+// }
+
 export const saveMultiSiteSubmission = (req, res) => {
-  const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
-  db.query(que, [req.body.protocol_id], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
+  const selectQue =
+    'select * from external_monitor_protocol where protocol_id = ?'
+  db.query(selectQue, [req.body.protocol_id], (err, data) => {
+    if (data.length > 0) {
+      const updateQuery = `UPDATE external_monitor_protocol 
+                SET external_monitor_id=? WHERE protocol_id=?`
+
+      const updateValues = [req.body.external_monitor_id, req.body.protocol_id]
+      db.query(updateQuery, updateValues, (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'External monitor assigned and saved successfully'
+          return res.json(result)
+        }
+      })
     } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Multi-Site Sponsor has been saved successfully'
-      return res.json(result)
+      const que =
+        'insert into external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) value (?)'
+      const values = [
+        req.body.protocol_id,
+        req.body.protocol_type,
+        req.body.created_by,
+        req.body.external_monitor_id,
+        datetime.toISOString().slice(0, 10),
+        datetime.toISOString().slice(0, 10)
+      ]
+      db.query(que, [values], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'External monitor assigned and saved successfully'
+          return res.json(result)
+        }
+      })
     }
   })
 }
-
-// export const saveMultiSiteSubmission = (req, res) => {
-//     var datetime = new Date();
-//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-//     const values = [
-//         req.body.protocol_id,
-//         req.body.protocol_type,
-//         req.body.created_by,
-//         datetime.toISOString().slice(0,10),
-//         datetime.toISOString().slice(0,10),
-//     ];
-//     db.query(que, [values], (err, data) =>{
-//         if (err) {
-//             return res.status(500).json(err)
-//         } else {
-//             let result = {}
-//             result.status = 200
-//             result.msg = 'Multi-Site Sponsor has been saved successfully'
-//             return res.json(result)
-//         }
-//     })
-// }
 
 export const getMultiSiteSavedProtocolType = (req, res) => {
   const protocolTypeObj = {}
@@ -944,41 +966,64 @@ export const getMultiSiteSavedProtocolType = (req, res) => {
   }
 }
 
+// export const savePrincipalInvestigatorSubmission = (req, res) => {
+
+//   const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
+//   db.query(que, [req.body.protocol_id], (err, data) => {
+//     if (err) {
+//       return res.status(500).json(err)
+//     } else {
+//       let result = {}
+//       result.status = 200
+//       result.msg = 'Principal Investigator has been saved successfully'
+//       return res.json(result)
+//     }
+//   })
+// }
+
 export const savePrincipalInvestigatorSubmission = (req, res) => {
-  const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
-  db.query(que, [req.body.protocol_id], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
+  const selectQue =
+    'select * from external_monitor_protocol where protocol_id = ?'
+  db.query(selectQue, [req.body.protocol_id], (err, data) => {
+    if (data.length > 0) {
+      const updateQuery = `UPDATE external_monitor_protocol 
+                SET external_monitor_id=? WHERE protocol_id=?`
+
+      const updateValues = [req.body.external_monitor_id, req.body.protocol_id]
+      db.query(updateQuery, updateValues, (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'External monitor assigned and saved successfully'
+          return res.json(result)
+        }
+      })
     } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Principal Investigator has been saved successfully'
-      return res.json(result)
+      const que =
+        'insert into external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) value (?)'
+      const values = [
+        req.body.protocol_id,
+        req.body.protocol_type,
+        req.body.created_by,
+        req.body.external_monitor_id,
+        datetime.toISOString().slice(0, 10),
+        datetime.toISOString().slice(0, 10)
+      ]
+      db.query(que, [values], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'External monitor assigned and saved successfully'
+          return res.json(result)
+        }
+      })
     }
   })
 }
-
-// export const savePrincipalInvestigatorSubmission = (req, res) => {
-//     var datetime = new Date();
-//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-//     const values = [
-//         req.body.protocol_id,
-//         req.body.protocol_type,
-//         req.body.created_by,
-//         datetime.toISOString().slice(0,10),
-//         datetime.toISOString().slice(0,10),
-//     ];
-//     db.query(que, [values], (err, data) => {
-//         if (err) {
-//             return res.status(500).json(err)
-//         } else {
-//             let result = {}
-//             result.status = 200
-//             result.msg = 'Principal Investigator has been saved successfully'
-//             return res.json(result)
-//         }
-//     })
-// }
 
 export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
   const protocolTypeObj = {}
