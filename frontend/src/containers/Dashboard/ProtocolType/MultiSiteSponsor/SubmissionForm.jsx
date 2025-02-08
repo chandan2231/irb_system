@@ -23,56 +23,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import ApiCall from "../../../../utility/ApiCall";
 import Loader from "../../../../components/Loader";
-import * as Yup from "yup";
 import { Box, IconButton } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FormLabel from "@mui/material/FormLabel";
+import { RadioGroup, Radio } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
-
-const initialValues = {
-  name: "",
-  mobile: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
-
-const lowercaseRegEx = /(?=.*[a-z])/;
-const uppercaseRegEx = /(?=.*[A-Z])/;
-const numericRegEx = /(?=.*[0-9])/;
-const lengthRegEx = /(?=.{6,})/;
-
-let validationSchema = Yup.object().shape({
-  name: Yup.string().required("Required"),
-  mobile: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string()
-    .matches(
-      lowercaseRegEx,
-      "Must contain one lowercase alphabetical character!"
-    )
-    .matches(
-      uppercaseRegEx,
-      "Must contain one uppercase alphabetical character!"
-    )
-    .matches(numericRegEx, "Must contain one numeric character!")
-    .matches(lengthRegEx, "Must contain 6 characters!")
-    .required("Required!"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required!"),
-});
-
-// Helper function to convert string to title case
-const titleCase = (str) =>
-  str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 
 const SubmissionForm = ({ protocolTypeDetails }) => {
   const dispatch = useDispatch();
@@ -80,10 +35,12 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(false);
   const [errors, setErrors] = useState({});
-  const [addExternalMonitorDetails, setAddExternalMonitorDetails] = useState(false)
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
-
+  const [addExternalMonitorDetails, setAddExternalMonitorDetails] =
+    useState(false);
+  const [externalMonitorsList, setExternalMonitorsList] = useState(false);
+  const [selectedExternalMonitor, setSelectedExternalMonitor] = useState("");
+  const [loader, setLoader] = useState(false);
+  const [notSavedForms, setNotSavedForms] = useState([]);
   const [payloadFormData, setPayloadFormData] = useState({
     name: "",
     mobile: "",
@@ -91,16 +48,12 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     password: "",
     confirmPassword: "",
   });
-
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
     paymentType: "Multi-Site Sponsor",
   });
-
-  const [loader, setLoader] = useState(false);
-  const [notSavedForms, setNotSavedForms] = useState([]);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -111,11 +64,11 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const handleTermsChange = (event) => setTermsSelected(event.target.checked);
 
   const handleAddExternalMonitor = (event) => {
-    setAddExternalMonitorDetails(event.target.checked)
+    setAddExternalMonitorDetails(event.target.checked);
     // if check is false, clear the external monitor details
     if (!event.target.checked) {
       setPayloadFormData({
-        ...initialValues
+        ...initialValues,
       });
     }
   };
@@ -156,7 +109,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             setLoader(false); // Remove this line when API is integrated
             console.log("payloadFormData ====>", {
               ...payloadFormData,
-              ...formData
+              ...formData,
             });
             // api call here ....
             // if (response.status === 200) {
@@ -164,8 +117,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             //   navigateToPaymentPage(formData);
             // }
           }
-        }
-        catch (error) {
+        } catch (error) {
           setLoader(false);
           const newErrors = {};
           error.inner.forEach((err) => {
@@ -225,14 +177,63 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     fetchProtocolTypeDetails();
   }, []);
 
+  useEffect(() => {
+    const fetchExternalMonitorDetails = async () => {
+      try {
+        if (
+          protocolTypeDetails?.protocolId &&
+          protocolTypeDetails?.researchType &&
+          loader === false
+        ) {
+          const data = { added_by: userDetails.id };
+          setLoader(true);
+          const response = await ApiCall({
+            method: "POST",
+            url: `${baseURL}/protocol/external/monitor/list`,
+            data,
+          });
+          if (response?.status === 200) {
+            setExternalMonitorsList(response?.data);
+            setLoader(false);
+          }
+        }
+      } catch (error) {
+        setLoader(false);
+        console.error("Error fetching external monitors details:", error);
+      }
+    };
+    fetchExternalMonitorDetails();
+  }, []);
+
+  const handleChange = (event) => {
+    setSelectedExternalMonitor(event.target.value);
+  };
+
+  const titleCase = (str) =>
+    str
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
   if (loader) {
     return <Loader />;
   }
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <Row>
         {notSavedForms.length > 0 && (
           <List
@@ -258,16 +259,13 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
         )}
 
         <form onSubmit={handleSubmitData}>
-
           <Form.Group as={Col} controlId="addExternalMinotorDetails">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label-external-monitor"></FormLabel>
               <FormGroup onChange={handleAddExternalMonitor}>
                 <FormControlLabel
                   control={<Checkbox />}
-                  checked={
-                    addExternalMonitorDetails
-                  }
+                  checked={addExternalMonitorDetails}
                   label="Add External Monitor Details"
                 />
               </FormGroup>
@@ -275,127 +273,32 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           </Form.Group>
 
           {/* Fields when  addExternalMonitorDetails is true */}
-          {
-            addExternalMonitorDetails && (
-              <Box
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  gap: "10px",
-                }}
-              >
-                <Form.Group as={Col} controlId="validationFormik01">
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <TextField
-                      fullWidth
-                      label="Name"
-                      name="name"
-                      value={payloadFormData.name}
-                      onChange={handleChangeForExternalMonitor}
+          {addExternalMonitorDetails && (
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: "10px",
+              }}
+            >
+              <FormControl component="fieldset">
+                <RadioGroup
+                  value={selectedExternalMonitor}
+                  onChange={handleChange}
+                >
+                  {externalMonitorsList.map((user) => (
+                    <FormControlLabel
+                      key={user.id}
+                      value={user.id.toString()} // Convert ID to string for value
+                      control={<Radio />}
+                      label={user.name}
                     />
-                  </Box>
-                  {errors.name && (
-                    <div className="error">{errors.name}</div>
-                  )}
-                </Form.Group>
-
-                <Form.Group as={Col} controlId="validationFormik3">
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      name="email"
-                      value={payloadFormData.email}
-                      onChange={handleChangeForExternalMonitor}
-                    />
-                  </Box>
-                  {errors.email && (
-                    <div className="error">{errors.email}</div>
-                  )}
-                </Form.Group>
-
-                <Form.Group as={Col} controlId="validationFormik4">
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <TextField
-                      fullWidth
-                      label="Password"
-                      name="password"
-                      value={payloadFormData.password}
-                      onChange={handleChangeForExternalMonitor}
-                      type={showPassword ? "text" : "password"} // Toggle password visibility
-                      InputProps={{
-                        endAdornment: (
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? (
-                              <VisibilityOff />
-                            ) : (
-                              <Visibility />
-                            )}
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Box>
-                  {errors.password && (
-                    <div className="error">{errors.password}</div>
-                  )}
-                </Form.Group>
-
-                <Form.Group as={Col} controlId="validationFormik5">
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <TextField
-                      fullWidth
-                      label="Confirm Password"
-                      name="confirmPassword"
-                      value={payloadFormData.confirmPassword}
-                      onChange={handleChangeForExternalMonitor}
-                      type={showConfirmPassword ? "text" : "password"} // Toggle password visibility
-                      InputProps={{
-                        endAdornment: (
-                          <IconButton
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
-                            edge="end"
-                          >
-                            {showConfirmPassword ? (
-                              <VisibilityOff />
-                            ) : (
-                              <Visibility />
-                            )}
-                          </IconButton>
-                        ),
-                      }}
-                    />
-                  </Box>
-                  {errors.confirmPassword && (
-                    <div className="error">{errors.confirmPassword}</div>
-                  )}
-                </Form.Group>
-
-                <Form.Group as={Col} controlId="validationFormik2">
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <TextField
-                      fullWidth
-                      label="Mobile"
-                      name="mobile"
-                      value={payloadFormData.mobile}
-                      onChange={handleChangeForExternalMonitor}
-                    />
-                  </Box>
-                  {errors.mobile && (
-                    <div className="error">{errors.mobile}</div>
-                  )}
-                </Form.Group>
-
-
-              </Box>
-            )
-          }
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </Box>
+          )}
 
           <Form.Group as={Col} controlId="protocol-terms" className="ul-list">
             <p>By submitting this application, you attest to the following:</p>
