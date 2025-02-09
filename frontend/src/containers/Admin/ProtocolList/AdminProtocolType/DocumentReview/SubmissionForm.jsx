@@ -52,46 +52,13 @@ function SubmissionForm({ type }) {
           >
             <p>By submitting this application you attest to the following:</p>
             <ul>
-              <li>
-                Research will not commence prior to receiving the IRB approval
-                letter.
-              </li>
-              <li>
-                The principal investigator will personally supervise and/or
-                conduct the study.
-              </li>
-              <li>
-                The principal investigator ensures that all persons involved in
-                conducting the study are trained and have proper credentialing
-                for conducting research.
-              </li>
-              <li>
-                Only the most current IRB-approved consent form will be used to
-                enroll subjects.
-              </li>
-              <li>
-                No changes will be made to the research protocol, consents
-                forms, and all patient-facing materials without the approval of
-                the IRB{" "}
-              </li>
-              <li>
-                The study procedures will comply with all applicable laws and
-                regulations regarding the conduct of research
-              </li>
-              <li>
-                All findings from the study that directly affect subject safety
-                will be communicated to subjects and to this IRB
-              </li>
-              <li>
-                All serious adverse events (SAEs), whether related to the study
-                procedures or not, will be reported to this IRB within 2
-                business days of the investigator becoming aware of the event
-                for IRB safety review
-              </li>
-              <li>
-                The sponsor agrees to submit and provide payment to this IRB for
-                annual review yearly
-              </li>
+              {[
+                " The document review request is not an approval of research or protocol.",
+                "The expert opinions in articles or reviews are those of the author and not the organization. The review of documents cannot cover all potential ethical/ legal issues that may arise without complete information of the research protocol.",
+                "Your initials below signify that you have read and agree to the terms listed above."
+              ].map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </Form.Group>
           <Form.Group as={Col} controlId="validationFormik01">

@@ -74,18 +74,18 @@ const protocoalInfoSchema = yup.object().shape({
   }),
 
   protocol_title: yup.string().required("Protocol title is required"),
-  protocol_number: yup.string().required("Protocol number is required"),
-  sponsor: yup.string().required("Sponsor is required"),
-  study_duration: yup
-    .string()
-    .required("Approximate duration of the study is required"),
-  funding_source: yup.string().required("Funding source is required"),
+  // protocol_number: yup.string().required("Protocol number is required"),
+  // sponsor: yup.string().required("Sponsor is required"),
+  // study_duration: yup
+  //   .string()
+  //   .required("Approximate duration of the study is required"),
+  // funding_source: yup.string().required("Funding source is required"),
 
-  protocol_file: yup
-    .mixed()
-    .test("required", "You must upload a protocol file", (value) => {
-      return value && value.length > 0;
-    }),
+  // protocol_file: yup
+  //   .mixed()
+  //   .test("required", "You must upload a protocol file", (value) => {
+  //     return value && value.length > 0;
+  //   }),
 });
 
 function ProtocolInformationForm({
@@ -488,7 +488,7 @@ function ProtocolInformationForm({
             <Box sx={{ width: "100%", maxWidth: "100%" }}>
               <TextField
                 fullWidth
-                label="Protocol number *"
+                label="Protocol number"
                 id="protocol_number"
                 name="protocol_number"
                 onChange={handleChange}
@@ -507,7 +507,7 @@ function ProtocolInformationForm({
             <Box sx={{ width: "100%", maxWidth: "100%" }}>
               <TextField
                 fullWidth
-                label="Sponsor *"
+                label="Sponsor "
                 id="sponsor"
                 name="sponsor"
                 onChange={handleChange}
@@ -524,7 +524,7 @@ function ProtocolInformationForm({
             <Box sx={{ width: "100%", maxWidth: "100%" }}>
               <TextField
                 fullWidth
-                label="Approximate duration of study *"
+                label="Approximate duration of study "
                 id="study_duration"
                 name="study_duration"
                 onChange={handleChange}
@@ -537,7 +537,7 @@ function ProtocolInformationForm({
           </Form.Group>
           <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
             <InputLabel id="demo-simple-select-autowidth-label">
-              Funding source *
+              Funding source 
             </InputLabel>
             <Select
               labelId="demo-simple-select-autowidth-label"
@@ -577,7 +577,7 @@ function ProtocolInformationForm({
               <Grid container spacing={2}>
                 <Grid item xs={2}>
                   <InputLabel id="demo-simple-select-autowidth-label">
-                    Upload Protocol *
+                    Upload Protocol 
                   </InputLabel>
                 </Grid>
                 <Grid item xs={10}>
