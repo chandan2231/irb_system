@@ -45,41 +45,41 @@ const investigatorInfoSchema = yup.object().shape({
     .string()
     .email("Invalid email format")
     .required("This is required"),
-  fda_audit_explain: yup.string().when("fda_audit", {
-    is: (value) => value === "Yes",
-    then: () => yup.string().required("This is required"),
-    otherwise: () => yup.string().notRequired(),
-  }),
-  training_completed_explain: yup.string().when("training_completed", {
-    is: (value) => value.includes("8"),
-    then: () => yup.string().required("This is required"),
-  }),
-  investigator_research_number: yup
-    .number()
-    .positive("The number must be positive")
-    .typeError("This must be a number")
-    .integer("The number must be an integer")
-    .required("This is required"),
-  pending_or_active_research_explain: yup
-    .string()
-    .when("pending_or_active_research", {
-      is: (value) => value === "Yes",
-      then: () => yup.string().required("This is required"),
-      otherwise: () => yup.string().nullable(),
-    }),
-  fwa_number: yup.string().when("site_fwp", {
-    is: (value) => value === "Yes",
-    then: () => yup.string().required("This is required"),
-    otherwise: () => yup.string().notRequired(),
-  }),
-  cv_files: yup.mixed().test("fileType", "This is required", (value) => {
-    if (value.length === 0) {
-      return false;
-    }
-    return true;
-  }),
-  medical_license: yup.mixed(),
-  training_certificates: yup.mixed(),
+  // fda_audit_explain: yup.string().when("fda_audit", {
+  //   is: (value) => value === "Yes",
+  //   then: () => yup.string().required("This is required"),
+  //   otherwise: () => yup.string().notRequired(),
+  // }),
+  // training_completed_explain: yup.string().when("training_completed", {
+  //   is: (value) => value.includes("8"),
+  //   then: () => yup.string().required("This is required"),
+  // }),
+  // investigator_research_number: yup
+  //   .number()
+  //   .positive("The number must be positive")
+  //   .typeError("This must be a number")
+  //   .integer("The number must be an integer")
+  //   .required("This is required"),
+  // pending_or_active_research_explain: yup
+  //   .string()
+  //   .when("pending_or_active_research", {
+  //     is: (value) => value === "Yes",
+  //     then: () => yup.string().required("This is required"),
+  //     otherwise: () => yup.string().nullable(),
+  //   }),
+  // fwa_number: yup.string().when("site_fwp", {
+  //   is: (value) => value === "Yes",
+  //   then: () => yup.string().required("This is required"),
+  //   otherwise: () => yup.string().notRequired(),
+  // }),
+  // cv_files: yup.mixed().test("fileType", "This is required", (value) => {
+  //   if (value.length === 0) {
+  //     return false;
+  //   }
+  //   return true;
+  // }),
+  // medical_license: yup.mixed(),
+  // training_certificates: yup.mixed(),
 });
 
 function InvestigatorInformationForm({
@@ -543,7 +543,7 @@ function InvestigatorInformationForm({
               <div className="error">{errors.primary_contact_email}</div>
             )}
           </Form.Group>
-          <Form.Group as={Col} controlId="validationFormik01">
+          {/* <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">
                 Has the investigator ever had an FDA audit?
@@ -561,8 +561,8 @@ function InvestigatorInformationForm({
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </Form.Group>
-          {showAdditionalQuestion === true && (
+          </Form.Group> */}
+          {/* {showAdditionalQuestion === true && (
             <Form.Group
               as={Col}
               controlId="validationFormik03"
@@ -585,9 +585,9 @@ function InvestigatorInformationForm({
                 <div className="error">{errors.fda_audit_explain}</div>
               )}
             </Form.Group>
-          )}
+          )} */}
 
-          <Form.Group as={Col} controlId="validationFormik01">
+          {/* <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">
                 How long has the investigator been involved in research?
@@ -618,9 +618,9 @@ function InvestigatorInformationForm({
                 />
               </RadioGroup>
             </FormControl>
-          </Form.Group>
+          </Form.Group> */}
 
-          <Form.Group
+          {/* <Form.Group
             as={Col}
             controlId="validationFormik08"
             className="mt-mb-20"
@@ -635,9 +635,9 @@ function InvestigatorInformationForm({
                 onChange={handleChange}
               />
             </Box>
-          </Form.Group>
+          </Form.Group> */}
 
-          <Form.Group as={Col} controlId="validationFormik01">
+          {/* <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">
                 What training in the field of human subjects protection has the
@@ -724,8 +724,8 @@ function InvestigatorInformationForm({
                 <div className="error">{errors.training_completed}</div>
               )}
             </FormControl>
-          </Form.Group>
-          {showOtherQuestion === true && (
+          </Form.Group> */}
+          {/* {showOtherQuestion === true && (
             <Form.Group
               as={Col}
               controlId="validationFormik03"
@@ -748,9 +748,9 @@ function InvestigatorInformationForm({
                 <div className="error">{errors.training_completed_explain}</div>
               )}
             </Form.Group>
-          )}
+          )} */}
 
-          <Form.Group
+          {/* <Form.Group
             as={Col}
             controlId="validationFormik07"
             className="mt-mb-20"
@@ -768,9 +768,9 @@ function InvestigatorInformationForm({
             {errors.investigator_research_number && (
               <div className="error">{errors.investigator_research_number}</div>
             )}
-          </Form.Group>
+          </Form.Group> */}
 
-          <Form.Group as={Col} controlId="validationFormik01">
+          {/* <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">
                 Do you have any pending or active restrictions related to
@@ -792,8 +792,8 @@ function InvestigatorInformationForm({
                 <FormControlLabel value="No" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </Form.Group>
-          {showAdditionalQuestionPendingOrActive === true && (
+          </Form.Group> */}
+          {/* {showAdditionalQuestionPendingOrActive === true && (
             <Form.Group
               as={Col}
               controlId="validationFormik03"
@@ -818,9 +818,9 @@ function InvestigatorInformationForm({
                 </div>
               )}
             </Form.Group>
-          )}
+          )} */}
 
-          <Form.Group as={Col} controlId="validationFormik01">
+          {/* <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">
                 Does your site have an FWA?
@@ -857,9 +857,9 @@ function InvestigatorInformationForm({
                 <div className="error">{errors.fwa_number}</div>
               )}
             </Form.Group>
-          )}
+          )} */}
 
-          <Form.Group
+          {/* <Form.Group
             as={Col}
             controlId="validationFormik010"
             className="mt-mb-20"
@@ -975,7 +975,7 @@ function InvestigatorInformationForm({
             {errors.training_certificates && (
               <div className="error">{errors.training_certificates}</div>
             )}
-          </Form.Group>
+          </Form.Group> */}
 
           <Form.Group
             as={Col}

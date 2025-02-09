@@ -262,7 +262,7 @@ function InvestigatorInformationForm({
             />
           </Box>
         </Form.Group>
-        <Form.Group as={Col} controlId="validationFormik01">
+        {/* <Form.Group as={Col} controlId="validationFormik01">
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">
               Has the investigator ever had an FDA audit?
@@ -286,8 +286,8 @@ function InvestigatorInformationForm({
               />
             </RadioGroup>
           </FormControl>
-        </Form.Group>
-        {investigatorInformation?.fda_audit === "Yes" && (
+        </Form.Group> */}
+        {/* {investigatorInformation?.fda_audit === "Yes" && (
           <Form.Group
             as={Col}
             controlId="validationFormik03"
@@ -300,9 +300,9 @@ function InvestigatorInformationForm({
               {investigatorInformation?.fda_audit_explain}
             </p>
           </Form.Group>
-        )}
+        )} */}
 
-        <Form.Group as={Col} controlId="validationFormik01">
+        {/* <Form.Group as={Col} controlId="validationFormik01">
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">
               How long has the investigator been involved in research?
@@ -339,9 +339,9 @@ function InvestigatorInformationForm({
               />
             </RadioGroup>
           </FormControl>
-        </Form.Group>
+        </Form.Group> */}
 
-        <Form.Group
+        {/* <Form.Group
           as={Col}
           controlId="validationFormik08"
           className="mt-mb-20"
@@ -355,8 +355,8 @@ function InvestigatorInformationForm({
               value={investigatorInformation?.investigators_npi}
             />
           </Box>
-        </Form.Group>
-        <Form.Group as={Col} controlId="validationFormik01">
+        </Form.Group> */}
+        {/* <Form.Group as={Col} controlId="validationFormik01">
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">
               What training in the field of human subjects protection has the
@@ -376,8 +376,8 @@ function InvestigatorInformationForm({
               );
             })}
           </FormControl>
-        </Form.Group>
-        {trainingCompletedArr?.includes("8") && (
+        </Form.Group> */}
+        {/* {trainingCompletedArr?.includes("8") && (
           <Form.Group
             as={Col}
             controlId="validationFormik03"
@@ -567,7 +567,7 @@ function InvestigatorInformationForm({
                 );
               }
             })}
-        </Form.Group>
+        </Form.Group> */}
         {type !== "member" && (
           <Form.Group
             as={Col}

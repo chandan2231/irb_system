@@ -51,8 +51,14 @@ const AdminDocumentReviewDetails = ({
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+          <Box>
+            <Typography
+              sx={{
+                mx: 3,
+                p: 3,
+                backgroundColor: "#ffffff",
+              }}
+            >{children}</Typography>
           </Box>
         )}
       </div>
@@ -338,11 +344,14 @@ const AdminDocumentReviewDetails = ({
       )}
       <Box
         sx={{
+          borderColor: "#d3d3d3",
           display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          gap: 2,
-          padding: { xs: "0 8px", sm: "0 24px" },
+          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          gap: 1,
+          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+          flexWrap: "wrap", // Allow wrapping for smaller screens
+          margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          overflow: "hidden", // Prevent any overflow from buttons
         }}
       >
         {[...Array(4).keys()].map((index) => (
@@ -352,30 +361,15 @@ const AdminDocumentReviewDetails = ({
             variant={value === index ? "contained" : "text"}
             onClick={() => handleButtonClick(index)}
             sx={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              backgroundColor: value === index ? "primary.main" : "transparent",
-              backgroundImage:
-                value === index
-                  ? "none"
-                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-              color: value === index ? "white" : "white",
-              "&:hover": {
-                backgroundColor:
-                  value === index
-                    ? "primary.dark"
-                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
-              },
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              borderBottom: 0, // No bottom border by default
+              backgroundColor: value === index ? "#325ca8" : "#d3d3d3", // Gray by default, White when selected
+              color: value === index ? "white" : "rgba(0, 0, 0, 0.6)",
               flex: 1,
-              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
-              marginBottom: { xs: "10px", sm: "0px" },
-              fontSize: {
-                xs: "0.8rem",
-                sm: "0.85rem",
-                md: "0.9rem",
-                lg: "1rem",
-              },
+              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
+              letterSpacing: 0,
+              whiteSpace: "nowrap", // Prevents text from breaking into two lines
             }}
           >
             {

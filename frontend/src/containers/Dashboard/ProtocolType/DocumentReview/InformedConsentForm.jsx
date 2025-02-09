@@ -563,7 +563,7 @@ function InformedConsentForm({
             className="mt-mb-20"
           >
             <InputLabel id="demo-simple-select-autowidth-label">
-              upload the original approved protocol associated with the document
+              Upload the original approved protocol associated with the document
               to be reviewed *
             </InputLabel>
             <Button
@@ -599,58 +599,44 @@ function InformedConsentForm({
           </Form.Group>
           <Form.Group as={Col} className="ul-list">
             <p>
-              The informed consent process is a continuous process and the IRB
-              expects that proper subject consent is ensured by the investigator
-              throughout the research study. To comply with the terms set forth
-              by this IRB, the investigator must ensure that:
+              The informed consent process is a continuous process and the IRB expects that proper subject consent is ensured by the investigator throughout the research study. To comply with the terms set forth by this IRB, the investigator must ensure that:
             </p>
             <ul>
               <li>
-                No study procedures shall be conducted prior to completion of
-                the informed consent forms which include subject or legally
-                authorized representative (LAR) signatures and date,
-                investigator or person obtaining consent signature and date, and
-                providing a copy of the signed consent to the study participant.
+                IRBHUB provides qualified reviewers with expertise in the relevant subject matter that is crucial for your research. Our experts review the document to meet your present or future research needs.
               </li>
               <li>
-                The identified research participant is given plenty of time to
-                consider their participation in the study and all questions are
-                answered. The identified research participant must be told that
-                their participation in the study is voluntary and that they are
-                under no obligation to participate. The potential participant
-                must voice understanding before proceeding.
+                The expert reviews of documents doesn't give an approval for research study, it only provides ethical and or research needs or guidance in the context of research.
               </li>
               <li>
-                The consent discussion must be in language understandable to the
-                potential research participant’s comprehension level.
+                Providing us more detail on research protocol does help our experts to give you more relevant suggestions or guidance.
               </li>
               <li>
-                The informed consent discussion must be performed in a private
-                setting free from other people who may overhear the discussion,
-                such as a private exam room or other closed-door setting.
+                If your request for documents review about informed Consent for a research subject please follow some required rules on consent as below.
               </li>
               <li>
-                Only the most current, IRB-approved consent forms may be used
-                for enrollment.{" "}
+                The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.
               </li>
               <li>
-                All efforts must be taken to ensure participant anonymity
-                including:
-                <ul style={{ marginTop: 0 }}>
-                  <li>
-                    Safe storage of subject identifiers-all subject identifiers
-                    must be coded and de-identified
-                  </li>
-                  <li>
-                    All paper-based records will be stored in a double-locked
-                    area such as a locking filing cabinet inside of a locking
-                    door and only accessible to authorized staff.
-                  </li>
-                  <li>
-                    All electronic-based records will only be accessed by
-                    authorized staff using secure login credentials.
-                  </li>
-                </ul>
+                The consent discussion must be in language understandable to the potential research participant’s comprehension level.
+              </li>
+              <li>
+                Only the most current, IRB-approved consent forms may be used for enrollment.
+              </li>
+              <li>
+                All efforts must be taken to ensure participant anonymity including:
+              </li>
+              <li>
+                Safe storage of subject identifiers-all subject identifiers must be coded and de-identified
+              </li>
+              <li>
+                All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.
+              </li>
+              <li>
+                All electronic-based records will only be accessed by authorized staff using secure login credentials.
+              </li>
+              <li>
+                Your initials below signify that you have read the terms and agree with them:
               </li>
             </ul>
           </Form.Group>
