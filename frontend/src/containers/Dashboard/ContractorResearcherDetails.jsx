@@ -42,8 +42,14 @@ const ContractorResearcherDetails = ({
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+          <Box>
+            <Typography
+              sx={{
+                mx: 3,
+                p: 3,
+                backgroundColor: "#ffffff",
+              }}
+            >{children}</Typography>
           </Box>
         )}
       </div>
@@ -75,7 +81,6 @@ const ContractorResearcherDetails = ({
       {/* Button Tabs (Horizontal on larger screens, stacked on smaller screens) */}
       <Box
         sx={{
-          borderBottom: 1,
           borderColor: "#d3d3d3",
           display: "flex",
           flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
@@ -89,21 +94,15 @@ const ContractorResearcherDetails = ({
         {[...Array(6).keys()].map((index) => (
           <Button
             key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
             onClick={() => handleButtonClick(index)}
             sx={{
               borderBottomLeftRadius: 0,
               borderBottomRightRadius: 0,
               borderBottom: 0, // No bottom border by default
-              "&:hover": {
-                borderBottom: "none", // Ensures no bottom border on hover
-                backgroundColor: value === index ? "white" : "#b0b0b0", // Light gray on hover
-              },
-              backgroundColor: value === index ? "white" : "#d3d3d3", // Gray by default, White when selected
-              color: value === index ? "black" : "rgba(0, 0, 0, 0.6)",
-              borderTop: value === index ? "1px solid #d3d3d3" : "none",
-              borderLeft: value === index ? "1px solid #d3d3d3" : "none",
-              borderRight: value === index ? "1px solid #d3d3d3" : "none",
-              borderBottom: { xs: "1px solid #d3d3d3", sm: "none" }, // Bottom border on small screens
+              backgroundColor: value === index ? "#325ca8" : "#d3d3d3", // Gray by default, White when selected
+              color: value === index ? "white" : "rgba(0, 0, 0, 0.6)",
               flex: 1,
               minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
               letterSpacing: 0,
