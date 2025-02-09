@@ -31,8 +31,14 @@ const ClinicalResearcherDetails = ({
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+          <Box>
+            <Typography
+              sx={{
+                mx: 3,
+                p: 3,
+                backgroundColor: "#ffffff",
+              }}
+            >{children}</Typography>
           </Box>
         )}
       </div>
@@ -71,9 +77,10 @@ const ClinicalResearcherDetails = ({
       <Typography
         variant="h4"
         sx={{
-          mb: 2,
-          textAlign: "center",
-          fontSize: { xs: "1.2rem", sm: "2rem" },
+          mb: 3,
+          textAlign: { xs: "center", sm: "center", md: "left" },
+          fontSize: { xs: "1.5rem", sm: "1.5rem", md: "2rem" },
+          padding: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
         }}
       >
         {protocolTypeDetails.researchType}&nbsp;(
@@ -83,33 +90,32 @@ const ClinicalResearcherDetails = ({
       {/* Buttons as tabs with icons */}
       <Box
         sx={{
-          borderBottom: 1,
-          borderColor: "#3f51b5",
+          borderColor: "#d3d3d3",
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
           gap: 1,
+          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+          flexWrap: "wrap", // Allow wrapping for smaller screens
+          margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          overflow: "hidden", // Prevent any overflow from buttons
         }}
       >
         {[...Array(3).keys()].map((index) => (
           <Button
             key={index}
             onClick={() => handleButtonClick(index)}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
             sx={{
               borderBottomLeftRadius: 0,
               borderBottomRightRadius: 0,
               borderBottom: 0, // No bottom border by default
-              "&:hover": {
-                borderBottom: "none", // Ensures no bottom border on hover
-                backgroundColor:
-                  value === index
-                    ? "primary.dark"
-                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
-              },
-              backgroundColor: value === index ? "primary.main" : "transparent",
-              backgroundImage:
-                value === index
-                  ? "none"
-                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-              color: value === index ? "white" : "white",
+              backgroundColor: value === index ? "#325ca8" : "#d3d3d3", // Gray by default, White when selected
+              color: value === index ? "white" : "rgba(0, 0, 0, 0.6)",
+              flex: 1,
+              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
+              letterSpacing: 0,
+              whiteSpace: "nowrap", // Prevents text from breaking into two lines
             }}
           >
             {

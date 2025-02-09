@@ -42,8 +42,14 @@ const ContractorResearcherDetails = ({
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+          <Box>
+            <Typography
+              sx={{
+                mx: 3,
+                p: 3,
+                backgroundColor: "#ffffff",
+              }}
+            >{children}</Typography>
           </Box>
         )}
       </div>
@@ -75,8 +81,7 @@ const ContractorResearcherDetails = ({
       {/* Button Tabs (Horizontal on larger screens, stacked on smaller screens) */}
       <Box
         sx={{
-          borderBottom: 1,
-          borderColor: "#3f51b5",
+          borderColor: "#d3d3d3",
           display: "flex",
           flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
           gap: 1,
@@ -89,27 +94,19 @@ const ContractorResearcherDetails = ({
         {[...Array(6).keys()].map((index) => (
           <Button
             key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
             onClick={() => handleButtonClick(index)}
             sx={{
               borderBottomLeftRadius: 0,
               borderBottomRightRadius: 0,
               borderBottom: 0, // No bottom border by default
-              "&:hover": {
-                borderBottom: "none", // Ensures no bottom border on hover
-                backgroundColor:
-                  value === index
-                    ? "primary.dark"
-                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
-              },
-              backgroundColor: value === index ? "primary.main" : "transparent",
-              backgroundImage:
-                value === index
-                  ? "none"
-                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-              color: value === index ? "white" : "white",
+              backgroundColor: value === index ? "#325ca8" : "#d3d3d3", // Gray by default, White when selected
+              color: value === index ? "white" : "rgba(0, 0, 0, 0.6)",
               flex: 1,
               minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
               letterSpacing: 0,
+              whiteSpace: "nowrap", // Prevents text from breaking into two lines
             }}
           >
             {
