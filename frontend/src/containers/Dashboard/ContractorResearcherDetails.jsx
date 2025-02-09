@@ -76,7 +76,7 @@ const ContractorResearcherDetails = ({
       <Box
         sx={{
           borderBottom: 1,
-          borderColor: "#3f51b5",
+          borderColor: "#d3d3d3",
           display: "flex",
           flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
           gap: 1,
@@ -96,20 +96,18 @@ const ContractorResearcherDetails = ({
               borderBottom: 0, // No bottom border by default
               "&:hover": {
                 borderBottom: "none", // Ensures no bottom border on hover
-                backgroundColor:
-                  value === index
-                    ? "primary.dark"
-                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
+                backgroundColor: value === index ? "white" : "#b0b0b0", // Light gray on hover
               },
-              backgroundColor: value === index ? "primary.main" : "transparent",
-              backgroundImage:
-                value === index
-                  ? "none"
-                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-              color: value === index ? "white" : "white",
+              backgroundColor: value === index ? "white" : "#d3d3d3", // Gray by default, White when selected
+              color: value === index ? "black" : "rgba(0, 0, 0, 0.6)",
+              borderTop: value === index ? "1px solid #d3d3d3" : "none",
+              borderLeft: value === index ? "1px solid #d3d3d3" : "none",
+              borderRight: value === index ? "1px solid #d3d3d3" : "none",
+              borderBottom: { xs: "1px solid #d3d3d3", sm: "none" }, // Bottom border on small screens
               flex: 1,
               minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
               letterSpacing: 0,
+              whiteSpace: "nowrap", // Prevents text from breaking into two lines
             }}
           >
             {
