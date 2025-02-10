@@ -55,11 +55,14 @@ const ContractorResearcherDetails = ({
           <Box>
             <Typography
               sx={{
-                mx: 3,
+                mx: { xs: 1, sm: 3, md: 3 },
                 p: 3,
                 backgroundColor: "#ffffff",
+                border: "1px solid #cccccc",
               }}
-            >{children}</Typography>
+            >
+              {children}
+            </Typography>
           </Box>
         )}
       </div>
@@ -376,8 +379,8 @@ const ContractorResearcherDetails = ({
           >
             {
               [
-                "Protocol Information",
-                "Investigator Information",
+                "Protocol Info",
+                "Investigator Info",
                 "Study Type",
                 "Informed Consent",
                 "Protocol Procedures",

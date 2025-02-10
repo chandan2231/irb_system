@@ -51,7 +51,16 @@ const ClinicalResearcherDetails = ({
       >
         {value === index && (
           <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+            <Typography
+              sx={{
+                mx: { xs: 1, sm: 3, md: 3 },
+                p: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #cccccc",
+              }}
+            >
+              {children}
+            </Typography>
           </Box>
         )}
       </div>

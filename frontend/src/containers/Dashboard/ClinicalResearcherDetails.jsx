@@ -34,11 +34,14 @@ const ClinicalResearcherDetails = ({
           <Box>
             <Typography
               sx={{
-                mx: 3,
+                mx: { xs: 1, sm: 3, md: 3 },
                 p: 3,
                 backgroundColor: "#ffffff",
+                border: "1px solid #cccccc",
               }}
-            >{children}</Typography>
+            >
+              {children}
+            </Typography>
           </Box>
         )}
       </div>
@@ -75,15 +78,17 @@ const ClinicalResearcherDetails = ({
   return (
     <Box sx={{ width: "100%" }}>
       <Typography
-        variant="h4"
+        variant="h2"
         sx={{
           mb: 3,
-          textAlign: { xs: "center", sm: "center", md: "left" },
-          fontSize: { xs: "1.5rem", sm: "1.5rem", md: "2rem" },
+          mt: 3,
+          textAlign: "left",
+          fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
           padding: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          fontWeight: "bold",
         }}
       >
-        {protocolTypeDetails.researchType}&nbsp;(
+        {protocolTypeDetails.researchType} Details&nbsp;(
         {protocolTypeDetails.protocolId})
       </Typography>
 
@@ -128,58 +133,6 @@ const ClinicalResearcherDetails = ({
           </Button>
         ))}
       </Box>
-      {/* <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          gap: 2,
-          padding: { xs: "0 8px", sm: "0 24px" },
-        }}
-      >
-        {[...Array(3).keys()].map((index) => (
-          <Button
-            key={index}
-            endIcon={<DoubleArrowIcon />}
-            variant={value === index ? "contained" : "text"}
-            onClick={() => handleButtonClick(index)}
-            sx={{
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              backgroundColor: value === index ? "primary.main" : "transparent",
-              backgroundImage:
-                value === index
-                  ? "none"
-                  : "linear-gradient(45deg, #6e7dff, #00c6ff)",
-              color: value === index ? "white" : "white",
-              "&:hover": {
-                backgroundColor:
-                  value === index
-                    ? "primary.dark"
-                    : "linear-gradient(45deg, #4f5db3, #0094c4)",
-              },
-              flex: 1,
-              minWidth: { xs: "100%", sm: "48%", md: "33%", lg: "25%" },
-              marginBottom: { xs: "10px", sm: "0px" },
-              fontSize: {
-                xs: "0.8rem",
-                sm: "0.85rem",
-                md: "0.9rem",
-                lg: "1rem",
-              },
-            }}
-          >
-            {
-              [
-                "Investigator and Protocol Info",
-                "Informed Consent Document info",
-                "Submission",
-              ][index]
-            }
-          </Button>
-        ))}
-      </Box> */}
 
       {/* Tab Content */}
       <CustomTabPanel value={value} index={0}>

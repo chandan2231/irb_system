@@ -35,11 +35,14 @@ const MultiSiteSponsorDetails = ({
           <Box>
             <Typography
               sx={{
-                mx: 3,
+                mx: { xs: 1, sm: 3, md: 3 },
                 p: 3,
                 backgroundColor: "#ffffff",
+                border: "1px solid #cccccc",
               }}
-            >{children}</Typography>
+            >
+              {children}
+            </Typography>
           </Box>
         )}
       </div>
@@ -69,15 +72,17 @@ const MultiSiteSponsorDetails = ({
     <Box sx={{ width: "100%" }}>
       {/* Title Section */}
       <Typography
-        variant="h4"
+        variant="h2"
         sx={{
           mb: 3,
-          textAlign: { xs: "center", sm: "center", md: "left" },
-          fontSize: { xs: "1.5rem", sm: "1.5rem", md: "2rem" },
+          mt: 3,
+          textAlign: "left",
+          fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
           padding: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          fontWeight: "bold",
         }}
       >
-        {protocolTypeDetails.researchType}&nbsp;(
+        {protocolTypeDetails.researchType} Details&nbsp;(
         {protocolTypeDetails.protocolId})
       </Typography>
 
