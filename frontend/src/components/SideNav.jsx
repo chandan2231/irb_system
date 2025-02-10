@@ -628,6 +628,24 @@ function SideNav() {
               </MenuItem>
             </SubMenu>
           </>
+        ) : userDetails.user_type === "external_monitor" ? (
+          <MenuItem
+            active={
+              location.pathname === "/external/monitor" ||
+              location.pathname === "/protocol-details"
+                ? true
+                : false
+            }
+            component={<Link to="/external/monitor" />}
+            icon={<AddBusinessOutlinedIcon />}
+          >
+            <Typography
+              variant="body2"
+              style={{ fontWeight: "500", fontSize: "0.875rem" }}
+            >
+              Protocol List
+            </Typography>
+          </MenuItem>
         ) : (
           <></>
         )}
