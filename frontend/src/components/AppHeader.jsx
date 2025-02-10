@@ -88,7 +88,7 @@ function AppHeader() {
             <Box sx={{ flex: 1, textAlign: "center" }}>
               <Typography variant="body1">
                 {userDetails.user_type === "admin"
-                  ? "Super Admin"
+                  ? "Admin"
                   : userDetails.user_type === "Voting Member"
                     ? "Voting Member"
                     : userDetails.user_type === "Committee Chair"
