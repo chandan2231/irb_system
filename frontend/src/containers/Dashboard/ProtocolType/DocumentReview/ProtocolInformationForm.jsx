@@ -330,7 +330,7 @@ function ProtocolInformationForm({
           <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label">
-                Are you submitting this protocol for the first time? *
+                Are you submitting the document for the first time? *
               </FormLabel>
               <RadioGroup
                 row
@@ -537,7 +537,7 @@ function ProtocolInformationForm({
           </Form.Group>
           <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
             <InputLabel id="demo-simple-select-autowidth-label">
-              Funding source 
+              Funding source
             </InputLabel>
             <Select
               labelId="demo-simple-select-autowidth-label"
@@ -577,7 +577,7 @@ function ProtocolInformationForm({
               <Grid container spacing={2}>
                 <Grid item xs={2}>
                   <InputLabel id="demo-simple-select-autowidth-label">
-                    Upload Protocol 
+                    Upload Protocol
                   </InputLabel>
                 </Grid>
                 <Grid item xs={10}>
