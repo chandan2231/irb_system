@@ -74,14 +74,16 @@ function AppHeader() {
             <Box className="center-card">
               <h2>
                 {userDetails.user_type === "admin"
-                  ? "Super Admin Portal"
+                  ? "Admin Portal"
                   : userDetails.user_type === "Voting Member"
                     ? "Voting Member Portal"
                     : userDetails.user_type === "Committee Chair"
                       ? "Committee Chair Portal"
                       : userDetails.user_type === "Office Staff"
                         ? "Office Portal"
-                        : ""}
+                        : userDetails.user_type === "external_monitor"
+                          ? "External Monitor Portal"
+                          : ""}
               </h2>
             </Box>
           ) : (
@@ -93,7 +95,11 @@ function AppHeader() {
                     ? "Voting Member"
                     : userDetails.user_type === "Committee Chair"
                       ? "Committee Chair"
-                      : ""}
+                      : userDetails.user_type === "Office Staff"
+                        ? "Office Portal"
+                        : userDetails.user_type === "external_monitor"
+                          ? "External Monitor"
+                          : ""}
               </Typography>
             </Box>
           )}

@@ -7,6 +7,7 @@ import adminRoutes from './routes/admin.js'
 import eventAndRequest from './routes/eventAndRequest.js'
 import communication from './routes/communication.js'
 import payment from './routes/payment.js'
+import externalMonitor from './routes/externalMonitor.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
@@ -58,6 +59,7 @@ app.use('/api/eventAndRequest', eventAndRequest)
 app.use('/api/communication', communication)
 app.use('/api/admin', adminRoutes)
 app.use('/api/payment', payment)
+app.use('/api/externalMonitor', externalMonitor)
 
 if (process.env.NODE_ENV === 'development') {
   app.listen(8800, () => {
