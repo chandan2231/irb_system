@@ -40,7 +40,7 @@ function SubmissionForm({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
-    paymentType: "Document Review",
+    paymentType: protocolTypeDetails.protocolUserType,
   });
   const [unsavedForms, setUnsavedForms] = useState([]);
 
@@ -167,7 +167,7 @@ function SubmissionForm({
               {[
                 " The document review request is not an approval of research or protocol.",
                 "The expert opinions in articles or reviews are those of the author and not the organization. The review of documents cannot cover all potential ethical/ legal issues that may arise without complete information of the research protocol.",
-                "Your initials below signify that you have read and agree to the terms listed above."
+                "Your initials below signify that you have read and agree to the terms listed above.",
               ].map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
