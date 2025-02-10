@@ -1426,7 +1426,7 @@ const documentReviewQuestions = {
   protocolInformation: {
     title: 'Protocol Information',
     question1: {
-      text: `Are you submitting this protocol for the first time?`,
+      text: `Are you submitting the document for the first time?`,
       answer: 'first_time_protocol',
       subTexts: [
         {
@@ -1496,80 +1496,6 @@ const documentReviewQuestions = {
         sequence: 6,
         text: `Primary point of contact email address`,
         answer: 'primary_contact_email'
-      },
-      {
-        sequence: 7,
-        text: `Has the investigator ever had an FDA audit?`,
-        answer: 'fda_audit',
-        explanation: 'fda_audit_explain'
-      },
-      {
-        sequence: 8,
-        text: `How long has the investigator been involved in research?`,
-        answer: 'involved_years'
-      },
-      {
-        sequence: 9,
-        text: `What is the investigator's NPI if applicable`,
-        answer: 'investigators_npi'
-      },
-      {
-        sequence: 10,
-        checkboxes: {
-          header:
-            'What training in the field of human subjects protection has the investigator completed?',
-          answer: 'training_completed',
-          options: [
-            { label: 'OHRP Human Subject Assurance Training', value: '1' },
-            { label: 'CITI Program Training', value: '2' },
-            { label: 'Certified Physician Investigator Training', value: '3' },
-            { label: 'ACRP training (CCRC, CCRA)', value: '4' },
-            { label: 'SOCRA (CCRP)', value: '5' },
-            {
-              label: 'Graduate or undergraduate research studies or degrees',
-              value: '6'
-            },
-            { label: 'Academy of Physicians in Clinical Research', value: '7' },
-            { label: 'Other', value: '8' }
-          ],
-          explanation: 'training_completed_explain'
-        }
-      },
-      {
-        sequence: 11,
-        text: `What is the current number of research studies supervised by the investigator?`,
-        answer: 'investigator_research_number'
-      },
-      {
-        sequence: 12,
-        text: `Do you have any pending or active restrictions related to research or the practice of medicine?`,
-        answer: 'pending_or_active_research',
-        explanation: 'pending_or_active_research_explain'
-      },
-      {
-        sequence: 13,
-        text: `Does your site have an FWA?`,
-        answer: 'site_fwp'
-      },
-      {
-        sequence: 14,
-        text: `Please provide FWA number`,
-        answer: 'fwa_number'
-      }
-    ],
-    documentsUploadedList: [
-      {
-        documentHeader: 'Upload investigator and sub-investigator CV here',
-        documentName: 'cv_files'
-      },
-      {
-        documentHeader: 'Upload copy of medical license (if applicable) here',
-        documentName: 'medical_license'
-      },
-      {
-        documentHeader:
-          'Upload copies of training certificates (if applicable) here',
-        documentName: 'training_certificates'
       }
     ]
   },
@@ -1656,16 +1582,19 @@ const documentReviewQuestions = {
     title: 'Submission Form',
     text: `<p>By submitting this application you attest to the following:</p>
 						<ul>
-							<li>Research will not commence prior to receiving the IRB approval letter.</li>
-							<li>The principal investigator will personally supervise and/or conduct the study.</li>
-							<li>The principal investigator ensures that all persons involved in conducting the study are trained and have proper credentialing for conducting research.</li>
-							<li>Only the most current IRB-approved consent form will be used to enroll subjects.</li>
-							<li>No changes will be made to the research protocol, consents forms, and all patient-facing materials without the approval of the IRB </li>
-							<li>The study procedures will comply with all applicable laws and regulations regarding the conduct of research</li>
-							<li>All findings from the study that directly affect subject safety will be communicated to subjects and to this IRB</li>
-							<li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
-							<li>The sponsor agrees to submit and provide payment to this IRB for annual review yearly</li>
-						</ul>`,
+              <li>IRBHUB provides qualified reviewers with expertise in the relevant subject matter that is crucial for your research. Our experts review the document to meet your present or future research needs.</li>
+              <li>The expert reviews of documents doesn't give an approval for research study, it only provides ethical and or research needs or guidance in the context of research.</li>
+              <li>Providing us more detail on research protocol does help our experts to give you more relevant suggestions or guidance.</li>
+              <li>If your request for documents review about informed Consent for a research subject please follow some required rules on consent as below.</li>
+              <li>The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.</li>
+              <li>The consent discussion must be in language understandable to the potential research participant’s comprehension level.</li>
+              <li>Only the most current, IRB-approved consent forms may be used for enrollment.</li>
+              <li>All efforts must be taken to ensure participant anonymity including.</li>
+              <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified.</li>
+              <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
+              <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
+              <li>Your initials below signify that you have read the terms and agree with them.</li>
+            </ul>`,
     checkBox: {
       label:
         'Your initials below signify that you have read and agree to the terms listed above',

@@ -100,7 +100,7 @@ function ProtocolInformationForm({
           <FormControl>
             {/* here admin have details by id */}
             <FormLabel id="demo-row-radio-buttons-group-label">
-              Are you submitting this protocol for the first time? *
+              Are you submitting the document for the first time? *
             </FormLabel>
             <RadioGroup
               row
