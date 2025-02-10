@@ -67,6 +67,8 @@ function SignIn() {
             navigate("/dashboard");
           } else if (data.payload.data.user_type === "user") {
             navigate("/dashboard");
+          } else if (data.payload.data.user_type === "external_monitor") {
+            navigate("/external/monitor");
           }
         }, 2000);
       } else {

@@ -72,6 +72,7 @@ import OfficeRejectedProtocols from "./containers/OfficePortal/ProtocolList/Reje
 import ExternalMonitor from "./containers/Dashboard/ExternalMonitor";
 import ClinicalResearchCoordinator from "./containers/Dashboard/ClinicalResearchCoordinator";
 import MasterList from "./containers/Admin/MasterList/MasterList";
+import ExternalMonitorProtocol from "./containers/ExternalMonitor/ExternalMonitorProtocol";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -374,6 +375,10 @@ function App() {
                 element={<OfficeStudyCloseoutRequestDetails />}
               />
               <Route path="/office/master-list" element={<MasterList />} />
+              <Route
+                path="/external/monitor"
+                element={<ExternalMonitorProtocol />}
+              />
             </Routes>
           </Box>
         </BrowserRouter>
