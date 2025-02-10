@@ -221,7 +221,7 @@ function InformedConsentForm({
                 formData.protocol_id,
                 protocolTypeDetails.researchType
               );
-              handleNextTab(4);
+              handleNextTab(3);
             }
           }
         );
@@ -359,42 +359,42 @@ function InformedConsentForm({
                   control={
                     <Checkbox checked={formData.consent_type.includes("5")} />
                   }
-                  value="6"
+                  value="5"
                   label="Post study questionnaire"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox checked={formData.consent_type.includes("6")} />
                   }
-                  value="7"
+                  value="6"
                   label="Post market questionnaire"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox checked={formData.consent_type.includes("7")} />
                   }
-                  value="8"
+                  value="7"
                   label="HIPAA authorization agreement"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox checked={formData.consent_type.includes("8")} />
                   }
-                  value="5"
+                  value="8"
                   label="Waiver of HIPAA agreement"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox checked={formData.consent_type.includes("9")} />
                   }
-                  value="5"
+                  value="9"
                   label="Advertising documents review"
                 />
                 <FormControlLabel
                   control={
                     <Checkbox checked={formData.consent_type.includes("10")} />
                   }
-                  value="5"
+                  value="10"
                   label="Research subject compensation review"
                 />
               </FormGroup>
@@ -599,44 +599,65 @@ function InformedConsentForm({
           </Form.Group>
           <Form.Group as={Col} className="ul-list">
             <p>
-              The informed consent process is a continuous process and the IRB expects that proper subject consent is ensured by the investigator throughout the research study. To comply with the terms set forth by this IRB, the investigator must ensure that:
+              The informed consent process is a continuous process and the IRB
+              expects that proper subject consent is ensured by the investigator
+              throughout the research study. To comply with the terms set forth
+              by this IRB, the investigator must ensure that:
             </p>
             <ul>
               <li>
-                IRBHUB provides qualified reviewers with expertise in the relevant subject matter that is crucial for your research. Our experts review the document to meet your present or future research needs.
+                IRBHUB provides qualified reviewers with expertise in the
+                relevant subject matter that is crucial for your research. Our
+                experts review the document to meet your present or future
+                research needs.
               </li>
               <li>
-                The expert reviews of documents doesn't give an approval for research study, it only provides ethical and or research needs or guidance in the context of research.
+                The expert reviews of documents doesn't give an approval for
+                research study, it only provides ethical and or research needs
+                or guidance in the context of research.
               </li>
               <li>
-                Providing us more detail on research protocol does help our experts to give you more relevant suggestions or guidance.
+                Providing us more detail on research protocol does help our
+                experts to give you more relevant suggestions or guidance.
               </li>
               <li>
-                If your request for documents review about informed Consent for a research subject please follow some required rules on consent as below.
+                If your request for documents review about informed Consent for
+                a research subject please follow some required rules on consent
+                as below.
               </li>
               <li>
-                The informed consent discussion must be performed in a private setting free from other people who may overhear the discussion, such as a private exam room or other closed-door setting.
+                The informed consent discussion must be performed in a private
+                setting free from other people who may overhear the discussion,
+                such as a private exam room or other closed-door setting.
               </li>
               <li>
-                The consent discussion must be in language understandable to the potential research participant’s comprehension level.
+                The consent discussion must be in language understandable to the
+                potential research participant’s comprehension level.
               </li>
               <li>
-                Only the most current, IRB-approved consent forms may be used for enrollment.
+                Only the most current, IRB-approved consent forms may be used
+                for enrollment.
               </li>
               <li>
-                All efforts must be taken to ensure participant anonymity including:
+                All efforts must be taken to ensure participant anonymity
+                including:
               </li>
               <li>
-                Safe storage of subject identifiers-all subject identifiers must be coded and de-identified
+                Safe storage of subject identifiers-all subject identifiers must
+                be coded and de-identified
               </li>
               <li>
-                All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.
+                All paper-based records will be stored in a double-locked area
+                such as a locking filing cabinet inside of a locking door and
+                only accessible to authorized staff.
               </li>
               <li>
-                All electronic-based records will only be accessed by authorized staff using secure login credentials.
+                All electronic-based records will only be accessed by authorized
+                staff using secure login credentials.
               </li>
               <li>
-                Your initials below signify that you have read the terms and agree with them:
+                Your initials below signify that you have read the terms and
+                agree with them:
               </li>
             </ul>
           </Form.Group>
