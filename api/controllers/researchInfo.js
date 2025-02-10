@@ -878,6 +878,7 @@ export const getDocumentReviewSavedProtocolType = (req, res) => {
 // }
 
 export const saveMultiSiteSubmission = (req, res) => {
+  var datetime = new Date()
   const selectQue =
     'select * from external_monitor_protocol where protocol_id = ?'
   db.query(selectQue, [req.body.protocol_id], (err, data) => {
@@ -982,6 +983,7 @@ export const getMultiSiteSavedProtocolType = (req, res) => {
 // }
 
 export const savePrincipalInvestigatorSubmission = (req, res) => {
+  var datetime = new Date()
   const selectQue =
     'select * from external_monitor_protocol where protocol_id = ?'
   db.query(selectQue, [req.body.protocol_id], (err, data) => {

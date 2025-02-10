@@ -27,6 +27,7 @@ import "react-toastify/dist/ReactToastify.css";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const SubmissionForm = ({ protocolTypeDetails }) => {
+  console.log("submission protocolTypeDetails", protocolTypeDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -42,7 +43,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
-    paymentType: "Protocol Submission",
+    paymentType: protocolTypeDetails.protocolUserType,
   });
 
   const navigateToPaymentPage = (params) => {
