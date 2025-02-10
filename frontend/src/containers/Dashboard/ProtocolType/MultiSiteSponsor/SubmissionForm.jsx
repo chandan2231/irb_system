@@ -49,7 +49,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
-    paymentType: "Multi-Site Sponsor",
+    paymentType: protocolTypeDetails.protocolUserType,
   });
 
   const navigateToPaymentPage = (params) => {

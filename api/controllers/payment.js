@@ -142,13 +142,14 @@ export const capturePayment = async (req, res) => {
             const newProtocolId = `${baseProtocolId}-${String(i).padStart(2, '0')}`
             const randomString = generateRandomString(10)
             const insertQuery =
-              'INSERT INTO protocols (`protocol_id`, `parent_protocol_id`, `research_type`, `status`, `varification_code`) VALUES (?)'
+              'INSERT INTO protocols (`protocol_id`, `parent_protocol_id`, `research_type`, `status`, `varification_code`, `protocol_user_type`) VALUES (?)'
             const newGeneratedProtocol = [
               newProtocolId,
               baseProtocolId,
               'Clinical Site',
               2,
-              randomString
+              randomString,
+              'Clinical Site'
             ]
             // Execute the SQL query to insert the protocol ID
             db.query(insertQuery, [newGeneratedProtocol], (err, results) => {
