@@ -270,6 +270,7 @@ function ProtocolInformationForm({
             />
           </Box>
         </Form.Group>
+
         <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
           <InputLabel id="demo-simple-select-autowidth-label">
             Funding source *

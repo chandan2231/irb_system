@@ -270,27 +270,29 @@ function ProtocolInformationForm({
             />
           </Box>
         </Form.Group>
-        <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
-          <InputLabel id="demo-simple-select-autowidth-label">
-            Funding source *
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-autowidth-label"
-            id="demo-simple-select-autowidth"
-            autoWidth
-            label="Funding source"
-            name="funding_source"
-            value={protocolInformation?.funding_source}
-          >
-            {fundingSource.map((source, index) => {
-              return (
-                <MenuItem key={index} value={source.value}>
-                  {source.label}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
+        <Form.Group as={Col} controlId="validationFormik09">
+          <FormControl fullWidth className="mt-mb-20">
+            <InputLabel id="demo-simple-select-label">
+              Funding source *
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Funding source"
+              name="funding_source"
+              value={protocolInformation.funding_source}
+              onChange={handleChange}
+            >
+              {fundingSource.map((source, index) => {
+                return (
+                  <MenuItem key={index} value={source.value}>
+                    {source.label}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Form.Group>
         <Box sx={{ flexGrow: 1 }}>
           <Form.Group
             as={Col}

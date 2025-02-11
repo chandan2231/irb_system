@@ -3,6 +3,7 @@ const RESEARCH_TYPE = {
   PRINCIPAL_INVESTIGATOR: "Principal Investigator",
   MULTI_SITE_SPONSOR: "Multi-Site Sponsor",
   DOCUMENT_REVIEW: "Document Review",
+  EXTERNAL_MONITOR: "External Monitor",
 };
 
 const getResearchType = (type) => {
@@ -15,6 +16,8 @@ const getResearchType = (type) => {
       return "Multi-Site Sponsor";
     case RESEARCH_TYPE.DOCUMENT_REVIEW:
       return "Document Review";
+    case RESEARCH_TYPE.EXTERNAL_MONITOR:
+      return "External Monitor";
     default:
       return "";
   }
@@ -125,6 +128,22 @@ const getDropDownOptionsByResearchType = (type) => {
         label: "Document Review",
         isUploadMandatory: true,
         uploadDocumentKey: "consent_files",
+      },
+    ];
+  }
+  if (type === RESEARCH_TYPE.EXTERNAL_MONITOR) {
+    return [
+      {
+        value: "worksheet",
+        label: "Worksheet",
+        isUploadMandatory: true,
+        uploadDocumentKey: "worksheet",
+      },
+      {
+        value: "report",
+        label: "Report",
+        isUploadMandatory: true,
+        uploadDocumentKey: "report",
       },
     ];
   }

@@ -379,6 +379,10 @@ function App() {
                 path="/external/monitor"
                 element={<ExternalMonitorProtocol />}
               />
+              <Route
+                path="/external/monitor/upload/report"
+                element={<UploadProtocolDocument />}
+              />
             </Routes>
           </Box>
         </BrowserRouter>
