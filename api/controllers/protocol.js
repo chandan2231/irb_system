@@ -370,128 +370,89 @@ export const getApprovedProtocolList = (req, res) => {
   })
 }
 
-// export const createProtocol = (req, res) => {
-//     // CHECK RESEARCH TYPE IF EXIST
-//     const que = "select * from protocols where research_type = ? AND added_by = ?"
-//     db.query(que, [req.body.research_type_id, req.body.login_id], (err, data) => {
-//         if (err) return res.status(500).json(err)
-//         if (data.length > 0) {
-//             return res.status(400).json('You have already added the selected research type, try with other')
-//         }
-//         // CREATE A NEW Entry
-//         const protocolNumber = "IRB" + Math.floor(Math.random() * 899999 + 100000);
-//         const que2 = 'insert into protocols (`protocol_id`, `research_type`, `added_by`, `added_timestamp`, `updated_timestamp`) value (?)';
-//         const protocolValue = [
-//             protocolNumber,
-//             req.body.research_type_id,
-//             req.body.login_id,
-//             new Date().getTime(),
-//             new Date().getTime(),
-//         ]
-//         db.query(que2, [protocolValue], (err2, data) => {
-//             if (err2) return res.status(500).json(err2)
-//             return res.status(200).json('Research type has been created.')
-//         })
-//     })
-
-// }
-
 export const saveFile = async (req, res) => {
-  var datetime = new Date()
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' })
+  }
+
+  const datetime = new Date().toISOString().slice(0, 10)
+  let tableName = 'protocol_documents' // Default table
+  let query = ''
+  let values = []
+
   try {
-    if (req.file) {
-      let sRL = await s3Service.uploadFile(req.file.path)
-      let imageUrl = sRL.cdnUrl
-      // Remove the file from the local server
-      fs.unlinkSync(req.file.path)
-      if (req.body.protocolType === 'continuein_review') {
-        const que2 =
-          'insert into continuein_review_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
-        const protocolValue = [
-          req.body.protocolId,
-          req.body.protocolType,
-          req.body.informationType,
-          req.body.documentName,
-          req.file.filename,
-          imageUrl,
-          req.body.createdBy,
-          datetime.toISOString().slice(0, 10),
-          datetime.toISOString().slice(0, 10)
-        ]
-        db.query(que2, [protocolValue], (err, data) => {
-          if (err) return res.status(500).json(err)
-          if (data) {
-            return res.status(200).json({ id: data.insertId })
-          }
-        })
-      } else if (req.body.protocolType === 'Protocol Amendment Request') {
-        const que2 =
-          'insert into protocol_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
-        const protocolValue = [
-          req.body.protocolId,
-          req.body.protocolType,
-          req.body.informationType,
-          req.body.documentName,
-          req.file.filename,
-          imageUrl,
-          req.body.createdBy,
-          datetime.toISOString().slice(0, 10),
-          datetime.toISOString().slice(0, 10)
-        ]
-        db.query(que2, [protocolValue], (err, data) => {
-          if (err) return res.status(500).json(err)
-          if (data) {
-            return res.status(200).json({ id: data.insertId })
-          }
-        })
-      } else if (req.body.informationType === 'communication_attachments') {
-        const que2 =
-          'insert into communication_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by_user_type`, `created_by`, `created_at`, `updated_at`) value (?)'
-        const protocolValue = [
-          req.body.protocolId,
-          req.body.protocolType,
-          req.body.informationType,
-          req.body.documentName,
-          req.file.filename,
-          imageUrl,
-          req.body.createdByUserType,
-          req.body.createdBy,
-          datetime.toISOString().slice(0, 10),
-          datetime.toISOString().slice(0, 10)
-        ]
-        db.query(que2, [protocolValue], (err, data) => {
-          if (err) return res.status(500).json(err)
-          if (data) {
-            return res.status(200).json({ id: data.insertId })
-          }
-        })
-      } else {
-        const que2 =
-          'insert into protocol_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
-        const protocolValue = [
-          req.body.protocolId,
-          req.body.protocolType,
-          req.body.informationType,
-          req.body.documentName,
-          req.file.filename,
-          imageUrl,
-          req.body.createdBy,
-          datetime.toISOString().slice(0, 10),
-          datetime.toISOString().slice(0, 10)
-        ]
-        db.query(que2, [protocolValue], (err, data) => {
-          if (err) return res.status(500).json(err)
-          if (data) {
-            return res.status(200).json({ id: data.insertId })
-          }
-        })
-      }
-    } else {
-      return res.status(400).json({ message: 'No file uploaded' })
+    // Upload file to S3
+    const uploadedFile = await s3Service.uploadFile(req.file.path)
+    const imageUrl = uploadedFile.cdnUrl
+
+    // Determine table based on request conditions
+    if (req.body.protocolType === 'continuein_review') {
+      tableName = 'continuein_review_documents'
+    } else if (req.body.protocolType === 'Protocol Amendment Request') {
+      tableName = 'protocol_documents'
+    } else if (req.body.informationType === 'communication_attachments') {
+      tableName = 'communication_documents'
+    } else if (req.body.identifierType === 'external_monitor') {
+      tableName = 'external_monitor_documents'
     }
+    // Define the SQL query
+    if (req.body.informationType === 'communication_attachments') {
+      query = `
+      INSERT INTO ${tableName} 
+      (protocol_id, protocol_type, information_type, document_name, file_name, file_url, created_by_user_type, created_by, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+      values = [
+        req.body.protocolId,
+        req.body.protocolType,
+        req.body.informationType,
+        req.body.documentName,
+        req.file.filename,
+        imageUrl,
+        req.body.createdByUserType,
+        req.body.createdBy,
+        datetime,
+        datetime
+      ]
+    } else {
+      query = `
+      INSERT INTO ${tableName} 
+      (protocol_id, protocol_type, information_type, document_name, file_name, file_url, created_by, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+      values = [
+        req.body.protocolId,
+        req.body.protocolType,
+        req.body.informationType,
+        req.body.documentName,
+        req.file.filename,
+        imageUrl,
+        req.body.createdBy,
+        datetime,
+        datetime
+      ]
+    }
+
+    // Run the query using Promises
+    const insertResult = await new Promise((resolve, reject) => {
+      db.query(query, values, (err, data) => {
+        if (err) reject(err)
+        else resolve(data)
+      })
+    })
+
+    // Remove the file from the local server
+    fs.unlinkSync(req.file.path)
+
+    return res.status(200).json({ id: insertResult.insertId })
   } catch (error) {
-    console.log({ error })
-    fs.unlinkSync(req.file?.path)
+    console.error('Error saving file:', error)
+
+    // Ensure file is removed if an error occurs
+    if (req.file?.path) {
+      fs.unlinkSync(req.file.path)
+    }
+
     return res.status(500).json({ message: 'Internal Server Error' })
   }
 }
@@ -609,6 +570,298 @@ export const continueinReviewGeneratePdf = async (req, res) => {
   })
   return
 }
+
+const getProtocolDocuments = async (protocolId, informationType) => {
+  const query =
+    'select * from protocol_documents where protocol_id = ? AND information_type = ?'
+  return new Promise((resolve, reject) => {
+    db.query(query, [protocolId, informationType], (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data.length > 0 ? data : [])
+      }
+    })
+  })
+}
+
+const getProtocolDetails = async (protocolId, protocolType) => {
+  const protocolDetailsObj = {}
+
+  const queries = {
+    'Clinical Site': [
+      {
+        key: 'protocol_information',
+        query: 'select * from protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'investigator_information',
+        query: 'select * from investigator_information where protocol_id = ?'
+      },
+      {
+        key: 'study_information',
+        query: 'select * from study_information where protocol_id = ?'
+      },
+      {
+        key: 'informed_consent',
+        query: 'select * from informed_consent where protocol_id = ?'
+      },
+      {
+        key: 'protocol_procedure',
+        query: 'select * from protocol_procedure where protocol_id = ?'
+      }
+    ],
+    'Multi-Site Sponsor': [
+      {
+        key: 'protocol_information',
+        query: 'select * from protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'contact_information',
+        query: 'select * from contact_information where protocol_id = ?'
+      },
+      {
+        key: 'study_information',
+        query: 'select * from study_information where protocol_id = ?'
+      },
+      {
+        key: 'informed_consent',
+        query: 'select * from informed_consent where protocol_id = ?'
+      },
+      {
+        key: 'protocol_procedure',
+        query: 'select * from protocol_procedure where protocol_id = ?'
+      }
+    ],
+    'Document Review': [
+      {
+        key: 'protocol_information',
+        query: 'select * from protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'investigator_information',
+        query: 'select * from investigator_information where protocol_id = ?'
+      },
+      {
+        key: 'informed_consent',
+        query: 'select * from informed_consent where protocol_id = ?'
+      }
+    ],
+    default: [
+      {
+        key: 'investigator_protocol_information',
+        query:
+          'select * from investigator_protocol_information where protocol_id = ?'
+      },
+      {
+        key: 'consent_information',
+        query:
+          'select * from clinical_consent_information where protocol_id = ?'
+      }
+    ]
+  }
+
+  const selectedQueries = queries[protocolType] || queries['default']
+
+  try {
+    // Fetch all details for the protocol
+    for (const { key, query } of selectedQueries) {
+      const data = await new Promise((resolve, reject) => {
+        db.query(query, [protocolId], (err, data) => {
+          if (err) reject(err)
+          else resolve(data.length > 0 ? data[0] : {})
+        })
+      })
+      protocolDetailsObj[key] = data
+
+      // Fetch associated documents for each key
+      const documents = await getProtocolDocuments(protocolId, key)
+      protocolDetailsObj[key].documents = documents
+    }
+    return protocolDetailsObj
+  } catch (error) {
+    throw new Error(`Error fetching protocol details: ${error.message}`)
+  }
+}
+
+export const protocolGeneratePdf = async (req, res) => {
+  const { protocolId, protocolType } = req.body
+  try {
+    // Fetch protocol details
+    const protocolDetailsObj = await getProtocolDetails(
+      protocolId,
+      protocolType
+    )
+    // Generate PDF
+    let template
+    if (protocolType === 'Clinical Site') {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    } else if (protocolType === 'Multi-Site Sponsor') {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    } else if (protocolType === 'Document Review') {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.DocumentReviewPdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    } else {
+      template =
+        await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
+          protocolDetailsObj,
+          req.body
+        )
+    }
+    // Generate the PDF from template HTML
+    const filePath = await generatePdfFromHTML(
+      template,
+      protocolId,
+      protocolType
+    )
+
+    // Upload the PDF to S3
+    const sRL = await s3Service.uploadFile(filePath)
+    const pdfUrl = sRL.cdnUrl
+
+    // Remove the file from the local server
+    fs.unlinkSync(filePath)
+
+    // Respond with the generated PDF URL
+    return res.status(200).json({ pdfUrl })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Internal Server Error' })
+  }
+}
+
+// export const saveFile = async (req, res) => {
+//   console.log('req.body', req.body)
+//   return
+//   var datetime = new Date()
+//   try {
+//     if (req.file) {
+//       let sRL = await s3Service.uploadFile(req.file.path)
+//       let imageUrl = sRL.cdnUrl
+//       // Remove the file from the local server
+//       fs.unlinkSync(req.file.path)
+//       if (req.body.protocolType === 'continuein_review') {
+//         const que2 =
+//           'insert into continuein_review_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
+//         const protocolValue = [
+//           req.body.protocolId,
+//           req.body.protocolType,
+//           req.body.informationType,
+//           req.body.documentName,
+//           req.file.filename,
+//           imageUrl,
+//           req.body.createdBy,
+//           datetime.toISOString().slice(0, 10),
+//           datetime.toISOString().slice(0, 10)
+//         ]
+//         db.query(que2, [protocolValue], (err, data) => {
+//           if (err) return res.status(500).json(err)
+//           if (data) {
+//             return res.status(200).json({ id: data.insertId })
+//           }
+//         })
+//       } else if (req.body.protocolType === 'Protocol Amendment Request') {
+//         const que2 =
+//           'insert into protocol_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
+//         const protocolValue = [
+//           req.body.protocolId,
+//           req.body.protocolType,
+//           req.body.informationType,
+//           req.body.documentName,
+//           req.file.filename,
+//           imageUrl,
+//           req.body.createdBy,
+//           datetime.toISOString().slice(0, 10),
+//           datetime.toISOString().slice(0, 10)
+//         ]
+//         db.query(que2, [protocolValue], (err, data) => {
+//           if (err) return res.status(500).json(err)
+//           if (data) {
+//             return res.status(200).json({ id: data.insertId })
+//           }
+//         })
+//       } else if (req.body.informationType === 'communication_attachments') {
+//         const que2 =
+//           'insert into communication_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by_user_type`, `created_by`, `created_at`, `updated_at`) value (?)'
+//         const protocolValue = [
+//           req.body.protocolId,
+//           req.body.protocolType,
+//           req.body.informationType,
+//           req.body.documentName,
+//           req.file.filename,
+//           imageUrl,
+//           req.body.createdByUserType,
+//           req.body.createdBy,
+//           datetime.toISOString().slice(0, 10),
+//           datetime.toISOString().slice(0, 10)
+//         ]
+//         db.query(que2, [protocolValue], (err, data) => {
+//           if (err) return res.status(500).json(err)
+//           if (data) {
+//             return res.status(200).json({ id: data.insertId })
+//           }
+//         })
+//       } else if (req.body.identifierType === 'external_monitor') {
+//         const que2 =
+//           'insert into external_monitor_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
+//         const protocolValue = [
+//           req.body.protocolId,
+//           req.body.protocolType,
+//           req.body.informationType,
+//           req.body.documentName,
+//           req.file.filename,
+//           imageUrl,
+//           req.body.createdBy,
+//           datetime.toISOString().slice(0, 10),
+//           datetime.toISOString().slice(0, 10)
+//         ]
+//         db.query(que2, [protocolValue], (err, data) => {
+//           if (err) return res.status(500).json(err)
+//           if (data) {
+//             return res.status(200).json({ id: data.insertId })
+//           }
+//         })
+//       } else {
+//         const que2 =
+//           'insert into protocol_documents (`protocol_id`, `protocol_type`, `information_type`, `document_name`, `file_name`, `file_url`, `created_by`, `created_at`, `updated_at`) value (?)'
+//         const protocolValue = [
+//           req.body.protocolId,
+//           req.body.protocolType,
+//           req.body.informationType,
+//           req.body.documentName,
+//           req.file.filename,
+//           imageUrl,
+//           req.body.createdBy,
+//           datetime.toISOString().slice(0, 10),
+//           datetime.toISOString().slice(0, 10)
+//         ]
+//         db.query(que2, [protocolValue], (err, data) => {
+//           if (err) return res.status(500).json(err)
+//           if (data) {
+//             return res.status(200).json({ id: data.insertId })
+//           }
+//         })
+//       }
+//     } else {
+//       return res.status(400).json({ message: 'No file uploaded' })
+//     }
+//   } catch (error) {
+//     console.log({ error })
+//     fs.unlinkSync(req.file?.path)
+//     return res.status(500).json({ message: 'Internal Server Error' })
+//   }
+// }
 
 // export const protocolGeneratePdf = async (req, res) => {
 //   const protocolDetailsObj = {}
@@ -1006,172 +1259,28 @@ export const continueinReviewGeneratePdf = async (req, res) => {
 //   }
 // }
 
-const getProtocolDocuments = async (protocolId, informationType) => {
-  const query =
-    'select * from protocol_documents where protocol_id = ? AND information_type = ?'
-  return new Promise((resolve, reject) => {
-    db.query(query, [protocolId, informationType], (err, data) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(data.length > 0 ? data : [])
-      }
-    })
-  })
-}
+// export const createProtocol = (req, res) => {
+//     // CHECK RESEARCH TYPE IF EXIST
+//     const que = "select * from protocols where research_type = ? AND added_by = ?"
+//     db.query(que, [req.body.research_type_id, req.body.login_id], (err, data) => {
+//         if (err) return res.status(500).json(err)
+//         if (data.length > 0) {
+//             return res.status(400).json('You have already added the selected research type, try with other')
+//         }
+//         // CREATE A NEW Entry
+//         const protocolNumber = "IRB" + Math.floor(Math.random() * 899999 + 100000);
+//         const que2 = 'insert into protocols (`protocol_id`, `research_type`, `added_by`, `added_timestamp`, `updated_timestamp`) value (?)';
+//         const protocolValue = [
+//             protocolNumber,
+//             req.body.research_type_id,
+//             req.body.login_id,
+//             new Date().getTime(),
+//             new Date().getTime(),
+//         ]
+//         db.query(que2, [protocolValue], (err2, data) => {
+//             if (err2) return res.status(500).json(err2)
+//             return res.status(200).json('Research type has been created.')
+//         })
+//     })
 
-const getProtocolDetails = async (protocolId, protocolType) => {
-  const protocolDetailsObj = {}
-
-  const queries = {
-    'Clinical Site': [
-      {
-        key: 'protocol_information',
-        query: 'select * from protocol_information where protocol_id = ?'
-      },
-      {
-        key: 'investigator_information',
-        query: 'select * from investigator_information where protocol_id = ?'
-      },
-      {
-        key: 'study_information',
-        query: 'select * from study_information where protocol_id = ?'
-      },
-      {
-        key: 'informed_consent',
-        query: 'select * from informed_consent where protocol_id = ?'
-      },
-      {
-        key: 'protocol_procedure',
-        query: 'select * from protocol_procedure where protocol_id = ?'
-      }
-    ],
-    'Multi-Site Sponsor': [
-      {
-        key: 'protocol_information',
-        query: 'select * from protocol_information where protocol_id = ?'
-      },
-      {
-        key: 'contact_information',
-        query: 'select * from contact_information where protocol_id = ?'
-      },
-      {
-        key: 'study_information',
-        query: 'select * from study_information where protocol_id = ?'
-      },
-      {
-        key: 'informed_consent',
-        query: 'select * from informed_consent where protocol_id = ?'
-      },
-      {
-        key: 'protocol_procedure',
-        query: 'select * from protocol_procedure where protocol_id = ?'
-      }
-    ],
-    'Document Review': [
-      {
-        key: 'protocol_information',
-        query: 'select * from protocol_information where protocol_id = ?'
-      },
-      {
-        key: 'investigator_information',
-        query: 'select * from investigator_information where protocol_id = ?'
-      },
-      {
-        key: 'informed_consent',
-        query: 'select * from informed_consent where protocol_id = ?'
-      }
-    ],
-    default: [
-      {
-        key: 'investigator_protocol_information',
-        query:
-          'select * from investigator_protocol_information where protocol_id = ?'
-      },
-      {
-        key: 'consent_information',
-        query:
-          'select * from clinical_consent_information where protocol_id = ?'
-      }
-    ]
-  }
-
-  const selectedQueries = queries[protocolType] || queries['default']
-
-  try {
-    // Fetch all details for the protocol
-    for (const { key, query } of selectedQueries) {
-      const data = await new Promise((resolve, reject) => {
-        db.query(query, [protocolId], (err, data) => {
-          if (err) reject(err)
-          else resolve(data.length > 0 ? data[0] : {})
-        })
-      })
-      protocolDetailsObj[key] = data
-
-      // Fetch associated documents for each key
-      const documents = await getProtocolDocuments(protocolId, key)
-      protocolDetailsObj[key].documents = documents
-    }
-    return protocolDetailsObj
-  } catch (error) {
-    throw new Error(`Error fetching protocol details: ${error.message}`)
-  }
-}
-
-export const protocolGeneratePdf = async (req, res) => {
-  const { protocolId, protocolType } = req.body
-  try {
-    // Fetch protocol details
-    const protocolDetailsObj = await getProtocolDetails(
-      protocolId,
-      protocolType
-    )
-    // Generate PDF
-    let template
-    if (protocolType === 'Clinical Site') {
-      template =
-        await PdfTemplates.protocolAmendmentRequestPdfTemplate.ClinicalSitePdfTemplate(
-          protocolDetailsObj,
-          req.body
-        )
-    } else if (protocolType === 'Multi-Site Sponsor') {
-      template =
-        await PdfTemplates.protocolAmendmentRequestPdfTemplate.MultiSiteSponsorPdfTemplate(
-          protocolDetailsObj,
-          req.body
-        )
-    } else if (protocolType === 'Document Review') {
-      template =
-        await PdfTemplates.protocolAmendmentRequestPdfTemplate.DocumentReviewPdfTemplate(
-          protocolDetailsObj,
-          req.body
-        )
-    } else {
-      template =
-        await PdfTemplates.protocolAmendmentRequestPdfTemplate.PrincipalInvestigatorPdfTemplate(
-          protocolDetailsObj,
-          req.body
-        )
-    }
-    // Generate the PDF from template HTML
-    const filePath = await generatePdfFromHTML(
-      template,
-      protocolId,
-      protocolType
-    )
-
-    // Upload the PDF to S3
-    const sRL = await s3Service.uploadFile(filePath)
-    const pdfUrl = sRL.cdnUrl
-
-    // Remove the file from the local server
-    fs.unlinkSync(filePath)
-
-    // Respond with the generated PDF URL
-    return res.status(200).json({ pdfUrl })
-  } catch (error) {
-    console.error(error)
-    return res.status(500).json({ message: 'Internal Server Error' })
-  }
-}
+// }

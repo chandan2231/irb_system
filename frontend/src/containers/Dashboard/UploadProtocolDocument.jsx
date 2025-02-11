@@ -30,7 +30,6 @@ const VisuallyHiddenInput = styled("input")({
 
 const UploadDocument = () => {
   const userDetails = JSON.parse(localStorage.getItem("user"));
-
   const navigate = useNavigate();
   const location = useLocation();
   const [errors, setErrors] = React.useState({});
@@ -44,25 +43,33 @@ const UploadDocument = () => {
   const [protocolDetails, setProtocolDetails] = React.useState({});
   const [isUploadMandatory, setIsUploadMandatory] = React.useState(true);
   const [uploadDocumentKey, setUploadDocumentKey] = React.useState(null);
+  const protocolTypeDetails = location?.state?.details || {};
+  const identifierType = location?.state?.identifierType || {};
 
   React.useEffect(() => {
     const fetchSubjectOptions = () => {
-      const protocolTypeDetails = location?.state?.details || {};
       const { researchType } = protocolTypeDetails;
       setProtocolDetails(protocolTypeDetails);
       try {
         setLoader(true);
-        const response = CONSTANTS.getDropDownOptionsByResearchType(
-          researchType
-        ).filter((source) => source.isUploadMandatory === true);
-        setSubjectOptions(response);
+        if (identifierType === "external_monitor") {
+          const externalMonitorUser = "External Monitor";
+          const response = CONSTANTS.getDropDownOptionsByResearchType(
+            externalMonitorUser
+          ).filter((source) => source.isUploadMandatory === true);
+          setSubjectOptions(response);
+        } else {
+          const response = CONSTANTS.getDropDownOptionsByResearchType(
+            researchType
+          ).filter((source) => source.isUploadMandatory === true);
+          setSubjectOptions(response);
+        }
       } catch (error) {
         toast.error("Failed to fetch subject options");
       } finally {
         setLoader(false);
       }
     };
-
     fetchSubjectOptions();
   }, []);
 
@@ -89,8 +96,17 @@ const UploadDocument = () => {
     setIsUploadMandatory(selectedSource.isUploadMandatory);
   };
 
-  const handleCancelReplyButtonClicked = () => {
-    navigate("/dashboard");
+  const handleCancel = () => {
+    setLoader(true);
+
+    setTimeout(() => {
+      setLoader(false);
+      navigate(
+        identifierType === "external_monitor"
+          ? "/external/monitor"
+          : "/dashboard"
+      );
+    }, 1000);
   };
 
   const validateForm = () => {
@@ -111,9 +127,7 @@ const UploadDocument = () => {
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
-
     try {
       setLoader(true);
       await uploadFilesIfNeeded();
@@ -124,7 +138,6 @@ const UploadDocument = () => {
       });
       toast.success("Form submitted successfully");
     } catch (error) {
-      console.error("Error submitting form:", error);
       toast.error("Failed to submit form");
     } finally {
       setFormData({
@@ -146,17 +159,13 @@ const UploadDocument = () => {
           informationType: formData.subject,
           documentName: uploadDocumentKey,
           createdBy: userDetails.id,
+          identifierType: identifierType,
         })
       );
-
       // Wait for all files to upload
       await Promise.all(uploadPromises);
     }
   };
-
-  useEffect(() => {
-    console.log("formData", formData);
-  }, [formData]);
 
   if (loader) {
     return <Loader />;
@@ -195,16 +204,17 @@ const UploadDocument = () => {
               className="mt-mb-20"
             >
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
-                  <InputLabel id="demo-simple-select-autowidth-label">
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
                     Select Category *
                   </InputLabel>
                   <Select
-                    autoWidth
-                    label="Select Category"
-                    name="subject"
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Select Category *"
                     value={formData.subject || ""}
                     onChange={(e) => handleChange(e)}
+                    name="subject"
                   >
                     {subjectOptions.map((source, index) => {
                       return (
@@ -272,7 +282,7 @@ const UploadDocument = () => {
                 variant="outlined"
                 color="error"
                 type="button"
-                onClick={handleCancelReplyButtonClicked}
+                onClick={handleCancel}
                 sx={{ mr: 2 }}
               >
                 CANCEL
