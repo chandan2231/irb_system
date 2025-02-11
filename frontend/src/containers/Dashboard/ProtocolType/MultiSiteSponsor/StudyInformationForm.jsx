@@ -211,7 +211,7 @@ function StudyInformationForm({
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={studyInformation?.research_type}
+                value={formData.research_type}
                 onChange={(event) =>
                   handleSelectResearchType(event, "research_type")
                 }
