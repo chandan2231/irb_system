@@ -4,12 +4,8 @@ import { fetchProtocolList } from "../../services/ExternalMonitor/ExternalMonito
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import Grid from "@mui/material/Grid";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import CommonButton from "../../components/CommonButton";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -17,6 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { protocolReport } from "../../services/UserManagement/UserService";
 import Loader from "../../components/Loader";
 import PreviewIcon from "@mui/icons-material/Preview";
+import Grid from "@mui/material/Grid";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import CommonButton from "../../components/CommonButton";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 function ExternalMonitorProtocol() {
   const theme = useTheme();
@@ -39,27 +39,20 @@ function ExternalMonitorProtocol() {
   }, []);
   const navigateProtocolDetails = (params) => {
     navigate("/protocol-details", {
-      state: { details: params.row, type: "user" },
+      state: { details: params.row, type: "external_monitor" },
     });
   };
   const navigateToCommunicationDetails = (params) => {
     navigate("/communication", {
-      state: { details: params.row, identifierType: "user" },
+      state: { details: params.row, identifierType: "external_monitor" },
     });
   };
   const navigateToUploadDocument = (params) => {
-    navigate("/upload-protocol-document", {
-      state: { details: params.row, identifierType: "user" },
+    navigate("/external/monitor/upload/report", {
+      state: { details: params.row, identifierType: "external_monitor" },
     });
   };
-  const handleViewChildProtocol = (params) => {
-    setIsViewChildProtocolModalOpen(true);
-    setViewChildProtocolData(params.row);
-  };
-  const handleCloseViewChildProtocol = () => {
-    setIsViewChildProtocolModalOpen(false);
-    setViewChildProtocolData(null);
-  };
+
   const columns = [
     {
       field: "protocolId",
@@ -101,6 +94,12 @@ function ExternalMonitorProtocol() {
           icon={<PictureAsPdfIcon />}
           label="View Pdf"
           onClick={() => handleViewPdf(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<CloudUploadIcon />}
+          label="Upload Document"
+          onClick={() => navigateToUploadDocument(params)}
           showInMenu
         />,
       ],
@@ -211,7 +210,6 @@ function ExternalMonitorProtocol() {
             Protocol List
           </Typography>
         </Box>
-
         <Box sx={{ mt: 5 }}>
           <DataGrid
             rows={protocolDataList}

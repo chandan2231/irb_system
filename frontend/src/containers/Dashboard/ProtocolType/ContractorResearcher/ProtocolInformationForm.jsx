@@ -521,39 +521,42 @@ function ProtocolInformationForm({
               <div className="error">{errors.study_duration}</div>
             )}
           </Form.Group>
-          <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
-            <InputLabel id="demo-simple-select-autowidth-label">
-              Funding source *
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-autowidth-label"
-              id="demo-simple-select-autowidth"
-              autoWidth
-              label="Funding source"
-              name="funding_source"
-              value={formData.funding_source}
-              onChange={handleChange}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value="Self/Investigator-Sponsor/Internally Funded">
-                Self/Investigator-Sponsor/Internally Funded
-              </MenuItem>
-              <MenuItem value="Industry">Industry</MenuItem>
-              <MenuItem value="Non-profit organization">
-                Non-profit organization
-              </MenuItem>
-              <MenuItem value="U.S. Federal Grant">U.S. Federal Grant</MenuItem>
-              <MenuItem value="State or local Government">
-                State or local Government
-              </MenuItem>
-              <MenuItem value="No funding">No funding</MenuItem>
-            </Select>
-            {errors.funding_source && (
-              <div className="error">{errors.funding_source}</div>
-            )}
-          </FormControl>
+          <Form.Group as={Col} controlId="validationFormik09">
+            <FormControl fullWidth className="mt-mb-20">
+              <InputLabel id="demo-simple-select-label">
+                Funding source *
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Funding source"
+                name="funding_source"
+                value={formData.funding_source}
+                onChange={handleChange}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value="Self/Investigator-Sponsor/Internally Funded">
+                  Self/Investigator-Sponsor/Internally Funded
+                </MenuItem>
+                <MenuItem value="Industry">Industry</MenuItem>
+                <MenuItem value="Non-profit organization">
+                  Non-profit organization
+                </MenuItem>
+                <MenuItem value="U.S. Federal Grant">
+                  U.S. Federal Grant
+                </MenuItem>
+                <MenuItem value="State or local Government">
+                  State or local Government
+                </MenuItem>
+                <MenuItem value="No funding">No funding</MenuItem>
+              </Select>
+              {errors.funding_source && (
+                <div className="error">{errors.funding_source}</div>
+              )}
+            </FormControl>
+          </Form.Group>
           <Box sx={{ flexGrow: 1 }}>
             <Form.Group
               as={Col}

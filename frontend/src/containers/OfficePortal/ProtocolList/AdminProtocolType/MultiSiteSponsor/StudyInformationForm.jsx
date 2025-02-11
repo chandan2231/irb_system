@@ -89,40 +89,41 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation, type }) {
   return (
     <Row>
       <form onSubmit={handleSubmitData}>
-        <FormControl sx={{ minWidth: "100%" }} className="mt-mb-20">
-          <InputLabel id="demo-simple-select-autowidth-label">
-            What type of research study are you submitting *
-          </InputLabel>
-          <Select
-            autoWidth
-            labelId="demo-simple-select-autowidth-label"
-            id="demo-simple-select-autowidth"
-            value={studyInformation?.research_type}
-            onChange={(event) =>
-              handleSelectResearchType(event, "research_type")
-            }
-            label="What type of research study are you submitting"
-            name="research_type"
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value="Drug/biologic">Drug/biologic</MenuItem>
-            <MenuItem value="Device">Device</MenuItem>
-            <MenuItem value="Social/behavioral">Social/behavioral</MenuItem>
-            <MenuItem value="Food/dietary supplement">
-              Food/dietary supplement
-            </MenuItem>
-            <MenuItem value="State or local Government">
-              State or local Government
-            </MenuItem>
-            <MenuItem value="Cosmetic">Cosmetic</MenuItem>
-            <MenuItem value="Retrospective/chart review">
-              Retrospective/chart review
-            </MenuItem>
-            <MenuItem value="Other">Other</MenuItem>
-          </Select>
-        </FormControl>
+        <Form.Group as={Col} controlId="validationFormik09">
+          <FormControl fullWidth className="mt-mb-20">
+            <InputLabel id="demo-simple-select-label">
+              What type of research study are you submitting *
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={studyInformation?.research_type}
+              onChange={(event) =>
+                handleSelectResearchType(event, "research_type")
+              }
+              label="What type of research study are you submitting"
+              name="research_type"
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="Drug/biologic">Drug/biologic</MenuItem>
+              <MenuItem value="Device">Device</MenuItem>
+              <MenuItem value="Social/behavioral">Social/behavioral</MenuItem>
+              <MenuItem value="Food/dietary supplement">
+                Food/dietary supplement
+              </MenuItem>
+              <MenuItem value="State or local Government">
+                State or local Government
+              </MenuItem>
+              <MenuItem value="Cosmetic">Cosmetic</MenuItem>
+              <MenuItem value="Retrospective/chart review">
+                Retrospective/chart review
+              </MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+          </FormControl>
+        </Form.Group>
         {studyInformation?.research_type === "Other" && (
           <Form.Group
             as={Col}
