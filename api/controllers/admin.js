@@ -363,47 +363,184 @@ export const allowProtocolWaiveFee = (req, res) => {
   })
 }
 
+// export const getApprovedProtocolList = (req, res) => {
+//   const que =
+//     'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=3'
+//   db.query(que, {}, (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }
+
+// export const getUnderReviewProtocolList = (req, res) => {
+//   const que =
+//     'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=2'
+//   db.query(que, {}, (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }
+
+// export const getRejectedProtocolList = (req, res) => {
+//   const que =
+//     'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=4'
+//   db.query(que, {}, (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }
+
 export const getApprovedProtocolList = (req, res) => {
-  const que =
-    'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=3'
-  db.query(que, {}, (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
+  const page = parseInt(req.body.page) || 0
+  const pageSize = parseInt(req.body.pageSize) || 10
+  const offset = page * pageSize
+
+  const countQuery = `SELECT COUNT(*) AS total FROM protocols WHERE status = 3`
+  const dataQuery = `
+    SELECT ps.*, users.name, users.mobile, users.email, users.city 
+    FROM protocols AS ps 
+    JOIN users ON ps.added_by = users.id 
+    WHERE ps.status=3
+    ORDER BY ps.id DESC 
+    LIMIT ? OFFSET ?
+  `
+
+  db.query(countQuery, (err, countResult) => {
+    if (err) return res.status(500).json({ error: err.message })
+
+    const totalRecords = countResult[0].total
+    const totalPages = Math.ceil(totalRecords / pageSize)
+
+    db.query(dataQuery, [pageSize, offset], (err, data) => {
+      if (err) return res.status(500).json({ error: err.message })
+
+      return res.status(200).json({
+        data,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalRecords,
+          pageSize
+        }
+      })
+    })
   })
 }
 
 export const getUnderReviewProtocolList = (req, res) => {
-  const que =
-    'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=2'
-  db.query(que, {}, (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
+  const page = parseInt(req.body.page) || 0
+  const pageSize = parseInt(req.body.pageSize) || 10
+  const offset = page * pageSize
+
+  const countQuery = `SELECT COUNT(*) AS total FROM protocols WHERE status = 2 AND added_by !=  0`
+  const dataQuery = `
+    SELECT ps.*, users.name, users.mobile, users.email, users.city 
+    FROM protocols AS ps 
+    JOIN users ON ps.added_by = users.id 
+    WHERE ps.status=2
+    ORDER BY ps.id DESC 
+    LIMIT ? OFFSET ?
+  `
+
+  db.query(countQuery, (err, countResult) => {
+    if (err) return res.status(500).json({ error: err.message })
+
+    const totalRecords = countResult[0].total
+    const totalPages = Math.ceil(totalRecords / pageSize)
+
+    db.query(dataQuery, [pageSize, offset], (err, data) => {
+      if (err) return res.status(500).json({ error: err.message })
+
+      return res.status(200).json({
+        data,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalRecords,
+          pageSize
+        }
+      })
+    })
   })
 }
 
 export const getRejectedProtocolList = (req, res) => {
-  const que =
-    'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=4'
-  db.query(que, {}, (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
+  const page = parseInt(req.body.page) || 0
+  const pageSize = parseInt(req.body.pageSize) || 10
+  const offset = page * pageSize
+
+  const countQuery = `SELECT COUNT(*) AS total FROM protocols WHERE status = 4`
+  const dataQuery = `
+    SELECT ps.*, users.name, users.mobile, users.email, users.city 
+    FROM protocols AS ps 
+    JOIN users ON ps.added_by = users.id 
+    WHERE ps.status=4 
+    ORDER BY ps.id DESC 
+    LIMIT ? OFFSET ?
+  `
+
+  db.query(countQuery, (err, countResult) => {
+    if (err) return res.status(500).json({ error: err.message })
+
+    const totalRecords = countResult[0].total
+    const totalPages = Math.ceil(totalRecords / pageSize)
+
+    db.query(dataQuery, [pageSize, offset], (err, data) => {
+      if (err) return res.status(500).json({ error: err.message })
+
+      return res.status(200).json({
+        data,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalRecords,
+          pageSize
+        }
+      })
+    })
   })
 }
 
 export const getCreatedProtocolList = (req, res) => {
-  const que =
-    'SELECT ps.*, users.name, users.mobile, users.email, users.city FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=1'
-  db.query(que, {}, (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
+  const page = parseInt(req.body.page) || 0
+  const pageSize = parseInt(req.body.pageSize) || 10
+  const offset = page * pageSize
+
+  const countQuery = `SELECT COUNT(*) AS total FROM protocols WHERE status = 1`
+  const dataQuery = `
+    SELECT ps.*, users.name, users.mobile, users.email, users.city 
+    FROM protocols AS ps 
+    JOIN users ON ps.added_by = users.id 
+    WHERE ps.status = 1 
+    ORDER BY ps.id DESC 
+    LIMIT ? OFFSET ?
+  `
+
+  db.query(countQuery, (err, countResult) => {
+    if (err) return res.status(500).json({ error: err.message })
+
+    const totalRecords = countResult[0].total
+    const totalPages = Math.ceil(totalRecords / pageSize)
+
+    db.query(dataQuery, [pageSize, offset], (err, data) => {
+      if (err) return res.status(500).json({ error: err.message })
+
+      return res.status(200).json({
+        data,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalRecords,
+          pageSize
+        }
+      })
+    })
   })
 }
 

@@ -26,6 +26,7 @@ import {
 import AssignProtocolToMember from "./AssignProtocolToMember";
 import Loader from "../../../components/Loader";
 import MultisiteChildProtocol from "../../Dashboard/MultisiteAllProtocol";
+import CTMProtocolReport from "../../Dashboard/CTMProtocolReport";
 
 function UnderReviewProtocolList() {
   const theme = useTheme();
@@ -41,6 +42,13 @@ function UnderReviewProtocolList() {
     React.useState(false);
   const [viewChildProtocolData, setViewChildProtocolData] =
     React.useState(null);
+  const [paginationModel, setPaginationModel] = React.useState({
+    page: 0,
+    pageSize: 10,
+  });
+  const [isViewCTMModalOpen, setIsViewCTMModalOpen] = React.useState(false);
+  const [viewCTMProtocolData, setViewCTMProtocolData] = React.useState(null);
+  var totalElements = 0;
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -160,6 +168,12 @@ function UnderReviewProtocolList() {
                 onClick={() => handleViewChildProtocol(params)}
                 showInMenu
               />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
             ]
           : [
               <GridActionsCellItem
@@ -186,39 +200,35 @@ function UnderReviewProtocolList() {
                 onClick={() => navigateToCommunicationDetails(params)}
                 showInMenu
               />,
-              // <GridActionsCellItem
-              //     icon={<EditNoteIcon />}
-              //     label="Edit"
-              //     onClick={handleItemEdit(params)}
-              //     showInMenu
-              // />,
-              // <GridActionsCellItem
-              //     icon={<SettingsSuggestIcon />}
-              //     label="Details"
-              //     onClick={handleItemDetail(params)}
-              //     showInMenu
-              // />,
-              // <GridActionsCellItem
-              //     icon={<DeleteIcon />}
-              //     label="Delete"
-              //     onClick={handleItemDelete(params)}
-              //     showInMenu
-              // />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
             ],
     },
   ];
 
-  var totalElements = 0;
-  const { underReviewProtocolList, loading, error } = useSelector((state) => ({
-    error: state.admin.error,
-    underReviewProtocolList: state.admin.underReviewProtocolList,
-    loading: state.admin.loading,
-  }));
+  const { underReviewProtocolList, loading, error, pagination } = useSelector(
+    (state) => ({
+      error: state.admin.error,
+      loading: state.admin.loading,
+      underReviewProtocolList: state.admin.underReviewProtocolList?.data,
+      pagination: state.admin.underReviewProtocolList?.pagination,
+    })
+  );
+
   useEffect(() => {
-    dispatch(fetchUnderReviewProtocolList());
-  }, [dispatch, user.id]);
+    const data = {
+      page: paginationModel.page,
+      pageSize: paginationModel.pageSize,
+    };
+    dispatch(fetchUnderReviewProtocolList(data));
+  }, [dispatch, user.id, paginationModel.page, paginationModel.pageSize]);
+
   if (underReviewProtocolList !== "" && underReviewProtocolList?.length > 0) {
-    totalElements = underReviewProtocolList.length;
+    totalElements = pagination?.totalRecords;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -419,13 +429,14 @@ function UnderReviewProtocolList() {
     });
   };
 
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
+  const handleViewCTMReport = (params) => {
+    setIsViewCTMModalOpen(true);
+    setViewCTMProtocolData(params.row);
+  };
+  const handleCloseCTMReport = (params) => {
+    setIsViewCTMModalOpen(false);
+    setViewCTMProtocolData(null);
+  };
 
   if (loader) {
     return <Loader />;
@@ -449,12 +460,13 @@ function UnderReviewProtocolList() {
         <Box>
           <Grid container spacing={2}>
             {/* Title Grid Item */}
-            <Grid item xs={12} sm={10} md={8} lg={8}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
               <Typography
-                variant="h5"
-                mb={2}
+                variant="h2"
                 sx={{
-                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
                 }}
               >
                 Under Review Protocol List
@@ -487,8 +499,11 @@ function UnderReviewProtocolList() {
             columns={columns}
             rowCount={rowCount}
             loading={loading}
+            pageSizeOptions={[5, 10, 20, 30, 40, 50, 100]}
+            page={paginationModel.page}
+            paginationModel={paginationModel}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
+            onPaginationModelChange={setPaginationModel}
           />
         </Box>
       </Box>
@@ -497,6 +512,14 @@ function UnderReviewProtocolList() {
           open={isViewChildProtocolModalOpen}
           data={viewChildProtocolData}
           onClose={() => handleCloseViewChildProtocol()}
+        />
+      </Box>
+      <Box>
+        <CTMProtocolReport
+          open={isViewCTMModalOpen}
+          data={viewCTMProtocolData}
+          onClose={() => handleCloseCTMReport()}
+          type="ctm"
         />
       </Box>
     </>
