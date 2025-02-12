@@ -55,21 +55,17 @@ function SignIn() {
         setCurrentUser(data.payload.data);
         localStorage.setItem("user", JSON.stringify(data.payload.data));
         setTimeout(() => {
-          if (data.payload.data.user_type === "admin") {
-            navigate("/admin/approved-protocol-list");
-          } else if (data.payload.data.user_type === "Voting Member") {
-            navigate("/member/protocol-list");
-          } else if (data.payload.data.user_type === "Committee Chair") {
-            navigate("/committee-chair/protocol-list");
-          } else if (data.payload.data.user_type === "Office Staff") {
-            navigate("/dashboard");
-          } else if (data.payload.data.user_type === "Non Voting Member") {
-            navigate("/dashboard");
-          } else if (data.payload.data.user_type === "user") {
-            navigate("/dashboard");
-          } else if (data.payload.data.user_type === "external_monitor") {
-            navigate("/external/monitor");
-          }
+          const userRoutes = {
+            admin: "/admin/approved-protocol-list",
+            "Voting Member": "/member/protocol-list",
+            "Committee Chair": "/committee-chair/protocol-list",
+            "Office Staff": "/office/created-protocols",
+            "Non Voting Member": "/dashboard",
+            user: "/dashboard",
+            external_monitor: "/external/monitor",
+          };
+          const userType = data?.payload?.data?.user_type;
+          navigate(userRoutes[userType] || "/dashboard");
         }, 2000);
       } else {
         setSuccessMessage(false);
