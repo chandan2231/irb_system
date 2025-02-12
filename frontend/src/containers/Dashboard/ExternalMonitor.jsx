@@ -212,12 +212,19 @@ function ExternalMonitor() {
       <Box m={theme.layoutContainer.layoutSection}>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={5} sm={5} md={8} lg={8}>
-              <Typography variant="h5" mb={2}>
+            <Grid item xs={12} sm={12} md={8} lg={8}>
+              <Typography
+                variant="h2"
+                sx={{
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                }}
+              >
                 External Monitor List
               </Typography>
             </Grid>
-            <Grid item xs={7} sm={7} md={4} lg={4}>
+            <Grid item xs={12} sm={12} md={4} lg={4}>
               <Box display="flex" justifyContent="flex-end">
                 <CommonButton
                   variant="contained"

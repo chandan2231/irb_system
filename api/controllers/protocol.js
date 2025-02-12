@@ -7,6 +7,26 @@ import sendEmail from '../emailService.js'
 import { getUserInfo } from '../userData.js'
 import bcrypt from 'bcryptjs'
 
+export const getCTMProtocolsReport = (req, res) => {
+  const que = `SELECT 
+      emd.*,
+      users.name, 
+      users.mobile, 
+      users.email
+    FROM 
+      external_monitor_documents AS emd
+    LEFT JOIN 
+      users ON emd.created_by = users.id
+    WHERE 
+      emd.protocol_id = ?`
+  db.query(que, [req.body.protocolId], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
 export const getCRCList = (req, res) => {
   const que =
     'select * from clinical_research_coordinator WHERE status=? AND added_by=?'
@@ -340,13 +360,46 @@ export const createProtocol = async (req, res) => {
   }
 }
 
+// export const getProtocolList = (req, res) => {
+//   const que = 'select * from protocols where added_by = ?'
+//   db.query(que, [req.body.login_id], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }
+
 export const getProtocolList = (req, res) => {
-  const que = 'select * from protocols where added_by = ?'
-  db.query(que, [req.body.login_id], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
+  const { login_id } = req.body
+  const page = Number(req.body.page) || 0 // Default to page 0
+  const pageSize = Number(req.body.pageSize) || 10 // Default to 10 records per page
+  const offset = page * pageSize // Offset calculation based on 0-based index
+
+  const countQuery =
+    'SELECT COUNT(*) AS total FROM protocols WHERE added_by = ?'
+  const dataQuery =
+    'SELECT * FROM protocols WHERE added_by = ? ORDER BY id DESC LIMIT ? OFFSET ?'
+
+  db.query(countQuery, [login_id], (err, countResult) => {
+    if (err) return res.status(500).json({ error: err.message })
+
+    const totalRecords = countResult[0].total
+    const totalPages = Math.ceil(totalRecords / pageSize)
+
+    db.query(dataQuery, [login_id, pageSize, offset], (err, data) => {
+      if (err) return res.status(500).json({ error: err.message })
+
+      return res.status(200).json({
+        data,
+        pagination: {
+          currentPage: page, // Starts from 0
+          totalPages,
+          totalRecords,
+          pageSize
+        }
+      })
+    })
   })
 }
 

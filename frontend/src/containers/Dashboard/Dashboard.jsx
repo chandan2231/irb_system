@@ -13,10 +13,6 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CommonButton from "../../components/CommonButton";
 import moment from "moment";
 import ToggleStatus from "../../components/ToggleStatus";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -27,8 +23,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { protocolReport } from "../../services/UserManagement/UserService";
 import Loader from "../../components/Loader";
 import PreviewIcon from "@mui/icons-material/Preview";
-import CommonModal from "../../components/CommonModal/Modal";
 import MultisiteChildProtocol from "./MultisiteAllProtocol";
+import CTMProtocolReport from "./CTMProtocolReport";
 
 function Dashboard() {
   const theme = useTheme();
@@ -40,9 +36,15 @@ function Dashboard() {
     React.useState(false);
   const [viewChildProtocolData, setViewChildProtocolData] =
     React.useState(null);
+  const [isViewCTMModalOpen, setIsViewCTMModalOpen] = React.useState(false);
 
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
+  const [paginationModel, setPaginationModel] = React.useState({
+    page: 0,
+    pageSize: 10,
+  });
+  var totalElements = 0;
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
     if (userDetails) {
@@ -70,6 +72,15 @@ function Dashboard() {
   };
   const handleCloseViewChildProtocol = () => {
     setIsViewChildProtocolModalOpen(false);
+    setViewChildProtocolData(null);
+  };
+
+  const handleViewCTMReport = (params) => {
+    setIsViewCTMModalOpen(true);
+    setViewChildProtocolData(params.row);
+  };
+  const handleCloseCTMReport = (params) => {
+    setIsViewCTMModalOpen(false);
     setViewChildProtocolData(null);
   };
   const columns = [
@@ -133,7 +144,13 @@ function Dashboard() {
               />,
               <GridActionsCellItem
                 icon={<PreviewIcon />}
-                label="View Child Protocol"
+                label="View Sub Protocol"
+                onClick={() => handleViewChildProtocol(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
                 onClick={() => handleViewChildProtocol(params)}
                 showInMenu
               />,
@@ -157,45 +174,44 @@ function Dashboard() {
                 onClick={() => navigateToUploadDocument(params)}
                 showInMenu
               />,
-              // <GridActionsCellItem
-              //     icon={<EditNoteIcon />}
-              //     label="Edit"
-              //     onClick={handleItemEdit(params)}
-              //     showInMenu
-              // />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
               // <GridActionsCellItem
               //     icon={<SettingsSuggestIcon />}
               //     label="Details"
               //     onClick={handleItemDetail(params)}
               //     showInMenu
               // />,
-              // <GridActionsCellItem
-              //     icon={<DeleteIcon />}
-              //     label="Delete"
-              //     onClick={handleItemDelete(params)}
-              //     showInMenu
-              // />,
             ],
     },
   ];
 
-  var totalElements = 0;
-  const { protocolList, loading, error, createdProtocol } = useSelector(
-    (state) => ({
+  const { protocolList, loading, error, createdProtocol, pagination } =
+    useSelector((state) => ({
       error: state.dashboard.error,
-      protocolList: state.dashboard.protocolList,
+      protocolList: state.dashboard.protocolList?.data,
       loading: state.dashboard.loading,
       createdProtocol: state.dashboard.createdProtocol,
-    })
-  );
+      pagination: state.dashboard.protocolList?.pagination,
+    }));
+  console.log("protocolList", protocolList);
   useEffect(() => {
-    const data = { login_id: user.id };
+    const data = {
+      page: paginationModel.page,
+      pageSize: paginationModel.pageSize,
+      login_id: user.id,
+    };
     dispatch(fetchProtocolList(data));
-  }, [dispatch, user.id]);
+  }, [dispatch, user.id, paginationModel.page, paginationModel.pageSize]);
 
   if (protocolList !== "" && protocolList?.length > 0) {
-    totalElements = protocolList.length;
+    totalElements = pagination?.totalRecords;
   }
+
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
     if (totalElements !== undefined) {
@@ -309,7 +325,11 @@ function Dashboard() {
 
   useEffect(() => {
     if (createdProtocol) {
-      const data = { login_id: user.id };
+      const data = {
+        page: paginationModel.page,
+        pageSize: paginationModel.pageSize,
+        login_id: user.id,
+      };
       dispatch(fetchProtocolList(data));
     }
   }, [createdProtocol]);
@@ -370,12 +390,19 @@ function Dashboard() {
       <Box m={theme.layoutContainer.layoutSection}>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={5} sm={5} md={8} lg={8}>
-              <Typography variant="h5" mb={2}>
+            <Grid item xs={12} sm={12} md={8} lg={8}>
+              <Typography
+                variant="h2"
+                sx={{
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                }}
+              >
                 Protocol List
               </Typography>
             </Grid>
-            <Grid item xs={7} sm={7} md={4} lg={4}>
+            <Grid item xs={12} sm={12} md={4} lg={4}>
               <Box display="flex" justifyContent="flex-end">
                 <CommonButton
                   variant="contained"
@@ -401,9 +428,11 @@ function Dashboard() {
             columns={columns}
             rowCount={rowCount}
             loading={loading}
+            pageSizeOptions={[5, 10, 20, 30, 40, 50, 100]}
+            page={paginationModel.page}
+            paginationModel={paginationModel}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
-            // onRowClick={(param) => handleChangeStatus(param)}
+            onPaginationModelChange={setPaginationModel}
           />
         </Box>
       </Box>
@@ -412,6 +441,13 @@ function Dashboard() {
           open={isViewChildProtocolModalOpen}
           data={viewChildProtocolData}
           onClose={() => handleCloseViewChildProtocol()}
+        />
+      </Box>
+      <Box>
+        <CTMProtocolReport
+          open={isViewCTMModalOpen}
+          data={viewChildProtocolData}
+          onClose={() => handleCloseCTMReport()}
         />
       </Box>
     </>
