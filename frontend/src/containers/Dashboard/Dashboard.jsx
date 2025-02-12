@@ -36,6 +36,7 @@ function Dashboard() {
     React.useState(false);
   const [viewChildProtocolData, setViewChildProtocolData] =
     React.useState(null);
+  const [viewCTMProtocolData, setViewCTMProtocolData] = React.useState(null);
   const [isViewCTMModalOpen, setIsViewCTMModalOpen] = React.useState(false);
 
   const [protocolDataList, setProtocolDataList] = React.useState([]);
@@ -77,11 +78,11 @@ function Dashboard() {
 
   const handleViewCTMReport = (params) => {
     setIsViewCTMModalOpen(true);
-    setViewChildProtocolData(params.row);
+    setViewCTMProtocolData(params.row);
   };
   const handleCloseCTMReport = (params) => {
     setIsViewCTMModalOpen(false);
-    setViewChildProtocolData(null);
+    setViewCTMProtocolData(null);
   };
   const columns = [
     {
@@ -151,7 +152,7 @@ function Dashboard() {
               <GridActionsCellItem
                 icon={<PreviewIcon />}
                 label="View CTM Report"
-                onClick={() => handleViewChildProtocol(params)}
+                onClick={() => handleViewCTMReport(params)}
                 showInMenu
               />,
             ]
@@ -180,12 +181,6 @@ function Dashboard() {
                 onClick={() => handleViewCTMReport(params)}
                 showInMenu
               />,
-              // <GridActionsCellItem
-              //     icon={<SettingsSuggestIcon />}
-              //     label="Details"
-              //     onClick={handleItemDetail(params)}
-              //     showInMenu
-              // />,
             ],
     },
   ];
@@ -198,7 +193,6 @@ function Dashboard() {
       createdProtocol: state.dashboard.createdProtocol,
       pagination: state.dashboard.protocolList?.pagination,
     }));
-  console.log("protocolList", protocolList);
   useEffect(() => {
     const data = {
       page: paginationModel.page,
@@ -262,12 +256,6 @@ function Dashboard() {
             ? data.protocol_user_type
             : data.research_type_id,
       };
-      // if (data.research_type_id === "Principal Investigator") {
-      //   dataObj = {
-      //     ...dataObj,
-      //     protocol_user_type: data.protocol_user_type,
-      //   };
-      // }
 
       dispatch(createProtocol(dataObj)).then((data) => {
         if (data.payload.status === 200) {
@@ -356,18 +344,6 @@ function Dashboard() {
     }
   };
 
-  // const handleItemDelete = (params) => {
-  //     //console.log('Delete Item', params)
-  // }
-
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
-
   if (loader) {
     return <Loader />;
   }
@@ -445,7 +421,7 @@ function Dashboard() {
       <Box>
         <CTMProtocolReport
           open={isViewCTMModalOpen}
-          data={viewChildProtocolData}
+          data={viewCTMProtocolData}
           onClose={() => handleCloseCTMReport()}
           type="ctm"
         />

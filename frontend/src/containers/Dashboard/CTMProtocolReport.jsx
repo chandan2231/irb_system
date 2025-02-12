@@ -78,7 +78,7 @@ const CTMProtocolReport = ({ open, onClose, data = {}, type }) => {
           </Box>
         ) : (
           <Box sx={{ mt: 2, mr: 1, textAlign: "center" }}>
-            {(type = "ctm" ? "No Report Uploaded by the CTM" : "No Data Found")}
+            {(type = "ctm" ? "No report uploaded by the CTM" : "No Data Found")}
           </Box>
         )}
       </Box>
