@@ -292,7 +292,6 @@ function Dashboard() {
         loggedinUserId: user.id,
       };
       dispatch(checkMultisiteProtocolExist(updatedPayload)).then((data) => {
-        console.log("datadatadata", data);
         if (data.payload.status === 200) {
           setOpen(false);
           toast.success(data.payload.message, {
@@ -448,6 +447,7 @@ function Dashboard() {
           open={isViewCTMModalOpen}
           data={viewChildProtocolData}
           onClose={() => handleCloseCTMReport()}
+          type="ctm"
         />
       </Box>
     </>

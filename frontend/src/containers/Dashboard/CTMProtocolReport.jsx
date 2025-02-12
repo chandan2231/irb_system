@@ -4,8 +4,9 @@ import Loader from "../../components/Loader";
 import { getCTMProtocolsReport } from "../../services/Dashboard/DashboardService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mui/material";
+import moment from "moment";
 
-const CTMProtocolReport = ({ open, onClose, data = {} }) => {
+const CTMProtocolReport = ({ open, onClose, data = {}, type }) => {
   const [loader, setLoader] = React.useState(false);
   const dispatch = useDispatch();
 
@@ -29,16 +30,16 @@ const CTMProtocolReport = ({ open, onClose, data = {} }) => {
     return (
       <Box>
         {CTMProtocolsReport?.length > 0 ? (
-          <div>
+          <Box sx={{ mt: 2, mr: 1 }}>
             <table className="table table-bordered">
-              <thead>
+              <thead style={{ textAlign: "left" }}>
                 <tr>
                   <th>CTM Name</th>
                   <th>CTM Email</th>
                   <th>CTM Mobile</th>
-                  <th>Protocol ID</th>
                   <th>Document Type</th>
                   <th>Attachment</th>
+                  <th>Added Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -48,7 +49,6 @@ const CTMProtocolReport = ({ open, onClose, data = {} }) => {
                       <td>{item?.name ? item?.name : "-"}</td>
                       <td>{item?.email ? item?.email : "-"}</td>
                       <td>{item?.mobile ? item?.mobile : "-"}</td>
-                      <td>{item?.protocol_id ? item?.protocol_id : "-"}</td>
                       <td>
                         {item?.information_type ? item?.information_type : "-"}
                       </td>
@@ -65,14 +65,21 @@ const CTMProtocolReport = ({ open, onClose, data = {} }) => {
                           "-"
                         )}
                       </td>
+                      <td>
+                        {item?.created_at
+                          ? moment(item?.created_at).format("DD-MM-YYYY")
+                          : "-"}
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
+          </Box>
         ) : (
-          <div>No Data Found</div>
+          <Box sx={{ mt: 2, mr: 1, textAlign: "center" }}>
+            {(type = "ctm" ? "No Report Uploaded by the CTM" : "No Data Found")}
+          </Box>
         )}
       </Box>
     );
