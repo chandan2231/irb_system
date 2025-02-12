@@ -18,6 +18,8 @@ import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../components/Loader";
+import CTMProtocolReport from "../../Dashboard/CTMProtocolReport";
+import PreviewIcon from "@mui/icons-material/Preview";
 
 function ApprovedProtocolList() {
   const theme = useTheme();
@@ -26,6 +28,13 @@ function ApprovedProtocolList() {
   const [loader, setLoader] = React.useState(false);
   const [protocolDataList, setProtocolDataList] = React.useState([]);
   const [user, setUser] = useState([]);
+  const [paginationModel, setPaginationModel] = React.useState({
+    page: 0,
+    pageSize: 10,
+  });
+  const [isViewCTMModalOpen, setIsViewCTMModalOpen] = React.useState(false);
+  const [viewCTMProtocolData, setViewCTMProtocolData] = React.useState(null);
+  var totalElements = 0;
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
     if (userDetails) {
@@ -114,45 +123,34 @@ function ApprovedProtocolList() {
           onClick={() => navigateToCommunicationDetails(params)}
           showInMenu
         />,
-        // <GridActionsCellItem
-        //     icon={<RadioButtonUncheckedIcon />}
-        //     label="Change Status"
-        //     onClick={handleChangeStatus(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<DeleteIcon />}
-        //     label="Delete"
-        //     onClick={handleItemDelete(params)}
-        //     showInMenu
-        // />,
+        <GridActionsCellItem
+          icon={<PreviewIcon />}
+          label="View CTM Report"
+          onClick={() => handleViewCTMReport(params)}
+          showInMenu
+        />,
       ],
     },
   ];
 
-  var totalElements = 0;
-  const { approvedProtocolList, loading, error } = useSelector((state) => ({
-    error: state.admin.error,
-    approvedProtocolList: state.admin.approvedProtocolList,
-    loading: state.admin.loading,
-  }));
+  const { approvedProtocolList, loading, error, pagination } = useSelector(
+    (state) => ({
+      error: state.admin.error,
+      loading: state.admin.loading,
+      approvedProtocolList: state.admin.approvedProtocolList?.data,
+      pagination: state.admin.approvedProtocolList?.pagination,
+    })
+  );
   useEffect(() => {
-    dispatch(fetchApprovedProtocolList());
-  }, [dispatch, user.id]);
+    const data = {
+      page: paginationModel.page,
+      pageSize: paginationModel.pageSize,
+    };
+    dispatch(fetchApprovedProtocolList(data));
+  }, [dispatch, user.id, paginationModel.page, paginationModel.pageSize]);
+
   if (approvedProtocolList !== "" && approvedProtocolList?.length > 0) {
-    totalElements = approvedProtocolList.length;
+    totalElements = pagination?.totalRecords;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -248,17 +246,14 @@ function ApprovedProtocolList() {
       });
     }
   };
-  // const handleItemDelete = (params) => {
-  //     //console.log('Delete Item', params)
-  // }
-
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
+  const handleViewCTMReport = (params) => {
+    setIsViewCTMModalOpen(true);
+    setViewCTMProtocolData(params.row);
+  };
+  const handleCloseCTMReport = (params) => {
+    setIsViewCTMModalOpen(false);
+    setViewCTMProtocolData(null);
+  };
 
   if (loader) {
     return <Loader />;
@@ -282,12 +277,13 @@ function ApprovedProtocolList() {
         <Box>
           <Grid container spacing={2}>
             {/* Title Grid Item */}
-            <Grid item xs={12} sm={10} md={8} lg={8}>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
               <Typography
-                variant="h5"
-                mb={2}
+                variant="h2"
                 sx={{
-                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
                 }}
               >
                 Approved Protocol List
@@ -302,8 +298,19 @@ function ApprovedProtocolList() {
             columns={columns}
             rowCount={rowCount}
             loading={loading}
+            pageSizeOptions={[5, 10, 20, 30, 40, 50, 100]}
+            page={paginationModel.page}
+            paginationModel={paginationModel}
             paginationMode="server"
-            // onCellClick={(param) => handleChangeStatus(param)}
+            onPaginationModelChange={setPaginationModel}
+          />
+        </Box>
+        <Box>
+          <CTMProtocolReport
+            open={isViewCTMModalOpen}
+            data={viewCTMProtocolData}
+            onClose={() => handleCloseCTMReport()}
+            type="ctm"
           />
         </Box>
       </Box>

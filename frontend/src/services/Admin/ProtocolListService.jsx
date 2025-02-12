@@ -23,7 +23,7 @@ export const fetchApprovedProtocolList = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
-        method: "GET",
+        method: "POST",
         url: `${baseURL}/admin/approved-protocol/list`,
         data,
       });
@@ -39,7 +39,7 @@ export const fetchUnderReviewProtocolList = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
-        method: "GET",
+        method: "POST",
         url: `${baseURL}/admin/under-review/protocol/list`,
         data,
       });
@@ -55,7 +55,7 @@ export const fetchRejectedProtocolList = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
-        method: "GET",
+        method: "POST",
         url: `${baseURL}/admin/rejected/protocol/list`,
         data,
       });
@@ -71,7 +71,7 @@ export const fetchCreatedProtocolList = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await ApiCall({
-        method: "GET",
+        method: "POST",
         url: `${baseURL}/admin/created/protocol/list`,
         data,
       });
