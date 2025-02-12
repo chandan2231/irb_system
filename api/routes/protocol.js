@@ -13,7 +13,8 @@ import {
   createExternalMonitor,
   getExternalMonitorList,
   createCRC,
-  getCRCList
+  getCRCList,
+  getCTMProtocolsReport
 } from '../controllers/protocol.js'
 
 const router = express.Router()
@@ -30,5 +31,6 @@ router.post('/createExternalMonitor', createExternalMonitor)
 router.post('/external/monitor/list', getExternalMonitorList)
 router.post('/createCRC', createCRC)
 router.post('/crc/list', getCRCList)
+router.post('/getCTMProtocolsReport', getCTMProtocolsReport)
 
 export default router

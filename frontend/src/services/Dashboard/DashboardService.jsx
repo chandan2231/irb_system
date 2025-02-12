@@ -162,3 +162,19 @@ export const fetchCRCList = createAsyncThunk(
     }
   }
 );
+
+export const getCTMProtocolsReport = createAsyncThunk(
+  "Dashboard/getCTMProtocolsReport",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/protocol/getCTMProtocolsReport`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
