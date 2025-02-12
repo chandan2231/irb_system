@@ -36,7 +36,9 @@ const CommonModal = ({
         aria-labelledby="customized-dialog-title"
         open={open}
         fullWidth={true}
-        maxWidth={identifier === "external" ? "xl" : "sm"}
+        maxWidth={
+          identifier === "external" || identifier === "ctm" ? "xl" : "sm"
+        }
       >
         <DialogTitle
           sx={{ m: 0, p: 2, fontSize: "1.5rem" }}
@@ -57,7 +59,16 @@ const CommonModal = ({
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <Typography sx={{ mt: 2 }}>{subTitle}</Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              textAlign: "left",
+              fontSize: { xs: "0.875rem", sm: "0.875rem", md: "1rem" },
+              fontWeight: "bold",
+            }}
+          >
+            {subTitle}
+          </Typography>
           {content}
         </DialogContent>
         <DialogActions>

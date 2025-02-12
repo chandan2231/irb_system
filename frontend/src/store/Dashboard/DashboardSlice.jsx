@@ -10,6 +10,7 @@ import {
   fetchExternalMonitorList,
   createCRC,
   fetchCRCList,
+  getCTMProtocolsReport,
 } from "../../services/Dashboard/DashboardService";
 const DashboardSlice = createSlice({
   name: "dashboard",
@@ -26,6 +27,7 @@ const DashboardSlice = createSlice({
     externalMonitorList: null,
     createdCRC: null,
     crcList: null,
+    CTMProtocolsReport: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -148,6 +150,18 @@ const DashboardSlice = createSlice({
         state.createdCRC = action.payload;
       })
       .addCase(createCRC.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getCTMProtocolsReport.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCTMProtocolsReport.fulfilled, (state, action) => {
+        state.loading = false;
+        state.CTMProtocolsReport = action.payload;
+      })
+      .addCase(getCTMProtocolsReport.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
