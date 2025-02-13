@@ -3,6 +3,71 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import sendEmail from '../emailService.js'
 
+export const resetPassword = (req, res) => {
+  const { token, password } = req.body
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(400).json({ msg: 'Invalid or expired token' })
+    const userId = decoded.id
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(req.body.password, salt)
+    db.query(
+      'UPDATE users SET password = ? WHERE id = ?',
+      [hashedPassword, userId],
+      (err) => {
+        if (err) return res.status(500).json({ error: err.msg })
+        res.json({ msg: 'Password reset successful!' })
+      }
+    )
+  })
+}
+
+export const forgetPasswordVerifyEmail = (req, res) => {
+  try {
+    const { email } = req.body
+    db.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email],
+      async (err, result) => {
+        if (err) {
+          console.error('Database error:', err)
+          return res.status(500).json({ error: err.message })
+        }
+
+        if (result.length === 0) {
+          return res.status(404).json({ msg: 'User not found!' })
+        }
+
+        const user = result[0]
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: '6h'
+        })
+        const resetLink = `${process.env.DOMAIN}reset-password/${encodeURIComponent(token)}`
+
+        const to = email
+        const subject = 'IRBHUB Password Reset Link'
+        const greetingHtml = `<p>Dear ${user.name || 'User'},</p>`
+        const bodyHtml = `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
+        const emailHtml = `<div>${greetingHtml}${bodyHtml}</div>`
+
+        try {
+          await sendEmail(to, subject, emailHtml, emailHtml)
+          return res.status(200).json({
+            msg: 'A password reset email has been sent successfully. Please check your inbox to reset your password.'
+          })
+        } catch (emailError) {
+          console.error('Error sending email:', emailError)
+          return res
+            .status(500)
+            .json({ status: 500, msg: 'User found but failed to send email.' })
+        }
+      }
+    )
+  } catch (err) {
+    console.error('Error:', err)
+    return res.status(500).json({ status: 500, msg: 'Internal server error.' })
+  }
+}
+
 export const register = async (req, res) => {
   try {
     // Check if the email already exists

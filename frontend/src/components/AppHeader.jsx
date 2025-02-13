@@ -24,7 +24,6 @@ function AppHeader() {
   const [err, setErr] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
   const userDetails = JSON.parse(localStorage.getItem("user")) || {};
-
   const handleCloseUserMenu = () => {
     dispatch(userLogout()).then((data) => {
       if (data.payload.status === 200) {
@@ -42,7 +41,7 @@ function AppHeader() {
 
   return (
     <AppBar position="sticky" sx={styles.appBar}>
-      {window.location.pathname === "/reset-password" ||
+      {window.location.pathname.includes("reset-password") ||
       window.location.pathname === "/forget-password" ||
       window.location.pathname === "/signin" ||
       window.location.pathname === "/signup" ? (

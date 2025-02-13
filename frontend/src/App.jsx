@@ -73,6 +73,7 @@ import ExternalMonitor from "./containers/Dashboard/ExternalMonitor";
 import ClinicalResearchCoordinator from "./containers/Dashboard/ClinicalResearchCoordinator";
 import MasterList from "./containers/Admin/MasterList/MasterList";
 import ExternalMonitorProtocol from "./containers/ExternalMonitor/ExternalMonitorProtocol";
+import ResetPassword from "./containers/Auth/ResetPassword";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -312,6 +313,10 @@ function App() {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/forget-password" element={<ForgetPassword />} />
+              <Route
+                path="/reset-password/:token"
+                element={<ResetPassword />}
+              />
 
               <Route
                 path="/office/approved-protocol-list"
