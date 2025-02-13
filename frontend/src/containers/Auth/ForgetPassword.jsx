@@ -44,9 +44,13 @@ function ForgetPassword() {
       if (data.payload.status === 200) {
         setSuccessMessage(data?.payload?.data?.msg);
         setSuccessMessageFlag(true);
+        setErrorMessage("");
+        setErrorMessageFlag(false);
       } else {
         setErrorMessage(data?.payload?.data?.msg);
         setErrorMessageFlag(true);
+        setSuccessMessage("");
+        setSuccessMessageFlag(false);
       }
     });
   };
