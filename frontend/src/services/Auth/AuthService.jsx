@@ -76,16 +76,12 @@ export const sendUsername = createAsyncThunk(
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/auth/password/reset`,
+        url: `${baseURL}/auth/verify/username/`,
         data,
-        headers: {
-          "X-Client-ID": "666add7011ae622856e30732",
-        },
       });
-      console.log("response", response);
-      return response.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || error.msg);
     }
   }
 );
@@ -105,28 +101,24 @@ export const validateUser = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || error.msg);
     }
   }
 );
 
-export const changePassword = createAsyncThunk(
-  "Auth/changePassword",
+export const resetPassword = createAsyncThunk(
+  "Auth/resetPassword",
   async (dataObject, { rejectWithValue }) => {
-    const { passwordObject, token, app_id } = dataObject;
-    const data = passwordObject;
+    const data = dataObject;
     try {
       const response = await ApiCall({
-        method: "PUT",
-        url: `${baseURL}/auth/password/reset/${token}`,
+        method: "POST",
+        url: `${baseURL}/auth/password/reset/`,
         data,
-        headers: {
-          "X-Client-ID": app_id,
-        },
       });
-      return response.data;
+      return response;
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || error.msg);
     }
   }
 );

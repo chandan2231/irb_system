@@ -37,7 +37,7 @@ function SideNav() {
     }
   }, [dispatch, userDetails && userDetails?.id !== null]);
 
-  return loaction.pathname === "/reset-password" ||
+  return loaction.pathname.includes("/reset-password/") ||
     loaction.pathname === "/forget-password" ||
     loaction.pathname === "/signin" ||
     loaction.pathname === "/signup" ? (

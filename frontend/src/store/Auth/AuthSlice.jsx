@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   sendUsername,
-  changePassword,
+  resetPassword,
   validateUser,
   userSignin,
   userSignUp,
@@ -99,15 +99,15 @@ const AuthSlice = createSlice({
         state.error = action.payload || action.error.message;
       })
 
-      .addCase(changePassword.pending, (state) => {
+      .addCase(resetPassword.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(changePassword.fulfilled, (state, action) => {
+      .addCase(resetPassword.fulfilled, (state, action) => {
         state.loading = false;
         state.passwordChanged = action.payload;
       })
-      .addCase(changePassword.rejected, (state, action) => {
+      .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
