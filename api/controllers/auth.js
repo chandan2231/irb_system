@@ -34,12 +34,12 @@ export const forgetPasswordVerifyEmail = (req, res) => {
         }
 
         if (result.length === 0) {
-          return res.status(404).json({ msg: 'User not found!' })
+          return res.status(200).json({ msg: 'User not found!' })
         }
 
         const user = result[0]
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-          expiresIn: '6h'
+          expiresIn: '30m'
         })
         const resetLink = `${process.env.DOMAIN}reset-password/${encodeURIComponent(token)}`
 
