@@ -14,7 +14,7 @@ import TextField from "@mui/material/TextField";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 
 const defaultInputValues = {
-  username: "",
+  email: "",
 };
 
 function ForgetPassword() {
@@ -22,6 +22,9 @@ function ForgetPassword() {
   const dispatch = useDispatch();
   const [values, setValues] = useState(defaultInputValues);
   const [successMessage, setSuccessMessage] = React.useState("");
+  const [successMessageFlag, setSuccessMessageFlag] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorMessageFlag, setErrorMessageFlag] = React.useState(false);
   let [searchParams, setSearchParams] = useSearchParams();
 
   const validationSchema = Yup.object().shape({
@@ -33,32 +36,24 @@ function ForgetPassword() {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
-  // console.log('errors', errors)
   const onSubmit = (data) => {
-    console.log("data ===>", data);
-    // let dataObject = {};
-    // dataObject.username = data.username;
-    // dataObject.redirect_url = searchParams.get("redirect_url");
-    // dispatch(sendUsername(dataObject)).then((data) => {
-    //   // console.log("send username response", data)
-    //   if (data.payload.status) {
-    //     setSuccessMessage(true);
-    //   } else {
-    //     setSuccessMessage(false);
-    //   }
-    // });
+    let dataObject = {};
+    dataObject.email = data.email;
+    dispatch(sendUsername(dataObject)).then((data) => {
+      console.log("send username response", data);
+      if (data.payload.status === 200) {
+        setSuccessMessage(data?.payload?.data?.msg);
+        setSuccessMessageFlag(true);
+      } else {
+        setErrorMessage(data?.payload?.data?.msg);
+        setErrorMessageFlag(true);
+      }
+    });
   };
 
   const handleChange = (value) => {
     setValues(value);
   };
-
-  // useEffect(() => {
-  //     if(loading){
-  //         const paginationData = { page: paginationModel.page, size: paginationModel.pageSize };
-  //         dispatch(fetchMarketList(paginationData));
-  //     }
-  // }, [loading])
 
   const styles = {
     title: {
@@ -100,20 +95,19 @@ function ForgetPassword() {
           <Card sx={{ width: 700 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardContent>
-                {successMessage === true ? (
+                {successMessageFlag === true && (
                   <Typography sx={{ mt: 2, mb: 5 }}>
                     <h4 sx={styles.title} className="success_msg">
-                      Login Successfull
+                      {successMessage}
                     </h4>
                   </Typography>
-                ) : successMessage === false ? (
+                )}
+                {errorMessageFlag === true && (
                   <Typography sx={{ mt: 2, mb: 5 }}>
                     <h4 sx={styles.title} className="error_msg">
-                      Something went wrong
+                      {errorMessage}
                     </h4>
                   </Typography>
-                ) : (
-                  <></>
                 )}
                 <Typography sx={{ mt: 2, mb: 5 }}>
                   <h2 sx={styles.title}>Welcome to IRBHUB</h2>
@@ -153,13 +147,15 @@ function ForgetPassword() {
                     </Button>
                   </Grid>
                   <Grid container xs={12}>
-                    <Box style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
-                      marginTop: "15px",
-                    }}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        marginTop: "15px",
+                      }}
+                    >
                       <Box
                         style={{
                           display: "flex",
@@ -169,7 +165,7 @@ function ForgetPassword() {
                           marginLeft: "20px",
                         }}
                       >
-                        Already  have an account? &nbsp;
+                        Already have an account? &nbsp;
                         <Link
                           to="/signin"
                           style={{
