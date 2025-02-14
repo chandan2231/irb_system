@@ -31,6 +31,9 @@ function SignIn() {
   const navigate = useNavigate();
   const [values, setValues] = useState(defaultInputValues);
   const [successMessage, setSuccessMessage] = React.useState("");
+  const [successMessageFlag, setSuccessMessageFlag] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState("");
+  const [errorMessageFlag, setErrorMessageFlag] = React.useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [showPassword, setShowPassword] = React.useState(false);
   const [currentUser, setCurrentUser] = useState(
@@ -51,9 +54,12 @@ function SignIn() {
     dispatch(userSignin(data)).then((data) => {
       console.log("signin response", data);
       if (data.payload.status === 200) {
-        setSuccessMessage(true);
+        setSuccessMessage("Login Successfully");
+        setSuccessMessageFlag(true);
+        setErrorMessage("");
+        setErrorMessageFlag(false);
         setCurrentUser(data.payload.data);
-        localStorage.setItem("user", JSON.stringify(data.payload.data));
+        localStorage.setItem("user", JSON.stringify(data.payload.data.user));
         setTimeout(() => {
           const userRoutes = {
             admin: "/admin/approved-protocol-list",
@@ -64,11 +70,14 @@ function SignIn() {
             user: "/dashboard",
             external_monitor: "/external/monitor",
           };
-          const userType = data?.payload?.data?.user_type;
+          const userType = data?.payload?.data?.user?.user_type;
           navigate(userRoutes[userType] || "/dashboard");
         }, 2000);
       } else {
-        setSuccessMessage(false);
+        setErrorMessageFlag(true);
+        setErrorMessage(data?.payload?.data.error);
+        setSuccessMessageFlag(false);
+        setSuccessMessage("");
       }
     });
   };
@@ -123,20 +132,19 @@ function SignIn() {
           <Card sx={{ width: 700 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardContent>
-                {successMessage === true ? (
+                {successMessageFlag === true && (
                   <Typography sx={{ mt: 2, mb: 5 }}>
                     <h4 sx={styles.title} className="success_msg">
-                      Login Successfull
+                      {successMessage}
                     </h4>
                   </Typography>
-                ) : successMessage === false ? (
+                )}
+                {errorMessageFlag === true && (
                   <Typography sx={{ mt: 2, mb: 5 }}>
                     <h4 sx={styles.title} className="error_msg">
-                      Something went wrong
+                      {errorMessage}
                     </h4>
                   </Typography>
-                ) : (
-                  <></>
                 )}
                 <Typography sx={{ mt: 2, mb: 5 }}>
                   <h2 sx={styles.title}>Welcome to IRBHUB</h2>

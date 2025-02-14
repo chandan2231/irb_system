@@ -20,7 +20,7 @@ import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 
 function SideNav() {
   const theme = useTheme();
-  const loaction = useLocation();
+  const location = useLocation();
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user")) || {};
   const { approvedProtocolListCount, loading, error } = useSelector(
@@ -37,10 +37,11 @@ function SideNav() {
     }
   }, [dispatch, userDetails && userDetails?.id !== null]);
 
-  return loaction.pathname.includes("/reset-password/") ||
-    loaction.pathname === "/forget-password" ||
-    loaction.pathname === "/signin" ||
-    loaction.pathname === "/signup" ? (
+  return location.pathname.includes("/reset-password/") ||
+    location.pathname.includes("/verify-email/") ||
+    location.pathname === "/forget-password" ||
+    location.pathname === "/signin" ||
+    location.pathname === "/signup" ? (
     <></>
   ) : (
     <Sidebar

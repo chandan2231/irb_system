@@ -7,6 +7,7 @@ import {
   userSignUp,
   userLogout,
   validateUserToken,
+  getEmailVerification,
 } from "../../services/Auth/AuthService";
 
 const AuthSlice = createSlice({
@@ -20,6 +21,7 @@ const AuthSlice = createSlice({
     signupUser: null,
     logoutUser: null,
     userTokenValidated: null,
+    emailVerified: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -108,6 +110,18 @@ const AuthSlice = createSlice({
         state.passwordChanged = action.payload;
       })
       .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getEmailVerification.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getEmailVerification.fulfilled, (state, action) => {
+        state.loading = false;
+        state.emailVerified = action.payload;
+      })
+      .addCase(getEmailVerification.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

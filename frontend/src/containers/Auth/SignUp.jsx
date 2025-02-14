@@ -73,8 +73,9 @@ function SignUp() {
   const handleFormSubmit = (values) => {
     dispatch(userSignUp(values)).then((data) => {
       if (data.payload.status === 200) {
+        console.log("signup response", data);
         setSuccessMessage(data.payload.data);
-        navigate("/signin");
+        setTimeout(() => navigate("/signin"), 5000);
       } else {
         setSuccessMessage(false);
       }
@@ -117,9 +118,6 @@ function SignUp() {
           alignItems="center"
         >
           <Card sx={{ width: 700 }}>
-            {successMessage !== "" && (
-              <span className="success_msg">{successMessage}</span>
-            )}
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
@@ -136,6 +134,13 @@ function SignUp() {
                 return (
                   <Form onSubmit={handleSubmit}>
                     <CardContent>
+                      {successMessage !== "" && (
+                        <Typography sx={{ mt: 2, mb: 5 }}>
+                          <h2 sx={styles.title} className="success_msg">
+                            {successMessage}
+                          </h2>
+                        </Typography>
+                      )}
                       <Typography sx={{ mt: 2, mb: 5 }}>
                         <h2 sx={styles.title}>SIGNUP</h2>
                       </Typography>

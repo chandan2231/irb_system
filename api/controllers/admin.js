@@ -2,6 +2,7 @@ import { db } from '../connect.js'
 import bcrypt from 'bcryptjs'
 import sendEmail from '../emailService.js'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
+import { v4 as uuidv4 } from 'uuid'
 
 export const getMasterDataListByType = (req, res) => {
   const { selectedUserType } = req.body
@@ -161,10 +162,11 @@ export const createMember = async (req, res) => {
     // Hash the password
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(req.body.password, salt)
+    const verificationToken = uuidv4()
 
     // Insert new user into the database
     const insertQuery = `
-      INSERT INTO users (name, mobile, email, password, researcher_type, user_type) 
+      INSERT INTO users (name, mobile, email, password, researcher_type, user_type, verified, verification_token) 
       VALUES (?)`
     const values = [
       req.body.name,
@@ -172,7 +174,9 @@ export const createMember = async (req, res) => {
       req.body.email,
       hashedPassword,
       'member',
-      req.body.user_type
+      req.body.user_type,
+      0,
+      verificationToken
     ]
 
     const insertResult = await new Promise((resolve, reject) => {
@@ -181,9 +185,10 @@ export const createMember = async (req, res) => {
         resolve(data)
       })
     })
-
     // Now, send the welcome email
-    const loginUrl = 'https://app.irbhub.org/signin'
+    const loginUrl = `${process.env.DOMAIN}signin`
+    const verifyLink = `${process.env.DOMAIN}verify-email/${verificationToken}`
+
     const to = req.body.email
     const subject = 'Welcome to IRBHUB'
     const greetingHtml = `<p>Dear ${req.body.name},</p>`
@@ -194,6 +199,7 @@ export const createMember = async (req, res) => {
     bodyHtml += `<p>Login URL: <a href="${loginUrl}" target="_blank" rel="noopener noreferrer">
               Click here
             </a></p>`
+    bodyHtml += `<h4>Click the link below to verify your email before login</h4><a href="${verifyLink}">Verify Email</a>`
     const emailHtml = `
       <div>
         ${greetingHtml}
