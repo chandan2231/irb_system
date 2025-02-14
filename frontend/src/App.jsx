@@ -74,6 +74,7 @@ import ClinicalResearchCoordinator from "./containers/Dashboard/ClinicalResearch
 import MasterList from "./containers/Admin/MasterList/MasterList";
 import ExternalMonitorProtocol from "./containers/ExternalMonitor/ExternalMonitorProtocol";
 import ResetPassword from "./containers/Auth/ResetPassword";
+import EmailVerification from "./containers/Auth/EmailVerification";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -316,6 +317,10 @@ function App() {
               <Route
                 path="/reset-password/:token"
                 element={<ResetPassword />}
+              />
+              <Route
+                path="/verify-email/:token"
+                element={<EmailVerification />}
               />
 
               <Route

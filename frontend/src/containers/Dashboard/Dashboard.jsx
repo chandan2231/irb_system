@@ -52,6 +52,7 @@ function Dashboard() {
       setUser(userDetails);
     }
   }, []);
+  console.log("user", user);
   const navigateProtocolDetails = (params) => {
     navigate("/protocol-details", {
       state: { details: params.row, type: "user" },

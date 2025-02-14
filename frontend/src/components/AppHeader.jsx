@@ -42,6 +42,7 @@ function AppHeader() {
   return (
     <AppBar position="sticky" sx={styles.appBar}>
       {window.location.pathname.includes("reset-password") ||
+      window.location.pathname.includes("/verify-email/") ||
       window.location.pathname === "/forget-password" ||
       window.location.pathname === "/signin" ||
       window.location.pathname === "/signup" ? (
