@@ -2,6 +2,23 @@ import { db } from '../connect.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import sendEmail from '../emailService.js'
+import { v4 as uuidv4 } from 'uuid'
+
+export const emailVerification = (req, res) => {
+  const { token } = req.body
+
+  db.query(
+    'UPDATE users SET verified = 1 WHERE verification_token = ?',
+    [token],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message })
+      if (result.affectedRows === 0)
+        return res.status(400).json({ error: 'Invalid or expired token' })
+
+      res.json({ message: 'Email verified successfully!' })
+    }
+  )
+}
 
 export const resetPassword = (req, res) => {
   const { token, password } = req.body
@@ -46,7 +63,8 @@ export const forgetPasswordVerifyEmail = (req, res) => {
         const to = email
         const subject = 'IRBHUB Password Reset Link'
         const greetingHtml = `<p>Dear ${user.name || 'User'},</p>`
-        const bodyHtml = `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
+        const bodyHtml = `<h2>Click the link to reset your password</h2>
+               <a href="${resetLink}">Reset Password</a>`
         const emailHtml = `<div>${greetingHtml}${bodyHtml}</div>`
 
         try {
@@ -84,17 +102,17 @@ export const register = async (req, res) => {
     // If email exists, return an error
     if (existingUser.length > 0) {
       return res
-        .status(409)
+        .status(200)
         .json('Email already exists. Please try with another email.')
     }
 
     // Hash the password
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(req.body.password, salt)
-
+    const verificationToken = uuidv4()
     // Insert new user into the database
     const insertQuery = `
-      INSERT INTO users (name, mobile, email, password, researcher_type, user_type) 
+      INSERT INTO users (name, mobile, email, password, researcher_type, user_type, verified, verification_token) 
       VALUES (?)`
     const values = [
       req.body.name,
@@ -102,7 +120,9 @@ export const register = async (req, res) => {
       req.body.email,
       hashedPassword,
       'user',
-      'user'
+      'user',
+      0,
+      verificationToken
     ]
 
     const insertResult = await new Promise((resolve, reject) => {
@@ -111,12 +131,14 @@ export const register = async (req, res) => {
         resolve(data)
       })
     })
-
-    // Now, send the welcome email
+    const verifyLink = `${process.env.DOMAIN}verify-email/${verificationToken}`
     const to = req.body.email
-    const subject = 'Welcome to IRBHUB'
+    const subject = 'Verify Your Email for IRBHUB'
     const greetingHtml = `<p>Dear ${req.body.name},</p>`
-    const bodyHtml = `<p>You have successfully registered with IRBHUB.</p>`
+    const bodyHtml = `<h2>You have successfully registered with IRBHUB.</h2>
+                      <br>
+                      <h4>Click the link below to verify your email</h4>
+                      <a href="${verifyLink}">Verify Email</a>`
     const emailHtml = `
       <div>
         ${greetingHtml}
@@ -125,10 +147,13 @@ export const register = async (req, res) => {
     const text = emailHtml
     const html = emailHtml
 
-    // Send email
     try {
       await sendEmail(to, subject, text, html)
-      return res.status(200).json('User has been created and email sent.')
+      return res
+        .status(200)
+        .json(
+          'User has been created and email verification sent to registered email.'
+        )
     } catch (emailError) {
       console.error('Error sending email:', emailError)
       return res
@@ -141,23 +166,67 @@ export const register = async (req, res) => {
   }
 }
 
+// export const login = (req, res) => {
+//   const que = 'select * from users where email=? AND status=?'
+//   db.query(que, [req.body.email, 1], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length === 0)
+//       return res.status(404).json('Email not found! Try with valid email')
+//     const checkpassword = bcrypt.compareSync(
+//       req.body.password,
+//       data[0].password
+//     )
+//     if (!checkpassword) return res.status(400).json('Wrong password or email!')
+//     if (!data[0].verified)
+//       return res.status(400).json({ error: 'Please verify your email first.' })
+
+//     const token = jwt.sign({ id: data[0].id }, 'secretkey')
+//     const { password, ...others } = data[0]
+//     res
+//       .cookie('accessToken', token, { httpOnly: false })
+//       .status(200)
+//       .json(others)
+//   })
+// }
+
 export const login = (req, res) => {
-  const que = 'select * from users where email=? AND status=?'
-  db.query(que, [req.body.email, 1], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length === 0)
-      return res.status(404).json('Email not found! Try with valid email')
-    const checkpassword = bcrypt.compareSync(
-      req.body.password,
-      data[0].password
-    )
-    if (!checkpassword) return res.status(400).json('Wrong password or email!')
-    const token = jwt.sign({ id: data[0].id }, 'secretkey')
-    const { password, ...others } = data[0]
+  const query = 'SELECT * FROM users WHERE email = ? AND status = ?'
+
+  db.query(query, [req.body.email, 1], (err, data) => {
+    if (err) {
+      console.error('Database Error:', err)
+      return res.status(500).json({ error: 'Internal Server Error' })
+    }
+
+    if (data.length === 0) {
+      return res
+        .status(404)
+        .json({ error: 'Email not found! Try with a valid email.' })
+    }
+
+    const user = data[0]
+    const isPasswordValid = bcrypt.compareSync(req.body.password, user.password)
+
+    if (!isPasswordValid) {
+      return res.status(400).json({ error: 'Wrong password!' })
+    }
+
+    if (!user.verified) {
+      return res.status(400).json({ error: 'Please verify your email first.' })
+    }
+
+    const token = jwt.sign({ id: user.id }, 'secretkey', { expiresIn: '1h' })
+
+    const { password, ...otherUserData } = user
+
     res
-      .cookie('accessToken', token, { httpOnly: false })
+      .cookie('accessToken', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict'
+      })
       .status(200)
-      .json(others)
+      .json({ message: 'Login successful', user: otherUserData })
   })
 }
 

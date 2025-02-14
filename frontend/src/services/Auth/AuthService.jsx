@@ -122,3 +122,20 @@ export const resetPassword = createAsyncThunk(
     }
   }
 );
+
+export const getEmailVerification = createAsyncThunk(
+  "Auth/getEmailVerification",
+  async (dataObject, { rejectWithValue }) => {
+    const data = dataObject;
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/auth/email/verify/`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.msg);
+    }
+  }
+);
