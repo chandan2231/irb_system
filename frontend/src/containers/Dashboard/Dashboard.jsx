@@ -385,7 +385,7 @@ function Dashboard() {
                   onClick={addNew}
                   startIcon={<AddOutlinedIcon />}
                 >
-                  Add Research Type
+                  Add Research Protocol
                 </CommonButton>
               </Box>
             </Grid>

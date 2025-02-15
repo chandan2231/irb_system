@@ -893,7 +893,7 @@ export const saveMultiSiteSubmission = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'External monitor assigned and saved successfully'
+          result.msg = 'Clinical Trial Monitor assigned and saved successfully'
           return res.json(result)
         }
       })
@@ -914,7 +914,7 @@ export const saveMultiSiteSubmission = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'External monitor assigned and saved successfully'
+          result.msg = 'Clinical Trial Monitor assigned and saved successfully'
           return res.json(result)
         }
       })
@@ -998,7 +998,7 @@ export const savePrincipalInvestigatorSubmission = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'External monitor assigned and saved successfully'
+          result.msg = 'Clinical Trial Monitor assigned and saved successfully'
           return res.json(result)
         }
       })
@@ -1019,7 +1019,7 @@ export const savePrincipalInvestigatorSubmission = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'External monitor assigned and saved successfully'
+          result.msg = 'Clinical Trial Monitor assigned and saved successfully'
           return res.json(result)
         }
       })

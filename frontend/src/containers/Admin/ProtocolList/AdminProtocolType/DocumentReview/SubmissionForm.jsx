@@ -55,7 +55,7 @@ function SubmissionForm({ type }) {
               {[
                 " The document review request is not an approval of research or protocol.",
                 "The expert opinions in articles or reviews are those of the author and not the organization. The review of documents cannot cover all potential ethical/ legal issues that may arise without complete information of the research protocol.",
-                "Your initials below signify that you have read and agree to the terms listed above."
+                "Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application..",
               ].map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
@@ -69,7 +69,7 @@ function SubmissionForm({ type }) {
               >
                 <FormControlLabel
                   control={<Checkbox />}
-                  label="Your initials below signify that you have read and agree to the terms listed above"
+                  label="Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application."
                 />
               </FormGroup>
             </FormControl>

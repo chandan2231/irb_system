@@ -306,7 +306,7 @@ const AddExternalMonitor = ({ open, onClose, addNewData }) => {
     <CommonModal
       open={open}
       onClose={onClose}
-      title="Create New External Monitor"
+      title="Create New Clinical Trial Monitor"
       subTitle=""
       content={getContent()}
       onSubmit={handleSubmit(addNew)}

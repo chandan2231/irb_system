@@ -170,7 +170,7 @@ export const createExternalMonitor = async (req, res) => {
     })
 
     // Now, send the welcome email
-    const loginUrl = 'https://app.irbhub.org/signin'
+    const loginUrl = `${process.env.DOMAIN}signin`
     const to = req.body.email
     const subject = 'Welcome to IRBHUB'
     const greetingHtml = `<p>Dear ${req.body.name},</p>`
@@ -194,7 +194,7 @@ export const createExternalMonitor = async (req, res) => {
       await sendEmail(to, subject, text, html)
       return res.status(200).json({
         status: 200,
-        msg: 'External Monitor has been created and email sent'
+        msg: 'Clinical Trial Monitor has been created and email sent'
       })
     } catch (emailError) {
       console.error('Error sending email:', emailError)
@@ -320,18 +320,19 @@ export const createProtocol = async (req, res) => {
     // Fetch user info
     const user = await getUserInfo(req.body.login_id)
     const to = user.email
-    const subject = 'Protocol Created'
-
-    // Create protocol and body HTML
-    const grettingHtml = `<p>Dear ${user.name},</p>`
-    const bodyHtml = `<p>You have successfully registered your research with us.</p>`
-    const protocolNumberHtml = `<p>Your Protocol Number is ${newProtocolNumber}</p>`
-
+    const subject = `Save Protocol ID ${newProtocolNumber}`
+    const grettingHtml = `<p>Save Protocol ID</p><p>Dear ${user.name},</p>`
+    let bodyHtml = `<p>Thank you for choosing IRB-HUB for your research needs.</p>`
+    bodyHtml += `<p>You have started the IRB-HUB protocol registration,  the assign protocol identification number is as below for all your future references.</p>`
+    bodyHtml += `<p>Your Protocol Number is ${newProtocolNumber}.</p>`
+    bodyHtml += `<p>Please save the protocol ID.</p>`
+    bodyHtml += `<p>You have 6 months to complete the protocol. All the incomplete protocol after 6 months are automatically deleted from the file and database.</p>`
+    bodyHtml += `If you have any questions or concern please email to us.</p>`
+    bodyHtml += `<p>Help.irbhub@gmail.com</p>`
     const emailHtml = `
       <div>
         ${grettingHtml}
         ${bodyHtml}
-        ${protocolNumberHtml}
       </div>`
     const text = emailHtml
     const html = emailHtml

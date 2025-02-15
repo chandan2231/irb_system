@@ -467,7 +467,7 @@ const clinicalReviewQuestions = {
                         </ul>`,
       checkBox: {
         label:
-          'Your initials below signify that you have read the terms and agree with them:',
+          'You have read the term and agree with the above research compliance.',
         value: 'consent_declaration'
       }
     }
@@ -658,7 +658,7 @@ const clinicalReviewQuestions = {
     documentName: 'facing_materials',
     checkBox: {
       label:
-        'Your initials below signify that you have read the terms and agree with them:',
+        'You have read the term and agree with the above research compliance.',
       value: 'protocol_declaration'
     }
   },
@@ -678,7 +678,7 @@ const clinicalReviewQuestions = {
 						</ul>`,
     checkBox: {
       label:
-        'Your initials below signify that you have read and agree to the terms listed above',
+        'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
       value: 'terms_selected'
     }
   }
@@ -901,7 +901,7 @@ here (if applying for waiver of consent, document explaining reasoning must be u
                         </ul>`,
       checkBox: {
         label:
-          'Your initials below signify that you have read the terms and agree with them:',
+          'You have read the term and agree with the above research compliance.',
         value: 'consent_declaration'
       }
     }
@@ -1099,7 +1099,7 @@ here (if applying for waiver of consent, document explaining reasoning must be u
     documentName: 'facing_materials',
     checkBox: {
       label:
-        'Your initials below signify that you have read the terms and agree with them:',
+        'You have read the term and agree with the above research compliance.',
       value: 'protocol_declaration'
     }
   },
@@ -1119,7 +1119,7 @@ here (if applying for waiver of consent, document explaining reasoning must be u
             </ul>`,
     checkBox: {
       label:
-        'Your initials below signify that you have read and agree to the terms listed above',
+        'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
       value: 'terms_selected'
     }
   }
@@ -1396,7 +1396,7 @@ const principalInvestigatorQuestions = {
     },
     checkBox: {
       label:
-        'Your initials below signify that you have read the terms and agree with them:',
+        'You have read the term and agree with the above research compliance.',
       value: 'terms_selected'
     }
   },
@@ -1416,7 +1416,7 @@ const principalInvestigatorQuestions = {
 						</ul>`,
     checkBox: {
       label:
-        'Your initials below signify that you have read and agree to the terms listed above',
+        'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
       value: 'terms_selected'
     }
   }
@@ -1572,7 +1572,7 @@ const documentReviewQuestions = {
                         </ul>`,
       checkBox: {
         label:
-          'Your initials below signify that you have read the terms and agree with them:',
+          'You have read the term and agree with the above research compliance.',
         value: 'consent_declaration'
       }
     }
@@ -1597,7 +1597,7 @@ const documentReviewQuestions = {
             </ul>`,
     checkBox: {
       label:
-        'Your initials below signify that you have read and agree to the terms listed above',
+        'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
       value: 'terms_selected'
     }
   }

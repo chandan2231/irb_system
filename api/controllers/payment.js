@@ -1,6 +1,7 @@
 import { db } from '../connect.js'
 import { client } from '../paypalConfig.js'
 import paypal from '@paypal/checkout-server-sdk'
+import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
 
 export const getPaymentAmountInfo = (req, res) => {
   const que = 'select * from event_price WHERE event_type=?'
@@ -100,8 +101,15 @@ function generateRandomString(length = 10) {
 }
 
 export const capturePayment = async (req, res) => {
-  const { orderId, payerId, amount, currencyCode, protocolId, researchType } =
-    req.body
+  const {
+    orderId,
+    payerId,
+    amount,
+    currencyCode,
+    protocolId,
+    researchType,
+    userId
+  } = req.body
 
   const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
   captureOrderRequest.requestBody({
@@ -118,7 +126,8 @@ export const capturePayment = async (req, res) => {
       amount: amount,
       currency: currencyCode,
       status: captureResult.result.status,
-      protocol_id: protocolId
+      protocol_id: protocolId,
+      user_id: userId
     }
 
     db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {

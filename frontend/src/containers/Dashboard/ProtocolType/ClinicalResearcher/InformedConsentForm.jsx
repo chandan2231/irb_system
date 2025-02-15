@@ -383,7 +383,7 @@ function InformedConsentForm({
               <FormGroup onChange={(event) => handleTermsChecked(event)}>
                 <FormControlLabel
                   control={<Checkbox />}
-                  label="Your initials below signify that you have read the terms and agree with them:"
+                  label="You have read the term and agree with the above research compliance."
                 />
               </FormGroup>
             </FormControl>

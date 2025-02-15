@@ -15,7 +15,7 @@ export const getMasterDataListByType = (req, res) => {
       query = 'SELECT * FROM clinical_research_coordinator'
       break
 
-    case 'External Monitor':
+    case 'Clinical Trial Monitor':
       query = 'SELECT * FROM users WHERE researcher_type = ?'
       queryParams = ['External Monitor']
       break
