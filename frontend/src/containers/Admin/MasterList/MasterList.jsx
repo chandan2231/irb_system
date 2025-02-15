@@ -40,7 +40,7 @@ function MasterList() {
 
   // User Type List
   const roleOptions = [
-    "External Monitor",
+    "Clinical Trial Monitor",
     "Clinical Researcher Coordinator",
     "Principle Investigator",
     "Principle Sub Investigator",

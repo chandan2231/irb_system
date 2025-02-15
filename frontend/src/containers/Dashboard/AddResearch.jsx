@@ -35,7 +35,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     { name: "Under Graduate", id: "Under Graduate" },
     { name: "Graduate", id: "Graduate" },
     { name: "Commercial", id: "Commercial" },
-  ]
+  ];
 
   const modalStyles = {
     inputFields: {
@@ -54,8 +54,8 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     protocol_user_type: Yup.string().when("research_type_id", {
       is: "Principal Investigator",
       then: (schema) => schema.required("Please select type is required"),
-      otherwise: schema => schema
-    })
+      otherwise: (schema) => schema,
+    }),
   });
 
   const validationSchemaForHaveProtocolId = Yup.object().shape({
@@ -113,7 +113,10 @@ const AddResearch = ({ open, onClose, addNewData }) => {
             const payload = {
               ...values,
               research_type_id: id,
-              protocol_user_type: id !== "Principal Investigator" ? "" : values.protocol_user_type || ""
+              protocol_user_type:
+                id !== "Principal Investigator"
+                  ? ""
+                  : values.protocol_user_type || "",
             };
             handleChange({ ...payload });
           }}
@@ -122,22 +125,24 @@ const AddResearch = ({ open, onClose, addNewData }) => {
 
         {values.research_type_id === "Principal Investigator" ? (
           <DropdownWithSearch
-            title={"Please select Type"}
+            title={"Select PI Affiliation"}
             name={"protocol_user_type"}
-            label={"Select select Type *"}
+            label={"Select PI Affiliation *"}
             error={errors.protocol_user_type ? true : false}
             helperText={errors.protocol_user_type?.message}
             value={values.protocol_user_type}
             labelId={"demo-simple-select-required-label"}
             id={"demo-simple-select-required"}
             activeListArr={optionsForHaveProtocolId}
-            setOption={(id) => handleChange({ ...values, protocol_user_type: id })}
+            setOption={(id) =>
+              handleChange({ ...values, protocol_user_type: id })
+            }
             {...register("protocol_user_type")}
-          />) : null
-        }
+          />
+        ) : null}
       </Box>
-    )
-  }
+    );
+  };
 
   const getContent = () => (
     <Box display="flex" alignItems="center">
@@ -146,55 +151,58 @@ const AddResearch = ({ open, onClose, addNewData }) => {
         onChange={handleCheckBoxChange}
       />
       <Typography variant="body1">
-        Do You have Multi-site Protocol ID?
+        Do you have a multi-site protocol access code?
       </Typography>
     </Box>
   );
 
   const getContentIfIsHaveProtocolIdChecked = () => {
-    return (<Box sx={modalStyles.inputFields}>
-      <TextField
-        id="outlined-basic"
-        label="Multi-site Protocol ID"
-        variant="outlined"
-        fullWidth
-        name="protocolId"
-        error={errorsForHaveProtocolId.protocolId ? true : false}
-        value={valuesForHaveProtocolId.protocolId}
-        helperText={errorsForHaveProtocolId.protocolId?.message}
-        {...registerForHaveProtocolId("protocolId")}
-        onChange={(e) => {
-          setValuesForHaveProtocolId({
-            ...valuesForHaveProtocolId,
-            protocolId: e.target.value,
-          });
-        }}
-      />
+    return (
+      <Box sx={modalStyles.inputFields}>
+        <TextField
+          id="outlined-basic"
+          label="Multi-site Protocol ID"
+          variant="outlined"
+          fullWidth
+          name="protocolId"
+          error={errorsForHaveProtocolId.protocolId ? true : false}
+          value={valuesForHaveProtocolId.protocolId}
+          helperText={errorsForHaveProtocolId.protocolId?.message}
+          {...registerForHaveProtocolId("protocolId")}
+          onChange={(e) => {
+            setValuesForHaveProtocolId({
+              ...valuesForHaveProtocolId,
+              protocolId: e.target.value,
+            });
+          }}
+        />
 
-      <TextField
-        id="outlined-basic"
-        label="Verification Code"
-        variant="outlined"
-        fullWidth
-        name="verificationCode"
-        error={errorsForHaveProtocolId.verificationCode ? true : false}
-        helperText={errorsForHaveProtocolId.verificationCode?.message}
-        value={valuesForHaveProtocolId.verificationCode}
-        {...registerForHaveProtocolId("verificationCode")}
-        onChange={(e) => {
-          setValuesForHaveProtocolId({
-            ...valuesForHaveProtocolId,
-            verificationCode: e.target.value,
-          });
-        }}
-      />
-    </Box>)
-  }
+        <TextField
+          id="outlined-basic"
+          label="Verification Code"
+          variant="outlined"
+          fullWidth
+          name="verificationCode"
+          error={errorsForHaveProtocolId.verificationCode ? true : false}
+          helperText={errorsForHaveProtocolId.verificationCode?.message}
+          value={valuesForHaveProtocolId.verificationCode}
+          {...registerForHaveProtocolId("verificationCode")}
+          onChange={(e) => {
+            setValuesForHaveProtocolId({
+              ...valuesForHaveProtocolId,
+              verificationCode: e.target.value,
+            });
+          }}
+        />
+      </Box>
+    );
+  };
 
   const getContentForHaveProtocolId = () => (
     <Box>
       {getContent()}
-      {isHaveProtocolIdChecked ? getContentIfIsHaveProtocolIdChecked()
+      {isHaveProtocolIdChecked
+        ? getContentIfIsHaveProtocolIdChecked()
         : getContentIfIsHaveProtocolIdNotChecked()}
     </Box>
   );
@@ -227,10 +235,11 @@ const AddResearch = ({ open, onClose, addNewData }) => {
         open={open}
         onClose={() => {
           onClose();
-          isHaveProtocolIdChecked ?
-            setIsHaveProtocolIdChecked(false) : () => { }
+          isHaveProtocolIdChecked
+            ? setIsHaveProtocolIdChecked(false)
+            : () => {};
         }}
-        title="Create New Research Type"
+        title="Start a New Research Protocol"
         subTitle=""
         content={getContentForHaveProtocolId()}
         onSubmit={

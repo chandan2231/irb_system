@@ -102,7 +102,7 @@ function SubmissionForm({ type }) {
               >
                 <FormControlLabel
                   control={<Checkbox />}
-                  label="Your initials below signify that you have read and agree to the terms listed above"
+                  label="Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application."
                 />
               </FormGroup>
             </FormControl>

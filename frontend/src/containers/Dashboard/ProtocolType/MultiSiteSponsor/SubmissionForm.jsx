@@ -263,7 +263,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                 <FormControlLabel
                   control={<Checkbox />}
                   checked={addExternalMonitorDetails}
-                  label="Add External Monitor Details"
+                  label="Assign to Clinical Monitor Trial"
                 />
               </FormGroup>
             </FormControl>

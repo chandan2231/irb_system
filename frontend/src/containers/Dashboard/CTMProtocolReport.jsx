@@ -94,7 +94,7 @@ const CTMProtocolReport = ({ open, onClose, data = {}, type }) => {
       <CommonModal
         open={open}
         onClose={() => onClose()}
-        title="External Monitor Protocol Report Details"
+        title="Clinical Trial Monitor Protocol Report Details"
         subTitle={`${data?.researchType} (${data?.protocolId})`}
         content={getContentForHaveProtocolId()}
         hideSubmitButton={true}

@@ -82,7 +82,7 @@ function AppHeader() {
                       : userDetails.user_type === "Office Staff"
                         ? "Office Portal"
                         : userDetails.user_type === "external_monitor"
-                          ? "External Monitor Portal"
+                          ? "Clinical Trial Monitor Portal"
                           : ""}
               </h2>
             </Box>
@@ -98,7 +98,7 @@ function AppHeader() {
                       : userDetails.user_type === "Office Staff"
                         ? "Office Portal"
                         : userDetails.user_type === "external_monitor"
-                          ? "External Monitor"
+                          ? "Clinical Trial Monitor"
                           : ""}
               </Typography>
             </Box>

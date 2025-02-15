@@ -221,7 +221,7 @@ function ExternalMonitor() {
                   fontWeight: "bold",
                 }}
               >
-                External Monitor List
+                Clinical Trial Monitor List
               </Typography>
             </Grid>
             <Grid item xs={12} sm={12} md={4} lg={4}>
@@ -231,7 +231,7 @@ function ExternalMonitor() {
                   onClick={addNew}
                   startIcon={<AddOutlinedIcon />}
                 >
-                  Add External Monitor
+                  Add Clinical Trial Monitor
                 </CommonButton>
               </Box>
             </Grid>

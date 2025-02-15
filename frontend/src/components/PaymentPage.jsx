@@ -14,9 +14,14 @@ const PayPalButton = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [user, setUser] = useState([]);
   const protocolTypeDetails = location?.state?.details;
-  console.log("protocolTypeDetails", protocolTypeDetails);
-  //   const identifierType = location.state.identifierType;
+  useEffect(() => {
+    const userDetails = JSON.parse(localStorage.getItem("user"));
+    if (userDetails) {
+      setUser(userDetails);
+    }
+  }, []);
 
   const navigateToCanclePayment = (protocolTypeDetails, amount) => {
     navigate("/cancel", {
@@ -105,6 +110,7 @@ const PayPalButton = () => {
                     amount: paymentAmount?.data[0]?.price,
                     protocolId: protocolTypeDetails?.protocol_id,
                     researchType: protocolTypeDetails?.protocol_type,
+                    userId: user.id,
                   })
                 );
                 if (response.payload.status === 200) {
