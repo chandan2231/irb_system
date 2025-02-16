@@ -448,6 +448,8 @@ export const saveFile = async (req, res) => {
       tableName = 'communication_documents'
     } else if (req.body.identifierType === 'external_monitor') {
       tableName = 'external_monitor_documents'
+    } else if (req.body.informationType === 'document_verification') {
+      tableName = 'educational_document_verification'
     }
     // Define the SQL query
     if (req.body.informationType === 'communication_attachments') {
@@ -468,11 +470,28 @@ export const saveFile = async (req, res) => {
         datetime,
         datetime
       ]
-    } else {
+    } else if (req.body.informationType === 'document_verification') {
       query = `
       INSERT INTO ${tableName} 
-      (protocol_id, protocol_type, information_type, document_name, file_name, file_url, created_by, created_at, updated_at)
+      (user_id, protocol_type, information_type, pi_affiliation_type, file_name, file_url, created_by, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+      values = [
+        req.body.userId,
+        req.body.protocolType,
+        req.body.informationType,
+        req.body.subType,
+        req.file.filename,
+        imageUrl,
+        req.body.userId,
+        datetime,
+        datetime
+      ]
+    } else {
+      query = `
+    INSERT INTO ${tableName} 
+    (protocol_id, protocol_type, information_type, document_name, file_name, file_url, created_by, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
       values = [
         req.body.protocolId,

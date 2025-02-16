@@ -29,7 +29,9 @@ function VotingMemberProtocolList() {
     }
   }, []);
   const navigateProtocolDetails = (params) => {
-    navigate("/member/protocol-details", { state: { details: params.row, type: 'member' } });
+    navigate("/member/protocol-details", {
+      state: { details: params.row, type: "member" },
+    });
   };
   const columns = [
     {
@@ -97,7 +99,7 @@ function VotingMemberProtocolList() {
   ];
 
   useEffect(() => {
-    let data = { 'memberId': user.id }
+    let data = { memberId: user.id };
     dispatch(fetchAssignMemberProtocolList(data));
   }, [dispatch, user.id]);
 
@@ -108,7 +110,10 @@ function VotingMemberProtocolList() {
     loading: state.member.loading,
   }));
 
-  if (assignMemberProtocolList?.data !== "" && assignMemberProtocolList?.data?.length > 0) {
+  if (
+    assignMemberProtocolList?.data !== "" &&
+    assignMemberProtocolList?.data?.length > 0
+  ) {
     totalElements = assignMemberProtocolList?.data.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
@@ -121,7 +126,10 @@ function VotingMemberProtocolList() {
 
   useEffect(() => {
     const pListArr = [];
-    if (assignMemberProtocolList?.data && assignMemberProtocolList?.data?.length > 0) {
+    if (
+      assignMemberProtocolList?.data &&
+      assignMemberProtocolList?.data?.length > 0
+    ) {
       assignMemberProtocolList?.data?.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
@@ -129,7 +137,7 @@ function VotingMemberProtocolList() {
           researchType: pList.protocol_name,
           assignedDate: moment(pList.created_at).format("DD-MM-YYYY"),
           updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
-        }
+        };
         pListArr.push(protocolObject);
       });
       setProtocolDataList(pListArr);
@@ -144,20 +152,19 @@ function VotingMemberProtocolList() {
       protocolType: researchType,
     };
     try {
-      setLoader(true)
+      setLoader(true);
       let pdfResponse = await protocolReport(protocolReportPayload);
-      setLoader(false)
+      setLoader(false);
       if (pdfResponse !== "") {
         window.open(pdfResponse.pdfUrl, "_blank", "noopener,noreferrer");
       }
     } catch (error) {
-      setLoader(false)
-      console.log('error', error)
+      setLoader(false);
+      console.log("error", error);
     }
   };
 
   // console.log('protocolList', protocolList)
-
 
   // const handleItemDelete = (params) => {
   //     //console.log('Delete Item', params)
@@ -172,7 +179,7 @@ function VotingMemberProtocolList() {
   // }
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -192,9 +199,16 @@ function VotingMemberProtocolList() {
       <Box m={theme.layoutContainer.layoutSection}>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={5} sm={5} md={8} lg={8}>
-              <Typography variant="h5" mb={2}>
-                Protocol List
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+              <Typography
+                variant="h2"
+                sx={{
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                }}
+              >
+                Protocol Voting List
               </Typography>
             </Grid>
           </Grid>
