@@ -16,6 +16,7 @@ import {
   FormGroup,
   Checkbox,
   Button,
+  TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ApiCall from "../../../../utility/ApiCall";
@@ -31,6 +32,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(false);
+  const [checkForTerms, setCheckForTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [addExternalMonitorDetails, setAddExternalMonitorDetails] =
     useState(false);
@@ -51,6 +53,8 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     created_by: userDetails.id,
     paymentType: protocolTypeDetails.protocolUserType,
   });
+  const [name, setName] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -59,6 +63,10 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   };
 
   const handleTermsChange = (event) => setTermsSelected(event.target.checked);
+
+  const handleCheckForTerms = (event) => {
+    setCheckForTerms(event.target.checked);
+  }
 
   const handleAddExternalMonitor = (event) => {
     setAddExternalMonitorDetails(event.target.checked);
@@ -213,6 +221,17 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
 
+  // Validate form fields
+  useEffect(() => {
+    const isFormValid =
+      termsSelected &&
+      checkForTerms &&
+      name.trim() !== "" &&
+      (!addExternalMonitorDetails || selectedExternalMonitor.trim() !== "");
+
+    setIsButtonDisabled(!isFormValid);
+  }, [termsSelected, checkForTerms, name, addExternalMonitorDetails, selectedExternalMonitor]);
+
   if (loader) {
     return <Loader />;
   }
@@ -349,6 +368,39 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             </FormControl>
           </Form.Group>
 
+          {/* Checkbox to confirm terms */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+              <FormGroup onChange={
+                handleCheckForTerms
+              }>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  checked={
+                    checkForTerms
+                  }
+                  label="I acknowledge that process payment for protocol approval submission is non-refundable."
+                />
+              </FormGroup>
+            </FormControl>
+          </Form.Group>
+
+
+          {/* Text box for enter name */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <Box sx={{ width: "100%", maxWidth: "100%" }}>
+              <TextField
+                fullWidth
+                label="Enter Name"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Box>
+          </Form.Group>
+
           {protocolTypeDetails?.protocolStatus === "Created" && (
             <Form.Group
               as={Col}
@@ -360,7 +412,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                 variant="contained"
                 color="primary"
                 type="submit"
-                disabled={!termsSelected}
+                disabled={isButtonDisabled}
               >
                 Submit And Pay
               </Button>
