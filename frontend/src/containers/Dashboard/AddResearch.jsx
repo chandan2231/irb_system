@@ -4,7 +4,14 @@ import DropdownWithSearch from "../../components/DropdownWithSearch";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Checkbox, styled, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  styled,
+  TextField,
+  Typography,
+} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const defaultInputValues = {
@@ -133,46 +140,50 @@ const AddResearch = ({ open, onClose, addNewData }) => {
   const showAfterResearchType = (values) => {
     console.log("values ====>", values);
 
-    if (!values.protocol_user_type || values.protocol_user_type === "" || values.protocol_user_type === "Commercial"
+    if (
+      !values.protocol_user_type ||
+      values.protocol_user_type === "" ||
+      values.protocol_user_type === "Commercial"
     ) {
       return null;
     }
 
-    return <>
-      <Button
-        component="label"
-        variant="outlined"
-        startIcon={<CloudUploadIcon />}
-      >
-        Upload file
-        <VisuallyHiddenInput
-          type="file"
-          name="attachments_file"
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length) {
-              setValues({
-                ...values,
-                attachments_file: e.target.files,
-              });
-            }
-          }}
-          multiple
-        />
-      </Button>
+    return (
+      <>
+        <Button
+          component="label"
+          variant="outlined"
+          startIcon={<CloudUploadIcon />}
+        >
+          Upload file
+          <VisuallyHiddenInput
+            type="file"
+            name="attachments_file"
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length) {
+                setValues({
+                  ...values,
+                  attachments_file: e.target.files,
+                });
+              }
+            }}
+            multiple
+          />
+        </Button>
 
-      {/* errors */}
-      {errors.attachments_file && (
-        <div className="error">{errors.attachments_file?.message}</div>
-      )}
+        {/* errors */}
+        {errors.attachments_file && (
+          <div className="error">{errors.attachments_file?.message}</div>
+        )}
 
-      {/* Uploaded Files */}
-      {values.attachments_file &&
-        Array.from(values.attachments_file).map((file, i) => (
-          <div key={i}>{file.name}</div>
-        ))}
-    </>
-
-  }
+        {/* Uploaded Files */}
+        {values.attachments_file &&
+          Array.from(values.attachments_file).map((file, i) => (
+            <div key={i}>{file.name}</div>
+          ))}
+      </>
+    );
+  };
 
   const getContentIfIsHaveProtocolIdNotChecked = () => {
     return (
@@ -317,7 +328,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           onClose();
           isHaveProtocolIdChecked
             ? setIsHaveProtocolIdChecked(false)
-            : () => { };
+            : () => {};
         }}
         title="Start a New Research Protocol"
         subTitle=""
