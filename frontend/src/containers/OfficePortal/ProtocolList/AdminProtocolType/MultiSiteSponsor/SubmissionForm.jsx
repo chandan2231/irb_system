@@ -9,12 +9,16 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
+import { Box, TextField } from "@mui/material";
 
 function SubmissionForm({ type }) {
   const [termsSelected, setTermsSelected] = React.useState(false);
   const initialValues = {
     notificationName: "",
   };
+  const [name, setName] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [checkForTerms, setCheckForTerms] = useState(false);
 
   const handleSubmitData = (values) => {
     let stopCall = false;
@@ -40,6 +44,20 @@ function SubmissionForm({ type }) {
       setTermsSelected(false);
     }
   };
+
+  const handleCheckForTerms = (event) => {
+    setCheckForTerms(event.target.checked);
+  }
+
+  // Validate form fields
+  useEffect(() => {
+    const isFormValid =
+      termsSelected &&
+      checkForTerms &&
+      name.trim() !== ""
+
+    setIsButtonDisabled(!isFormValid);
+  }, [termsSelected, checkForTerms, name]);
 
   return (
     <>
@@ -103,6 +121,7 @@ function SubmissionForm({ type }) {
               </li>
             </ul>
           </Form.Group>
+
           <Form.Group as={Col} controlId="validationFormik01">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
@@ -116,6 +135,41 @@ function SubmissionForm({ type }) {
               </FormGroup>
             </FormControl>
           </Form.Group>
+
+          {/* Checkbox to confirm terms */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+              <FormGroup onChange={
+                handleCheckForTerms
+              }>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  checked={
+                    checkForTerms
+                  }
+                  label="I acknowledge that process payment for protocol approval submission is non-refundable."
+                />
+              </FormGroup>
+            </FormControl>
+          </Form.Group>
+
+
+          {/* Text box for enter name */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <Box sx={{ width: "100%", maxWidth: "100%" }}>
+              <TextField
+                fullWidth
+                label="Enter Name"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Box>
+          </Form.Group>
+
+
           {type !== "member" && (
             <Form.Group
               as={Col}
