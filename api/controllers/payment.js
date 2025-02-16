@@ -101,15 +101,8 @@ function generateRandomString(length = 10) {
 }
 
 export const capturePayment = async (req, res) => {
-  const {
-    orderId,
-    payerId,
-    amount,
-    currencyCode,
-    protocolId,
-    researchType,
-    userId
-  } = req.body
+  const { orderId, payerId, amount, currencyCode, protocolId, researchType } =
+    req.body
 
   const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
   captureOrderRequest.requestBody({
@@ -126,8 +119,7 @@ export const capturePayment = async (req, res) => {
       amount: amount,
       currency: currencyCode,
       status: captureResult.result.status,
-      protocol_id: protocolId,
-      user_id: userId
+      protocol_id: protocolId
     }
 
     db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {
@@ -169,26 +161,6 @@ export const capturePayment = async (req, res) => {
               }
             })
           }
-          // Prepare email content
-          const emailContent = `
-        <h2>Payment Successful</h2>
-        <p>Your payment of <strong>${currencyCode} ${amount}</strong> has been successfully captured.</p>
-        <h3>Protocol Information</h3>
-        <ul>
-          <li><strong>Protocol ID:</strong> ${protocolId}</li>
-          ${
-            generatedProtocols.length > 0
-              ? generatedProtocols
-                  .map(
-                    (protocol) =>
-                      `<li><strong>${protocol.protocolId}:</strong> Verification Code - ${protocol.verificationCode}</li>`
-                  )
-                  .join('')
-              : ''
-          }
-        </ul>
-        <p>Thank you for your payment.</p>
-      `
         }
 
         // Respond back with the capture result
