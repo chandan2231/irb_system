@@ -280,7 +280,7 @@ function ProtocolInformationForm({
               id="demo-simple-select"
               label="Funding source"
               name="funding_source"
-              value={protocolInformation.funding_source}
+              value={protocolInformation?.funding_source}
               onChange={handleChange}
             >
               {fundingSource.map((source, index) => {

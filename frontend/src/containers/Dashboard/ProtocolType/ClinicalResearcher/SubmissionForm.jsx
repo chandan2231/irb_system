@@ -19,7 +19,7 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import ApiCall from "../../../../utility/ApiCall";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, TextField } from "@mui/material";
 import { RadioGroup, Radio } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,6 +32,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(false);
+  const [checkForTerms, setCheckForTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [addExternalMonitorDetails, setAddExternalMonitorDetails] =
     useState(false);
@@ -45,6 +46,8 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     created_by: userDetails.id,
     paymentType: protocolTypeDetails.protocolUserType,
   });
+  const [name, setName] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -55,6 +58,10 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const handleTermsChange = (event) => {
     setTermsSelected(event.target.checked);
   };
+
+  const handleCheckForTerms = (event) => {
+    setCheckForTerms(event.target.checked);
+  }
 
   const handleAddExternalMonitor = (event) => {
     setAddExternalMonitorDetails(event.target.checked);
@@ -199,6 +206,18 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   const handleChange = (event) => {
     setSelectedExternalMonitor(event.target.value);
   };
+
+  // Validate form fields
+  useEffect(() => {
+    const isFormValid =
+      termsSelected &&
+      checkForTerms &&
+      name.trim() !== "" &&
+      (!addExternalMonitorDetails || selectedExternalMonitor.trim() !== "");
+
+    setIsButtonDisabled(!isFormValid);
+  }, [termsSelected, checkForTerms, name, addExternalMonitorDetails, selectedExternalMonitor]);
+
 
   if (loader) {
     return <Loader />;
@@ -353,6 +372,39 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             </FormControl>
           </Form.Group>
 
+          {/* Checkbox to confirm terms */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+              <FormGroup onChange={
+                handleCheckForTerms
+              }>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  checked={
+                    checkForTerms
+                  }
+                  label="I acknowledge that process payment for protocol approval submission is non-refundable."
+                />
+              </FormGroup>
+            </FormControl>
+          </Form.Group>
+
+
+          {/* Text box for enter name */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <Box sx={{ width: "100%", maxWidth: "100%" }}>
+              <TextField
+                fullWidth
+                label="Enter Name"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Box>
+          </Form.Group>
+
           {/* Submit button */}
           {protocolTypeDetails?.protocolStatus === "Created" && (
             <Form.Group
@@ -365,7 +417,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                 variant="contained"
                 color="primary"
                 type="submit"
-                disabled={!termsSelected}
+                disabled={isButtonDisabled}
               >
                 Submit And Pay
               </Button>

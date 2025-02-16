@@ -4,17 +4,31 @@ import DropdownWithSearch from "../../components/DropdownWithSearch";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Checkbox, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, styled, TextField, Typography } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const defaultInputValues = {
   research_type_id: "",
   protocol_user_type: "",
+  attachments_file: null,
 };
 
 const defaultInputValuesForHaveProtocolId = {
   protocolId: "",
   verificationCode: "",
 };
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 const AddResearch = ({ open, onClose, addNewData }) => {
   const [values, setValues] = useState(defaultInputValues);
@@ -56,6 +70,26 @@ const AddResearch = ({ open, onClose, addNewData }) => {
       then: (schema) => schema.required("Please select type is required"),
       otherwise: (schema) => schema,
     }),
+    attachments_file: Yup.mixed()
+      .nullable()
+      .when(["research_type_id", "protocol_user_type"], {
+        is: (research_type_id, protocol_user_type) =>
+          research_type_id === "Principal Investigator" &&
+          protocol_user_type === "Commercial",
+        then: (schema) => schema.notRequired(),
+        otherwise: (schema) =>
+          schema.test(
+            "attachments_file",
+            "Attachments are required",
+            (value) => {
+              // If value is undefined, null, or an empty array, return false (trigger validation error)
+              if (!value || (Array.isArray(value) && value.length === 0)) {
+                return false;
+              }
+              return true;
+            }
+          ),
+      }),
   });
 
   const validationSchemaForHaveProtocolId = Yup.object().shape({
@@ -95,6 +129,50 @@ const AddResearch = ({ open, onClose, addNewData }) => {
   useEffect(() => {
     if (open) setValues(defaultInputValues);
   }, [open]);
+
+  const showAfterResearchType = (values) => {
+    console.log("values ====>", values);
+
+    if (!values.protocol_user_type || values.protocol_user_type === "" || values.protocol_user_type === "Commercial"
+    ) {
+      return null;
+    }
+
+    return <>
+      <Button
+        component="label"
+        variant="outlined"
+        startIcon={<CloudUploadIcon />}
+      >
+        Upload file
+        <VisuallyHiddenInput
+          type="file"
+          name="attachments_file"
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length) {
+              setValues({
+                ...values,
+                attachments_file: e.target.files,
+              });
+            }
+          }}
+          multiple
+        />
+      </Button>
+
+      {/* errors */}
+      {errors.attachments_file && (
+        <div className="error">{errors.attachments_file?.message}</div>
+      )}
+
+      {/* Uploaded Files */}
+      {values.attachments_file &&
+        Array.from(values.attachments_file).map((file, i) => (
+          <div key={i}>{file.name}</div>
+        ))}
+    </>
+
+  }
 
   const getContentIfIsHaveProtocolIdNotChecked = () => {
     return (
@@ -140,6 +218,8 @@ const AddResearch = ({ open, onClose, addNewData }) => {
             {...register("protocol_user_type")}
           />
         ) : null}
+
+        {showAfterResearchType(values)}
       </Box>
     );
   };
@@ -237,7 +317,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           onClose();
           isHaveProtocolIdChecked
             ? setIsHaveProtocolIdChecked(false)
-            : () => {};
+            : () => { };
         }}
         title="Start a New Research Protocol"
         subTitle=""

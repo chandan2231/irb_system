@@ -70,6 +70,13 @@ const CommonModal = ({
             {subTitle}
           </Typography>
           {content}
+
+          {/* Upload file */}
+
+
+          {/* Multi File Upload */}
+
+
         </DialogContent>
         <DialogActions>
           {hideCancelButton === true ? null : (

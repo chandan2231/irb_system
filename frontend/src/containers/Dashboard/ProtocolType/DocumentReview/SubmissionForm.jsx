@@ -22,6 +22,7 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import ApiCall from "../../../../utility/ApiCall";
+import { Box, FormGroup, TextField } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -36,6 +37,7 @@ function SubmissionForm({
   const [loader, setLoader] = useState(false);
   const [termsSelected, setTermsSelected] = useState(false);
   const [callSavedFormData, setCallSavedFormData] = useState(false);
+  const [checkForTerms, setCheckForTerms] = useState(false);
   const [formData, setFormData] = useState({
     protocol_id: protocolTypeDetails.protocolId,
     protocol_type: protocolTypeDetails.researchType,
@@ -43,10 +45,16 @@ function SubmissionForm({
     paymentType: protocolTypeDetails.protocolUserType,
   });
   const [unsavedForms, setUnsavedForms] = useState([]);
+  const [name, setName] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const handleTermsChecked = (event) => {
     setTermsSelected(event.target.checked);
   };
+
+  const handleCheckForTerms = (event) => {
+    setCheckForTerms(event.target.checked);
+  }
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -128,6 +136,16 @@ function SubmissionForm({
     fetchProtocolTypeDetails();
   }, []);
 
+  // Validate form fields
+  useEffect(() => {
+    const isFormValid =
+      termsSelected &&
+      checkForTerms &&
+      name.trim() !== ""
+
+    setIsButtonDisabled(!isFormValid);
+  }, [termsSelected, checkForTerms, name,]);
+
   if (loader) {
     return <Loader />;
   }
@@ -192,6 +210,39 @@ function SubmissionForm({
             </FormControl>
           </Form.Group>
 
+          {/* Checkbox to confirm terms */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+              <FormGroup onChange={
+                handleCheckForTerms
+              }>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  checked={
+                    checkForTerms
+                  }
+                  label="I acknowledge that process payment for protocol approval submission is non-refundable."
+                />
+              </FormGroup>
+            </FormControl>
+          </Form.Group>
+
+
+          {/* Text box for enter name */}
+          <Form.Group as={Col} controlId="validationFormik02">
+            <Box sx={{ width: "100%", maxWidth: "100%" }}>
+              <TextField
+                fullWidth
+                label="Enter Name"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Box>
+          </Form.Group>
+
           {protocolTypeDetails?.protocolStatus === "Created" && (
             <Form.Group
               as={Col}
@@ -203,7 +254,7 @@ function SubmissionForm({
                 variant="contained"
                 color="primary"
                 type="submit"
-                disabled={!termsSelected}
+                disabled={isButtonDisabled}
               >
                 Submit And Pay
               </Button>

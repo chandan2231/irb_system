@@ -101,15 +101,8 @@ function generateRandomString(length = 10) {
 }
 
 export const capturePayment = async (req, res) => {
-  const {
-    orderId,
-    payerId,
-    amount,
-    currencyCode,
-    protocolId,
-    researchType,
-    userId
-  } = req.body
+  const { orderId, payerId, amount, currencyCode, protocolId, researchType } =
+    req.body
 
   const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
   captureOrderRequest.requestBody({
@@ -126,8 +119,7 @@ export const capturePayment = async (req, res) => {
       amount: amount,
       currency: currencyCode,
       status: captureResult.result.status,
-      protocol_id: protocolId,
-      user_id: userId
+      protocol_id: protocolId
     }
 
     db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {

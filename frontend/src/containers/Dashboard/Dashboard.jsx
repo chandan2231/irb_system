@@ -123,66 +123,66 @@ function Dashboard() {
       width: 80,
       getActions: (params) =>
         params.row.protocolStatus !== "Created" &&
-        params.row.researchType === "Multi-Site Sponsor" &&
-        params.row.isParent
+          params.row.researchType === "Multi-Site Sponsor" &&
+          params.row.isParent
           ? [
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CloudUploadIcon />}
-                label="Upload Document"
-                onClick={() => navigateToUploadDocument(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View Sub Protocol"
-                onClick={() => handleViewChildProtocol(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View CTM Report"
-                onClick={() => handleViewCTMReport(params)}
-                showInMenu
-              />,
-            ]
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CloudUploadIcon />}
+              label="Upload Document"
+              onClick={() => navigateToUploadDocument(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View Sub Protocol"
+              onClick={() => handleViewChildProtocol(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View CTM Report"
+              onClick={() => handleViewCTMReport(params)}
+              showInMenu
+            />,
+          ]
           : [
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CloudUploadIcon />}
-                label="Upload Document"
-                onClick={() => navigateToUploadDocument(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View CTM Report"
-                onClick={() => handleViewCTMReport(params)}
-                showInMenu
-              />,
-            ],
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CloudUploadIcon />}
+              label="Upload Document"
+              onClick={() => navigateToUploadDocument(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View CTM Report"
+              onClick={() => handleViewCTMReport(params)}
+              showInMenu
+            />,
+          ],
     },
   ];
 
@@ -246,7 +246,7 @@ function Dashboard() {
     }
   }, [protocolList]);
 
-  const addNewData = (data, haveProtocolId = "") => {
+  const addNewData = async (data, haveProtocolId = "") => {
     setLoader(true);
     if (haveProtocolId === "") {
       let dataObj = {
@@ -257,6 +257,24 @@ function Dashboard() {
             ? data.protocol_user_type
             : data.research_type_id,
       };
+
+      console.log("data ====>", dataObj);
+
+      // Upload the file here =====>
+      if (data.research_type_id === "Principal Investigator" && data.protocol_user_type !== "Commercial") {
+        let pushed_file = [];
+        if (data.attachments_file) {
+          for (let file of data.attachments_file) {
+            let id = await uploadFile(file, {
+              userId: dataObj.login_id,
+              protocolType: dataObj.research_type_id,
+              informationType: "document_verification",
+              subType: dataObj.protocol_user_type
+            });
+            pushed_file.push(id);
+          }
+        }
+      }
 
       dispatch(createProtocol(dataObj)).then((data) => {
         if (data.payload.status === 200) {
