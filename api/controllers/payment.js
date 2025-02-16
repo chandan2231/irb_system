@@ -169,6 +169,26 @@ export const capturePayment = async (req, res) => {
               }
             })
           }
+          // Prepare email content
+          const emailContent = `
+        <h2>Payment Successful</h2>
+        <p>Your payment of <strong>${currencyCode} ${amount}</strong> has been successfully captured.</p>
+        <h3>Protocol Information</h3>
+        <ul>
+          <li><strong>Protocol ID:</strong> ${protocolId}</li>
+          ${
+            generatedProtocols.length > 0
+              ? generatedProtocols
+                  .map(
+                    (protocol) =>
+                      `<li><strong>${protocol.protocolId}:</strong> Verification Code - ${protocol.verificationCode}</li>`
+                  )
+                  .join('')
+              : ''
+          }
+        </ul>
+        <p>Thank you for your payment.</p>
+      `
         }
 
         // Respond back with the capture result
