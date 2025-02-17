@@ -423,7 +423,10 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
               <FormGroup onChange={handleCheckForTerms}>
                 <FormControlLabel
                   control={<Checkbox />}
-                  checked={checkForTerms}
+                  checked={
+                    checkForTerms ||
+                    protocolTypeDetails?.protocolStatus !== "Created"
+                  }
                   label="I acknowledge that process payment for protocol approval submission is non-refundable."
                 />
               </FormGroup>

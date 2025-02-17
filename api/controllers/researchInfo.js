@@ -813,42 +813,6 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
   })
 }
 
-export const saveClinicalSiteSubmission = (req, res) => {
-  const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
-  db.query(que, [req.body.protocol_id], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
-    } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Clinical Site has been saved successfully'
-      return res.json(result)
-    }
-  })
-}
-
-// export const saveClinicalSiteSubmission = (req, res) => {
-//     var datetime = new Date();
-//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-//     const values = [
-//         req.body.protocol_id,
-//         req.body.protocol_type,
-//         req.body.created_by,
-//         datetime.toISOString().slice(0,10),
-//         datetime.toISOString().slice(0,10),
-//     ];
-//     db.query(que, [values], (err, data) =>{
-//         if (err) {
-//             return res.status(500).json(err)
-//         } else {
-//             let result = {}
-//             result.status = 200
-//             result.msg = 'Clinical Site has been saved successfully'
-//             return res.json(result)
-//         }
-//     })
-// }
-
 export const getClinicalSiteSavedProtocolType = (req, res) => {
   const protocolTypeObj = {}
   if (req.body.protocolType === 'Clinical Site') {
@@ -1215,4 +1179,25 @@ export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
       }
     })
   }
+}
+
+export const saveClinicalSiteSubmission = (req, res) => {
+  const datetime = new Date()
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+  const successMessage = 'Protocol submission updated successfully'
+
+  saveCommanProtocolSubmission(
+    'protocols',
+    setParams,
+    whereParams,
+    successMessage,
+    res
+  )
 }

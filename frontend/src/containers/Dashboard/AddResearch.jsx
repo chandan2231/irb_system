@@ -119,7 +119,6 @@ const AddResearch = ({ open, onClose, addNewData }) => {
   } = useForm({ resolver: yupResolver(validationSchemaForHaveProtocolId) });
 
   const addNew = (data) => {
-    console.log("aaaaaaa");
     addNewData(data);
   };
 
@@ -141,8 +140,6 @@ const AddResearch = ({ open, onClose, addNewData }) => {
   }, [open]);
 
   const showAfterResearchType = (values) => {
-    console.log("values ====>", values);
-
     if (
       !values.protocol_user_type ||
       values.protocol_user_type === "" ||
@@ -180,6 +177,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
                     });
                   }
                 }}
+                multiple
               />
             </Button>
           </Grid>
