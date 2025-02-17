@@ -84,29 +84,17 @@ const AddResearch = ({ open, onClose, addNewData }) => {
       otherwise: (schema) => schema,
     }),
     attachments_file: Yup.mixed().when(["research_type_id", "protocol_user_type"], {
-      is: (research_type_id, protocol_user_type) =>
-        research_type_id === "Principal Investigator" &&
-        protocol_user_type === "Commercial",
-      then: (schema) => schema.notRequired(),
-      otherwise: (schema) =>
-        schema.test(
-          "fileRequired",
-          "File is required",
-          (value) => {
-            console.log("Validation check:", value);
-
-            // Check if value exists
-            if (!value) return false;
-
-            // Check if FileList has at least one file
-            if (value instanceof FileList) {
-              return value.length > 0;
-            }
-
-            return false;
-          }
-        ),
+      is: (research_type_id, protocol_user_type) => research_type_id === "Principal Investigator" && protocol_user_type !== "Commercial",
+      then: (schema) =>
+        schema.test("fileRequired", "File is required", (value) => {
+          if (!value) return false;
+          if (value instanceof FileList) return value.length > 0;
+          if (value instanceof File) return true;
+          return false;
+        }),
+      otherwise: (schema) => schema.notRequired(),
     }),
+
   });
 
   const validationSchemaForHaveProtocolId = Yup.object().shape({
