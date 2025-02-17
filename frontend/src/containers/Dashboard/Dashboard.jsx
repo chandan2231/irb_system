@@ -247,6 +247,7 @@ function Dashboard() {
   }, [protocolList]);
 
   const addNewData = async (data, haveProtocolId = "") => {
+    console.log("asdasdsadas");
     setLoader(true);
     if (haveProtocolId === "") {
       let dataObj = {

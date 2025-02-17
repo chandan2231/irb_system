@@ -83,16 +83,15 @@ const AddResearch = ({ open, onClose, addNewData }) => {
       then: (schema) => schema.required("Please select type is required"),
       otherwise: (schema) => schema,
     }),
-    attachments_file: Yup.mixed().when(["research_type_id", "protocol_user_type"], {
-      is: (research_type_id, protocol_user_type) =>
-        research_type_id === "Principal Investigator" &&
-        protocol_user_type === "Commercial",
-      then: (schema) => schema.notRequired(),
-      otherwise: (schema) =>
-        schema.test(
-          "fileRequired",
-          "File is required",
-          (value) => {
+    attachments_file: Yup.mixed().when(
+      ["research_type_id", "protocol_user_type"],
+      {
+        is: (research_type_id, protocol_user_type) =>
+          research_type_id === "Principal Investigator" &&
+          protocol_user_type === "Commercial",
+        then: (schema) => schema.notRequired(),
+        otherwise: (schema) =>
+          schema.test("fileRequired", "File is required", (value) => {
             console.log("Validation check:", value);
 
             // Check if value exists
@@ -104,9 +103,9 @@ const AddResearch = ({ open, onClose, addNewData }) => {
             }
 
             return false;
-          }
-        ),
-    }),
+          }),
+      }
+    ),
   });
 
   const validationSchemaForHaveProtocolId = Yup.object().shape({
@@ -127,6 +126,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
   } = useForm({ resolver: yupResolver(validationSchemaForHaveProtocolId) });
 
   const addNew = (data) => {
+    console.log("aaaaaaa");
     addNewData(data);
   };
 
@@ -345,7 +345,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           onClose();
           isHaveProtocolIdChecked
             ? setIsHaveProtocolIdChecked(false)
-            : () => { };
+            : () => {};
         }}
         title="Start a New Research Protocol"
         subTitle=""
