@@ -11,7 +11,13 @@ import {
   styled,
   TextField,
   Typography,
+  InputLabel,
+  FormGroup,
+  Grid,
 } from "@mui/material";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Form from "react-bootstrap/Form";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const defaultInputValues = {
@@ -149,39 +155,45 @@ const AddResearch = ({ open, onClose, addNewData }) => {
     }
 
     return (
-      <>
-        <Button
-          component="label"
-          variant="outlined"
-          startIcon={<CloudUploadIcon />}
-        >
-          Upload file
-          <VisuallyHiddenInput
-            type="file"
-            name="attachments_file"
-            onChange={(e) => {
-              if (e.target.files && e.target.files.length) {
-                setValues({
-                  ...values,
-                  attachments_file: e.target.files,
-                });
-              }
-            }}
-            multiple
-          />
-        </Button>
-
-        {/* errors */}
-        {errors.attachments_file && (
-          <div className="error">{errors.attachments_file?.message}</div>
-        )}
-
-        {/* Uploaded Files */}
+      <Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <InputLabel id="demo-simple-select-autowidth-label">
+              Upload verification document
+            </InputLabel>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+            >
+              Upload file
+              <VisuallyHiddenInput
+                type="file"
+                name="attachments_file"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length) {
+                    setValues({
+                      ...values,
+                      [e.target.name]: e.target.files,
+                    });
+                  }
+                }}
+              />
+            </Button>
+          </Grid>
+        </Grid>
         {values.attachments_file &&
           Array.from(values.attachments_file).map((file, i) => (
             <div key={i}>{file.name}</div>
           ))}
-      </>
+        {errors.attachments_file && (
+          <div className="error">{errors.attachments_file?.message}</div>
+        )}
+      </Box>
     );
   };
 
