@@ -15,7 +15,7 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import * as yup from "yup";
-import { createInformedConsent } from "../../../../services/ProtocolType/ContractorResearcherService";
+import { createDocumentReview } from "../../../../services/ProtocolType/DocumentReviewService";
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
@@ -202,7 +202,7 @@ function InformedConsentForm({
             consent_file.push(id);
           }
         }
-        dispatch(createInformedConsent({ ...formData, consent_file })).then(
+        dispatch(createDocumentReview({ ...formData, consent_file })).then(
           (data) => {
             if (data.payload.status === 200) {
               setLoader(false);

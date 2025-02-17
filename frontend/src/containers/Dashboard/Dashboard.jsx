@@ -258,9 +258,6 @@ function Dashboard() {
             : data.research_type_id,
       };
 
-      console.log("data ====>", dataObj);
-
-      // Upload the file here =====>
       if (
         data.research_type_id === "Principal Investigator" &&
         data.protocol_user_type !== "Commercial"
@@ -361,7 +358,6 @@ function Dashboard() {
       }
     } catch (error) {
       setLoader(false);
-
       console.log(error);
     }
   };

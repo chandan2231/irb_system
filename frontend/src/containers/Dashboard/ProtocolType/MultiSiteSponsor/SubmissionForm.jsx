@@ -66,7 +66,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
 
   const handleCheckForTerms = (event) => {
     setCheckForTerms(event.target.checked);
-  }
+  };
 
   const handleAddExternalMonitor = (event) => {
     setAddExternalMonitorDetails(event.target.checked);
@@ -102,14 +102,16 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       );
       return;
     } else {
-      if (addExternalMonitorDetails === true) {
-        try {
+      try {
+        if (addExternalMonitorDetails === true) {
           if (selectedExternalMonitor !== "") {
             formData.external_monitor_id = selectedExternalMonitor;
+            formData.terms = termsSelected;
+            formData.acknowledge = checkForTerms;
+            formData.acknowledge_name = name;
           }
           setLoader(true);
           dispatch(createMultiSiteSubmission(formData)).then((data) => {
-            console.log("datadatadata", data);
             if (data.payload.status === 200) {
               setLoader(false);
               toast.success(data.payload.data.msg, {
@@ -139,11 +141,44 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
               });
             }
           });
-        } catch (error) {
-          setLoader(false);
+        } else {
+          formData.terms = termsSelected;
+          formData.acknowledge = checkForTerms;
+          formData.acknowledge_name = name;
+          setLoader(true);
+          dispatch(createMultiSiteSubmission(formData)).then((data) => {
+            if (data.payload.status === 200) {
+              setLoader(false);
+              toast.success(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+              const timer = setTimeout(() => {
+                navigateToPaymentPage(formData);
+              }, 1000);
+              return () => clearTimeout(timer);
+            } else {
+              toast.error(data.payload.data.msg, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+              });
+            }
+          });
         }
-      } else {
-        navigateToPaymentPage(formData);
+      } catch (error) {
+        setLoader(false);
       }
     }
   };
@@ -230,7 +265,13 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       (!addExternalMonitorDetails || selectedExternalMonitor.trim() !== "");
 
     setIsButtonDisabled(!isFormValid);
-  }, [termsSelected, checkForTerms, name, addExternalMonitorDetails, selectedExternalMonitor]);
+  }, [
+    termsSelected,
+    checkForTerms,
+    name,
+    addExternalMonitorDetails,
+    selectedExternalMonitor,
+  ]);
 
   if (loader) {
     return <Loader />;
@@ -372,20 +413,18 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           <Form.Group as={Col} controlId="validationFormik02">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup onChange={
-                handleCheckForTerms
-              }>
+              <FormGroup onChange={handleCheckForTerms}>
                 <FormControlLabel
                   control={<Checkbox />}
                   checked={
-                    checkForTerms
+                    checkForTerms ||
+                    protocolTypeDetails?.protocolStatus !== "Created"
                   }
                   label="I acknowledge that process payment for protocol approval submission is non-refundable."
                 />
               </FormGroup>
             </FormControl>
           </Form.Group>
-
 
           {/* Text box for enter name */}
           <Form.Group as={Col} controlId="validationFormik02">

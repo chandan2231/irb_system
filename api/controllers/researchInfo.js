@@ -1,5 +1,68 @@
 import { db } from '../connect.js'
 
+export const saveDocumentReview = (req, res) => {
+  const selectQue = 'select * from informed_consent where protocol_id = ?'
+  db.query(selectQue, [req.body.protocol_id], (err, data) => {
+    if (data.length > 0) {
+      const updateQuery = `UPDATE informed_consent 
+                SET consent_type=?,
+                include_icf=?,
+                no_consent_explain=?,
+                other_language_selection=?,
+                participation_compensated=?,
+                professional_translator=?,
+                professional_translator_explain=?, 
+                created_by=?
+            WHERE protocol_id=?`
+      const updateValues = [
+        req.body.consent_type.toString(),
+        req.body.include_icf,
+        req.body.no_consent_explain,
+        req.body.other_language_selection,
+        req.body.participation_compensated,
+        req.body.professional_translator,
+        req.body.professional_translator_explain,
+        req.body.created_by,
+        req.body.protocol_id
+      ]
+      db.query(updateQuery, updateValues, (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'Document Review has been updated successfully'
+          return res.json(result)
+        }
+      })
+    } else {
+      const que =
+        'insert into informed_consent (`protocol_id`,`consent_type`,`include_icf`,`no_consent_explain`,`other_language_selection`,`participation_compensated`,`professional_translator`,`professional_translator_explain`, `created_by`) value (?)'
+      const values = [
+        req.body.protocol_id,
+        req.body.consent_type.toString(),
+        req.body.include_icf,
+        req.body.no_consent_explain,
+        req.body.other_language_selection,
+        req.body.participation_compensated,
+        req.body.professional_translator,
+        req.body.professional_translator_explain,
+        req.body.created_by
+      ]
+      db.query(que, [values], (err, data) => {
+        if (err) {
+          return res.status(500).json(err)
+        } else {
+          let result = {}
+          result.status = 200
+          result.msg = 'Document Review has been saved successfully'
+          return res.json(result)
+        }
+      })
+    }
+  })
+}
+
 export const saveProtocolInfo = (req, res) => {
   const selectQue = 'select * from protocol_information where protocol_id = ?'
   db.query(selectQue, [req.body.protocol_id], (err, data) => {
@@ -750,42 +813,6 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
   })
 }
 
-export const saveClinicalSiteSubmission = (req, res) => {
-  const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
-  db.query(que, [req.body.protocol_id], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
-    } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Clinical Site has been saved successfully'
-      return res.json(result)
-    }
-  })
-}
-
-// export const saveClinicalSiteSubmission = (req, res) => {
-//     var datetime = new Date();
-//     const que = 'insert into protocol_submission (`protocol_id`, `protocol_type`,`created_by`, `created_at`, `updated_at`) value (?)';
-//     const values = [
-//         req.body.protocol_id,
-//         req.body.protocol_type,
-//         req.body.created_by,
-//         datetime.toISOString().slice(0,10),
-//         datetime.toISOString().slice(0,10),
-//     ];
-//     db.query(que, [values], (err, data) =>{
-//         if (err) {
-//             return res.status(500).json(err)
-//         } else {
-//             let result = {}
-//             result.status = 200
-//             result.msg = 'Clinical Site has been saved successfully'
-//             return res.json(result)
-//         }
-//     })
-// }
-
 export const getClinicalSiteSavedProtocolType = (req, res) => {
   const protocolTypeObj = {}
   if (req.body.protocolType === 'Clinical Site') {
@@ -879,6 +906,23 @@ export const getDocumentReviewSavedProtocolType = (req, res) => {
 
 export const saveMultiSiteSubmission = (req, res) => {
   var datetime = new Date()
+  // Use the updateDatabase function for the update operation
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+  const successMessage = 'Protocol submission updated successfully'
+  saveCommanProtocolSubmissionWithCTM(
+    'protocols',
+    setParams,
+    whereParams,
+    successMessage,
+    res
+  )
   const selectQue =
     'select * from external_monitor_protocol where protocol_id = ?'
   db.query(selectQue, [req.body.protocol_id], (err, data) => {
@@ -967,44 +1011,106 @@ export const getMultiSiteSavedProtocolType = (req, res) => {
   }
 }
 
-// export const savePrincipalInvestigatorSubmission = (req, res) => {
+const saveCommanProtocolSubmissionWithCTM = (
+  table,
+  setParams,
+  whereParams,
+  successMessage,
+  res
+) => {
+  const setClause = Object.keys(setParams)
+    .map((key) => `${key}=?`)
+    .join(', ')
+  const whereClause = Object.keys(whereParams)
+    .map((key) => `${key}=?`)
+    .join(' AND ')
+  const query = `UPDATE ${table} SET ${setClause} WHERE ${whereClause}`
 
-//   const que = 'UPDATE protocols SET status=2, allow_edit=1 WHERE protocol_id=?'
-//   db.query(que, [req.body.protocol_id], (err, data) => {
-//     if (err) {
-//       return res.status(500).json(err)
-//     } else {
-//       let result = {}
-//       result.status = 200
-//       result.msg = 'Principal Investigator has been saved successfully'
-//       return res.json(result)
-//     }
-//   })
-// }
+  const params = [...Object.values(setParams), ...Object.values(whereParams)]
+
+  db.query(query, params, (err, data) => {})
+}
+
+const saveCommanProtocolSubmission = (
+  table,
+  setParams,
+  whereParams,
+  successMessage,
+  res
+) => {
+  const setClause = Object.keys(setParams)
+    .map((key) => `${key}=?`)
+    .join(', ')
+  const whereClause = Object.keys(whereParams)
+    .map((key) => `${key}=?`)
+    .join(' AND ')
+  const query = `UPDATE ${table} SET ${setClause} WHERE ${whereClause}`
+
+  const params = [...Object.values(setParams), ...Object.values(whereParams)]
+
+  db.query(query, params, (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: err.message })
+    } else {
+      return res.json({
+        status: 200,
+        msg: successMessage
+      })
+    }
+  })
+}
 
 export const savePrincipalInvestigatorSubmission = (req, res) => {
-  var datetime = new Date()
+  const datetime = new Date()
+
+  // Use the updateDatabase function for the update operation
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+  const successMessage = 'Protocol submission updated successfully'
+
+  // First, attempt to update the protocol submission
+  saveCommanProtocolSubmissionWithCTM(
+    'protocols',
+    setParams,
+    whereParams,
+    successMessage,
+    res
+  )
+
+  // Check if the protocol_id exists in external_monitor_protocol table
   const selectQue =
-    'select * from external_monitor_protocol where protocol_id = ?'
+    'SELECT * FROM external_monitor_protocol WHERE protocol_id = ?'
   db.query(selectQue, [req.body.protocol_id], (err, data) => {
+    if (err) {
+      return res.status(500).json(err)
+    }
+
+    // If protocol exists in external_monitor_protocol, update it
     if (data.length > 0) {
       const updateQuery = `UPDATE external_monitor_protocol 
                 SET external_monitor_id=? WHERE protocol_id=?`
-
       const updateValues = [req.body.external_monitor_id, req.body.protocol_id]
+
       db.query(updateQuery, updateValues, (err, data) => {
         if (err) {
           return res.status(500).json(err)
         } else {
-          let result = {}
-          result.status = 200
-          result.msg = 'Clinical Trial Monitor assigned and saved successfully'
-          return res.json(result)
+          return res.json({
+            status: 200,
+            msg: 'Clinical Trial Monitor assigned and saved successfully'
+          })
         }
       })
     } else {
-      const que =
-        'insert into external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) value (?)'
+      // If no record exists, insert new entry into external_monitor_protocol table
+      const insertQue =
+        'INSERT INTO external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) VALUES (?)'
       const values = [
         req.body.protocol_id,
         req.body.protocol_type,
@@ -1013,18 +1119,40 @@ export const savePrincipalInvestigatorSubmission = (req, res) => {
         datetime.toISOString().slice(0, 10),
         datetime.toISOString().slice(0, 10)
       ]
-      db.query(que, [values], (err, data) => {
+
+      db.query(insertQue, [values], (err, data) => {
         if (err) {
           return res.status(500).json(err)
         } else {
-          let result = {}
-          result.status = 200
-          result.msg = 'Clinical Trial Monitor assigned and saved successfully'
-          return res.json(result)
+          return res.json({
+            status: 200,
+            msg: 'Clinical Trial Monitor assigned and saved successfully'
+          })
         }
       })
     }
   })
+}
+
+export const saveDocumentSubmission = (req, res) => {
+  const datetime = new Date()
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+  const successMessage = 'Protocol submission updated successfully'
+
+  saveCommanProtocolSubmission(
+    'protocols',
+    setParams,
+    whereParams,
+    successMessage,
+    res
+  )
 }
 
 export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
@@ -1051,4 +1179,25 @@ export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
       }
     })
   }
+}
+
+export const saveClinicalSiteSubmission = (req, res) => {
+  const datetime = new Date()
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+  const successMessage = 'Protocol submission updated successfully'
+
+  saveCommanProtocolSubmission(
+    'protocols',
+    setParams,
+    whereParams,
+    successMessage,
+    res
+  )
 }

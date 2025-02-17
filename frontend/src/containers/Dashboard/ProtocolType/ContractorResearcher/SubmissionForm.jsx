@@ -54,7 +54,7 @@ function SubmissionForm({
 
   const handleCheckForTerms = (event) => {
     setCheckForTerms(event.target.checked);
-  }
+  };
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -79,7 +79,44 @@ function SubmissionForm({
       );
       return;
     } else {
-      navigateToPaymentPage(formData);
+      try {
+        setLoader(true);
+        formData.terms = termsSelected;
+        formData.acknowledge = checkForTerms;
+        formData.acknowledge_name = name;
+        dispatch(createClinicalSiteSubmission(formData)).then((data) => {
+          if (data.payload.status === 200) {
+            setLoader(false);
+            toast.success(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+            const timer = setTimeout(() => {
+              navigateToPaymentPage(formData);
+            }, 1000);
+            return () => clearTimeout(timer);
+          } else {
+            toast.error(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+          }
+        });
+      } catch (error) {
+        setLoader(false);
+      }
     }
   };
 
@@ -140,10 +177,7 @@ function SubmissionForm({
 
   // Validate form fields
   useEffect(() => {
-    const isFormValid =
-      termsSelected &&
-      checkForTerms &&
-      name.trim() !== ""
+    const isFormValid = termsSelected && checkForTerms && name.trim() !== "";
 
     setIsButtonDisabled(!isFormValid);
   }, [termsSelected, checkForTerms, name]);
@@ -222,20 +256,18 @@ function SubmissionForm({
           <Form.Group as={Col} controlId="validationFormik02">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup onChange={
-                handleCheckForTerms
-              }>
+              <FormGroup onChange={handleCheckForTerms}>
                 <FormControlLabel
                   control={<Checkbox />}
                   checked={
-                    checkForTerms
+                    checkForTerms ||
+                    protocolTypeDetails?.protocolStatus !== "Created"
                   }
                   label="I acknowledge that process payment for protocol approval submission is non-refundable."
                 />
               </FormGroup>
             </FormControl>
           </Form.Group>
-
 
           {/* Text box for enter name */}
           <Form.Group as={Col} controlId="validationFormik02">

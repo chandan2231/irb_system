@@ -112,3 +112,19 @@ export const getClinicalSiteSavedProtocolType = createAsyncThunk(
     }
   }
 );
+
+export const createDocumentSubmission = createAsyncThunk(
+  "ProtocolType/createDocumentSubmission",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/researchInfo/saveDocumentSubmission`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

@@ -745,9 +745,18 @@ export const getProtocolDetailsById = (req, res) => {
                               protocolDetailsObj.protocol_procedure.documents =
                                 []
                             }
-                            return res.status(200).json(protocolDetailsObj)
                           }
                         )
+                        const que6 =
+                          'select applicant_terms, applicant_acknowledge, applicant_acknowledge_name from protocols where protocol_id = ?'
+                        db.query(que6, [req.body.protocolId], (err, data) => {
+                          if (data.length >= 0) {
+                            protocolDetailsObj.submission_information = data[0]
+                          } else {
+                            protocolDetailsObj.submission_information = []
+                          }
+                          return res.status(200).json(protocolDetailsObj)
+                        })
                       }
                     })
                   }
@@ -846,9 +855,43 @@ export const getProtocolDetailsById = (req, res) => {
                               protocolDetailsObj.protocol_procedure.documents =
                                 []
                             }
-                            return res.status(200).json(protocolDetailsObj)
                           }
                         )
+                        const que6 =
+                          'select applicant_terms, applicant_acknowledge, applicant_acknowledge_name from protocols where protocol_id = ?'
+                        db.query(que6, [req.body.protocolId], (err, data) => {
+                          if (data.length >= 0) {
+                            protocolDetailsObj.submission_information =
+                              data[0] || {}
+                            const que7 =
+                              'select applicant_terms, applicant_acknowledge, applicant_acknowledge_name from protocols where protocol_id = ?'
+                            db.query(
+                              que7,
+                              [req.body.protocolId],
+                              (err, data) => {
+                                if (data.length >= 0) {
+                                  protocolDetailsObj.submission_information =
+                                    data[0] || {}
+                                  const que4 =
+                                    'select * from external_monitor_protocol where protocol_id = ?'
+                                  db.query(
+                                    que4,
+                                    [req.body.protocolId],
+                                    (err, data) => {
+                                      if (data.length >= 0) {
+                                        protocolDetailsObj.clinical_trail_monitor_information =
+                                          data[0] || {}
+                                      }
+                                      return res
+                                        .status(200)
+                                        .json(protocolDetailsObj)
+                                    }
+                                  )
+                                }
+                              }
+                            )
+                          }
+                        })
                       }
                     })
                   }
@@ -911,9 +954,16 @@ export const getProtocolDetailsById = (req, res) => {
                     } else {
                       protocolDetailsObj.informed_consent.documents = []
                     }
-                    return res.status(200).json(protocolDetailsObj)
                   }
                 )
+                const que4 =
+                  'select applicant_terms, applicant_acknowledge, applicant_acknowledge_name from protocols where protocol_id = ?'
+                db.query(que4, [req.body.protocolId], (err, data) => {
+                  if (data.length >= 0) {
+                    protocolDetailsObj.submission_information = data[0] || {}
+                    return res.status(200).json(protocolDetailsObj)
+                  }
+                })
               }
             })
           }
@@ -957,9 +1007,24 @@ export const getProtocolDetailsById = (req, res) => {
                 } else {
                   protocolDetailsObj.consent_information.documents = []
                 }
-                return res.status(200).json(protocolDetailsObj)
               }
             )
+            const que3 =
+              'select applicant_terms, applicant_acknowledge, applicant_acknowledge_name from protocols where protocol_id = ?'
+            db.query(que3, [req.body.protocolId], (err, data) => {
+              if (data.length >= 0) {
+                protocolDetailsObj.submission_information = data[0] || {}
+                const que4 =
+                  'select * from external_monitor_protocol where protocol_id = ?'
+                db.query(que4, [req.body.protocolId], (err, data) => {
+                  if (data.length >= 0) {
+                    protocolDetailsObj.clinical_trail_monitor_information =
+                      data[0] || {}
+                  }
+                  return res.status(200).json(protocolDetailsObj)
+                })
+              }
+            })
           }
         })
       }
