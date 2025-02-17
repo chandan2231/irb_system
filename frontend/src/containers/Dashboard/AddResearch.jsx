@@ -88,22 +88,15 @@ const AddResearch = ({ open, onClose, addNewData }) => {
       {
         is: (research_type_id, protocol_user_type) =>
           research_type_id === "Principal Investigator" &&
-          protocol_user_type === "Commercial",
-        then: (schema) => schema.notRequired(),
-        otherwise: (schema) =>
+          protocol_user_type !== "Commercial",
+        then: (schema) =>
           schema.test("fileRequired", "File is required", (value) => {
-            console.log("Validation check:", value);
-
-            // Check if value exists
             if (!value) return false;
-
-            // Check if FileList has at least one file
-            if (value instanceof FileList) {
-              return value.length > 0;
-            }
-
+            if (value instanceof FileList) return value.length > 0;
+            if (value instanceof File) return true;
             return false;
           }),
+        otherwise: (schema) => schema.notRequired(),
       }
     ),
   });
