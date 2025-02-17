@@ -66,7 +66,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
 
   const handleCheckForTerms = (event) => {
     setCheckForTerms(event.target.checked);
-  }
+  };
 
   const handleAddExternalMonitor = (event) => {
     setAddExternalMonitorDetails(event.target.checked);
@@ -106,10 +106,12 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
         try {
           if (selectedExternalMonitor !== "") {
             formData.external_monitor_id = selectedExternalMonitor;
+            formData.terms = termsSelected;
+            formData.acknowledge = checkForTerms;
+            formData.acknowledge_name = name;
           }
           setLoader(true);
           dispatch(createMultiSiteSubmission(formData)).then((data) => {
-            console.log("datadatadata", data);
             if (data.payload.status === 200) {
               setLoader(false);
               toast.success(data.payload.data.msg, {
@@ -142,8 +144,6 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
         } catch (error) {
           setLoader(false);
         }
-      } else {
-        navigateToPaymentPage(formData);
       }
     }
   };
@@ -230,7 +230,13 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       (!addExternalMonitorDetails || selectedExternalMonitor.trim() !== "");
 
     setIsButtonDisabled(!isFormValid);
-  }, [termsSelected, checkForTerms, name, addExternalMonitorDetails, selectedExternalMonitor]);
+  }, [
+    termsSelected,
+    checkForTerms,
+    name,
+    addExternalMonitorDetails,
+    selectedExternalMonitor,
+  ]);
 
   if (loader) {
     return <Loader />;
@@ -372,20 +378,15 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           <Form.Group as={Col} controlId="validationFormik02">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup onChange={
-                handleCheckForTerms
-              }>
+              <FormGroup onChange={handleCheckForTerms}>
                 <FormControlLabel
                   control={<Checkbox />}
-                  checked={
-                    checkForTerms
-                  }
+                  checked={checkForTerms}
                   label="I acknowledge that process payment for protocol approval submission is non-refundable."
                 />
               </FormGroup>
             </FormControl>
           </Form.Group>
-
 
           {/* Text box for enter name */}
           <Form.Group as={Col} controlId="validationFormik02">

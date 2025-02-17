@@ -16,6 +16,7 @@ import ContinuinReviewReducer from "./ContinuinReview/ContinuinReviewSlice";
 import ClinicalResearcherReducer from "./ProtocolType/ClinicalResearcherSlice";
 import MultiSiteSponsorReducer from "./ProtocolType/MultiSiteSponsorSlice";
 import ContractorResearcherReducer from "./ProtocolType/ContractorResearcherSlice";
+import DocumentReviewReducer from "./ProtocolType/DocumentReviewSlice";
 import AdminReducer from "./Admin/AdminSlice";
 import MembersReducer from "./Admin/MembersSlice";
 import EventPriceReducer from "./Admin/EventPriceSlice";
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   clinicalResearcher: ClinicalResearcherReducer,
   multiSiteSponsor: MultiSiteSponsorReducer,
   contractorResearcher: ContractorResearcherReducer,
+  documentReview: DocumentReviewReducer,
   admin: AdminReducer,
   member: MembersReducer,
   eventPrice: EventPriceReducer,

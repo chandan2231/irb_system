@@ -27,14 +27,14 @@ const ClinicalResearcherSlice = createSlice({
         (state, action) => {
           state.loading = false;
           state.createdInvestigatorAndProtocolInformation = action.payload;
-        },
+        }
       )
       .addCase(
         createInvestigatorAndProtocolInformation.rejected,
         (state, action) => {
           state.loading = false;
           state.error = action.payload || action.error.message;
-        },
+        }
       )
       .addCase(createInformedConsent.pending, (state) => {
         state.loading = true;
@@ -57,14 +57,14 @@ const ClinicalResearcherSlice = createSlice({
         (state, action) => {
           state.loading = false;
           state.createdPrincipalInvestigatorSubmission = action.payload;
-        },
+        }
       )
       .addCase(
         createPrincipalInvestigatorSubmission.rejected,
         (state, action) => {
           state.loading = false;
           state.error = action.payload || action.error.message;
-        },
+        }
       )
       .addCase(getPrincipalInvestigatorSavedProtocolType.pending, (state) => {
         state.loading = true;
@@ -75,14 +75,14 @@ const ClinicalResearcherSlice = createSlice({
         (state, action) => {
           state.loading = false;
           state.getAllPrincipalInvestigatorSavedProtocolType = action.payload;
-        },
+        }
       )
       .addCase(
         getPrincipalInvestigatorSavedProtocolType.rejected,
         (state, action) => {
           state.loading = false;
           state.error = action.payload || action.error.message;
-        },
+        }
       );
   },
 });

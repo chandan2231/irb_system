@@ -16,7 +16,7 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
 import Grid from "@mui/material/Grid";
-import { createProtocolInformation } from "../../../../services/ProtocolType/ContractorResearcherService";
+import { createProtocolInformation } from "../../../../services/ProtocolType/DocumentReviewService";
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
