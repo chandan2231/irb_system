@@ -1048,7 +1048,7 @@ function ProtocolProceduresForm({
               <FormGroup onChange={(event) => handleTearmChecked(event)}>
                 <FormControlLabel
                   control={<Checkbox />}
-                  label="Your initials below signify that you have read the terms and agree with them"
+                  label="You acknowledge that you read the term and agree with them"
                 />
               </FormGroup>
             </FormControl>
