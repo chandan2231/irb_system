@@ -10,8 +10,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import {
   fetchActiveVotingMemberList,
   fetchMemberEventList,
@@ -20,6 +22,7 @@ import {
 function ProtocolEventList() {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
@@ -27,36 +30,36 @@ function ProtocolEventList() {
 
   const columns = [
     {
-      field: "protocol_id",
-      headerName: "Protocol Id",
-      flex: 1,
-    },
-    {
-      field: "protocol_name",
-      headerName: "Protocol Name",
-      flex: 1,
+      field: "event_date_time",
+      headerName: "Event Date Time",
+      flex: 2,
     },
     {
       field: "event_subject",
-      headerName: "Event Subject",
-      flex: 1,
+      headerName: "Subject",
+      flex: 2,
     },
+    {
+      field: "protocol_name",
+      headerName: "Protocol",
+      flex: 2,
+    },
+
     {
       field: "members",
       headerName: "Members",
       flex: 2,
     },
     {
-      field: "status",
-      headerName: "Status",
-      width: 100,
-    },
-    {
       field: "createdDate",
       headerName: "Created Date",
       flex: 1,
     },
-
+    // {
+    //   field: "status",
+    //   headerName: "Status",
+    //   width: 100,
+    // },
     {
       field: "actions",
       type: "actions",
@@ -115,13 +118,13 @@ function ProtocolEventList() {
       memberEventList.map((uList, index) => {
         let listObject = {
           id: uList.id,
-          protocol_id: uList.protocol_id,
-          protocol_name: uList.protocol_name,
+          event_date_time: "",
           event_subject: uList.event_subject,
+          protocol_name: uList.protocol_name,
           members: uList.members,
-          status: uList.status === 1 ? "Pending" : "Completed",
           createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
+          // status: uList.status === 1 ? "Pending" : "Completed",
+          // updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
         };
         uListArr.push(listObject);
       });
@@ -147,13 +150,9 @@ function ProtocolEventList() {
     dispatch(fetchActiveVotingMemberList());
   }, [dispatch]);
 
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
+  const navigateToaddNewEvent = (params) => {
+    navigate("/admin/add-event");
+  };
 
   return (
     <>
@@ -175,14 +174,26 @@ function ProtocolEventList() {
             {/* Title Grid Item */}
             <Grid item xs={12} sm={8} md={8} lg={8}>
               <Typography
-                variant="h5"
-                mb={2}
+                variant="h2"
                 sx={{
-                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
                 }}
               >
                 Protocol Meeting Events List
               </Typography>
+            </Grid>
+            <Grid item xs={12} sm={12} md={4} lg={4}>
+              <Box display="flex" justifyContent="flex-end">
+                <CommonButton
+                  variant="contained"
+                  startIcon={<AddOutlinedIcon />}
+                  onClick={() => navigateToaddNewEvent()}
+                >
+                  Add Events
+                </CommonButton>
+              </Box>
             </Grid>
           </Grid>
         </Box>
@@ -194,7 +205,6 @@ function ProtocolEventList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>

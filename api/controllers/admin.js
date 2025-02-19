@@ -226,14 +226,29 @@ export const createMember = async (req, res) => {
   }
 }
 
+// export const getActiveVotingMemberList = (req, res) => {
+//   const que = 'select * from users WHERE user_type=? AND status=?'
+//   db.query(que, ['Voting Member', 1], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }
+
 export const getActiveVotingMemberList = (req, res) => {
-  const que = 'select * from users WHERE user_type=? AND status=?'
-  db.query(que, ['Voting Member', 1], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
+  // Use the 'IN' clause for multiple user types
+  const que = 'SELECT * FROM users WHERE user_type IN (?, ?, ?) AND status = ?'
+  db.query(
+    que,
+    ['Voting Member', 'Committee Chair', 'Non Voting Member', 1],
+    (err, data) => {
+      if (err) return res.status(500).json(err)
+      if (data.length >= 0) {
+        return res.status(200).json(data)
+      }
     }
-  })
+  )
 }
 
 export const changeEventPriceStatus = (req, res) => {
@@ -1300,3 +1315,25 @@ export const getAllProtocolList = (req, res) => {
     }
   })
 }
+
+export const getUnderReviewProtocolAllList = (req, res) => {
+  const que =
+    'SELECT ps.id, ps.protocol_id, ps.research_type FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=2'
+  db.query(que, {}, (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
+// export const getUnderReviewProtocolAllList = (req, res) => {
+//   const que =
+//     'SELECT id, protocol_id, research_type FROM protocols WHERE status=2'
+//   db.query(que, {}, (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }

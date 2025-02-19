@@ -10,6 +10,9 @@ import Backdrop from "@mui/material/Backdrop";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
+import { validateUserToken } from "./services/Auth/AuthService";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, CssBaseline } from "@mui/material";
 import Dashboard from "./containers/Dashboard/Dashboard";
 import ProtocolDetails from "./containers/Dashboard/ProtocolDetails";
 import ContinuingReview from "./containers/ContinuingReview/ContinuingReview";
@@ -49,10 +52,6 @@ import PayPalButton from "./components/PaymentPage";
 import CanclePayment from "./components/CanclePayment";
 import SuccessPayment from "./components/SuccessPayment";
 import UploadProtocolDocument from "./containers/Dashboard/UploadProtocolDocument";
-import { validateUserToken } from "./services/Auth/AuthService";
-import { useDispatch, useSelector } from "react-redux";
-import { Box, CssBaseline } from "@mui/material";
-
 import OfficeApprovedProtocolList from "./containers/OfficePortal/ProtocolList/ApprovedProtocolList";
 import OfficeUnderReviewProtocolList from "./containers/OfficePortal/ProtocolList/UnderReviewProtocolList";
 import OfficeCreatedProtocolList from "./containers/OfficePortal/ProtocolList/CreatedProtocolList";
@@ -75,6 +74,7 @@ import MasterList from "./containers/Admin/MasterList/MasterList";
 import ExternalMonitorProtocol from "./containers/ExternalMonitor/ExternalMonitorProtocol";
 import ResetPassword from "./containers/Auth/ResetPassword";
 import EmailVerification from "./containers/Auth/EmailVerification";
+import AddEvents from "./containers/Admin/ProtocolEvents/AddEvents";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -289,6 +289,7 @@ function App() {
                 element={<ProtocolEventList />}
               />
               <Route path="/admin/master-list" element={<MasterList />} />
+              <Route path="/admin/add-event" element={<AddEvents />} />
               <Route
                 path="/member/protocol-list"
                 element={<VotingMemberProtocolList />}

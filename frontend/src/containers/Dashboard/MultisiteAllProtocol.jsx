@@ -75,7 +75,7 @@ const MultisiteChildProtocol = ({ open, onClose, data = {} }) => {
       <CommonModal
         open={open}
         onClose={() => onClose()}
-        title="Multisite Child Protocol"
+        title="View Clinical Site Protocol"
         subTitle=""
         content={getContentForHaveProtocolId()}
         hideSubmitButton={true}

@@ -37,7 +37,8 @@ import {
   chairCommitteeApprovalProtocol,
   getContinueinProtocolList,
   getAllProtocolList,
-  getMasterDataListByType
+  getMasterDataListByType,
+  getUnderReviewProtocolAllList
 } from '../controllers/admin.js'
 
 const router = express.Router()
@@ -97,5 +98,6 @@ router.post(
 )
 router.post('/protocolAmendmentRequestById', getProtocolAmendmentRequestById)
 router.post('/master/list', getMasterDataListByType)
+router.get('/under-review/protocol/all/list', getUnderReviewProtocolAllList)
 
 export default router

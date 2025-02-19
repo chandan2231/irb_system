@@ -146,7 +146,7 @@ function Dashboard() {
               />,
               <GridActionsCellItem
                 icon={<PreviewIcon />}
-                label="View Sub Protocol"
+                label="View Clinical Site Protocol"
                 onClick={() => handleViewChildProtocol(params)}
                 showInMenu
               />,

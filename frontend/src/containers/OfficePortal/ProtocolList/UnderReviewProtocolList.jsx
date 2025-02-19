@@ -152,7 +152,7 @@ function UnderReviewProtocolList() {
               />,
               <GridActionsCellItem
                 icon={<PreviewIcon />}
-                label="View Child Protocol"
+                label="View Clinical Site Protocol"
                 onClick={() => handleViewChildProtocol(params)}
                 showInMenu
               />,
