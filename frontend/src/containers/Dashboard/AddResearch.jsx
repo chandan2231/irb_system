@@ -90,12 +90,16 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           research_type_id === "Principal Investigator" &&
           protocol_user_type !== "Commercial",
         then: (schema) =>
-          schema.test("fileRequired", "File is required", (value) => {
-            if (!value) return false;
-            if (value instanceof FileList) return value.length > 0;
-            if (value instanceof File) return true;
-            return false;
-          }),
+          schema.test(
+            "fileRequired",
+            "Verification document required",
+            (value) => {
+              if (!value) return false;
+              if (value instanceof FileList) return value.length > 0;
+              if (value instanceof File) return true;
+              return false;
+            }
+          ),
         otherwise: (schema) => schema.notRequired(),
       }
     ),
@@ -103,7 +107,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
 
   const validationSchemaForHaveProtocolId = Yup.object().shape({
     protocolId: Yup.string().required("Protocol ID is required"),
-    verificationCode: Yup.string().required("Verification Code is required"),
+    verificationCode: Yup.string().required("Verification code is required"),
   });
 
   const {

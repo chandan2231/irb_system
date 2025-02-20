@@ -47,14 +47,11 @@ function SubmissionForm({ type }) {
 
   const handleCheckForTerms = (event) => {
     setCheckForTerms(event.target.checked);
-  }
+  };
 
   // Validate form fields
   useEffect(() => {
-    const isFormValid =
-      termsSelected &&
-      checkForTerms &&
-      name.trim() !== ""
+    const isFormValid = termsSelected && checkForTerms && name.trim() !== "";
 
     setIsButtonDisabled(!isFormValid);
   }, [termsSelected, checkForTerms, name]);
@@ -131,15 +128,11 @@ function SubmissionForm({ type }) {
           <Form.Group as={Col} controlId="validationFormik02">
             <FormControl>
               <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-              <FormGroup onChange={
-                handleCheckForTerms
-              }>
+              <FormGroup onChange={handleCheckForTerms}>
                 <FormControlLabel
                   control={<Checkbox />}
-                  checked={
-                    checkForTerms
-                  }
-                  label="I acknowledge that process payment for protocol approval submission is non-refundable."
+                  checked={checkForTerms}
+                  label="I acknowledge that processed payment for protocol approval submission is non-refundable."
                 />
               </FormGroup>
             </FormControl>
@@ -150,7 +143,7 @@ function SubmissionForm({ type }) {
             <Box sx={{ width: "100%", maxWidth: "100%" }}>
               <TextField
                 fullWidth
-                label="Enter Name"
+                label="Type Name (Electronic Signature)"
                 id="name"
                 name="name"
                 value={name}

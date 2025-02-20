@@ -67,7 +67,7 @@ const CTMProtocolReport = ({ open, onClose, data = {}, type }) => {
                       </td>
                       <td>
                         {item?.created_at
-                          ? moment(item?.created_at).format("DD-MM-YYYY")
+                          ? moment(item?.created_at).format("DD MMM YYYY")
                           : "-"}
                       </td>
                     </tr>

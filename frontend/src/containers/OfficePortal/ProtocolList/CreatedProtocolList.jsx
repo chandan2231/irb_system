@@ -165,8 +165,8 @@ function CreatedProtocolList() {
                 : pList.status === "3"
                   ? "Approved"
                   : "Rejected",
-          createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
         };
         pListArr.push(protocolObject);
       });

@@ -473,7 +473,7 @@ const clinicalReviewQuestions = {
     }
   },
   protocolProcedure: {
-    title: 'Protocol Procedures',
+    title: 'Protocol Subject',
     checkboxes: {
       header: 'Which subject populations will be enrolled in the study?',
       answer: 'enrolled_type',
@@ -907,7 +907,7 @@ here (if applying for waiver of consent, document explaining reasoning must be u
     }
   },
   protocolProcedure: {
-    title: 'Protocol Procedures',
+    title: 'Protocol Subject',
     checkboxes: {
       header: 'Which subject populations will be enrolled in the study?',
       answer: 'enrolled_study_type',
@@ -1593,7 +1593,7 @@ const documentReviewQuestions = {
               <li>Safe storage of subject identifiers-all subject identifiers must be coded and de-identified.</li>
               <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
               <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
-              <li>Your initials below signify that you have read the terms and agree with them.</li>
+              <li>You acknowledge that you read the term and agree with them.</li>
             </ul>`,
     checkBox: {
       label:

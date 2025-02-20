@@ -128,8 +128,8 @@ function ExternalMonitor() {
           email: pList.email,
           phone: pList.mobile,
           companyName: pList.company_name,
-          createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
         };
         pListArr.push(externalMonitorObject);
       });

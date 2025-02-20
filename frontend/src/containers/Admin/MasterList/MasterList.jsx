@@ -157,8 +157,8 @@ function MasterList() {
           mobile: pList.mobile || "--",
           companyName: pList.company_name || "--",
           city: pList.city || "--",
-          createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_date).format("DD MMM YYYY"),
         };
         pListArr.push(protocolObject);
       });

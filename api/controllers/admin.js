@@ -4,6 +4,43 @@ import sendEmail from '../emailService.js'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
 import { v4 as uuidv4 } from 'uuid'
 
+export const createMemberEvent = (req, res) => {
+  console.log('req', req.body)
+  const formattedMemberIds = req.body.member_id
+    .map((id) => id.split('_')[0])
+    .join(',')
+
+  const formattedProtocolIds = req.body.protocol_id
+    .map((id) => {
+      const [protocolId, researchType] = id.split('_')
+      return `${protocolId} (${researchType})`
+    })
+    .join(', ')
+
+  const que =
+    'insert into member_event (`event_date_with_time`, `event_subject`, `event_message`, `event_protocols`, `member_id`, `created_by`) value (?)'
+
+  const values = [
+    req.body.event_date_with_time,
+    req.body.event_subject,
+    req.body.event_msg,
+    formattedProtocolIds,
+    formattedMemberIds,
+    req.body.created_by
+  ]
+
+  db.query(que, [values], (err, data) => {
+    if (err) {
+      return res.status(500).json(err)
+    } else {
+      let result = {}
+      result.status = 200
+      result.msg = 'Event has been created Successfully.'
+      return res.json(result)
+    }
+  })
+}
+
 export const getMasterDataListByType = (req, res) => {
   const { selectedUserType } = req.body
 
@@ -226,14 +263,29 @@ export const createMember = async (req, res) => {
   }
 }
 
+// export const getActiveVotingMemberList = (req, res) => {
+//   const que = 'select * from users WHERE user_type=? AND status=?'
+//   db.query(que, ['Voting Member', 1], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }
+
 export const getActiveVotingMemberList = (req, res) => {
-  const que = 'select * from users WHERE user_type=? AND status=?'
-  db.query(que, ['Voting Member', 1], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
+  // Use the 'IN' clause for multiple user types
+  const que = 'SELECT * FROM users WHERE user_type IN (?, ?, ?) AND status = ?'
+  db.query(
+    que,
+    ['Voting Member', 'Committee Chair', 'Non Voting Member', 1],
+    (err, data) => {
+      if (err) return res.status(500).json(err)
+      if (data.length >= 0) {
+        return res.status(200).json(data)
+      }
     }
-  })
+  )
 }
 
 export const changeEventPriceStatus = (req, res) => {
@@ -1129,28 +1181,28 @@ export const getProtocolAmendmentRequestById = (req, res) => {
   })
 }
 
-export const createMemberEvent = (req, res) => {
-  const que =
-    'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)'
-  const values = [
-    req.body.protocol_id,
-    req.body.event_subject,
-    req.body.event_message,
-    req.body.member_id.toString(),
-    req.body.created_by,
-    req.body.protocol_name
-  ]
-  db.query(que, [values], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
-    } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Event has been created Successfully.'
-      return res.json(result)
-    }
-  })
-}
+// export const createMemberEvent = (req, res) => {
+//   const que =
+//     'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)'
+//   const values = [
+//     req.body.protocol_id,
+//     req.body.event_subject,
+//     req.body.event_message,
+//     req.body.member_id.toString(),
+//     req.body.created_by,
+//     req.body.protocol_name
+//   ]
+//   db.query(que, [values], (err, data) => {
+//     if (err) {
+//       return res.status(500).json(err)
+//     } else {
+//       let result = {}
+//       result.status = 200
+//       result.msg = 'Event has been created Successfully.'
+//       return res.json(result)
+//     }
+//   })
+// }
 
 export const memberEventList = (req, res) => {
   const que =
@@ -1300,3 +1352,25 @@ export const getAllProtocolList = (req, res) => {
     }
   })
 }
+
+export const getUnderReviewProtocolAllList = (req, res) => {
+  const que =
+    'SELECT ps.id, ps.protocol_id, ps.research_type FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=2'
+  db.query(que, {}, (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
+// export const getUnderReviewProtocolAllList = (req, res) => {
+//   const que =
+//     'SELECT id, protocol_id, research_type FROM protocols WHERE status=2'
+//   db.query(que, {}, (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
+//     }
+//   })
+// }

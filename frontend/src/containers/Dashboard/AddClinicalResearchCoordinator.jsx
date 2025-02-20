@@ -41,7 +41,7 @@ const AddClinicalResearchCoordinator = ({ open, onClose, addNewData }) => {
       .required("Email is required")
       .email("Email is invalid."),
     phone: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
-    company_name: Yup.string().required("Company Name is required"),
+    // company_name: Yup.string().required("Company Name is required"),
     // country: Yup.string().required("Country is required"),
     // city: Yup.string().required("City is required"),
     // zip_code: Yup.string().required("Zip Code is required"),

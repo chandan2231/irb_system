@@ -152,7 +152,7 @@ function UnderReviewProtocolList() {
               />,
               <GridActionsCellItem
                 icon={<PreviewIcon />}
-                label="View Child Protocol"
+                label="View Clinical Site Protocol"
                 onClick={() => handleViewChildProtocol(params)}
                 showInMenu
               />,
@@ -244,8 +244,8 @@ function UnderReviewProtocolList() {
                 : pList.status === "3"
                   ? "Approved"
                   : "Rejected",
-          createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
           isParent: pList.parent_protocol_id === "" ? true : false,
         };
         pListArr.push(protocolObject);

@@ -146,7 +146,7 @@ function Dashboard() {
               />,
               <GridActionsCellItem
                 icon={<PreviewIcon />}
-                label="View Sub Protocol"
+                label="View Clinical Site Protocol"
                 onClick={() => handleViewChildProtocol(params)}
                 showInMenu
               />,
@@ -235,8 +235,8 @@ function Dashboard() {
                 : pList.status === "3"
                   ? "Approved"
                   : "Rejected",
-          createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
           isParent: pList.parent_protocol_id === "" ? true : false,
           protocolUserType: pList.protocol_user_type,
         };

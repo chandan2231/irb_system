@@ -8,6 +8,7 @@ import {
   allowProtocolWaiveFee,
   fetchAllProtocolList,
   fetchRejectedProtocolList,
+  fetchUnderReviewProtocolAllList,
 } from "../../services/Admin/ProtocolListService";
 import {
   fetchContinuinReviewProtocolList,
@@ -57,6 +58,7 @@ const AdminSlice = createSlice({
     protocolWaiveFee: null,
     allProtocolList: null,
     rejectedProtocolList: null,
+    underReviewProtocolAllList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -297,6 +299,7 @@ const AdminSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
+
       .addCase(fetchRejectedProtocolList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -349,6 +352,18 @@ const AdminSlice = createSlice({
         state.masterDataList = action.payload;
       })
       .addCase(fetchMasterListByType.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchUnderReviewProtocolAllList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUnderReviewProtocolAllList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.underReviewProtocolAllList = action.payload;
+      })
+      .addCase(fetchUnderReviewProtocolAllList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
