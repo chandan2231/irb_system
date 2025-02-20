@@ -4,6 +4,43 @@ import sendEmail from '../emailService.js'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
 import { v4 as uuidv4 } from 'uuid'
 
+export const createMemberEvent = (req, res) => {
+  console.log('req', req.body)
+  const formattedMemberIds = req.body.member_id
+    .map((id) => id.split('_')[0])
+    .join(',')
+
+  const formattedProtocolIds = req.body.protocol_id
+    .map((id) => {
+      const [protocolId, researchType] = id.split('_')
+      return `${protocolId} (${researchType})`
+    })
+    .join(', ')
+
+  const que =
+    'insert into member_event (`event_date_with_time`, `event_subject`, `event_message`, `event_protocols`, `member_id`, `created_by`) value (?)'
+
+  const values = [
+    req.body.event_date_with_time,
+    req.body.event_subject,
+    req.body.event_msg,
+    formattedProtocolIds,
+    formattedMemberIds,
+    req.body.created_by
+  ]
+
+  db.query(que, [values], (err, data) => {
+    if (err) {
+      return res.status(500).json(err)
+    } else {
+      let result = {}
+      result.status = 200
+      result.msg = 'Event has been created Successfully.'
+      return res.json(result)
+    }
+  })
+}
+
 export const getMasterDataListByType = (req, res) => {
   const { selectedUserType } = req.body
 
@@ -1144,28 +1181,28 @@ export const getProtocolAmendmentRequestById = (req, res) => {
   })
 }
 
-export const createMemberEvent = (req, res) => {
-  const que =
-    'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)'
-  const values = [
-    req.body.protocol_id,
-    req.body.event_subject,
-    req.body.event_message,
-    req.body.member_id.toString(),
-    req.body.created_by,
-    req.body.protocol_name
-  ]
-  db.query(que, [values], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
-    } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Event has been created Successfully.'
-      return res.json(result)
-    }
-  })
-}
+// export const createMemberEvent = (req, res) => {
+//   const que =
+//     'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)'
+//   const values = [
+//     req.body.protocol_id,
+//     req.body.event_subject,
+//     req.body.event_message,
+//     req.body.member_id.toString(),
+//     req.body.created_by,
+//     req.body.protocol_name
+//   ]
+//   db.query(que, [values], (err, data) => {
+//     if (err) {
+//       return res.status(500).json(err)
+//     } else {
+//       let result = {}
+//       result.status = 200
+//       result.msg = 'Event has been created Successfully.'
+//       return res.json(result)
+//     }
+//   })
+// }
 
 export const memberEventList = (req, res) => {
   const que =

@@ -126,6 +126,22 @@ function SideNav() {
                 Rejected Protocols
               </Typography>
             </MenuItem>
+
+            <MenuItem
+              active={
+                location.pathname === "/admin/protocol-event-list" ||
+                location.pathname === "/admin/add-event"
+              }
+              component={<Link to="/admin/protocol-event-list" />}
+              icon={<CalendarMonthOutlinedIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              >
+                Protocol Events
+              </Typography>
+            </MenuItem>
             <MenuItem
               active={location.pathname === "/admin/members" ? true : false}
               component={<Link to="/admin/members" />}
@@ -150,18 +166,6 @@ function SideNav() {
                 style={{ fontWeight: "500", fontSize: "0.875rem" }}
               >
                 Event Price
-              </Typography>
-            </MenuItem>
-            <MenuItem
-              active={location.pathname === "/admin/protocol-event-list"}
-              component={<Link to="/admin/protocol-event-list" />}
-              icon={<CalendarMonthOutlinedIcon />}
-            >
-              <Typography
-                variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
-              >
-                Protocol Events
               </Typography>
             </MenuItem>
             <MenuItem

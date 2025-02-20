@@ -118,9 +118,9 @@ function ProtocolEventList() {
       memberEventList.map((uList, index) => {
         let listObject = {
           id: uList.id,
-          event_date_time: "",
+          event_date_time: uList.event_date_with_time,
           event_subject: uList.event_subject,
-          protocol_name: uList.protocol_name,
+          protocol_name: uList.event_protocols,
           members: uList.members,
           createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
           // status: uList.status === 1 ? "Pending" : "Completed",
@@ -199,13 +199,18 @@ function ProtocolEventList() {
         </Box>
 
         <Box sx={{ mt: 5 }}>
-          <DataGrid
-            rows={userDataList}
-            columns={columns}
-            rowCount={rowCount}
-            loading={loading}
-            paginationMode="server"
-          />
+          <div style={{ height: 400, width: "100%" }}>
+            <DataGrid
+              rows={userDataList}
+              columns={columns}
+              pageSize={10}
+              rowCount={userDataList.length}
+              loading={false}
+              paginationMode="server"
+              disableSelectionOnClick
+              autoHeight
+            />
+          </div>
         </Box>
       </Box>
     </>
