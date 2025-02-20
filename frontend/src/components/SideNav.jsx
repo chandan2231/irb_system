@@ -54,10 +54,15 @@ function SideNav() {
         menuItemStyles={{
           button: ({ active }) => {
             return {
-              // backgroundColor: active ? theme.palette.neutral.main : undefined,
-              color: active ? theme.palette.neutral.main : undefined,
+              backgroundColor: active ? "#325ca8" : undefined, // Blue background when active
+              color: active ? theme.palette.common.white : undefined, // White text when active
+              fontWeight: active ? "bold" : undefined, // Bold text when active
+              fontSize: active ? "1.5rem" : undefined, // Bold text when active
               "&:hover": {
-                color: active ? theme.palette.primary.black : undefined,
+                backgroundColor: active
+                  ? "#325ca8"
+                  : theme.palette.action.hover, // Optional: darken background on hover when active
+                color: active ? theme.palette.common.white : undefined, // Keep text white on hover
               },
             };
           },
@@ -74,7 +79,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Created Protocols
               </Typography>
@@ -91,7 +96,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Under Review Protocols
               </Typography>
@@ -107,7 +112,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Approved Protocols
               </Typography>
@@ -121,7 +126,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Rejected Protocols
               </Typography>
@@ -137,7 +142,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Protocol Events
               </Typography>
@@ -149,7 +154,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Members List
               </Typography>
@@ -163,7 +168,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Event Price
               </Typography>
@@ -175,7 +180,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Applicants
               </Typography>
@@ -187,7 +192,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Master List
               </Typography>
@@ -204,7 +209,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Continuing Review List
               </Typography>
@@ -212,7 +217,7 @@ function SideNav() {
             <SubMenu
               label="Event And Request"
               icon={<AddBusinessOutlinedIcon />}
-              style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              style={{ fontWeight: "900", fontSize: "0.9rem" }}
             >
               <MenuItem
                 active={
@@ -226,7 +231,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Protocol Amendment Request
                 </Typography>
@@ -242,7 +247,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Adverse Events
                 </Typography>
@@ -259,7 +264,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Promptly Reportable Event
                 </Typography>
@@ -275,7 +280,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Study Closeout Request
                 </Typography>
@@ -296,7 +301,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Protocol List
               </Typography>
@@ -317,7 +322,7 @@ function SideNav() {
                   >
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                      style={{ fontWeight: "900", fontSize: "0.9rem" }}
                     >
                       Continuing Review
                     </Typography>
@@ -335,7 +340,7 @@ function SideNav() {
                   >
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                      style={{ fontWeight: "900", fontSize: "0.9rem" }}
                     >
                       Protocol Amendment Request
                     </Typography>
@@ -352,7 +357,7 @@ function SideNav() {
                   >
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                      style={{ fontWeight: "900", fontSize: "0.9rem" }}
                     >
                       Adverse Events
                     </Typography>
@@ -369,7 +374,7 @@ function SideNav() {
                   >
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                      style={{ fontWeight: "900", fontSize: "0.9rem" }}
                     >
                       Promptly Reportable Event
                     </Typography>
@@ -386,7 +391,7 @@ function SideNav() {
                   >
                     <Typography
                       variant="body2"
-                      style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                      style={{ fontWeight: "900", fontSize: "0.9rem" }}
                     >
                       Study Closeout Request
                     </Typography>
@@ -400,7 +405,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Clinical Trial Monitor List
               </Typography>
@@ -412,7 +417,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Clinical Research Coordinator
               </Typography>
@@ -431,7 +436,7 @@ function SideNav() {
           >
             <Typography
               variant="body2"
-              style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              style={{ fontWeight: "900", fontSize: "0.9rem" }}
             >
               Protocol Voting List
             </Typography>
@@ -449,7 +454,7 @@ function SideNav() {
           >
             <Typography
               variant="body2"
-              style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              style={{ fontWeight: "900", fontSize: "0.9rem" }}
             >
               Protocol List
             </Typography>
@@ -465,7 +470,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Created Protocols
               </Typography>
@@ -481,7 +486,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Under Review Protocols
               </Typography>
@@ -497,7 +502,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Approved Protocols
               </Typography>
@@ -513,7 +518,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Rejected Protocols
               </Typography>
@@ -525,7 +530,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Applicants
               </Typography>
@@ -539,7 +544,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Master List
               </Typography>
@@ -556,7 +561,7 @@ function SideNav() {
             >
               <Typography
                 variant="body2"
-                style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
               >
                 Continuing Review List
               </Typography>
@@ -564,7 +569,7 @@ function SideNav() {
             <SubMenu
               label="Event And Request"
               icon={<AddBusinessOutlinedIcon />}
-              style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              style={{ fontWeight: "900", fontSize: "0.9rem" }}
             >
               <MenuItem
                 active={
@@ -578,7 +583,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Protocol Amendment Request
                 </Typography>
@@ -594,7 +599,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Adverse Events
                 </Typography>
@@ -611,7 +616,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Promptly Reportable Event
                 </Typography>
@@ -627,7 +632,7 @@ function SideNav() {
               >
                 <Typography
                   variant="body2"
-                  style={{ fontWeight: "500", fontSize: "0.875rem" }}
+                  style={{ fontWeight: "900", fontSize: "0.9rem" }}
                 >
                   Study Closeout Request
                 </Typography>
@@ -647,7 +652,7 @@ function SideNav() {
           >
             <Typography
               variant="body2"
-              style={{ fontWeight: "500", fontSize: "0.875rem" }}
+              style={{ fontWeight: "900", fontSize: "0.9rem" }}
             >
               Protocol List
             </Typography>

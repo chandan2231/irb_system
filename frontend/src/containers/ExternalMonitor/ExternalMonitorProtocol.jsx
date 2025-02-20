@@ -144,8 +144,8 @@ function ExternalMonitorProtocol() {
                 : pList.status === "3"
                   ? "Approved"
                   : "Rejected",
-          assignedDate: moment(pList.assigned_date).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          assignedDate: moment(pList.assigned_date).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
           isParent: pList.parent_protocol_id === "" ? true : false,
           protocolUserType: pList.protocol_user_type,
         };

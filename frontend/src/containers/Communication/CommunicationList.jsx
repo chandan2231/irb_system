@@ -26,7 +26,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Loader from "../../components/Loader";
 
 const CommunicationItem = ({ communication, handleReplyToThread }) => {
-  const formattedDate = moment(communication.created_at).format("DD-MM-YYYY");
+  const formattedDate = moment(communication.created_at).format("DD MMM YYYY");
 
   return (
     <Box

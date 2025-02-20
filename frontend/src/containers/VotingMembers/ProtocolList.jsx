@@ -135,8 +135,8 @@ function VotingMemberProtocolList() {
           id: pList.id,
           protocolId: pList.protocol_id,
           researchType: pList.protocol_name,
-          assignedDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          assignedDate: moment(pList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
         };
         pListArr.push(protocolObject);
       });

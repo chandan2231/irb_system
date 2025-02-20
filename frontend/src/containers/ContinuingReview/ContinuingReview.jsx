@@ -132,8 +132,8 @@ function ContinuingReview() {
           id: pList.id,
           protocolId: pList.protocol_id,
           researchType: pList.research_type,
-          createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_date).format("DD MMM YYYY"),
         };
         pListArr.push(protocolObject);
       });
@@ -177,7 +177,7 @@ function ContinuingReview() {
   // }
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
   return (
     <Box m={theme.layoutContainer.layoutSection}>
@@ -197,8 +197,8 @@ function ContinuingReview() {
           rowCount={rowCount}
           loading={loading}
           paginationMode="server"
-        // onCellClick={(param) => handleChangeStatus(param)}
-        // onRowClick={(param) => handleChangeStatus(param)}
+          // onCellClick={(param) => handleChangeStatus(param)}
+          // onRowClick={(param) => handleChangeStatus(param)}
         />
       </Box>
     </Box>

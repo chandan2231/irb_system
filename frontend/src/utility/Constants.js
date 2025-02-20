@@ -53,7 +53,7 @@ const getDropDownOptionsByResearchType = (type) => {
       },
       {
         value: "protocol_procedure",
-        label: "Protocol Procedure",
+        label: "Protocol Subject",
         isUploadMandatory: true,
         uploadDocumentKey: "subject_facing_materials",
       },
@@ -103,7 +103,7 @@ const getDropDownOptionsByResearchType = (type) => {
       },
       {
         value: "protocol_procedure",
-        label: "Protocol Procedure",
+        label: "Protocol Subject",
         isUploadMandatory: true,
         uploadDocumentKey: "subject_facing_materials",
       },

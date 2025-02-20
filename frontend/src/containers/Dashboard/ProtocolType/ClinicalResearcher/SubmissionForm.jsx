@@ -427,7 +427,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                     checkForTerms ||
                     protocolTypeDetails?.protocolStatus !== "Created"
                   }
-                  label="I acknowledge that process payment for protocol approval submission is non-refundable."
+                  label="I acknowledge that processed payment for protocol approval submission is non-refundable."
                 />
               </FormGroup>
             </FormControl>
@@ -438,7 +438,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             <Box sx={{ width: "100%", maxWidth: "100%" }}>
               <TextField
                 fullWidth
-                label="Enter Name"
+                label="Type Name (Electronic Signature)"
                 id="name"
                 name="name"
                 value={name}

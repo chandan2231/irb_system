@@ -395,7 +395,7 @@ const ContractorResearcherDetails = ({
                 "Investigator Info",
                 "Study Type",
                 "Informed Consent",
-                "Protocol Procedures",
+                "Protocol Subject",
                 "Submission",
               ][index]
             }

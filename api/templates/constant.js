@@ -473,7 +473,7 @@ const clinicalReviewQuestions = {
     }
   },
   protocolProcedure: {
-    title: 'Protocol Procedures',
+    title: 'Protocol Subject',
     checkboxes: {
       header: 'Which subject populations will be enrolled in the study?',
       answer: 'enrolled_type',
@@ -907,7 +907,7 @@ here (if applying for waiver of consent, document explaining reasoning must be u
     }
   },
   protocolProcedure: {
-    title: 'Protocol Procedures',
+    title: 'Protocol Subject',
     checkboxes: {
       header: 'Which subject populations will be enrolled in the study?',
       answer: 'enrolled_study_type',

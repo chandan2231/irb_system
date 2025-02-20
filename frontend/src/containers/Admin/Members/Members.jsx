@@ -130,8 +130,8 @@ function Members() {
           phone: uList.mobile,
           userType: uList.user_type,
           status: uList.status,
-          createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
+          createdDate: moment(uList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
         };
         uListArr.push(marketObject);
       });

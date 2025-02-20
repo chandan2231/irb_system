@@ -344,7 +344,7 @@ const MultiSiteSponsorDetails = ({
                 "Contact Info",
                 "Study Type",
                 "Informed Consent",
-                "Protocol Procedures",
+                "Protocol Subject",
                 "Submission",
               ][index]
             }

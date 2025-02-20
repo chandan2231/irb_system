@@ -122,9 +122,9 @@ function ProtocolEventList() {
           event_subject: uList.event_subject,
           protocol_name: uList.event_protocols,
           members: uList.members,
-          createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
+          createdDate: moment(uList.created_date).format("DD MMM YYYY"),
           // status: uList.status === 1 ? "Pending" : "Completed",
-          // updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
+          // updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
         };
         uListArr.push(listObject);
       });

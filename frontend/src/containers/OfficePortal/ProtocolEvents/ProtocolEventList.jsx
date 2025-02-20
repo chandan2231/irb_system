@@ -120,8 +120,8 @@ function ProtocolEventList() {
           event_subject: uList.event_subject,
           members: uList.members,
           status: uList.status === 1 ? "Pending" : "Completed",
-          createdDate: moment(uList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(uList.updated_date).format("DD-MM-YYYY"),
+          createdDate: moment(uList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
         };
         uListArr.push(listObject);
       });

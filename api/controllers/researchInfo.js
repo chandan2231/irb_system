@@ -385,7 +385,7 @@ export const saveProtocolProceduresInfo = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'Protocol Procedure has been updated successfully'
+          result.msg = 'Protocol subject has been updated successfully'
           return res.json(result)
         }
       })
@@ -414,7 +414,7 @@ export const saveProtocolProceduresInfo = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'Protocol Procedure has been saved successfully'
+          result.msg = 'Protocol subject has been saved successfully'
           return res.json(result)
         }
       })
@@ -775,7 +775,7 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'Protocol Procedure has been saved successfully'
+          result.msg = 'Protocol subject has been saved successfully'
           return res.json(result)
         }
       })
@@ -805,7 +805,7 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
         } else {
           let result = {}
           result.status = 200
-          result.msg = 'Protocol Procedure has been saved successfully'
+          result.msg = 'Protocol subject has been saved successfully'
           return res.json(result)
         }
       })

@@ -136,8 +136,8 @@ function CommitteeChairProtocolList() {
                   : pList.status === "4"
                     ? "Rejected"
                     : "Approved Pending Changes",
-          createdDate: moment(pList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
         };
         pListArr.push(protocolObject);
       });
@@ -166,7 +166,7 @@ function CommitteeChairProtocolList() {
   };
 
   if (loader) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -200,7 +200,7 @@ function CommitteeChairProtocolList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-          // onCellClick={(param) => handleChangeStatus(param)}
+            // onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
       </Box>

@@ -138,8 +138,8 @@ function UsersList() {
           mobile: pList.mobile,
           city: pList.city,
           status: pList.status,
-          createdDate: moment(pList.created_date).format("DD-MM-YYYY"),
-          updatedDate: moment(pList.updated_date).format("DD-MM-YYYY"),
+          createdDate: moment(pList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_date).format("DD MMM YYYY"),
         };
         pListArr.push(protocolObject);
       });

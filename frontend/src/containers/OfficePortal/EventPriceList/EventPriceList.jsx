@@ -116,8 +116,8 @@ function EventPriceList() {
           eventName: uList.event_type,
           price: uList.price,
           status: uList.status,
-          createdDate: moment(uList.created_at).format("DD-MM-YYYY"),
-          updatedDate: moment(uList.updated_at).format("DD-MM-YYYY"),
+          createdDate: moment(uList.created_at).format("DD MMM YYYY"),
+          updatedDate: moment(uList.updated_at).format("DD MMM YYYY"),
         };
         uListArr.push(listObject);
       });

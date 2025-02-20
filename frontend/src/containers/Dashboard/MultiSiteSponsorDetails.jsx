@@ -123,7 +123,7 @@ const MultiSiteSponsorDetails = ({
                 "Contact Information",
                 "Study Type",
                 "Informed Consent",
-                "Protocol Procedures",
+                "Protocol Subject",
                 "Submission",
               ][index]
             }
@@ -178,7 +178,7 @@ const MultiSiteSponsorDetails = ({
                 "Contact Information",
                 "Study Type",
                 "Informed Consent",
-                "Protocol Procedures",
+                "Protocol Subject",
                 "Submission",
               ][index]
             }
