@@ -47,20 +47,19 @@ function SideNav() {
     <Sidebar
       style={{ height: "100%", top: "auto" }}
       breakPoint="md"
-      width="280px"
+      width="290px"
       backgroundColor={theme.palette.primary.white}
     >
       <Menu
         menuItemStyles={{
           button: ({ active }) => {
             return {
-              backgroundColor: active ? "#325ca8" : undefined, // Blue background when active
+              backgroundColor: active ? theme.palette.primary.main : undefined, // Blue background when active
               color: active ? theme.palette.common.white : undefined, // White text when active
               fontWeight: active ? "bold" : undefined, // Bold text when active
-              fontSize: active ? "1.5rem" : undefined, // Bold text when active
               "&:hover": {
                 backgroundColor: active
-                  ? "#325ca8"
+                  ? theme.palette.primary.dark
                   : theme.palette.action.hover, // Optional: darken background on hover when active
                 color: active ? theme.palette.common.white : undefined, // Keep text white on hover
               },
