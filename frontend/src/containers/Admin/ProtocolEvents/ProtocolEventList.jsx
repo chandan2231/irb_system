@@ -5,11 +5,8 @@ import Grid from "@mui/material/Grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CommonButton from "../../../components/CommonButton";
 import moment from "moment";
-import ToggleStatus from "../../../components/ToggleStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import LockResetIcon from "@mui/icons-material/LockReset";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { ToastContainer, toast } from "react-toastify";
@@ -76,24 +73,6 @@ function ProtocolEventList() {
           onClick={() => handleViewDetails(params)}
           showInMenu
         />,
-        // <GridActionsCellItem
-        //     icon={<DeleteIcon />}
-        //     label="Delete"
-        //     onClick={handleItemDelete(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
       ],
     },
   ];

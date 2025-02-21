@@ -334,18 +334,7 @@ export const createMember = async (req, res) => {
   }
 }
 
-// export const getActiveVotingMemberList = (req, res) => {
-//   const que = 'select * from users WHERE user_type=? AND status=?'
-//   db.query(que, ['Voting Member', 1], (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
-
 export const getActiveVotingMemberList = (req, res) => {
-  // Use the 'IN' clause for multiple user types
   const que = 'SELECT * FROM users WHERE user_type IN (?, ?, ?) AND status = ?'
   db.query(
     que,
@@ -1251,17 +1240,6 @@ export const getProtocolAmendmentRequestById = (req, res) => {
     }
   })
 }
-
-// export const memberEventList = (req, res) => {
-//   const que =
-//     "SELECT me.id, me.*, GROUP_CONCAT(users.name SEPARATOR ', ') AS members FROM member_event AS me JOIN users AS users ON FIND_IN_SET(users.id, me.member_id) > 0 WHERE me.status =? GROUP BY me.id"
-//   db.query(que, [1], (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
 
 // export const assignProtocolToMembers = (req, res) => {
 //     const member_ids = req.body.member_id

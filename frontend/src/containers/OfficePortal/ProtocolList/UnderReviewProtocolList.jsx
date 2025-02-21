@@ -132,12 +132,12 @@ function UnderReviewProtocolList() {
                 onClick={() => handleAssignedMemberToProtocol(params)}
                 showInMenu
               />,
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Add Event"
-                onClick={() => handleAddProtocolEvent(params)}
-                showInMenu
-              />,
+              // <GridActionsCellItem
+              //   icon={<EditCalendarOutlinedIcon />}
+              //   label="Add Event"
+              //   onClick={() => handleAddProtocolEvent(params)}
+              //   showInMenu
+              // />,
               <GridActionsCellItem
                 icon={<PictureAsPdfIcon />}
                 label="View Pdf"
@@ -170,12 +170,12 @@ function UnderReviewProtocolList() {
                 onClick={() => handleAssignedMemberToProtocol(params)}
                 showInMenu
               />,
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Add Event"
-                onClick={() => handleAddProtocolEvent(params)}
-                showInMenu
-              />,
+              // <GridActionsCellItem
+              //   icon={<EditCalendarOutlinedIcon />}
+              //   label="Add Event"
+              //   onClick={() => handleAddProtocolEvent(params)}
+              //   showInMenu
+              // />,
               <GridActionsCellItem
                 icon={<PictureAsPdfIcon />}
                 label="View Pdf"

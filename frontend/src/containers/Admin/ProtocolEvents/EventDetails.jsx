@@ -6,7 +6,6 @@ import { Box } from "@mui/material";
 import moment from "moment";
 
 const EventDetails = ({ open, onClose, data, type }) => {
-  console.log("data", data);
   const [loader, setLoader] = React.useState(false);
   const dispatch = useDispatch();
   let protocols = "";
