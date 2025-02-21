@@ -4,21 +4,42 @@ import sendEmail from '../emailService.js'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
 import { v4 as uuidv4 } from 'uuid'
 
-export const createMemberEvent = (req, res) => {
-  console.log('req', req.body)
-  const formattedMemberIds = req.body.member_id
-    .map((id) => id.split('_')[0])
-    .join(',')
+export const memberEventList = (req, res) => {
+  const que = `
+    SELECT 
+      me.id, 
+      me.*, 
+      GROUP_CONCAT(CONCAT(users.name, ' (', users.user_type, ')') SEPARATOR ', ') AS member_with_role 
+    FROM 
+      member_event AS me 
+    JOIN 
+      users AS users 
+    ON 
+      FIND_IN_SET(users.id, me.member_id) > 0 
+    WHERE 
+      me.status = ? 
+    GROUP BY 
+      me.id
+  `
 
+  db.query(que, [1], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
+export const createMemberEvent = async (req, res) => {
+  const formattedMemberIds = req.body.member_id.join(',')
   const formattedProtocolIds = req.body.protocol_id
     .map((id) => {
       const [protocolId, researchType] = id.split('_')
       return `${protocolId} (${researchType})`
     })
     .join(', ')
-
   const que =
-    'insert into member_event (`event_date_with_time`, `event_subject`, `event_message`, `event_protocols`, `member_id`, `created_by`) value (?)'
+    'insert into member_event (`event_date_with_time`, `event_subject`, `event_message`, `event_protocols`, `member_id`, `created_by`) values (?)'
 
   const values = [
     req.body.event_date_with_time,
@@ -29,16 +50,66 @@ export const createMemberEvent = (req, res) => {
     req.body.created_by
   ]
 
-  db.query(que, [values], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
-    } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Event has been created Successfully.'
-      return res.json(result)
+  try {
+    await new Promise((resolve, reject) => {
+      db.query(que, [values], (err, data) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+
+    for (let userId of req.body.member_id) {
+      const user = await getUserInfo(userId)
+      const to = user.email
+      const subject = req.body.event_subject
+
+      const greetingHtml = `<p>Honorable IRB-HUB member,</p>`
+      let bodyHtml = `<p>We have a requested for the IRB-HUB virtual meeting</p>`
+      bodyHtml += `<p>Date and Time: ${req.body.event_date_with_time}</p>`
+      bodyHtml += `<p>The following protocols will be on the agenda to be reviewed:</p><br>`
+
+      req.body.protocol_id.forEach((protocol, index) => {
+        const [protocolId, researchType] = protocol.split('_')
+        bodyHtml += `<p>Protocol ${index + 1}: ${protocolId} (${researchType})</p>`
+      })
+
+      bodyHtml += `<br><p>Meeting link as below</p>`
+      bodyHtml += `<p>${req.body.event_msg}</p>`
+      bodyHtml += `<p>If you have any questions or would like to receive the protocol as a PDF document in advance, please contact us by email at <a href="mailto:staff.irbhub@gmail.com">staff.irbhub@gmail.com</a></p>`
+      bodyHtml += `<p>If you cannot attend the meeting, please contact us ASAP.</p>`
+      bodyHtml += `<p>Thank you for your continued support.</p>`
+      bodyHtml += `<p><br><br><br></p>`
+      bodyHtml += `<p>Admin</p>`
+      bodyHtml += `<span>IRB- HUB</span>`
+
+      const emailHtml = `
+        <div>
+          ${greetingHtml}
+          ${bodyHtml}
+        </div>`
+
+      const text = emailHtml
+      const html = emailHtml
+
+      try {
+        await sendEmail(to, subject, text, html)
+      } catch (emailError) {
+        console.error('Error sending email:', emailError)
+        return res.status(500).json({ status: 500, msg: 'Error sending email' })
+      }
     }
-  })
+    const resultResponse = {
+      status: 200,
+      msg: 'Event has been created Successfully.'
+    }
+    return res.json(resultResponse)
+  } catch (err) {
+    console.error('Error inserting event data:', err)
+    return res.status(500).json(err)
+  }
 }
 
 export const getMasterDataListByType = (req, res) => {
@@ -1181,39 +1252,16 @@ export const getProtocolAmendmentRequestById = (req, res) => {
   })
 }
 
-// export const createMemberEvent = (req, res) => {
+// export const memberEventList = (req, res) => {
 //   const que =
-//     'insert into member_event (`protocol_id`, `event_subject`, `event_message`, `member_id`, `created_by`, `protocol_name`) value (?)'
-//   const values = [
-//     req.body.protocol_id,
-//     req.body.event_subject,
-//     req.body.event_message,
-//     req.body.member_id.toString(),
-//     req.body.created_by,
-//     req.body.protocol_name
-//   ]
-//   db.query(que, [values], (err, data) => {
-//     if (err) {
-//       return res.status(500).json(err)
-//     } else {
-//       let result = {}
-//       result.status = 200
-//       result.msg = 'Event has been created Successfully.'
-//       return res.json(result)
+//     "SELECT me.id, me.*, GROUP_CONCAT(users.name SEPARATOR ', ') AS members FROM member_event AS me JOIN users AS users ON FIND_IN_SET(users.id, me.member_id) > 0 WHERE me.status =? GROUP BY me.id"
+//   db.query(que, [1], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     if (data.length >= 0) {
+//       return res.status(200).json(data)
 //     }
 //   })
 // }
-
-export const memberEventList = (req, res) => {
-  const que =
-    "SELECT me.id, me.*, GROUP_CONCAT(users.name SEPARATOR ', ') AS members FROM member_event AS me JOIN users AS users ON FIND_IN_SET(users.id, me.member_id) > 0 WHERE me.status =? GROUP BY me.id"
-  db.query(que, [1], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
-  })
-}
 
 // export const assignProtocolToMembers = (req, res) => {
 //     const member_ids = req.body.member_id

@@ -11,8 +11,10 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { useNavigate } from "react-router-dom";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EventDetails from "./EventDetails";
 
 import {
   fetchActiveVotingMemberList,
@@ -27,6 +29,9 @@ function ProtocolEventList() {
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
   const [userDataList, setUserDataList] = useState([]);
+  const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] =
+    React.useState(false);
+  const [viewDetailsData, setViewDetailsData] = React.useState(null);
 
   const columns = [
     {
@@ -65,12 +70,12 @@ function ProtocolEventList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
-        // <GridActionsCellItem
-        //     icon={<LockResetIcon />}
-        //     label="Change Password"
-        //     onClick={() => handleChangePassword(params)}
-        //     showInMenu
-        // />,
+        <GridActionsCellItem
+          icon={<VisibilityIcon />}
+          label="View Details"
+          onClick={() => handleViewDetails(params)}
+          showInMenu
+        />,
         // <GridActionsCellItem
         //     icon={<DeleteIcon />}
         //     label="Delete"
@@ -92,6 +97,14 @@ function ProtocolEventList() {
       ],
     },
   ];
+  const handleViewDetails = (params) => {
+    setIsViewDetailsModalOpen(true);
+    setViewDetailsData(params.row);
+  };
+  const handleCloseDetails = (params) => {
+    setIsViewDetailsModalOpen(false);
+    setViewDetailsData(null);
+  };
   var totalElements = 0;
   const { memberEventList, loading, error, activeVotingMemberList } =
     useSelector((state) => ({
@@ -100,7 +113,6 @@ function ProtocolEventList() {
       loading: state.member.loading,
       activeVotingMemberList: state.member.activeVotingMemberList,
     }));
-
   if (memberEventList !== "" && memberEventList?.length > 0) {
     totalElements = memberEventList.totalElements;
   }
@@ -121,7 +133,7 @@ function ProtocolEventList() {
           event_date_time: uList.event_date_with_time,
           event_subject: uList.event_subject,
           protocol_name: uList.event_protocols,
-          members: uList.members,
+          members: uList.member_with_role,
           createdDate: moment(uList.created_date).format("DD MMM YYYY"),
           // status: uList.status === 1 ? "Pending" : "Completed",
           // updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
@@ -191,7 +203,7 @@ function ProtocolEventList() {
                   startIcon={<AddOutlinedIcon />}
                   onClick={() => navigateToaddNewEvent()}
                 >
-                  Add Events
+                  Schedule Meeting
                 </CommonButton>
               </Box>
             </Grid>
@@ -199,19 +211,27 @@ function ProtocolEventList() {
         </Box>
 
         <Box sx={{ mt: 5 }}>
-          <div style={{ height: 400, width: "100%" }}>
-            <DataGrid
-              rows={userDataList}
-              columns={columns}
-              pageSize={10}
-              rowCount={userDataList.length}
-              loading={false}
-              paginationMode="server"
-              disableSelectionOnClick
-              autoHeight
-            />
-          </div>
+          <DataGrid
+            rows={userDataList}
+            columns={columns}
+            pageSize={10}
+            rowCount={userDataList.length}
+            loading={false}
+            paginationMode="server"
+            disableSelectionOnClick
+            autoHeight
+          />
         </Box>
+        {viewDetailsData !== null && (
+          <Box>
+            <EventDetails
+              open={isViewDetailsModalOpen}
+              data={viewDetailsData}
+              onClose={() => handleCloseDetails()}
+              type="view_event_details"
+            />
+          </Box>
+        )}
       </Box>
     </>
   );
