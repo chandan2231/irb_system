@@ -86,15 +86,15 @@ function AddEvents() {
     activeVotingMemberList: state.member.activeVotingMemberList,
     loading: state.member.loading,
   }));
+  const activeVotingMemberListArr =
+    activeVotingMemberList?.map((mList) => ({
+      id: mList.id,
+      name: mList.name + " (" + mList.user_type + ")",
+    })) || [];
 
   const { underReviewProtocolAllList } = useSelector((state) => ({
     underReviewProtocolAllList: state.admin.underReviewProtocolAllList,
   }));
-  const activeVotingMemberListArr =
-    activeVotingMemberList?.map((mList) => ({
-      id: mList.id + "_" + mList.email,
-      name: mList.name + " (" + mList.user_type + ")",
-    })) || [];
 
   const underReviewProtocolListArr =
     underReviewProtocolAllList?.map((pList) => ({
@@ -139,6 +139,7 @@ function AddEvents() {
       .format("YYYY-MM-DD HH:mm:ss");
     dataObject.event_date_with_time = eventDateWithTimeFormat;
     dataObject.created_by = user.id;
+    setLoader(true);
     dispatch(createProtocolEvent(dataObject)).then((data) => {
       if (data.payload.status === 200) {
         toast.success(data.payload.data.msg, {
@@ -151,9 +152,10 @@ function AddEvents() {
           progress: undefined,
           theme: "dark",
         });
+        setLoader(false);
         setTimeout(() => {
           navigate("/admin/protocol-event-list");
-        }, 2000);
+        }, 3000);
       } else {
         toast.error(data.payload.data.msg, {
           position: "top-right",
@@ -201,7 +203,7 @@ function AddEvents() {
             fontWeight: "bold",
           }}
         >
-          Add Event
+          Schedule Meeting
         </Typography>
 
         <Box sx={modalStyles.inputFields}>
@@ -235,7 +237,7 @@ function AddEvents() {
           </LocalizationProvider>
 
           <TextField
-            placeholder="Enter the subject"
+            placeholder="Enter Subject"
             name="event_subject"
             label="Event Subject"
             required
@@ -254,7 +256,7 @@ function AddEvents() {
           <TextField
             placeholder="Enter the event details"
             name="event_msg"
-            label="Enter the event details"
+            label="Enter Event detail/ link for online virtual meeting"
             required
             rows={5}
             maxRows={5}
