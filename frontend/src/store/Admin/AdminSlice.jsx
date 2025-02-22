@@ -244,28 +244,17 @@ const AdminSlice = createSlice({
       })
       .addCase(allowProtocolEdit.fulfilled, (state, action) => {
         state.loading = false;
-
-        // update the state of the under review protocol list
-        let updateUnderReviewProtocolList = state.underReviewProtocolList.data.map(
+        let updateAllProtocolList = state.approvedProtocolList.data.map(
           (element, index) =>
             element.id === action.payload.id
               ? { ...element, allow_edit: action.payload.allow_edit }
               : element
         );
-        state.underReviewProtocolList = updateUnderReviewProtocolList;
+        state.approvedProtocolList = {
+          ...state.approvedProtocolList,
+          data: updateAllProtocolList,
+        };
         state.allowEditStatus = action.payload;
-
-
-        //  update the state of the approved protocol list
-        let updateAllProtocolList = state.allProtocolList.data.map(
-          (element, index) =>
-            element.id === action.payload.id
-              ? { ...element, allow_edit: action.payload.allow_edit }
-              : element
-        );
-        state.allProtocolList = { ...state.allProtocolList, data: updateAllProtocolList };
-        state.allowEditStatus = action.payload;
-
       })
       .addCase(allowProtocolEdit.rejected, (state, action) => {
         state.loading = false;
@@ -350,7 +339,10 @@ const AdminSlice = createSlice({
               ? { ...element, waive_fee: action.payload.waive_fee }
               : element
         );
-        state.createdProtocolList = { ...state.createdProtocolList, data: updateCreatedProtocolList };
+        state.createdProtocolList = {
+          ...state.createdProtocolList,
+          data: updateCreatedProtocolList,
+        };
         state.protocolWaiveFee = action.payload;
       })
       .addCase(allowProtocolWaiveFee.rejected, (state, action) => {

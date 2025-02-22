@@ -14,7 +14,9 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import ToggleStatus, { ToggleStatusForAllowEdit } from "../../../components/ToggleStatus";
+import ToggleStatus, {
+  ToggleStatusForAllowEdit,
+} from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../components/Loader";
@@ -87,8 +89,8 @@ function ApprovedProtocolList() {
           onStatusChange={(newAllowEdit) => {
             const payload = {
               id: params.row.id,
-              allowEditvalue: newAllowEdit
-            }
+              allowEditvalue: newAllowEdit,
+            };
             handleChangeStatus(payload);
           }}
         />
@@ -215,7 +217,7 @@ function ApprovedProtocolList() {
   // console.log('approvedProtocolList', approvedProtocolList)
 
   const handleChangeStatus = (status) => {
-    let data = { id: status.id, status: status.allowEditvalue };
+    let data = { id: status.id, allow_edit: status.allowEditvalue };
     dispatch(allowProtocolEdit(data)).then((data) => {
       if (data.payload.status === 200) {
         toast.success(data.payload.data, {

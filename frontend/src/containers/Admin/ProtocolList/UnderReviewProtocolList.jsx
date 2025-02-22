@@ -9,7 +9,9 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useNavigate } from "react-router-dom";
-import ToggleStatus, { ToggleStatusForWaiveFee } from "../../../components/ToggleStatus";
+import ToggleStatus, {
+  ToggleStatusForWaiveFee,
+} from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
@@ -113,8 +115,8 @@ function UnderReviewProtocolList() {
           onStatusChange={(newWaiveFee) => {
             const payload = {
               id: params.row.id,
-              waiveFee: newWaiveFee
-            }
+              waiveFee: newWaiveFee,
+            };
             handleChangeStatus(payload);
           }}
         />
@@ -142,75 +144,75 @@ function UnderReviewProtocolList() {
       getActions: (params) =>
         params.row.researchType === "Multi-Site Sponsor" && params.row.isParent
           ? [
-            <GridActionsCellItem
-              icon={<EditCalendarOutlinedIcon />}
-              label="Assign Members"
-              onClick={() => handleAssignedMemberToProtocol(params)}
-              showInMenu
-            />,
-            // <GridActionsCellItem
-            //   icon={<EditCalendarOutlinedIcon />}
-            //   label="Add Event"
-            //   onClick={() => handleAddProtocolEvent(params)}
-            //   showInMenu
-            // />,
-            <GridActionsCellItem
-              icon={<PictureAsPdfIcon />}
-              label="View Pdf"
-              onClick={() => handleViewPdf(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<CompareArrowsIcon />}
-              label="Communication"
-              onClick={() => navigateToCommunicationDetails(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="View Clinical Site Protocol"
-              onClick={() => handleViewChildProtocol(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="View CTM Report"
-              onClick={() => handleViewCTMReport(params)}
-              showInMenu
-            />,
-          ]
+              <GridActionsCellItem
+                icon={<EditCalendarOutlinedIcon />}
+                label="Assign Members"
+                onClick={() => handleAssignedMemberToProtocol(params)}
+                showInMenu
+              />,
+              // <GridActionsCellItem
+              //   icon={<EditCalendarOutlinedIcon />}
+              //   label="Add Event"
+              //   onClick={() => handleAddProtocolEvent(params)}
+              //   showInMenu
+              // />,
+              <GridActionsCellItem
+                icon={<PictureAsPdfIcon />}
+                label="View Pdf"
+                onClick={() => handleViewPdf(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<CompareArrowsIcon />}
+                label="Communication"
+                onClick={() => navigateToCommunicationDetails(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View Clinical Site Protocol"
+                onClick={() => handleViewChildProtocol(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
+            ]
           : [
-            <GridActionsCellItem
-              icon={<EditCalendarOutlinedIcon />}
-              label="Assign Members"
-              onClick={() => handleAssignedMemberToProtocol(params)}
-              showInMenu
-            />,
-            // <GridActionsCellItem
-            //   icon={<EditCalendarOutlinedIcon />}
-            //   label="Add Event"
-            //   onClick={() => handleAddProtocolEvent(params)}
-            //   showInMenu
-            // />,
-            <GridActionsCellItem
-              icon={<PictureAsPdfIcon />}
-              label="View Pdf"
-              onClick={() => handleViewPdf(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<CompareArrowsIcon />}
-              label="Communication"
-              onClick={() => navigateToCommunicationDetails(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="View CTM Report"
-              onClick={() => handleViewCTMReport(params)}
-              showInMenu
-            />,
-          ],
+              <GridActionsCellItem
+                icon={<EditCalendarOutlinedIcon />}
+                label="Assign Members"
+                onClick={() => handleAssignedMemberToProtocol(params)}
+                showInMenu
+              />,
+              // <GridActionsCellItem
+              //   icon={<EditCalendarOutlinedIcon />}
+              //   label="Add Event"
+              //   onClick={() => handleAddProtocolEvent(params)}
+              //   showInMenu
+              // />,
+              <GridActionsCellItem
+                icon={<PictureAsPdfIcon />}
+                label="View Pdf"
+                onClick={() => handleViewPdf(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<CompareArrowsIcon />}
+                label="Communication"
+                onClick={() => navigateToCommunicationDetails(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
+            ],
     },
   ];
 
