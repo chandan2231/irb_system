@@ -46,12 +46,21 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
     created_by: userDetails.id,
     paymentType: protocolTypeDetails.protocolUserType,
   });
+  const [name, setName] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [submissionFormDetails, setSubmissionFormDetails] = useState({
     waiveFee: submissionForm?.waive_fee,
     allowEdit: submissionForm?.allow_edit,
   });
-  const [name, setName] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    if (submissionFormDetails) {
+      setSubmissionFormDetails({
+        waiveFee: submissionFormDetails?.waive_fee,
+        allowEdit: submissionFormDetails?.allow_edit,
+      });
+    }
+  }, []);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -183,15 +192,6 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-
-  useEffect(() => {
-    if (submissionFormDetails) {
-      setSubmissionFormDetails({
-        waiveFee: submissionFormDetails?.waive_fee,
-        allowEdit: submissionFormDetails?.allow_edit,
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const fetchProtocolTypeDetails = async () => {

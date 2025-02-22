@@ -27,7 +27,11 @@ import { RadioGroup, Radio } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-const SubmissionForm = ({ protocolTypeDetails }) => {
+const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
+  console.log("submissionForm ===>", {
+    protocolTypeDetails,
+    submissionForm
+  })
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -55,6 +59,19 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
   });
   const [name, setName] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [submissionFormDetails, setSubmissionFormDetails] = useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
+  });
+
+  useEffect(() => {
+    if (submissionFormDetails) {
+      setSubmissionFormDetails({
+        waiveFee: submissionFormDetails?.waive_fee,
+        allowEdit: submissionFormDetails?.allow_edit,
+      });
+    }
+  }, []);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -440,7 +457,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
             </Box>
           </Form.Group>
 
-          {protocolTypeDetails?.protocolStatus === "Created" && (
+          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 1 && (
             <Form.Group
               as={Col}
               controlId="validationFormik010"
@@ -454,6 +471,24 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                 disabled={isButtonDisabled}
               >
                 Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
+
+          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 2 && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={isButtonDisabled}
+              >
+                Submit
               </Button>
             </Form.Group>
           )}

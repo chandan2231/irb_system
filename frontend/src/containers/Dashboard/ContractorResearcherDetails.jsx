@@ -174,6 +174,7 @@ const ContractorResearcherDetails = ({
       <CustomTabPanel value={value} index={5}>
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
