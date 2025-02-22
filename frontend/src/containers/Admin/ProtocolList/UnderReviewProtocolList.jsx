@@ -9,7 +9,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useNavigate } from "react-router-dom";
-import ToggleStatus from "../../../components/ToggleStatus";
+import ToggleStatus, { ToggleStatusForWaiveFee } from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
@@ -108,10 +108,14 @@ function UnderReviewProtocolList() {
       headerName: "Allow Edit",
       flex: 1,
       renderCell: (params) => (
-        <ToggleStatus
-          status={params.row.allowEdit}
-          onStatusChange={(newAllowEdit) => {
-            handleChangeStatus(params.row.id, newAllowEdit);
+        <ToggleStatusForWaiveFee
+          status={params.row.waiveFee}
+          onStatusChange={(newWaiveFee) => {
+            const payload = {
+              id: params.row.id,
+              waiveFee: newWaiveFee
+            }
+            handleChangeStatus(payload);
           }}
         />
       ),
@@ -138,75 +142,75 @@ function UnderReviewProtocolList() {
       getActions: (params) =>
         params.row.researchType === "Multi-Site Sponsor" && params.row.isParent
           ? [
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Assign Members"
-                onClick={() => handleAssignedMemberToProtocol(params)}
-                showInMenu
-              />,
-              // <GridActionsCellItem
-              //   icon={<EditCalendarOutlinedIcon />}
-              //   label="Add Event"
-              //   onClick={() => handleAddProtocolEvent(params)}
-              //   showInMenu
-              // />,
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View Clinical Site Protocol"
-                onClick={() => handleViewChildProtocol(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View CTM Report"
-                onClick={() => handleViewCTMReport(params)}
-                showInMenu
-              />,
-            ]
+            <GridActionsCellItem
+              icon={<EditCalendarOutlinedIcon />}
+              label="Assign Members"
+              onClick={() => handleAssignedMemberToProtocol(params)}
+              showInMenu
+            />,
+            // <GridActionsCellItem
+            //   icon={<EditCalendarOutlinedIcon />}
+            //   label="Add Event"
+            //   onClick={() => handleAddProtocolEvent(params)}
+            //   showInMenu
+            // />,
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View Clinical Site Protocol"
+              onClick={() => handleViewChildProtocol(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View CTM Report"
+              onClick={() => handleViewCTMReport(params)}
+              showInMenu
+            />,
+          ]
           : [
-              <GridActionsCellItem
-                icon={<EditCalendarOutlinedIcon />}
-                label="Assign Members"
-                onClick={() => handleAssignedMemberToProtocol(params)}
-                showInMenu
-              />,
-              // <GridActionsCellItem
-              //   icon={<EditCalendarOutlinedIcon />}
-              //   label="Add Event"
-              //   onClick={() => handleAddProtocolEvent(params)}
-              //   showInMenu
-              // />,
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View CTM Report"
-                onClick={() => handleViewCTMReport(params)}
-                showInMenu
-              />,
-            ],
+            <GridActionsCellItem
+              icon={<EditCalendarOutlinedIcon />}
+              label="Assign Members"
+              onClick={() => handleAssignedMemberToProtocol(params)}
+              showInMenu
+            />,
+            // <GridActionsCellItem
+            //   icon={<EditCalendarOutlinedIcon />}
+            //   label="Add Event"
+            //   onClick={() => handleAddProtocolEvent(params)}
+            //   showInMenu
+            // />,
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View CTM Report"
+              onClick={() => handleViewCTMReport(params)}
+              showInMenu
+            />,
+          ],
     },
   ];
 
@@ -288,47 +292,47 @@ function UnderReviewProtocolList() {
   };
 
   /* CHANGE STATUS API CALL */
-  const handleChangeStatus = async (id, editStatus) => {
-    if (Number(editStatus) === 1 || Number(editStatus) === 2) {
-      let allowEditvalue = "";
-      if (Number(editStatus) === 1) {
-        allowEditvalue = 2;
-      } else if (Number(editStatus) === 2) {
-        allowEditvalue = 1;
+  const handleChangeStatus = (status) => {
+    let payloadData = { id: status.id, allow_edit: status.allowEditvalue };
+    dispatch(allowProtocolEdit(payloadData)).then((data) => {
+      if (data.payload.status === 200) {
+        toast.success(data.payload.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        const updatedProtocolDataList = protocolDataList.map((element) =>
+          element.id === response.payload.data.id
+            ? { ...element, allow_edit: response.payload.data.allowEditvalue }
+            : element
+        );
+        setProtocolDataList(updatedProtocolDataList);
+      } else {
+        toast.error(data.payload.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
-      let payloadData = { id: id, allow_edit: allowEditvalue };
-      dispatch(allowProtocolEdit(payloadData)).then((data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-          const updatedProtocolDataList = protocolDataList.map((element) =>
-            element.id === response.payload.data.id
-              ? { ...element, allow_edit: response.payload.data.allowEditvalue }
-              : element
-          );
-          setProtocolDataList(updatedProtocolDataList);
-        } else {
-          toast.error(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
+    });
+    // if (Number(editStatus) === 1 || Number(editStatus) === 2) {
+    //   let allowEditvalue = "";
+    //   if (Number(editStatus) === 1) {
+    //     allowEditvalue = 2;
+    //   } else if (Number(editStatus) === 2) {
+    //     allowEditvalue = 1;
+    //   }
+    // }
   };
 
   const handleAddProtocolEvent = (params) => {

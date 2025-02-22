@@ -14,7 +14,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import ToggleStatus from "../../../components/ToggleStatus";
+import ToggleStatus, { ToggleStatusForAllowEdit } from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../components/Loader";
@@ -82,10 +82,14 @@ function ApprovedProtocolList() {
       headerName: "Allow Edit",
       flex: 1,
       renderCell: (params) => (
-        <ToggleStatus
+        <ToggleStatusForAllowEdit
           status={params.row.allowEdit}
           onStatusChange={(newAllowEdit) => {
-            handleChangeStatus(params.row.id, newAllowEdit);
+            const payload = {
+              id: params.row.id,
+              allowEditvalue: newAllowEdit
+            }
+            handleChangeStatus(payload);
           }}
         />
       ),
@@ -211,40 +215,40 @@ function ApprovedProtocolList() {
   // console.log('approvedProtocolList', approvedProtocolList)
 
   const handleChangeStatus = (status) => {
-    if (status.value === "1" || status.value === "2") {
-      let allowEditvalue = "";
-      if (status.value === "1") {
-        allowEditvalue = 2;
-      } else if (status.value === "2") {
-        allowEditvalue = 1;
+    let data = { id: status.id, status: status.allowEditvalue };
+    dispatch(allowProtocolEdit(data)).then((data) => {
+      if (data.payload.status === 200) {
+        toast.success(data.payload.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        toast.error(data.payload.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
-      let data = { id: status.id, status: allowEditvalue };
-      dispatch(allowProtocolEdit(data)).then((data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.data, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        } else {
-          toast.error(data.payload.data, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
+    });
+    // if (status.value === "1" || status.value === "2") {
+    //   let allowEditvalue = "";
+    //   if (status.value === "1") {
+    //     allowEditvalue = 2;
+    //   } else if (status.value === "2") {
+    //     allowEditvalue = 1;
+    //   }
+    // }
   };
   const handleViewCTMReport = (params) => {
     setIsViewCTMModalOpen(true);
