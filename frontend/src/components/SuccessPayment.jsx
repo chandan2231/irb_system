@@ -9,6 +9,7 @@ function SuccessPayment() {
   const [loader, setLoader] = React.useState(false);
   const location = useLocation();
   const protocolTypeDetails = location?.state?.details;
+  const waiveFee = location?.state?.waiveFee;
   const amount = location?.state?.amount;
 
   React.useEffect(() => {
@@ -18,10 +19,8 @@ function SuccessPayment() {
   }, [protocolTypeDetails === undefined]);
 
   const handleViewPdf = async () => {
-    const {
-      protocol_id: protocolId,
-      protocol_type: researchType,
-    } = protocolTypeDetails;
+    const { protocol_id: protocolId, protocol_type: researchType } =
+      protocolTypeDetails;
     const protocolReportPayload = {
       protocolId: protocolId,
       protocolType: researchType,
@@ -44,7 +43,7 @@ function SuccessPayment() {
   }
 
   if (protocolTypeDetails === undefined) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -55,8 +54,11 @@ function SuccessPayment() {
             Payment Successfull
           </Typography>
           <Typography variant="h6" mb={2}>
-            Amount Paid: {amount}
-            {" USD"}
+            {waiveFee === true ? (
+              "Amount Paid: Fee Waived by admin"
+            ) : (
+              <>Amount Paid: {amount} USD</>
+            )}
           </Typography>
           <Typography variant="h6" mb={2}>
             Protocol Number: {protocolTypeDetails?.protocol_id}

@@ -27,7 +27,7 @@ import "react-toastify/dist/ReactToastify.css";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const SubmissionForm = ({ protocolTypeDetails, submissionForm }) => {
-  console.log("submission", submissionForm);
+  console.log("protocolTypeDetails", protocolTypeDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -65,6 +65,12 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm }) => {
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
       state: { details: params, identifierType: "user" },
+    });
+  };
+
+  const navigateToPaymentSuccessPage = (params) => {
+    navigate("/success", {
+      state: { details: params, identifierType: "user", waiveFee: true },
     });
   };
 
@@ -122,10 +128,17 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm }) => {
                   progress: undefined,
                   theme: "dark",
                 });
-                const timer = setTimeout(() => {
-                  navigateToPaymentPage(formData);
-                }, 1000);
-                return () => clearTimeout(timer);
+                if (Number(submissionFormDetails?.waiveFee) === 2) {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentSuccessPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                } else {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                }
               } else {
                 toast.error(data.payload.data.msg, {
                   position: "top-right",
@@ -161,10 +174,17 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm }) => {
                   progress: undefined,
                   theme: "dark",
                 });
-                const timer = setTimeout(() => {
-                  navigateToPaymentPage(formData);
-                }, 1000);
-                return () => clearTimeout(timer);
+                if (Number(submissionFormDetails?.waiveFee) === 2) {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentSuccessPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                } else {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                }
               } else {
                 toast.error(data.payload.data.msg, {
                   position: "top-right",
