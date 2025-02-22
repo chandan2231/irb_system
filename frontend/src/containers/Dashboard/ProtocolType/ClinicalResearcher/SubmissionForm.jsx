@@ -26,8 +26,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-const SubmissionForm = ({ protocolTypeDetails }) => {
-  console.log("submission protocolTypeDetails", protocolTypeDetails);
+const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
+  console.log("submission protocolTypeDetails", { protocolTypeDetails, submissionForm });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -45,6 +45,10 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
     protocol_type: protocolTypeDetails.researchType,
     created_by: userDetails.id,
     paymentType: protocolTypeDetails.protocolUserType,
+  });
+  const [submissionFormDetails, setSubmissionFormDetails] = useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
   });
   const [name, setName] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -179,6 +183,15 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
+
+  useEffect(() => {
+    if (submissionFormDetails) {
+      setSubmissionFormDetails({
+        waiveFee: submissionFormDetails?.waive_fee,
+        allowEdit: submissionFormDetails?.allow_edit,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const fetchProtocolTypeDetails = async () => {
@@ -448,7 +461,7 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
           </Form.Group>
 
           {/* Submit button */}
-          {protocolTypeDetails?.protocolStatus === "Created" && (
+          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 1 && (
             <Form.Group
               as={Col}
               controlId="validationFormik010"
@@ -462,6 +475,25 @@ const SubmissionForm = ({ protocolTypeDetails }) => {
                 disabled={isButtonDisabled}
               >
                 Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
+
+          {/* Submit button */}
+          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 2 && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={isButtonDisabled}
+              >
+                Submit
               </Button>
             </Form.Group>
           )}

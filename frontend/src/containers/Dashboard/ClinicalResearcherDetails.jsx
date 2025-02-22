@@ -156,6 +156,7 @@ const ClinicalResearcherDetails = ({
       <CustomTabPanel value={value} index={2}>
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
+          submissionForm={protocolDetailsById?.submission_information}
           protocolDetailsById={protocolDetailsById}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
