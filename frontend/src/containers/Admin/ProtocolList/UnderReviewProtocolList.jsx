@@ -9,7 +9,9 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useNavigate } from "react-router-dom";
-import ToggleStatus from "../../../components/ToggleStatus";
+import ToggleStatus, {
+  ToggleStatusForAllowEdit,
+} from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditCalendarOutlinedIcon from "@mui/icons-material/EditCalendarOutlined";
@@ -108,10 +110,14 @@ function UnderReviewProtocolList() {
       headerName: "Allow Edit",
       flex: 1,
       renderCell: (params) => (
-        <ToggleStatus
+        <ToggleStatusForAllowEdit
           status={params.row.allowEdit}
           onStatusChange={(newAllowEdit) => {
-            handleChangeStatus(params.row.id, newAllowEdit);
+            const payload = {
+              id: params.row.id,
+              allowEditvalue: newAllowEdit,
+            };
+            handleChangeStatus(payload);
           }}
         />
       ),
@@ -288,47 +294,33 @@ function UnderReviewProtocolList() {
   };
 
   /* CHANGE STATUS API CALL */
-  const handleChangeStatus = async (id, editStatus) => {
-    if (Number(editStatus) === 1 || Number(editStatus) === 2) {
-      let allowEditvalue = "";
-      if (Number(editStatus) === 1) {
-        allowEditvalue = 2;
-      } else if (Number(editStatus) === 2) {
-        allowEditvalue = 1;
+  const handleChangeStatus = (status) => {
+    let payloadData = { id: status.id, allow_edit: status.allowEditvalue };
+    dispatch(allowProtocolEdit(payloadData)).then((data) => {
+      if (data.payload.status === 200) {
+        toast.success(data.payload.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        toast.error(data.payload.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
-      let payloadData = { id: id, allow_edit: allowEditvalue };
-      dispatch(allowProtocolEdit(payloadData)).then((data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-          const updatedProtocolDataList = protocolDataList.map((element) =>
-            element.id === response.payload.data.id
-              ? { ...element, allow_edit: response.payload.data.allowEditvalue }
-              : element
-          );
-          setProtocolDataList(updatedProtocolDataList);
-        } else {
-          toast.error(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
+    });
   };
 
   const handleAddProtocolEvent = (params) => {

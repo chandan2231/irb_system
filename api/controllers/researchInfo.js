@@ -1,5 +1,117 @@
 import { db } from '../connect.js'
 
+// Helper function to wrap db.query in a Promise
+const queryAsync = (query, params) => {
+  return new Promise((resolve, reject) => {
+    db.query(query, params, (err, result) => {
+      if (err) reject(err)
+      else resolve(result)
+    })
+  })
+}
+
+export const savePrincipalInvestigatorSubmission = async (req, res) => {
+  const datetime = new Date()
+
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+  const successMessage = 'Protocol submission updated successfully'
+
+  try {
+    // Update protocol submission
+    await saveCommanProtocolSubmissionWithCTM(
+      'protocols',
+      setParams,
+      whereParams,
+      successMessage,
+      res
+    )
+
+    // Handle waive_fee logic
+    if (req.body.waive_fee === 2) {
+      await handleWaiveFee(req.body.protocol_id, req.body.created_by)
+    }
+
+    // Update or insert external monitor protocol
+    await handleExternalMonitorProtocol(
+      req.body.protocol_id,
+      req.body.external_monitor_id,
+      req.body.protocol_type,
+      req.body.created_by,
+      datetime
+    )
+
+    return res.json({
+      status: 200,
+      msg: 'Protocol submission and external monitor protocol processed successfully'
+    })
+  } catch (err) {
+    console.error(err)
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while processing the request.' })
+  }
+}
+
+// Handle waive fee status and insert payment details
+const handleWaiveFee = async (protocolId, createdBy) => {
+  const updateQuery = 'UPDATE protocols SET status=? WHERE protocol_id=?'
+  const values = [2, protocolId]
+
+  await queryAsync(updateQuery, values) // Update protocol status
+
+  const paymentData = {
+    payment_id: 'waive_fee',
+    payer_id: 'waive_fee',
+    amount: 0,
+    currency: 'waive_fee',
+    status: 'status',
+    protocol_id: protocolId,
+    user_id: createdBy
+  }
+
+  const insertPaymentQuery = 'INSERT INTO transactions SET ?'
+  await queryAsync(insertPaymentQuery, paymentData) // Insert payment details
+}
+
+// Handle external monitor protocol logic
+const handleExternalMonitorProtocol = async (
+  protocolId,
+  externalMonitorId,
+  protocolType,
+  createdBy,
+  datetime
+) => {
+  const selectQuery =
+    'SELECT * FROM external_monitor_protocol WHERE protocol_id = ?'
+  const data = await queryAsync(selectQuery, [protocolId])
+
+  if (data.length > 0) {
+    const updateQuery =
+      'UPDATE external_monitor_protocol SET external_monitor_id=? WHERE protocol_id=?'
+    const updateValues = [externalMonitorId, protocolId]
+    await queryAsync(updateQuery, updateValues) // Update existing record
+  } else {
+    const insertQuery =
+      'INSERT INTO external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) VALUES (?)'
+    const insertValues = [
+      protocolId,
+      protocolType,
+      createdBy,
+      externalMonitorId,
+      datetime.toISOString().slice(0, 10),
+      datetime.toISOString().slice(0, 10)
+    ]
+    await queryAsync(insertQuery, [insertValues]) // Insert new record
+  }
+}
+
 export const saveDocumentReview = (req, res) => {
   const selectQue = 'select * from informed_consent where protocol_id = ?'
   db.query(selectQue, [req.body.protocol_id], (err, data) => {
@@ -1060,79 +1172,109 @@ const saveCommanProtocolSubmission = (
   })
 }
 
-export const savePrincipalInvestigatorSubmission = (req, res) => {
-  const datetime = new Date()
+// export const savePrincipalInvestigatorSubmission = (req, res) => {
+//   const datetime = new Date()
 
-  // Use the updateDatabase function for the update operation
-  const setParams = {
-    applicant_terms: req.body.terms,
-    applicant_acknowledge: req.body.acknowledge,
-    applicant_acknowledge_name: req.body.acknowledge_name
-  }
-  const whereParams = {
-    protocol_id: req.body.protocol_id
-  }
-  const successMessage = 'Protocol submission updated successfully'
+//   // Use the updateDatabase function for the update operation
+//   const setParams = {
+//     applicant_terms: req.body.terms,
+//     applicant_acknowledge: req.body.acknowledge,
+//     applicant_acknowledge_name: req.body.acknowledge_name
+//   }
+//   const whereParams = {
+//     protocol_id: req.body.protocol_id
+//   }
+//   const successMessage = 'Protocol submission updated successfully'
 
-  // First, attempt to update the protocol submission
-  saveCommanProtocolSubmissionWithCTM(
-    'protocols',
-    setParams,
-    whereParams,
-    successMessage,
-    res
-  )
+//   // First, attempt to update the protocol submission
+//   saveCommanProtocolSubmissionWithCTM(
+//     'protocols',
+//     setParams,
+//     whereParams,
+//     successMessage,
+//     res
+//   )
 
-  // Check if the protocol_id exists in external_monitor_protocol table
-  const selectQue =
-    'SELECT * FROM external_monitor_protocol WHERE protocol_id = ?'
-  db.query(selectQue, [req.body.protocol_id], (err, data) => {
-    if (err) {
-      return res.status(500).json(err)
-    }
+//   if (req.body.waive_fee === 2) {
+//     const que = 'UPDATE protocols SET status=? WHERE id=?'
+//     db.query(que, [2, req.body.protocol_id], (err, data) => {
+//       if (err) {
+//         return res.status(500).json(err)
+//       } else {
+//         // Store payment details in the database
+//         const paymentData = {
+//           payment_id: 'waive_fee',
+//           payer_id: 'waive_fee',
+//           amount: 0,
+//           currency: 'waive_fee',
+//           status: 'status',
+//           protocol_id: req.body.protocol_id,
+//           user_id: req.body.created_by
+//         }
+//         db.query(
+//           'INSERT INTO transactions SET ?',
+//           paymentData,
+//           (err, result) => {
+//             if (err) {
+//               console.error(err)
+//               return res.status(500).send('Error storing payment in database')
+//             }
+//           }
+//         )
+//       }
+//     })
+//   }
 
-    // If protocol exists in external_monitor_protocol, update it
-    if (data.length > 0) {
-      const updateQuery = `UPDATE external_monitor_protocol 
-                SET external_monitor_id=? WHERE protocol_id=?`
-      const updateValues = [req.body.external_monitor_id, req.body.protocol_id]
+//   // Check if the protocol_id exists in external_monitor_protocol table
+//   const selectQue =
+//     'SELECT * FROM external_monitor_protocol WHERE protocol_id = ?'
+//   db.query(selectQue, [req.body.protocol_id], (err, data) => {
+//     if (err) {
+//       return res.status(500).json(err)
+//     }
 
-      db.query(updateQuery, updateValues, (err, data) => {
-        if (err) {
-          return res.status(500).json(err)
-        } else {
-          return res.json({
-            status: 200,
-            msg: 'Clinical Trial Monitor assigned and saved successfully'
-          })
-        }
-      })
-    } else {
-      // If no record exists, insert new entry into external_monitor_protocol table
-      const insertQue =
-        'INSERT INTO external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) VALUES (?)'
-      const values = [
-        req.body.protocol_id,
-        req.body.protocol_type,
-        req.body.created_by,
-        req.body.external_monitor_id,
-        datetime.toISOString().slice(0, 10),
-        datetime.toISOString().slice(0, 10)
-      ]
+//     // If protocol exists in external_monitor_protocol, update it
+//     if (data.length > 0) {
+//       const updateQuery = `UPDATE external_monitor_protocol
+//                 SET external_monitor_id=? WHERE protocol_id=?`
+//       const updateValues = [req.body.external_monitor_id, req.body.protocol_id]
 
-      db.query(insertQue, [values], (err, data) => {
-        if (err) {
-          return res.status(500).json(err)
-        } else {
-          return res.json({
-            status: 200,
-            msg: 'Clinical Trial Monitor assigned and saved successfully'
-          })
-        }
-      })
-    }
-  })
-}
+//       db.query(updateQuery, updateValues, (err, data) => {
+//         if (err) {
+//           return res.status(500).json(err)
+//         } else {
+//           return res.json({
+//             status: 200,
+//             msg: 'Clinical Trial Monitor assigned and saved successfully'
+//           })
+//         }
+//       })
+//     } else {
+//       // If no record exists, insert new entry into external_monitor_protocol table
+//       const insertQue =
+//         'INSERT INTO external_monitor_protocol (`protocol_id`, `protocol_type`, `created_by`, `external_monitor_id`, `created_at`, `updated_at`) VALUES (?)'
+//       const values = [
+//         req.body.protocol_id,
+//         req.body.protocol_type,
+//         req.body.created_by,
+//         req.body.external_monitor_id,
+//         datetime.toISOString().slice(0, 10),
+//         datetime.toISOString().slice(0, 10)
+//       ]
+
+//       db.query(insertQue, [values], (err, data) => {
+//         if (err) {
+//           return res.status(500).json(err)
+//         } else {
+//           return res.json({
+//             status: 200,
+//             msg: 'Clinical Trial Monitor assigned and saved successfully'
+//           })
+//         }
+//       })
+//     }
+//   })
+// }
 
 export const saveDocumentSubmission = (req, res) => {
   const datetime = new Date()

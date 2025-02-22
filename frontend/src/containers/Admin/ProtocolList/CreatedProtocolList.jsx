@@ -12,7 +12,7 @@ import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import ToggleStatus from "../../../components/ToggleStatus";
+import ToggleStatus, { ToggleStatusForWaiveFee } from "../../../components/ToggleStatus";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -81,10 +81,14 @@ function CreatedProtocolList() {
       headerName: "Waive Fee",
       flex: 1,
       renderCell: (params) => (
-        <ToggleStatus
+        <ToggleStatusForWaiveFee
           status={params.row.waiveFee}
           onStatusChange={(newWaiveFee) => {
-            handleChangeStatus(params.row.id, newWaiveFee);
+            const payload = {
+              id: params.row.id,
+              waiveFee: newWaiveFee
+            }
+            handleChangeStatus(payload);
           }}
         />
       ),
@@ -211,42 +215,69 @@ function CreatedProtocolList() {
 
   const handleChangeStatus = (status) => {
     // console.log('status', status)
-    // return
-    if (status.row.waiveFee === 1 || status.row.waiveFee === 2) {
-      let waiveFeevalue = "";
-      if (status.row.waiveFee === 1) {
-        waiveFeevalue = 2;
-      } else if (status.row.waiveFee === 2) {
-        waiveFeevalue = 1;
+    // return"
+    let data = { id: status.id, waive_fee: status.waiveFee };
+    dispatch(allowProtocolWaiveFee(data)).then((data) => {
+      console.log("data ====>", data);
+      if (data.payload.status === 200) {
+        toast.success(data.payload.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        toast.error(data.payload.msg, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
-      let data = { id: status.id, waive_fee: waiveFeevalue };
-      dispatch(allowProtocolWaiveFee(data)).then((data) => {
-        console.log("data", data);
-        if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        } else {
-          toast.error(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
+    });
+    // if (status.row.waiveFee === 1 || status.row.waiveFee === 2) {
+    //   let waiveFeevalue = "";
+    //   if (status.row.waiveFee === 1) {
+    //     waiveFeevalue = 2;
+    //   } else if (status.row.waiveFee === 2) {
+    //     waiveFeevalue = 1;
+    //   }
+    //   let data = { id: status.id, waive_fee: waiveFeevalue };
+    //   dispatch(allowProtocolWaiveFee(data)).then((data) => {
+    //     console.log("data", data);
+    //     if (data.payload.status === 200) {
+    //       toast.success(data.payload.msg, {
+    //         position: "top-right",
+    //         autoClose: 5000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined,
+    //         theme: "dark",
+    //       });
+    //     } else {
+    //       toast.error(data.payload.msg, {
+    //         position: "top-right",
+    //         autoClose: 5000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined,
+    //         theme: "dark",
+    //       });
+    //     }
+    //   });
+    // }
   };
   const handleViewCTMReport = (params) => {
     setIsViewCTMModalOpen(true);

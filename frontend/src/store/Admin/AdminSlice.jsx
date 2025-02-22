@@ -244,13 +244,35 @@ const AdminSlice = createSlice({
       })
       .addCase(allowProtocolEdit.fulfilled, (state, action) => {
         state.loading = false;
-        let updateUnderReviewProtocolList = state.underReviewProtocolList.map(
-          (element, index) =>
-            element.id === action.payload.id
-              ? { ...element, allow_edit: action.payload.allow_edit }
-              : element
+
+        // does we need to update in approvedProtocolList or allProtocolList
+        const isUpdateInApprovedList = state.approvedProtocolList?.data?.find(
+          (element) => element.id === action.payload.id
         );
-        state.underReviewProtocolList = updateUnderReviewProtocolList;
+
+        if (isUpdateInApprovedList) {
+          let updateApprovedProtocolList = state.approvedProtocolList.data.map(
+            (element, index) =>
+              element.id === action.payload.id
+                ? { ...element, allow_edit: action.payload.allow_edit }
+                : element
+          );
+          state.approvedProtocolList = {
+            ...state.approvedProtocolList,
+            data: updateApprovedProtocolList,
+          };
+        } else {
+          let updateUnderReviewProtocolList =
+            state.underReviewProtocolList.data.map((element, index) =>
+              element.id === action.payload.id
+                ? { ...element, allow_edit: action.payload.allow_edit }
+                : element
+            );
+          state.underReviewProtocolList = {
+            ...state.underReviewProtocolList,
+            data: updateUnderReviewProtocolList,
+          };
+        }
         state.allowEditStatus = action.payload;
       })
       .addCase(allowProtocolEdit.rejected, (state, action) => {
@@ -330,13 +352,16 @@ const AdminSlice = createSlice({
       })
       .addCase(allowProtocolWaiveFee.fulfilled, (state, action) => {
         state.loading = false;
-        let updateCreatedProtocolList = state.createdProtocolList.map(
+        let updateCreatedProtocolList = state.createdProtocolList.data.map(
           (element, index) =>
             element.id === action.payload.id
               ? { ...element, waive_fee: action.payload.waive_fee }
               : element
         );
-        state.createdProtocolList = updateCreatedProtocolList;
+        state.createdProtocolList = {
+          ...state.createdProtocolList,
+          data: updateCreatedProtocolList,
+        };
         state.protocolWaiveFee = action.payload;
       })
       .addCase(allowProtocolWaiveFee.rejected, (state, action) => {
