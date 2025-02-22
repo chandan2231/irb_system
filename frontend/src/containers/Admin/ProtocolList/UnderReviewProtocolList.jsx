@@ -10,7 +10,7 @@ import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { useNavigate } from "react-router-dom";
 import ToggleStatus, {
-  ToggleStatusForWaiveFee,
+  ToggleStatusForAllowEdit,
 } from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -110,12 +110,12 @@ function UnderReviewProtocolList() {
       headerName: "Allow Edit",
       flex: 1,
       renderCell: (params) => (
-        <ToggleStatusForWaiveFee
-          status={params.row.waiveFee}
-          onStatusChange={(newWaiveFee) => {
+        <ToggleStatusForAllowEdit
+          status={params.row.allowEdit}
+          onStatusChange={(newAllowEdit) => {
             const payload = {
               id: params.row.id,
-              waiveFee: newWaiveFee,
+              allowEditvalue: newAllowEdit,
             };
             handleChangeStatus(payload);
           }}
@@ -308,12 +308,6 @@ function UnderReviewProtocolList() {
           progress: undefined,
           theme: "dark",
         });
-        const updatedProtocolDataList = protocolDataList.map((element) =>
-          element.id === response.payload.data.id
-            ? { ...element, allow_edit: response.payload.data.allowEditvalue }
-            : element
-        );
-        setProtocolDataList(updatedProtocolDataList);
       } else {
         toast.error(data.payload.msg, {
           position: "top-right",
@@ -327,14 +321,6 @@ function UnderReviewProtocolList() {
         });
       }
     });
-    // if (Number(editStatus) === 1 || Number(editStatus) === 2) {
-    //   let allowEditvalue = "";
-    //   if (Number(editStatus) === 1) {
-    //     allowEditvalue = 2;
-    //   } else if (Number(editStatus) === 2) {
-    //     allowEditvalue = 1;
-    //   }
-    // }
   };
 
   const handleAddProtocolEvent = (params) => {

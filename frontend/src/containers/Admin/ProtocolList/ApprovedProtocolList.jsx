@@ -243,14 +243,6 @@ function ApprovedProtocolList() {
         });
       }
     });
-    // if (status.value === "1" || status.value === "2") {
-    //   let allowEditvalue = "";
-    //   if (status.value === "1") {
-    //     allowEditvalue = 2;
-    //   } else if (status.value === "2") {
-    //     allowEditvalue = 1;
-    //   }
-    // }
   };
   const handleViewCTMReport = (params) => {
     setIsViewCTMModalOpen(true);

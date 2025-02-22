@@ -66,7 +66,7 @@ export default function ToggleStatus({ status, onStatusChange }) {
   };
   return (
     <IOSSwitch
-      defaultChecked={status === "1" || status === 1 ? true : false}
+      checked={status === "1" || status === 1 ? true : false}
       onChange={handleToggle}
     />
   );
@@ -79,7 +79,7 @@ export function ToggleStatusForWaiveFee({ status, onStatusChange }) {
   };
   return (
     <IOSSwitch
-      defaultChecked={status === "1" || status === 1 ? false : true}
+      checked={status === "1" || status === 1 ? false : true}
       onChange={handleToggle}
     />
   );
@@ -87,7 +87,7 @@ export function ToggleStatusForWaiveFee({ status, onStatusChange }) {
 
 export function ToggleStatusForAllowEdit({ status, onStatusChange }) {
   // 0 create (by default)
-  // 1 edit not allowed  
+  // 1 edit not allowed
   // 2 edit allowed
 
   const newStatus = () => {
@@ -95,7 +95,7 @@ export function ToggleStatusForAllowEdit({ status, onStatusChange }) {
     if (status === 1 || status === "1") return 2;
     if (status === 2 || status === "2") return 1;
     return 0;
-  }
+  };
 
   const handleToggle = () => {
     const updatedStatus = newStatus();
@@ -107,14 +107,7 @@ export function ToggleStatusForAllowEdit({ status, onStatusChange }) {
     if (status === 1 || status === "1") return false;
     if (status === 2 || status === "2") return true;
     return false;
-  }
+  };
 
-  return (
-    <IOSSwitch
-      defaultChecked={
-        getCheck()
-      }
-      onChange={handleToggle}
-    />
-  );
+  return <IOSSwitch checked={getCheck()} onChange={handleToggle} />;
 }

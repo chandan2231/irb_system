@@ -246,7 +246,7 @@ const AdminSlice = createSlice({
         state.loading = false;
 
         // does we need to update in approvedProtocolList or allProtocolList
-        const isUpdateInApprovedList = state.approvedProtocolList.data.find(
+        const isUpdateInApprovedList = state.approvedProtocolList?.data?.find(
           (element) => element.id === action.payload.id
         );
 
@@ -262,19 +262,16 @@ const AdminSlice = createSlice({
             data: updateApprovedProtocolList,
           };
         } else {
-          let updateAllProtocolList = state.allProtocolList.data.map(
-
-            (element, index) =>
+          let updateUnderReviewProtocolList =
+            state.underReviewProtocolList.data.map((element, index) =>
               element.id === action.payload.id
-
                 ? { ...element, allow_edit: action.payload.allow_edit }
                 : element
-          );
-          state.allProtocolList = {
-            ...state.allProtocolList,
-            data: updateAllProtocolList,
+            );
+          state.underReviewProtocolList = {
+            ...state.underReviewProtocolList,
+            data: updateUnderReviewProtocolList,
           };
-
         }
         state.allowEditStatus = action.payload;
       })
