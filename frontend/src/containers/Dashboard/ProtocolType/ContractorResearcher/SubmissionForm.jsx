@@ -30,6 +30,7 @@ function SubmissionForm({
   protocolTypeDetails,
   protocolDetailsById,
   apiCallIdentifier,
+  submissionForm = {}
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -47,6 +48,19 @@ function SubmissionForm({
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [unsavedForms, setUnsavedForms] = useState([]);
   const [checkForTerms, setCheckForTerms] = useState(false);
+  const [submissionFormDetails, setSubmissionFormDetails] = useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
+  });
+
+  useEffect(() => {
+    if (submissionFormDetails) {
+      setSubmissionFormDetails({
+        waiveFee: submissionFormDetails?.waive_fee,
+        allowEdit: submissionFormDetails?.allow_edit,
+      });
+    }
+  }, []);
 
   const handleTermsChecked = (event) => {
     setTermsSelected(event.target.checked);
@@ -283,7 +297,7 @@ function SubmissionForm({
             </Box>
           </Form.Group>
 
-          {protocolTypeDetails?.protocolStatus === "Created" && (
+          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 1 && (
             <Form.Group
               as={Col}
               controlId="validationFormik010"
@@ -297,6 +311,24 @@ function SubmissionForm({
                 disabled={isButtonDisabled}
               >
                 Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
+
+          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 2 && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={isButtonDisabled}
+              >
+                Submit
               </Button>
             </Form.Group>
           )}

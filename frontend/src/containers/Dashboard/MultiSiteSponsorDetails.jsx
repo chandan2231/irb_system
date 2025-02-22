@@ -232,6 +232,7 @@ const MultiSiteSponsorDetails = ({
           protocolTypeDetails={protocolTypeDetails}
           protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
