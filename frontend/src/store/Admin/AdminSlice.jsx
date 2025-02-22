@@ -244,16 +244,38 @@ const AdminSlice = createSlice({
       })
       .addCase(allowProtocolEdit.fulfilled, (state, action) => {
         state.loading = false;
-        let updateAllProtocolList = state.approvedProtocolList.data.map(
-          (element, index) =>
-            element.id === action.payload.id
-              ? { ...element, allow_edit: action.payload.allow_edit }
-              : element
+
+        // does we need to update in approvedProtocolList or allProtocolList
+        const isUpdateInApprovedList = state.approvedProtocolList.data.find(
+          (element) => element.id === action.payload.id
         );
-        state.approvedProtocolList = {
-          ...state.approvedProtocolList,
-          data: updateAllProtocolList,
-        };
+
+        if (isUpdateInApprovedList) {
+          let updateApprovedProtocolList = state.approvedProtocolList.data.map(
+            (element, index) =>
+              element.id === action.payload.id
+                ? { ...element, allow_edit: action.payload.allow_edit }
+                : element
+          );
+          state.approvedProtocolList = {
+            ...state.approvedProtocolList,
+            data: updateApprovedProtocolList,
+          };
+        } else {
+          let updateAllProtocolList = state.allProtocolList.data.map(
+
+            (element, index) =>
+              element.id === action.payload.id
+
+                ? { ...element, allow_edit: action.payload.allow_edit }
+                : element
+          );
+          state.allProtocolList = {
+            ...state.allProtocolList,
+            data: updateAllProtocolList,
+          };
+
+        }
         state.allowEditStatus = action.payload;
       })
       .addCase(allowProtocolEdit.rejected, (state, action) => {
