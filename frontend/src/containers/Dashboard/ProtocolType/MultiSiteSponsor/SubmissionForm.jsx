@@ -28,10 +28,6 @@ import { RadioGroup, Radio } from "@mui/material";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
-  console.log("submissionForm ===>", {
-    protocolTypeDetails,
-    submissionForm
-  })
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -64,18 +60,24 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
     allowEdit: submissionForm?.allow_edit,
   });
 
-  useEffect(() => {
-    if (submissionFormDetails) {
-      setSubmissionFormDetails({
-        waiveFee: submissionFormDetails?.waive_fee,
-        allowEdit: submissionFormDetails?.allow_edit,
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (submissionFormDetails) {
+  //     setSubmissionFormDetails({
+  //       waiveFee: submissionFormDetails?.waive_fee,
+  //       allowEdit: submissionFormDetails?.allow_edit,
+  //     });
+  //   }
+  // }, []);
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
       state: { details: params, identifierType: "user" },
+    });
+  };
+
+  const navigateToPaymentSuccessPage = (params) => {
+    navigate("/success", {
+      state: { details: params, identifierType: "user", waiveFee: true },
     });
   };
 
@@ -126,6 +128,7 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
             formData.terms = termsSelected;
             formData.acknowledge = checkForTerms;
             formData.acknowledge_name = name;
+            formData.waive_fee = submissionFormDetails?.waiveFee;
           }
           setLoader(true);
           dispatch(createMultiSiteSubmission(formData)).then((data) => {
@@ -141,10 +144,17 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                 progress: undefined,
                 theme: "dark",
               });
-              const timer = setTimeout(() => {
-                navigateToPaymentPage(formData);
-              }, 1000);
-              return () => clearTimeout(timer);
+              if (Number(submissionFormDetails?.waiveFee) === 2) {
+                const timer = setTimeout(() => {
+                  navigateToPaymentSuccessPage(formData);
+                }, 1000);
+                return () => clearTimeout(timer);
+              } else {
+                const timer = setTimeout(() => {
+                  navigateToPaymentPage(formData);
+                }, 1000);
+                return () => clearTimeout(timer);
+              }
             } else {
               toast.error(data.payload.data.msg, {
                 position: "top-right",
@@ -162,6 +172,7 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
           formData.terms = termsSelected;
           formData.acknowledge = checkForTerms;
           formData.acknowledge_name = name;
+          formData.waive_fee = submissionFormDetails?.waiveFee;
           setLoader(true);
           dispatch(createMultiSiteSubmission(formData)).then((data) => {
             if (data.payload.status === 200) {
@@ -176,10 +187,17 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                 progress: undefined,
                 theme: "dark",
               });
-              const timer = setTimeout(() => {
-                navigateToPaymentPage(formData);
-              }, 1000);
-              return () => clearTimeout(timer);
+              if (Number(submissionFormDetails?.waiveFee) === 2) {
+                const timer = setTimeout(() => {
+                  navigateToPaymentSuccessPage(formData);
+                }, 1000);
+                return () => clearTimeout(timer);
+              } else {
+                const timer = setTimeout(() => {
+                  navigateToPaymentPage(formData);
+                }, 1000);
+                return () => clearTimeout(timer);
+              }
             } else {
               toast.error(data.payload.data.msg, {
                 position: "top-right",
@@ -457,41 +475,43 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
             </Box>
           </Form.Group>
 
-          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 1 && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={isButtonDisabled}
+          {protocolTypeDetails?.protocolStatus === "Created" &&
+            Number(submissionFormDetails?.waiveFee) === 1 && (
+              <Form.Group
+                as={Col}
+                controlId="validationFormik010"
+                className="mt-mb-20"
+                style={{ textAlign: "right" }}
               >
-                Submit And Pay
-              </Button>
-            </Form.Group>
-          )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={isButtonDisabled}
+                >
+                  Submit And Pay
+                </Button>
+              </Form.Group>
+            )}
 
-          {protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 2 && (
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={isButtonDisabled}
+          {protocolTypeDetails?.protocolStatus === "Created" &&
+            Number(submissionFormDetails?.waiveFee) === 2 && (
+              <Form.Group
+                as={Col}
+                controlId="validationFormik010"
+                className="mt-mb-20"
+                style={{ textAlign: "right" }}
               >
-                Submit
-              </Button>
-            </Form.Group>
-          )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={isButtonDisabled}
+                >
+                  Submit
+                </Button>
+              </Form.Group>
+            )}
         </form>
       </Row>
     </>
