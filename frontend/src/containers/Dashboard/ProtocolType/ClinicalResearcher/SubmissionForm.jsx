@@ -27,7 +27,6 @@ import "react-toastify/dist/ReactToastify.css";
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
 const SubmissionForm = ({ protocolTypeDetails, submissionForm }) => {
-  console.log("protocolTypeDetails", protocolTypeDetails);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
