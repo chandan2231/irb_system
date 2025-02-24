@@ -19,7 +19,6 @@ import {
   changeUserStatus,
   resetUserPassword,
   fetchMasterListByType,
-  fetchTransactionListByType,
 } from "../../services/Admin/UsersListService";
 import {
   getStudyCloseoutRequest,
@@ -378,18 +377,6 @@ const AdminSlice = createSlice({
         state.masterDataList = action.payload;
       })
       .addCase(fetchMasterListByType.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
-      .addCase(fetchTransactionListByType.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchTransactionListByType.fulfilled, (state, action) => {
-        state.loading = false;
-        state.transactionDataList = action.payload;
-      })
-      .addCase(fetchTransactionListByType.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       })

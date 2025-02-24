@@ -16,7 +16,6 @@ import { ToastContainer, toast } from "react-toastify";
 import Grid from "@mui/material/Grid";
 import moment from "moment";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import { fetchTransactionListByType } from "../../../services/Admin/UsersListService";
 
 const TransactionList = () => {
     const theme = useTheme();
@@ -85,7 +84,7 @@ const TransactionList = () => {
 
     useEffect(() => {
         const data = { selectedUserType: options };
-        dispatch(fetchTransactionListByType(data));
+        dispatch(getTransactionList(data));
     }, [dispatch, user.id, options]);
 
     if (transactionDataList !== "" && transactionDataList?.length > 0) {
