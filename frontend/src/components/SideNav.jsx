@@ -17,6 +17,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBulletedOutlined";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 function SideNav() {
   const theme = useTheme();
@@ -185,7 +186,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/admin/continuin-review-list" ||
-                location.pathname === "/admin/continuin-review-details"
+                  location.pathname === "/admin/continuin-review-details"
                   ? true
                   : false
               }
@@ -207,7 +208,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/protocol-amendment-request" ||
-                  location.pathname ===
+                    location.pathname ===
                     "/admin/protocol-amendment-request-details"
                     ? true
                     : false
@@ -224,7 +225,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/adverse-events" ||
-                  location.pathname === "/admin/adverse-events-details"
+                    location.pathname === "/admin/adverse-events-details"
                     ? true
                     : false
                 }
@@ -240,7 +241,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/promptly-reportable-event" ||
-                  location.pathname ===
+                    location.pathname ===
                     "/admin/promptly-reportable-event-details"
                     ? true
                     : false
@@ -257,7 +258,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/study-close-request" ||
-                  location.pathname === "/admin/study-close-request-details"
+                    location.pathname === "/admin/study-close-request-details"
                     ? true
                     : false
                 }
@@ -277,7 +278,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/dashboard" ||
-                location.pathname === "/protocol-details"
+                  location.pathname === "/protocol-details"
                   ? true
                   : false
               }
@@ -298,7 +299,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/continuin-review" ||
-                      location.pathname === "/continuin-review-details"
+                        location.pathname === "/continuin-review-details"
                         ? true
                         : false
                     }
@@ -315,7 +316,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/protocol-amendment-request" ||
-                      location.pathname ===
+                        location.pathname ===
                         "/protocol-amendment-request-details"
                         ? true
                         : false
@@ -333,7 +334,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/adverse-events" ||
-                      location.pathname === "/adverse-events-details"
+                        location.pathname === "/adverse-events-details"
                         ? true
                         : false
                     }
@@ -350,7 +351,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/promptly-reportable-event" ||
-                      location.pathname === "/promptly-reportable-event-details"
+                        location.pathname === "/promptly-reportable-event-details"
                         ? true
                         : false
                     }
@@ -367,7 +368,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/study-close-request" ||
-                      location.pathname === "/study-close-request-details"
+                        location.pathname === "/study-close-request-details"
                         ? true
                         : false
                     }
@@ -412,7 +413,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/member/protocol-list" ||
-              location.pathname === "/member/protocol-details"
+                location.pathname === "/member/protocol-details"
                 ? true
                 : false
             }
@@ -430,7 +431,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/committee-chair/protocol-list" ||
-              location.pathname === "/committee-chair/protocol-details"
+                location.pathname === "/committee-chair/protocol-details"
                 ? true
                 : false
             }
@@ -537,7 +538,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/office/continuin-review-list" ||
-                location.pathname === "/office/continuin-review-details"
+                  location.pathname === "/office/continuin-review-details"
                   ? true
                   : false
               }
@@ -559,7 +560,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/protocol-amendment-request" ||
-                  location.pathname ===
+                    location.pathname ===
                     "/office/protocol-amendment-request-details"
                     ? true
                     : false
@@ -576,7 +577,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/adverse-events" ||
-                  location.pathname === "/office/adverse-events-details"
+                    location.pathname === "/office/adverse-events-details"
                     ? true
                     : false
                 }
@@ -592,7 +593,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/promptly-reportable-event" ||
-                  location.pathname ===
+                    location.pathname ===
                     "/office/promptly-reportable-event-details"
                     ? true
                     : false
@@ -609,7 +610,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/study-close-request" ||
-                  location.pathname === "/office/study-close-request-details"
+                    location.pathname === "/office/study-close-request-details"
                     ? true
                     : false
                 }
@@ -628,7 +629,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/external/monitor" ||
-              location.pathname === "/protocol-details"
+                location.pathname === "/protocol-details"
                 ? true
                 : false
             }
@@ -774,9 +775,21 @@ function SideNav() {
               </Typography>
             </MenuItem>
             <MenuItem
+              active={location.pathname === "/admin/transaction-list" ? true : false}
+              component={<Link to="/admin/transaction-list" />}
+              icon={<ReceiptIcon />}
+            >
+              <Typography
+                variant="body2"
+                style={{ fontWeight: "900", fontSize: "0.9rem" }}
+              >
+                Transactions
+              </Typography>
+            </MenuItem>
+            <MenuItem
               active={
                 location.pathname === "/admin/continuin-review-list" ||
-                location.pathname === "/admin/continuin-review-details"
+                  location.pathname === "/admin/continuin-review-details"
                   ? true
                   : false
               }
@@ -798,7 +811,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/protocol-amendment-request" ||
-                  location.pathname ===
+                    location.pathname ===
                     "/admin/protocol-amendment-request-details"
                     ? true
                     : false
@@ -815,7 +828,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/adverse-events" ||
-                  location.pathname === "/admin/adverse-events-details"
+                    location.pathname === "/admin/adverse-events-details"
                     ? true
                     : false
                 }
@@ -831,7 +844,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/promptly-reportable-event" ||
-                  location.pathname ===
+                    location.pathname ===
                     "/admin/promptly-reportable-event-details"
                     ? true
                     : false
@@ -848,7 +861,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/study-close-request" ||
-                  location.pathname === "/admin/study-close-request-details"
+                    location.pathname === "/admin/study-close-request-details"
                     ? true
                     : false
                 }
