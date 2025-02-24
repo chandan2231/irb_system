@@ -81,20 +81,24 @@ function EventPriceList() {
           label="Edit Price"
           onClick={() => handleEditPriceAction(params)}
           showInMenu
-        />, 
+        />,
       ],
     },
   ];
   var totalElements = 0;
-  const { eventPriceList, loading, error, eventPriceCreated, eventPriceUpdated } = useSelector(
-    (state) => ({
-      error: state.eventPrice.error,
-      eventPriceList: state.eventPrice.eventPriceList,
-      loading: state.eventPrice.loading,
-      eventPriceCreated: state.eventPrice.eventPriceCreated,
-      eventPriceUpdated: state.eventPrice.eventPriceUpdated,
-    })
-  );
+  const {
+    eventPriceList,
+    loading,
+    error,
+    eventPriceCreated,
+    eventPriceUpdated,
+  } = useSelector((state) => ({
+    error: state.eventPrice.error,
+    eventPriceList: state.eventPrice.eventPriceList,
+    loading: state.eventPrice.loading,
+    eventPriceCreated: state.eventPrice.eventPriceCreated,
+    eventPriceUpdated: state.eventPrice.eventPriceUpdated,
+  }));
 
   console.log("Event Price List", { eventPriceList, eventPriceUpdated });
 
@@ -269,8 +273,8 @@ function EventPriceList() {
 
     const payload = {
       price: data.price,
-      id: currentEditPriceRowDetails.id
-    }
+      id: currentEditPriceRowDetails.id,
+    };
 
     console.log("Payload", payload);
 
@@ -282,7 +286,6 @@ function EventPriceList() {
 
         // reset formik state
         reset();
-
 
         setOpen(false);
         toast.success(data.payload.data, {
@@ -313,9 +316,7 @@ function EventPriceList() {
 
   const editPriceComponent = () => {
     return (
-      <Box sx={modalStyles.inputFields}
-        key={isEditPriceModalOpen}
-      >
+      <Box sx={modalStyles.inputFields} key={isEditPriceModalOpen}>
         <TextField
           placeholder={"Event Name"}
           name={"event_name"}
@@ -358,10 +359,12 @@ function EventPriceList() {
             {/* Title Grid Item */}
             <Grid item xs={12} sm={8} md={8} lg={8}>
               <Typography
-                variant="h5"
-                mb={2}
+                variant="h2"
                 sx={{
-                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                  mb: 2,
                 }}
               >
                 Event Price List
@@ -397,20 +400,19 @@ function EventPriceList() {
             columns={columns}
             rowCount={rowCount}
             loading={loading}
-            paginationMode="server" />
+            paginationMode="server"
+          />
         </Box>
 
         {/* edit price modal */}
-        <React.Fragment
-          key={isEditPriceModalOpen}
-        >
+        <React.Fragment key={isEditPriceModalOpen}>
           <CommonModal
             open={isEditPriceModalOpen}
             onClose={() => {
               // reset all states
               reset();
-              setCurrentEditPriceRowDetails({})
-              setIsEditPriceModalOpen(false)
+              setCurrentEditPriceRowDetails({});
+              setIsEditPriceModalOpen(false);
             }}
             title={"Update Event Price"}
             subTitle=""

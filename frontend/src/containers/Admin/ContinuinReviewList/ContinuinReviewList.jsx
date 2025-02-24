@@ -194,12 +194,14 @@ function ContinuinReviewList() {
       <Box>
         <Grid container spacing={2}>
           {/* Title Grid Item */}
-          <Grid item xs={12} sm={8} md={8} lg={8}>
+          <Grid item xs={12} sm={12} md={12} lg={12}>
             <Typography
-              variant="h5"
-              mb={2}
+              variant="h2"
               sx={{
-                fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                textAlign: "left",
+                fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                fontWeight: "bold",
+                mb: 2,
               }}
             >
               Continuing Review
