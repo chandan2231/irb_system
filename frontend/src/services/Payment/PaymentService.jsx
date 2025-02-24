@@ -127,3 +127,19 @@ export const getPaymentAmount = createAsyncThunk(
     }
   }
 );
+
+export const getTransactionList = createAsyncThunk(
+  "Payment/getTransactionList",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/transaction`,
+        data,
+      });
+      return response?.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

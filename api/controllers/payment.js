@@ -101,8 +101,15 @@ function generateRandomString(length = 10) {
 }
 
 export const capturePayment = async (req, res) => {
-  const { orderId, payerId, amount, currencyCode, protocolId, researchType } =
-    req.body
+  const {
+    orderId,
+    payerId,
+    amount,
+    currencyCode,
+    protocolId,
+    researchType,
+    userId
+  } = req.body
 
   const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
   captureOrderRequest.requestBody({
@@ -119,7 +126,9 @@ export const capturePayment = async (req, res) => {
       amount: amount,
       currency: currencyCode,
       status: captureResult.result.status,
-      protocol_id: protocolId
+      protocol_id: protocolId,
+      user_id: userId,
+      payment_type: 'paypal'
     }
 
     db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {
@@ -188,4 +197,26 @@ export const canclePayment = (req, res) => {
   result.status = 200
   result.msg = 'Payment cancelled'
   return res.json(result)
+}
+
+export const getTransactionListByType = (req, res) => {
+  const { selectedUserType } = req.body
+  let paymentType = ''
+  if (selectedUserType === 'transaction') {
+    paymentType = 'paypal'
+  } else if (selectedUserType === 'waive fee') {
+    paymentType = 'waive_fee'
+  }
+  const que = paymentType
+    ? 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id WHERE trans.payment_type = ?'
+    : 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id'
+
+  db.query(que, paymentType ? [paymentType] : [], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length > 0) {
+      return res.status(200).json(data)
+    } else {
+      return res.status(404).json({ message: 'No transactions found.' })
+    }
+  })
 }

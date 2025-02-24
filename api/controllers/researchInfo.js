@@ -32,7 +32,8 @@ const handleWaiveFee = async (protocolId, protocolType, createdBy) => {
         currency: 'waive_fee',
         status: 'COMPLETED',
         protocol_id: protocolId,
-        user_id: createdBy
+        user_id: createdBy,
+        payment_type: 'waive_fee'
       }
       const insertPaymentQuery = 'INSERT INTO transactions SET ?'
       await queryAsync(insertPaymentQuery, paymentData) // Insert payment details
