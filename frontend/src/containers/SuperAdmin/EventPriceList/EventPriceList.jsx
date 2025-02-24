@@ -55,12 +55,12 @@ function EventPriceList() {
       headerName: "Price",
       flex: 1,
     },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (params) => <ToggleStatus status={params.row.status} />,
-    },
+    // {
+    //   field: "status",
+    //   headerName: "Status",
+    //   flex: 1,
+    //   renderCell: (params) => <ToggleStatus status={params.row.status} />,
+    // },
     {
       field: "createdDate",
       headerName: "Created Date",
@@ -81,31 +81,7 @@ function EventPriceList() {
           label="Edit Price"
           onClick={() => handleEditPriceAction(params)}
           showInMenu
-        />,
-        // <GridActionsCellItem
-        //   icon={<LockResetIcon />}
-        //   label="Change Password"
-        //   onClick={() => handleChangePassword(params)}
-        //   showInMenu
-        // />,
-        // <GridActionsCellItem
-        //   icon={<DeleteIcon />}
-        //   label="Delete"
-        //   onClick={handleItemDelete(params)}
-        //   showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
+        />, 
       ],
     },
   ];
@@ -141,7 +117,7 @@ function EventPriceList() {
           id: uList.id,
           eventName: uList.event_type,
           price: uList.price,
-          status: uList.status,
+          // status: uList.status,
           createdDate: moment(uList.created_at).format("DD MMM YYYY"),
           updatedDate: moment(uList.updated_at).format("DD MMM YYYY"),
         };
@@ -245,18 +221,6 @@ function EventPriceList() {
       setPasswordChangeOpen(true);
     }
   };
-
-  const handleItemDelete = (params) => {
-    //console.log('Delete Item', params)
-  };
-
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
 
   const modalStyles = {
     inputFields: {
@@ -433,9 +397,7 @@ function EventPriceList() {
             columns={columns}
             rowCount={rowCount}
             loading={loading}
-            paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
-          />
+            paginationMode="server" />
         </Box>
 
         {/* edit price modal */}
