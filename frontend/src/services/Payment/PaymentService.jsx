@@ -134,7 +134,7 @@ export const getTransactionList = createAsyncThunk(
     try {
       const response = await ApiCall({
         method: "POST",
-        url: `${baseURL}/transaction`,
+        url: `${baseURL}/payment/transaction`,
         data,
       });
       return response?.data;

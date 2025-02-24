@@ -202,14 +202,14 @@ export const canclePayment = (req, res) => {
 export const getTransactionListByType = (req, res) => {
   const { selectedUserType } = req.body
   let paymentType = ''
-  if (selectedUserType === 'transaction') {
+  if (selectedUserType === 'Transaction') {
     paymentType = 'paypal'
-  } else if (selectedUserType === 'waive fee') {
+  } else if (selectedUserType === 'Waive Fee') {
     paymentType = 'waive_fee'
   }
   const que = paymentType
-    ? 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id WHERE trans.payment_type = ?'
-    : 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id'
+    ? 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id WHERE trans.payment_type = ? ORDER BY trans.id DESC '
+    : 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id ORDER BY trans.id DESC '
 
   db.query(que, paymentType ? [paymentType] : [], (err, data) => {
     if (err) return res.status(500).json(err)
