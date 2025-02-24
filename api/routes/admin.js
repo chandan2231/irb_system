@@ -25,6 +25,7 @@ import {
   allowProtocolWaiveFee,
   getEventPriceList,
   createEventPrice,
+  changeEventPrice,
   changeEventPriceStatus,
   getActiveVotingMemberList,
   createMemberEvent,
@@ -63,6 +64,7 @@ router.get('/member/eventList', memberEventList)
 router.post('/member/createEvent', createMemberEvent)
 router.get('/active/votingmember/list', getActiveVotingMemberList)
 router.post('/eventprice/status/change', changeEventPriceStatus)
+router.post('/eventprice/update', changeEventPrice)
 router.post('/eventprice/create', createEventPrice)
 router.get('/eventprice/list', getEventPriceList)
 router.post('/user/reset/password', changeUserPassword)

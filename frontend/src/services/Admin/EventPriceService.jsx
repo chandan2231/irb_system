@@ -49,3 +49,19 @@ export const changeStatus = createAsyncThunk(
     }
   }
 );
+
+export const updateEventPrice = createAsyncThunk(
+  "EventPrice/updateEventPrice",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/admin/eventprice/update`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

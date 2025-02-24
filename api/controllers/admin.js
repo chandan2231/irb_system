@@ -1338,3 +1338,17 @@ export const getMemberListForSuperAdmin = (req, res) => {
     }
   })
 }
+
+export const changeEventPrice = (req, res) => {
+  const que = 'UPDATE event_price SET price=? WHERE id=?'
+  db.query(que, [req.body.price, req.body.id], (err, data) => {
+    if (err) {
+      return res.status(500).json(err)
+    } else {
+      let result = {}
+      result.status = 200
+      result.msg = 'Event price updated successfully'
+      return res.json(result)
+    }
+  })
+}
