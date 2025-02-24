@@ -77,6 +77,7 @@ import ResetPassword from "./containers/Auth/ResetPassword";
 import EmailVerification from "./containers/Auth/EmailVerification";
 import AddEvents from "./containers/Admin/ProtocolEvents/AddEvents";
 import TransactionList from "./containers/SuperAdmin/TransactionList";
+import CreatedProtocolListSuperAdmin from "./containers/SuperAdmin/ProtocolList/CreatedProtocolList";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -237,6 +238,10 @@ function App() {
                 element={<CreatedProtocolList />}
               />
               <Route
+                path="/admin/super/created-protocols"
+                element={<CreatedProtocolListSuperAdmin />}
+              />
+              <Route
                 path="/admin/protocol-details"
                 element={<AdminProtocolDetails />}
               />
@@ -295,7 +300,10 @@ function App() {
                 element={<ProtocolEventList />}
               />
               <Route path="/admin/master-list" element={<MasterList />} />
-              <Route path="/admin/transaction-list" element={<TransactionList />} />
+              <Route
+                path="/admin/transaction-list"
+                element={<TransactionList />}
+              />
               <Route path="/admin/add-event" element={<AddEvents />} />
               <Route
                 path="/member/protocol-list"
