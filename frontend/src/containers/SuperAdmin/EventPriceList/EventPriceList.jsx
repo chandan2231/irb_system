@@ -11,6 +11,7 @@ import {
   fetchEventPriceList,
   createEventPrice,
   changeStatus,
+  updateEventPrice,
 } from "../../../services/Admin/EventPriceService";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -109,14 +110,17 @@ function EventPriceList() {
     },
   ];
   var totalElements = 0;
-  const { eventPriceList, loading, error, eventPriceCreated } = useSelector(
+  const { eventPriceList, loading, error, eventPriceCreated, eventPriceUpdated } = useSelector(
     (state) => ({
       error: state.eventPrice.error,
       eventPriceList: state.eventPrice.eventPriceList,
       loading: state.eventPrice.loading,
       eventPriceCreated: state.eventPrice.eventPriceCreated,
+      eventPriceUpdated: state.eventPrice.eventPriceUpdated,
     })
   );
+
+  console.log("Event Price List", { eventPriceList, eventPriceUpdated });
 
   if (eventPriceList !== "" && eventPriceList?.length > 0) {
     totalElements = eventPriceList?.length;
@@ -187,6 +191,12 @@ function EventPriceList() {
       dispatch(fetchEventPriceList());
     }
   }, [eventPriceCreated]);
+
+  useEffect(() => {
+    if (eventPriceUpdated) {
+      dispatch(fetchEventPriceList());
+    }
+  }, [eventPriceUpdated]);
 
   const handleChangeStatus = (status) => {
     if (Number(status.value) === 1 || Number(status.value) === 2) {
@@ -278,6 +288,7 @@ function EventPriceList() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
@@ -291,8 +302,24 @@ function EventPriceList() {
   const handleSubmitForEditPrice = (data) => {
     console.log("Submit for Edit Price", errors, data);
     // dispatch action to update price
-    dispatch(createEventPrice(data)).then((data) => {
+
+    const payload = {
+      price: data.price,
+      id: currentEditPriceRowDetails.id
+    }
+
+    console.log("Payload", payload);
+
+    dispatch(updateEventPrice(payload)).then((data) => {
       if (data.payload.status === 200) {
+        // reset all states
+        setCurrentEditPriceRowDetails({});
+        setIsEditPriceModalOpen(false);
+
+        // reset formik state
+        reset();
+
+
         setOpen(false);
         toast.success(data.payload.data, {
           position: "top-right",
@@ -304,10 +331,6 @@ function EventPriceList() {
           progress: undefined,
           theme: "dark",
         });
-
-        // reset all states
-        setIsEditPriceModalOpen(false);
-        setCurrentEditPriceRowDetails({});
       } else {
         setOpen(false);
         toast.error(data.payload, {
@@ -326,7 +349,9 @@ function EventPriceList() {
 
   const editPriceComponent = () => {
     return (
-      <Box sx={modalStyles.inputFields}>
+      <Box sx={modalStyles.inputFields}
+        key={isEditPriceModalOpen}
+      >
         <TextField
           placeholder={"Event Name"}
           name={"event_name"}
@@ -414,10 +439,16 @@ function EventPriceList() {
         </Box>
 
         {/* edit price modal */}
-        <React.Fragment>
+        <React.Fragment
+          key={isEditPriceModalOpen}
+        >
           <CommonModal
             open={isEditPriceModalOpen}
-            onClose={() => setIsEditPriceModalOpen(false)}
+            onClose={() => {
+              // reset all states
+              setCurrentEditPriceRowDetails({})
+              setIsEditPriceModalOpen(false)
+            }}
             title={"Update Event Price"}
             subTitle=""
             content={editPriceComponent()}
