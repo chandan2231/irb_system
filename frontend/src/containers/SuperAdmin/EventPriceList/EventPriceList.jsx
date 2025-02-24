@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -11,6 +11,7 @@ import {
   fetchEventPriceList,
   createEventPrice,
   changeStatus,
+  updateEventPrice,
 } from "../../../services/Admin/EventPriceService";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
@@ -18,6 +19,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditIcon from "@mui/icons-material/Edit";
+import CommonModal from "../../../components/CommonModal/Modal";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 function EventPriceList() {
   const theme = useTheme();
@@ -26,6 +32,17 @@ function EventPriceList() {
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
   const [eventPriceDataList, setEventPriceDataList] = useState([]);
+  const [isEditPriceModalOpen, setIsEditPriceModalOpen] = useState(false);
+  const [currentEditPriceRowDetails, setCurrentEditPriceRowDetails] = useState(
+    {}
+  );
+
+  const handleEditPriceAction = (params) => {
+    const { row } = params;
+    setCurrentEditPriceRowDetails(row);
+    setIsEditPriceModalOpen(true);
+    console.log("Edit Price Action", params.row);
+  };
 
   const columns = [
     {
@@ -38,12 +55,12 @@ function EventPriceList() {
       headerName: "Price",
       flex: 1,
     },
-    {
-      field: "status",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (params) => <ToggleStatus status={params.row.status} />,
-    },
+    // {
+    //   field: "status",
+    //   headerName: "Status",
+    //   flex: 1,
+    //   renderCell: (params) => <ToggleStatus status={params.row.status} />,
+    // },
     {
       field: "createdDate",
       headerName: "Created Date",
@@ -59,42 +76,31 @@ function EventPriceList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
-        // <GridActionsCellItem
-        //   icon={<LockResetIcon />}
-        //   label="Change Password"
-        //   onClick={() => handleChangePassword(params)}
-        //   showInMenu
-        // />,
-        // <GridActionsCellItem
-        //   icon={<DeleteIcon />}
-        //   label="Delete"
-        //   onClick={handleItemDelete(params)}
-        //   showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Edit Price"
+          onClick={() => handleEditPriceAction(params)}
+          showInMenu
+        />,
       ],
     },
   ];
   var totalElements = 0;
-  const { eventPriceList, loading, error, eventPriceCreated } = useSelector(
-    (state) => ({
-      error: state.eventPrice.error,
-      eventPriceList: state.eventPrice.eventPriceList,
-      loading: state.eventPrice.loading,
-      eventPriceCreated: state.eventPrice.eventPriceCreated,
-    })
-  );
+  const {
+    eventPriceList,
+    loading,
+    error,
+    eventPriceCreated,
+    eventPriceUpdated,
+  } = useSelector((state) => ({
+    error: state.eventPrice.error,
+    eventPriceList: state.eventPrice.eventPriceList,
+    loading: state.eventPrice.loading,
+    eventPriceCreated: state.eventPrice.eventPriceCreated,
+    eventPriceUpdated: state.eventPrice.eventPriceUpdated,
+  }));
+
+  console.log("Event Price List", { eventPriceList, eventPriceUpdated });
 
   if (eventPriceList !== "" && eventPriceList?.length > 0) {
     totalElements = eventPriceList?.length;
@@ -115,7 +121,7 @@ function EventPriceList() {
           id: uList.id,
           eventName: uList.event_type,
           price: uList.price,
-          status: uList.status,
+          // status: uList.status,
           createdDate: moment(uList.created_at).format("DD MMM YYYY"),
           updatedDate: moment(uList.updated_at).format("DD MMM YYYY"),
         };
@@ -166,6 +172,12 @@ function EventPriceList() {
     }
   }, [eventPriceCreated]);
 
+  useEffect(() => {
+    if (eventPriceUpdated) {
+      dispatch(fetchEventPriceList());
+    }
+  }, [eventPriceUpdated]);
+
   const handleChangeStatus = (status) => {
     if (Number(status.value) === 1 || Number(status.value) === 2) {
       let statusValue = "";
@@ -214,17 +226,118 @@ function EventPriceList() {
     }
   };
 
-  const handleItemDelete = (params) => {
-    //console.log('Delete Item', params)
+  const modalStyles = {
+    inputFields: {
+      display: "flex",
+      flexDirection: "column",
+      marginTop: "20px",
+      marginBottom: "15px",
+      ".MuiFormControl-root": {
+        marginBottom: "20px",
+      },
+    },
   };
 
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
+  // 1 >
+  // < 1000
+  // can accept decimal values upto 2 decimal places
 
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
+  const priceRegex =
+    /^(?:(?:0\.(?:0[1-9]|[1-9]\d?))|(?:[1-9]\d{0,2}(?:\.\d{1,2})?))$/;
+  const validationSchema = Yup.object().shape({
+    price: Yup.string()
+      .required("Price is required")
+      .matches(
+        priceRegex,
+        "Price must be greater than 0, less than 1000, and can have up to 2 decimal places"
+      ),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(validationSchema) });
+
+  const handlePriceChange = (value) => {
+    setCurrentEditPriceRowDetails({
+      ...currentEditPriceRowDetails,
+      price: value,
+    });
+  };
+
+  const handleSubmitForEditPrice = (data) => {
+    console.log("Submit for Edit Price", errors, data);
+    // dispatch action to update price
+
+    const payload = {
+      price: data.price,
+      id: currentEditPriceRowDetails.id,
+    };
+
+    console.log("Payload", payload);
+
+    dispatch(updateEventPrice(payload)).then((data) => {
+      if (data.payload.status === 200) {
+        // reset all states
+        setCurrentEditPriceRowDetails({});
+        setIsEditPriceModalOpen(false);
+
+        // reset formik state
+        reset();
+
+        setOpen(false);
+        toast.success(data.payload.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        setOpen(false);
+        toast.error(data.payload, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    });
+  };
+
+  const editPriceComponent = () => {
+    return (
+      <Box sx={modalStyles.inputFields} key={isEditPriceModalOpen}>
+        <TextField
+          placeholder={"Event Name"}
+          name={"event_name"}
+          label={"Event Name"}
+          value={currentEditPriceRowDetails.eventName}
+          disabled
+        />
+        <TextField
+          placeholder={"Price"}
+          name={"price"}
+          label={"Price"}
+          required
+          {...register("price")}
+          error={errors.price ? true : false}
+          helperText={errors.price?.message}
+          value={currentEditPriceRowDetails.price}
+          onChange={(e) => handlePriceChange(e.target.value)}
+        />
+      </Box>
+    );
+  };
 
   return (
     <>
@@ -246,10 +359,12 @@ function EventPriceList() {
             {/* Title Grid Item */}
             <Grid item xs={12} sm={8} md={8} lg={8}>
               <Typography
-                variant="h5"
-                mb={2}
+                variant="h2"
                 sx={{
-                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
+                  mb: 2,
                 }}
               >
                 Event Price List
@@ -286,9 +401,27 @@ function EventPriceList() {
             rowCount={rowCount}
             loading={loading}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
+
+        {/* edit price modal */}
+        <React.Fragment key={isEditPriceModalOpen}>
+          <CommonModal
+            open={isEditPriceModalOpen}
+            onClose={() => {
+              // reset all states
+              reset();
+              setCurrentEditPriceRowDetails({});
+              setIsEditPriceModalOpen(false);
+            }}
+            title={"Update Event Price"}
+            subTitle=""
+            content={editPriceComponent()}
+            hideSubmitButton={false}
+            hideCancelButton={false}
+            onSubmit={handleSubmit(handleSubmitForEditPrice)}
+          />
+        </React.Fragment>
       </Box>
     </>
   );

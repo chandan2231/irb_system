@@ -1,19 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { 
-    fetchMemberList, 
-    createMember, 
-    changeStatus, 
-    resetMemberPassword, 
-    fetchActiveVotingMemberList, 
-    createProtocolEvent,
-    fetchMemberEventList,
-    assignProtocolToMember,
-    fetchAssignMemberList,
-    fetchAssignMemberProtocolList,
-    votingMemberApprovalProtocol,
-    fetchApprovedProtocolsByMembersList,
-    chairCommitteeApprovalProtocol,
-  } from "../../services/Admin/MembersService";
+import {
+  fetchMemberList,
+  createMember,
+  changeStatus,
+  resetMemberPassword,
+  fetchActiveVotingMemberList,
+  createProtocolEvent,
+  fetchMemberEventList,
+  assignProtocolToMember,
+  fetchAssignMemberList,
+  fetchAssignMemberProtocolList,
+  votingMemberApprovalProtocol,
+  fetchApprovedProtocolsByMembersList,
+  chairCommitteeApprovalProtocol,
+  fetchMemberListForSuperAdmin,
+} from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
   name: "members",
@@ -36,6 +37,7 @@ const MembersSlice = createSlice({
     votingMemberApprovedProtocol: null,
     approvedProtocolsByMembersList: null,
     createdChairCommitteeApprovalProtocol: null,
+    memberListSuperAdmin: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -73,7 +75,7 @@ const MembersSlice = createSlice({
         let updateMemberList = state.memberList.map((element, index) =>
           element.id === action.payload.id
             ? { ...element, status: action.payload.status }
-            : element,
+            : element
         );
         state.memberList = updateMemberList;
         state.changeUserStatus = action.payload;
@@ -182,14 +184,20 @@ const MembersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchApprovedProtocolsByMembersList.fulfilled, (state, action) => {
-        state.loading = false;
-        state.approvedProtocolsByMembersList = action.payload;
-      })
-      .addCase(fetchApprovedProtocolsByMembersList.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
+      .addCase(
+        fetchApprovedProtocolsByMembersList.fulfilled,
+        (state, action) => {
+          state.loading = false;
+          state.approvedProtocolsByMembersList = action.payload;
+        }
+      )
+      .addCase(
+        fetchApprovedProtocolsByMembersList.rejected,
+        (state, action) => {
+          state.loading = false;
+          state.error = action.payload || action.error.message;
+        }
+      )
       .addCase(chairCommitteeApprovalProtocol.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -202,7 +210,18 @@ const MembersSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-      ;
+      .addCase(fetchMemberListForSuperAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchMemberListForSuperAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.memberListSuperAdmin = action.payload;
+      })
+      .addCase(fetchMemberListForSuperAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      });
   },
 });
 

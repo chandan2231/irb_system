@@ -25,6 +25,7 @@ import {
   allowProtocolWaiveFee,
   getEventPriceList,
   createEventPrice,
+  changeEventPrice,
   changeEventPriceStatus,
   getActiveVotingMemberList,
   createMemberEvent,
@@ -38,7 +39,8 @@ import {
   getContinueinProtocolList,
   getAllProtocolList,
   getMasterDataListByType,
-  getUnderReviewProtocolAllList
+  getUnderReviewProtocolAllList,
+  getMemberListForSuperAdmin
 } from '../controllers/admin.js'
 
 const router = express.Router()
@@ -62,6 +64,7 @@ router.get('/member/eventList', memberEventList)
 router.post('/member/createEvent', createMemberEvent)
 router.get('/active/votingmember/list', getActiveVotingMemberList)
 router.post('/eventprice/status/change', changeEventPriceStatus)
+router.post('/eventprice/update', changeEventPrice)
 router.post('/eventprice/create', createEventPrice)
 router.get('/eventprice/list', getEventPriceList)
 router.post('/user/reset/password', changeUserPassword)
@@ -70,6 +73,7 @@ router.post('/user/status/change', changeUserStatus)
 router.post('/member/status/change', changeMemberStatus)
 router.post('/member/create', createMember)
 router.get('/member/list', getMemberList)
+router.get('/super/member/list', getMemberListForSuperAdmin)
 router.get('/all-protocol/list', getAllProtocolList)
 router.post('/approved-protocol/list', getApprovedProtocolList)
 router.post('/under-review/protocol/list', getUnderReviewProtocolList)

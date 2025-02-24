@@ -4,14 +4,16 @@ import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CommonButton from "../../../components/CommonButton";
-import AddEventPrice from "./AddEventPrice";
+import AddMember from "./AddMember";
+import ChangePassword from "./ChangePassword";
 import moment from "moment";
 import ToggleStatus from "../../../components/ToggleStatus";
 import {
-  fetchEventPriceList,
-  createEventPrice,
+  fetchMemberListForSuperAdmin,
+  createMember,
   changeStatus,
-} from "../../../services/Admin/EventPriceService";
+  resetMemberPassword,
+} from "../../../services/Admin/MembersService";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,23 +21,33 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function EventPriceList() {
+function Members() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
-  const [eventPriceDataList, setEventPriceDataList] = useState([]);
+  const [userDataList, setUserDataList] = useState([]);
 
   const columns = [
     {
-      field: "eventName",
-      headerName: "Event Name",
+      field: "name",
+      headerName: "Name",
       flex: 1,
     },
     {
-      field: "price",
-      headerName: "Price",
+      field: "email",
+      headerName: "Email",
+      flex: 1,
+    },
+    {
+      field: "phone",
+      headerName: "Phone",
+      flex: 1,
+    },
+    {
+      field: "userType",
+      headerName: "User Type",
       flex: 1,
     },
     {
@@ -59,18 +71,18 @@ function EventPriceList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
-        // <GridActionsCellItem
-        //   icon={<LockResetIcon />}
-        //   label="Change Password"
-        //   onClick={() => handleChangePassword(params)}
-        //   showInMenu
-        // />,
-        // <GridActionsCellItem
-        //   icon={<DeleteIcon />}
-        //   label="Delete"
-        //   onClick={handleItemDelete(params)}
-        //   showInMenu
-        // />,
+        <GridActionsCellItem
+          icon={<LockResetIcon />}
+          label="Change Password"
+          onClick={() => handleChangePassword(params)}
+          showInMenu
+        />,
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={handleItemDelete(params)}
+          showInMenu
+        />,
         // <GridActionsCellItem
         //     icon={<EditNoteIcon />}
         //     label="Edit"
@@ -87,17 +99,17 @@ function EventPriceList() {
     },
   ];
   var totalElements = 0;
-  const { eventPriceList, loading, error, eventPriceCreated } = useSelector(
+  const { memberListSuperAdmin, loading, error, memberCreated } = useSelector(
     (state) => ({
-      error: state.eventPrice.error,
-      eventPriceList: state.eventPrice.eventPriceList,
-      loading: state.eventPrice.loading,
-      eventPriceCreated: state.eventPrice.eventPriceCreated,
+      error: state.member.error,
+      memberListSuperAdmin: state.member.memberListSuperAdmin,
+      loading: state.member.loading,
+      memberCreated: state.member.memberCreated,
     })
   );
 
-  if (eventPriceList !== "" && eventPriceList?.length > 0) {
-    totalElements = eventPriceList?.length;
+  if (memberListSuperAdmin !== "" && memberListSuperAdmin?.length > 0) {
+    totalElements = memberListSuperAdmin.length;
   }
   const rowCountRef = React.useRef(totalElements || 0);
   const rowCount = React.useMemo(() => {
@@ -109,28 +121,31 @@ function EventPriceList() {
 
   useEffect(() => {
     const uListArr = [];
-    if (eventPriceList && eventPriceList?.length > 0) {
-      eventPriceList.map((uList, index) => {
-        let listObject = {
+    if (memberListSuperAdmin && memberListSuperAdmin?.length > 0) {
+      memberListSuperAdmin.map((uList, index) => {
+        let marketObject = {
           id: uList.id,
-          eventName: uList.event_type,
-          price: uList.price,
+          name: uList.name,
+          email: uList.email,
+          phone: uList.mobile,
+          userType: uList.user_type,
           status: uList.status,
-          createdDate: moment(uList.created_at).format("DD MMM YYYY"),
-          updatedDate: moment(uList.updated_at).format("DD MMM YYYY"),
+          createdDate: moment(uList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
         };
-        uListArr.push(listObject);
+        uListArr.push(marketObject);
       });
-      setEventPriceDataList(uListArr);
+      setUserDataList(uListArr);
     }
-  }, [eventPriceList]);
+  }, [memberListSuperAdmin]);
 
   useEffect(() => {
-    dispatch(fetchEventPriceList());
+    dispatch(fetchMemberListForSuperAdmin());
   }, []);
 
   const addNewData = (data) => {
-    dispatch(createEventPrice(data)).then((data) => {
+    dispatch(createMember(data)).then((data) => {
+      console.log("data", data);
       if (data.payload.status === 200) {
         setOpen(false);
         toast.success(data.payload.data, {
@@ -161,23 +176,23 @@ function EventPriceList() {
   };
 
   useEffect(() => {
-    if (eventPriceCreated) {
-      dispatch(fetchEventPriceList());
+    if (memberCreated) {
+      dispatch(fetchMemberListForSuperAdmin());
     }
-  }, [eventPriceCreated]);
+  }, [memberCreated]);
 
   const handleChangeStatus = (status) => {
-    if (Number(status.value) === 1 || Number(status.value) === 2) {
+    if (status.value === 1 || status.value === 2) {
       let statusValue = "";
-      if (Number(status.value) === 1) {
+      if (status.value === 1) {
         statusValue = 2;
-      } else if (Number(status.value) === 2) {
+      } else if (status.value === 2) {
         statusValue = 1;
       }
       let data = { id: status.id, status: statusValue };
       dispatch(changeStatus(data)).then((data) => {
         if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
+          toast.success(data.payload.data, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -188,7 +203,7 @@ function EventPriceList() {
             theme: "dark",
           });
         } else {
-          toast.error(data.payload.msg, {
+          toast.error(data.payload.data, {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -212,6 +227,45 @@ function EventPriceList() {
       setUserId(params.row.id);
       setPasswordChangeOpen(true);
     }
+  };
+
+  const resetPasswordData = (data) => {
+    const { password } = data;
+    let dataObject = {
+      password: password,
+      id: userId,
+    };
+    dispatch(resetMemberPassword(dataObject)).then((data) => {
+      console.log("data", data);
+      if (data.payload.status === 200) {
+        setPasswordChangeOpen(false);
+        setUserId("");
+        toast.success(data.payload.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setFo;
+      } else {
+        setPasswordChangeOpen(false);
+        setUserId("");
+        toast.error(data.payload, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    });
   };
 
   const handleItemDelete = (params) => {
@@ -244,7 +298,7 @@ function EventPriceList() {
         <Box>
           <Grid container spacing={2}>
             {/* Title Grid Item */}
-            <Grid item xs={12} sm={8} md={8} lg={8}>
+            <Grid item xs={4} sm={8} md={8} lg={8}>
               <Typography
                 variant="h5"
                 mb={2}
@@ -252,12 +306,12 @@ function EventPriceList() {
                   fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
                 }}
               >
-                Event Price List
+                Members
               </Typography>
             </Grid>
 
             {/* Button Grid Item */}
-            <Grid item xs={12} sm={4} md={4} lg={4}>
+            <Grid item xs={8} sm={4} md={4} lg={4}>
               <Box display="flex" justifyContent="flex-end">
                 <CommonButton
                   variant="contained"
@@ -265,23 +319,30 @@ function EventPriceList() {
                   startIcon={<AddOutlinedIcon />}
                   sx={{ width: { xs: "100%", sm: "auto" } }} // Full width on mobile, auto width on tablet/desktop
                 >
-                  Add New Event Price
+                  Add New Member
                 </CommonButton>
               </Box>
             </Grid>
           </Grid>
         </Box>
         <Box>
-          <AddEventPrice
+          <AddMember
             open={open}
             onClose={() => setOpen(false)}
             addNewData={addNewData}
-            title="Add Event Price"
+          />
+        </Box>
+        <Box>
+          <ChangePassword
+            open={passwordChangeOpen}
+            onClose={() => setPasswordChangeOpen(false)}
+            addNewData={resetPasswordData}
+            title="Reset Member Password"
           />
         </Box>
         <Box sx={{ mt: 5 }}>
           <DataGrid
-            rows={eventPriceDataList}
+            rows={userDataList}
             columns={columns}
             rowCount={rowCount}
             loading={loading}
@@ -294,4 +355,4 @@ function EventPriceList() {
   );
 }
 
-export default EventPriceList;
+export default Members;

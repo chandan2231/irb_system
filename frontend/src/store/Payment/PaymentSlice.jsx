@@ -5,6 +5,7 @@ import {
   capturePayment,
   canclePayment,
   successPayment,
+  getTransactionList,
 } from "../../services/Payment/PaymentService";
 
 const PaymentSlice = createSlice({
@@ -17,6 +18,7 @@ const PaymentSlice = createSlice({
     paymentCaptured: null,
     paymentCancled: null,
     paymentSuccessed: null,
+    transactionList: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -78,6 +80,18 @@ const PaymentSlice = createSlice({
         state.paymentCancled = action.payload;
       })
       .addCase(canclePayment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(getTransactionList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getTransactionList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.transactionList = action.payload;
+      })
+      .addCase(getTransactionList.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });

@@ -3,6 +3,7 @@ import {
   fetchEventPriceList,
   createEventPrice,
   changeStatus,
+  updateEventPrice,
 } from "../../services/Admin/EventPriceService";
 
 const EventPriceSlice = createSlice({
@@ -14,10 +15,23 @@ const EventPriceSlice = createSlice({
     eventPriceCreated: null,
     changeStatus: null,
     changeEventPriceStatus: null,
+    eventPriceUpdated: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(updateEventPrice.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateEventPrice.fulfilled, (state, action) => {
+        state.loading = false;
+        state.eventPriceUpdated = action.payload;
+      })
+      .addCase(updateEventPrice.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
       .addCase(fetchEventPriceList.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -51,7 +65,7 @@ const EventPriceSlice = createSlice({
         let updateEventPriceList = state.eventPriceList.map((element, index) =>
           element.id === action.payload.id
             ? { ...element, status: action.payload.status }
-            : element,
+            : element
         );
         state.eventPriceList = updateEventPriceList;
         state.changeEventPriceStatus = action.payload;

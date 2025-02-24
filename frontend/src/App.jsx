@@ -42,7 +42,8 @@ import AdminProtocolAmendmentRequest from "./containers/Admin/ProtocolAmendmentR
 import AdminProtocolAmendmentRequestDetails from "./containers/Admin/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 import AdminRejectedProtocols from "./containers/Admin/ProtocolList/RejectedProtocols";
 import Members from "./containers/Admin/Members/Members";
-import EventPriceList from "./containers/Admin/EventPriceList/EventPriceList";
+import SuperAdminMembers from "./containers/SuperAdmin/Members/Members";
+import EventPriceList from "./containers/SuperAdmin/EventPriceList/EventPriceList";
 import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList";
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
@@ -75,6 +76,7 @@ import ExternalMonitorProtocol from "./containers/ExternalMonitor/ExternalMonito
 import ResetPassword from "./containers/Auth/ResetPassword";
 import EmailVerification from "./containers/Auth/EmailVerification";
 import AddEvents from "./containers/Admin/ProtocolEvents/AddEvents";
+import TransactionList from "./containers/SuperAdmin/TransactionList";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -281,6 +283,10 @@ function App() {
               />
               <Route path="/admin/members" element={<Members />} />
               <Route
+                path="/admin/super/members"
+                element={<SuperAdminMembers />}
+              />
+              <Route
                 path="/admin/event-price-list"
                 element={<EventPriceList />}
               />
@@ -289,6 +295,7 @@ function App() {
                 element={<ProtocolEventList />}
               />
               <Route path="/admin/master-list" element={<MasterList />} />
+              <Route path="/admin/transaction-list" element={<TransactionList />} />
               <Route path="/admin/add-event" element={<AddEvents />} />
               <Route
                 path="/member/protocol-list"
