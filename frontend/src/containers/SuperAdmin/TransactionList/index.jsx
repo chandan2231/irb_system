@@ -39,6 +39,11 @@ const TransactionList = () => {
 
   const columns = [
     {
+      field: "protocol_id",
+      headerName: "Protocol Id",
+      flex: 1,
+    },
+    {
       field: "transaction_id",
       headerName: "Transaction Id",
       flex: 1,
@@ -105,6 +110,7 @@ const TransactionList = () => {
       transactionList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
+          protocol_id: pList.protocol_id,
           transaction_id: pList.payment_id,
           name: pList.name,
           email: pList.email,
