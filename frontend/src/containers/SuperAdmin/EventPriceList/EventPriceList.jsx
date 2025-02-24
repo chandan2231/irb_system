@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -18,6 +18,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditIcon from "@mui/icons-material/Edit";
+import CommonModal from "../../../components/CommonModal/Modal";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 function EventPriceList() {
   const theme = useTheme();
@@ -26,6 +31,17 @@ function EventPriceList() {
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
   const [eventPriceDataList, setEventPriceDataList] = useState([]);
+  const [isEditPriceModalOpen, setIsEditPriceModalOpen] = useState(false);
+  const [currentEditPriceRowDetails, setCurrentEditPriceRowDetails] = useState(
+    {}
+  );
+
+  const handleEditPriceAction = (params) => {
+    const { row } = params;
+    setCurrentEditPriceRowDetails(row);
+    setIsEditPriceModalOpen(true);
+    console.log("Edit Price Action", params.row);
+  };
 
   const columns = [
     {
@@ -59,6 +75,12 @@ function EventPriceList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Edit Price"
+          onClick={() => handleEditPriceAction(params)}
+          showInMenu
+        />,
         // <GridActionsCellItem
         //   icon={<LockResetIcon />}
         //   label="Change Password"
@@ -226,6 +248,107 @@ function EventPriceList() {
   //     //console.log('Edit Item', params)
   // }
 
+  const modalStyles = {
+    inputFields: {
+      display: "flex",
+      flexDirection: "column",
+      marginTop: "20px",
+      marginBottom: "15px",
+      ".MuiFormControl-root": {
+        marginBottom: "20px",
+      },
+    },
+  };
+
+  // 1 >
+  // < 1000
+  // can accept decimal values upto 2 decimal places
+
+  const priceRegex =
+    /^(?:(?:0\.(?:0[1-9]|[1-9]\d?))|(?:[1-9]\d{0,2}(?:\.\d{1,2})?))$/;
+  const validationSchema = Yup.object().shape({
+    price: Yup.string()
+      .required("Price is required")
+      .matches(
+        priceRegex,
+        "Price must be greater than 0, less than 1000, and can have up to 2 decimal places"
+      ),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(validationSchema) });
+
+  const handlePriceChange = (value) => {
+    setCurrentEditPriceRowDetails({
+      ...currentEditPriceRowDetails,
+      price: value,
+    });
+  };
+
+  const handleSubmitForEditPrice = (data) => {
+    console.log("Submit for Edit Price", errors, data);
+    // dispatch action to update price
+    dispatch(createEventPrice(data)).then((data) => {
+      if (data.payload.status === 200) {
+        setOpen(false);
+        toast.success(data.payload.data, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+
+        // reset all states
+        setIsEditPriceModalOpen(false);
+        setCurrentEditPriceRowDetails({});
+      } else {
+        setOpen(false);
+        toast.error(data.payload, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    });
+  };
+
+  const editPriceComponent = () => {
+    return (
+      <Box sx={modalStyles.inputFields}>
+        <TextField
+          placeholder={"Event Name"}
+          name={"event_name"}
+          label={"Event Name"}
+          value={currentEditPriceRowDetails.eventName}
+          disabled
+        />
+        <TextField
+          placeholder={"Price"}
+          name={"price"}
+          label={"Price"}
+          required
+          {...register("price")}
+          error={errors.price ? true : false}
+          helperText={errors.price?.message}
+          value={currentEditPriceRowDetails.price}
+          onChange={(e) => handlePriceChange(e.target.value)}
+        />
+      </Box>
+    );
+  };
+
   return (
     <>
       <ToastContainer
@@ -289,6 +412,20 @@ function EventPriceList() {
             onCellClick={(param) => handleChangeStatus(param)}
           />
         </Box>
+
+        {/* edit price modal */}
+        <React.Fragment>
+          <CommonModal
+            open={isEditPriceModalOpen}
+            onClose={() => setIsEditPriceModalOpen(false)}
+            title={"Update Event Price"}
+            subTitle=""
+            content={editPriceComponent()}
+            hideSubmitButton={false}
+            hideCancelButton={false}
+            onSubmit={handleSubmit(handleSubmitForEditPrice)}
+          />
+        </React.Fragment>
       </Box>
     </>
   );
