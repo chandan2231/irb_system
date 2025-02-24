@@ -83,7 +83,9 @@ function AppHeader() {
                         ? "Office Portal"
                         : userDetails.user_type === "external_monitor"
                           ? "Clinical Trial Monitor Portal"
-                          : ""}
+                          : userDetails.user_type === "super_admin"
+                            ? "Super Admin"
+                            : ""}
               </h2>
             </Box>
           ) : (
@@ -99,7 +101,9 @@ function AppHeader() {
                         ? "Office Portal"
                         : userDetails.user_type === "external_monitor"
                           ? "Clinical Trial Monitor"
-                          : ""}
+                          : userDetails.user_type === "super_admin"
+                            ? "Super Admin"
+                            : ""}
               </Typography>
             </Box>
           )}

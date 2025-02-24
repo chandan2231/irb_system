@@ -481,39 +481,6 @@ export const allowProtocolWaiveFee = (req, res) => {
   })
 }
 
-// export const getApprovedProtocolList = (req, res) => {
-//   const que =
-//     'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=3'
-//   db.query(que, {}, (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
-
-// export const getUnderReviewProtocolList = (req, res) => {
-//   const que =
-//     'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=2'
-//   db.query(que, {}, (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
-
-// export const getRejectedProtocolList = (req, res) => {
-//   const que =
-//     'SELECT ps.*, users.name, users.mobile, users.email FROM protocols as ps JOIN users ON ps.added_by = users.id AND ps.status=4'
-//   db.query(que, {}, (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
-
 export const getApprovedProtocolList = (req, res) => {
   const page = parseInt(req.body.page) || 0
   const pageSize = parseInt(req.body.pageSize) || 10
@@ -1230,25 +1197,6 @@ export const getProtocolAmendmentRequestById = (req, res) => {
   })
 }
 
-// export const assignProtocolToMembers = (req, res) => {
-//     const member_ids = req.body.member_id
-//     for (const member_id of member_ids) {
-//         console.log('member_ids', member_ids)
-//         console.log('member_id', member_id)
-//         const que = 'insert into members_protocol (`protocol_id`, `protocol_name`,`member_id`,`created_by`) value (?)'
-//         const values = [
-//             req.body.protocol_id,
-//             req.body.protocol_name,
-//             member_id,
-//             req.body.created_by,
-//         ]
-//         db.query(que, [values], (err, data) => {
-//             if (err) return res.status(500).json(err)
-//             return res.status(200).json('Protocol Assigned to Members Successfully.')
-//         })
-//     }
-// }
-
 export const assignProtocolToMembers = async (req, res) => {
   const { member_id, protocol_id, protocol_name, created_by } = req.body
   try {
@@ -1379,13 +1327,14 @@ export const getUnderReviewProtocolAllList = (req, res) => {
   })
 }
 
-// export const getUnderReviewProtocolAllList = (req, res) => {
-//   const que =
-//     'SELECT id, protocol_id, research_type FROM protocols WHERE status=2'
-//   db.query(que, {}, (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
+export const getMemberListForSuperAdmin = (req, res) => {
+  const que = 'SELECT * FROM users WHERE researcher_type IN (?, ?)'
+  db.query(que, ['member', 'admin'], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length > 0) {
+      return res.status(200).json(data)
+    } else {
+      return res.status(404).json({ message: 'No members or admins found.' })
+    }
+  })
+}

@@ -95,7 +95,6 @@ function ApprovedProtocolList() {
           }}
         />
       ),
-      // renderCell: (params) => <ToggleStatus status={params.row.allowEdit} />,
     },
     {
       field: "status",

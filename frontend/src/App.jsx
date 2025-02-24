@@ -42,7 +42,8 @@ import AdminProtocolAmendmentRequest from "./containers/Admin/ProtocolAmendmentR
 import AdminProtocolAmendmentRequestDetails from "./containers/Admin/ProtocolAmendmentRequest/AdminProtocolAmendmentRequestDetails";
 import AdminRejectedProtocols from "./containers/Admin/ProtocolList/RejectedProtocols";
 import Members from "./containers/Admin/Members/Members";
-import EventPriceList from "./containers/Admin/EventPriceList/EventPriceList";
+import SuperAdminMembers from "./containers/SuperAdmin/Members/Members";
+import EventPriceList from "./containers/SuperAdmin/EventPriceList/EventPriceList";
 import ProtocolEventList from "./containers/Admin/ProtocolEvents/ProtocolEventList";
 import VotingMemberProtocolList from "./containers/VotingMembers/ProtocolList";
 import CommitteeChairProtocolList from "./containers/CommitteeChair/CommitteeChairProtocolList";
@@ -280,6 +281,10 @@ function App() {
                 element={<AdminStudyCloseoutRequestDetails />}
               />
               <Route path="/admin/members" element={<Members />} />
+              <Route
+                path="/admin/super/members"
+                element={<SuperAdminMembers />}
+              />
               <Route
                 path="/admin/event-price-list"
                 element={<EventPriceList />}

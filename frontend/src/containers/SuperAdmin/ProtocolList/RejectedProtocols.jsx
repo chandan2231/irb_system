@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchCreatedProtocolList,
-  allowProtocolWaiveFee,
+  fetchRejectedProtocolList,
+  allowProtocolEdit,
 } from "../../../services/Admin/ProtocolListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -10,19 +10,18 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import ToggleStatus, {
-  ToggleStatusForWaiveFee,
-} from "../../../components/ToggleStatus";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import ToggleStatus from "../../../components/ToggleStatus";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../components/Loader";
 import CTMProtocolReport from "../../Dashboard/CTMProtocolReport";
 import PreviewIcon from "@mui/icons-material/Preview";
 
-function CreatedProtocolList() {
+function RejectedProtocols() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,23 +77,19 @@ function CreatedProtocolList() {
       headerName: "Email",
       flex: 1,
     },
-    // {
-    //   field: "waiveFee",
-    //   headerName: "Waive Fee",
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <ToggleStatusForWaiveFee
-    //       status={params.row.waiveFee}
-    //       onStatusChange={(newWaiveFee) => {
-    //         const payload = {
-    //           id: params.row.id,
-    //           waiveFee: newWaiveFee,
-    //         };
-    //         handleChangeStatus(payload);
-    //       }}
-    //     />
-    //   ),
-    // },
+    {
+      field: "allowEdit",
+      headerName: "Allow Edit",
+      flex: 1,
+      renderCell: (params) => (
+        <ToggleStatus
+          status={params.row.allowEdit}
+          onStatusChange={(newAllowEdit) => {
+            handleChangeStatus(params.row.id, newAllowEdit);
+          }}
+        />
+      ),
+    },
     {
       field: "status",
       headerName: "Status",
@@ -137,23 +132,24 @@ function CreatedProtocolList() {
     },
   ];
 
-  const { createdProtocolList, loading, error, pagination } = useSelector(
+  const { rejectedProtocolList, loading, error, pagination } = useSelector(
     (state) => ({
       error: state.admin.error,
       loading: state.admin.loading,
-      createdProtocolList: state.admin.createdProtocolList?.data,
-      pagination: state.admin.createdProtocolList?.pagination,
+      rejectedProtocolList: state.admin.rejectedProtocolList?.data,
+      pagination: state.admin.rejectedProtocolList?.pagination,
     })
   );
+
   useEffect(() => {
     const data = {
       page: paginationModel.page,
       pageSize: paginationModel.pageSize,
     };
-    dispatch(fetchCreatedProtocolList(data));
+    dispatch(fetchRejectedProtocolList(data));
   }, [dispatch, user.id, paginationModel.page, paginationModel.pageSize]);
 
-  if (createdProtocolList !== "" && createdProtocolList?.length > 0) {
+  if (rejectedProtocolList !== "" && rejectedProtocolList?.length > 0) {
     totalElements = pagination?.totalRecords;
   }
   const rowCountRef = React.useRef(totalElements || 0);
@@ -166,15 +162,15 @@ function CreatedProtocolList() {
 
   useEffect(() => {
     const pListArr = [];
-    if (createdProtocolList && createdProtocolList?.length > 0) {
-      createdProtocolList.map((pList, index) => {
+    if (rejectedProtocolList && rejectedProtocolList?.length > 0) {
+      rejectedProtocolList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
           researchType: pList.research_type,
           username: pList.name,
           email: pList.email,
-          // waiveFee: pList.waive_fee,
+          allowEdit: pList.allow_edit,
           status:
             pList.status === "1"
               ? "Created"
@@ -190,7 +186,7 @@ function CreatedProtocolList() {
       });
       setProtocolDataList(pListArr);
     }
-  }, [createdProtocolList]);
+  }, [rejectedProtocolList]);
 
   const handleViewPdf = async (params) => {
     const { row } = params;
@@ -208,42 +204,47 @@ function CreatedProtocolList() {
       }
     } catch (error) {
       setLoader(false);
-      console.log("error", error);
+      console.log(error);
     }
   };
 
-  // console.log('protocolList', protocolList)
+  // console.log('rejectedProtocolList', rejectedProtocolList)
 
   const handleChangeStatus = (status) => {
-    // console.log('status', status)
-    // return"
-    let data = { id: status.id, waive_fee: status.waiveFee };
-    dispatch(allowProtocolWaiveFee(data)).then((data) => {
-      console.log("data ====>", data);
-      if (data.payload.status === 200) {
-        toast.success(data.payload.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-      } else {
-        toast.error(data.payload.msg, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+    if (status.value === "1" || status.value === "2") {
+      let allowEditvalue = "";
+      if (status.value === "1") {
+        allowEditvalue = 2;
+      } else if (status.value === "2") {
+        allowEditvalue = 1;
       }
-    });
+      let data = { id: status.id, status: allowEditvalue };
+      dispatch(allowProtocolEdit(data)).then((data) => {
+        if (data.payload.status === 200) {
+          toast.success(data.payload.data, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        } else {
+          toast.error(data.payload.data, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
+      });
+    }
   };
   const handleViewCTMReport = (params) => {
     setIsViewCTMModalOpen(true);
@@ -285,7 +286,7 @@ function CreatedProtocolList() {
                   fontWeight: "bold",
                 }}
               >
-                Created Protocol List
+                Rejected Protocol List
               </Typography>
             </Grid>
           </Grid>
@@ -317,4 +318,4 @@ function CreatedProtocolList() {
   );
 }
 
-export default CreatedProtocolList;
+export default RejectedProtocols;

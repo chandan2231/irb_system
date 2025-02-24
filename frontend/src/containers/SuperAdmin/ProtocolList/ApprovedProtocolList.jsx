@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchCreatedProtocolList,
-  allowProtocolWaiveFee,
+  fetchApprovedProtocolList,
+  allowProtocolEdit,
 } from "../../../services/Admin/ProtocolListService";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -10,19 +10,20 @@ import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
 import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
 import ToggleStatus, {
-  ToggleStatusForWaiveFee,
+  ToggleStatusForAllowEdit,
 } from "../../../components/ToggleStatus";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../components/Loader";
 import CTMProtocolReport from "../../Dashboard/CTMProtocolReport";
 import PreviewIcon from "@mui/icons-material/Preview";
 
-function CreatedProtocolList() {
+function ApprovedProtocolList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -78,23 +79,24 @@ function CreatedProtocolList() {
       headerName: "Email",
       flex: 1,
     },
-    // {
-    //   field: "waiveFee",
-    //   headerName: "Waive Fee",
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <ToggleStatusForWaiveFee
-    //       status={params.row.waiveFee}
-    //       onStatusChange={(newWaiveFee) => {
-    //         const payload = {
-    //           id: params.row.id,
-    //           waiveFee: newWaiveFee,
-    //         };
-    //         handleChangeStatus(payload);
-    //       }}
-    //     />
-    //   ),
-    // },
+    {
+      field: "allowEdit",
+      headerName: "Allow Edit",
+      flex: 1,
+      renderCell: (params) => (
+        <ToggleStatusForAllowEdit
+          status={params.row.allowEdit}
+          onStatusChange={(newAllowEdit) => {
+            const payload = {
+              id: params.row.id,
+              allowEditvalue: newAllowEdit,
+            };
+            handleChangeStatus(payload);
+          }}
+        />
+      ),
+      // renderCell: (params) => <ToggleStatus status={params.row.allowEdit} />,
+    },
     {
       field: "status",
       headerName: "Status",
@@ -137,12 +139,12 @@ function CreatedProtocolList() {
     },
   ];
 
-  const { createdProtocolList, loading, error, pagination } = useSelector(
+  const { approvedProtocolList, loading, error, pagination } = useSelector(
     (state) => ({
       error: state.admin.error,
       loading: state.admin.loading,
-      createdProtocolList: state.admin.createdProtocolList?.data,
-      pagination: state.admin.createdProtocolList?.pagination,
+      approvedProtocolList: state.admin.approvedProtocolList?.data,
+      pagination: state.admin.approvedProtocolList?.pagination,
     })
   );
   useEffect(() => {
@@ -150,10 +152,10 @@ function CreatedProtocolList() {
       page: paginationModel.page,
       pageSize: paginationModel.pageSize,
     };
-    dispatch(fetchCreatedProtocolList(data));
+    dispatch(fetchApprovedProtocolList(data));
   }, [dispatch, user.id, paginationModel.page, paginationModel.pageSize]);
 
-  if (createdProtocolList !== "" && createdProtocolList?.length > 0) {
+  if (approvedProtocolList !== "" && approvedProtocolList?.length > 0) {
     totalElements = pagination?.totalRecords;
   }
   const rowCountRef = React.useRef(totalElements || 0);
@@ -166,15 +168,15 @@ function CreatedProtocolList() {
 
   useEffect(() => {
     const pListArr = [];
-    if (createdProtocolList && createdProtocolList?.length > 0) {
-      createdProtocolList.map((pList, index) => {
+    if (approvedProtocolList && approvedProtocolList?.length > 0) {
+      approvedProtocolList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
           researchType: pList.research_type,
           username: pList.name,
           email: pList.email,
-          // waiveFee: pList.waive_fee,
+          allowEdit: pList.allow_edit,
           status:
             pList.status === "1"
               ? "Created"
@@ -190,7 +192,7 @@ function CreatedProtocolList() {
       });
       setProtocolDataList(pListArr);
     }
-  }, [createdProtocolList]);
+  }, [approvedProtocolList]);
 
   const handleViewPdf = async (params) => {
     const { row } = params;
@@ -208,20 +210,17 @@ function CreatedProtocolList() {
       }
     } catch (error) {
       setLoader(false);
-      console.log("error", error);
+      console.log(error);
     }
   };
 
-  // console.log('protocolList', protocolList)
+  // console.log('approvedProtocolList', approvedProtocolList)
 
   const handleChangeStatus = (status) => {
-    // console.log('status', status)
-    // return"
-    let data = { id: status.id, waive_fee: status.waiveFee };
-    dispatch(allowProtocolWaiveFee(data)).then((data) => {
-      console.log("data ====>", data);
+    let data = { id: status.id, allow_edit: status.allowEditvalue };
+    dispatch(allowProtocolEdit(data)).then((data) => {
       if (data.payload.status === 200) {
-        toast.success(data.payload.msg, {
+        toast.success(data.payload.data, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -232,7 +231,7 @@ function CreatedProtocolList() {
           theme: "dark",
         });
       } else {
-        toast.error(data.payload.msg, {
+        toast.error(data.payload.data, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -285,7 +284,7 @@ function CreatedProtocolList() {
                   fontWeight: "bold",
                 }}
               >
-                Created Protocol List
+                Approved Protocol List
               </Typography>
             </Grid>
           </Grid>
@@ -317,4 +316,4 @@ function CreatedProtocolList() {
   );
 }
 
-export default CreatedProtocolList;
+export default ApprovedProtocolList;

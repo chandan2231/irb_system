@@ -38,7 +38,8 @@ import {
   getContinueinProtocolList,
   getAllProtocolList,
   getMasterDataListByType,
-  getUnderReviewProtocolAllList
+  getUnderReviewProtocolAllList,
+  getMemberListForSuperAdmin
 } from '../controllers/admin.js'
 
 const router = express.Router()
@@ -70,6 +71,7 @@ router.post('/user/status/change', changeUserStatus)
 router.post('/member/status/change', changeMemberStatus)
 router.post('/member/create', createMember)
 router.get('/member/list', getMemberList)
+router.get('/super/member/list', getMemberListForSuperAdmin)
 router.get('/all-protocol/list', getAllProtocolList)
 router.post('/approved-protocol/list', getApprovedProtocolList)
 router.post('/under-review/protocol/list', getUnderReviewProtocolList)

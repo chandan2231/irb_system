@@ -208,3 +208,19 @@ export const chairCommitteeApprovalProtocol = createAsyncThunk(
     }
   }
 );
+
+export const fetchMemberListForSuperAdmin = createAsyncThunk(
+  "Members/fetchMemberListForSuperAdmin",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "GET",
+        url: `${baseURL}/admin/super/member/list`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
