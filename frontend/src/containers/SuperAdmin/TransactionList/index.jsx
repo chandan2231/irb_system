@@ -44,20 +44,25 @@ const TransactionList = () => {
       flex: 1,
     },
     {
+      field: "protocol_name",
+      headerName: "Protocol Name",
+      flex: 2,
+    },
+    {
       field: "transaction_id",
       headerName: "Transaction Id",
-      flex: 1,
+      flex: 2,
     },
     {
       field: "name",
       headerName: "Applicant Name",
-      flex: 1,
+      flex: 2,
     },
-    {
-      field: "email",
-      headerName: "Applicant Email",
-      flex: 1,
-    },
+    // {
+    //   field: "email",
+    //   headerName: "Applicant Email",
+    //   flex: 1,
+    // },
     {
       field: "amount",
       headerName: "Amount Paid",
@@ -71,7 +76,7 @@ const TransactionList = () => {
 
     {
       field: "createdDate",
-      headerName: "Created Date",
+      headerName: "Payment Date",
       flex: 1,
     },
   ];
@@ -110,10 +115,14 @@ const TransactionList = () => {
       transactionList.map((pList, index) => {
         let protocolObject = {
           id: pList.id,
+          protocol_name:
+            pList.protocol_name === "Principal Investigator"
+              ? pList.protocol_name + " (" + pList.protocol_pi + ")"
+              : pList.protocol_name,
           protocol_id: pList.protocol_id,
           transaction_id: pList.payment_id,
           name: pList.name,
-          email: pList.email,
+          // email: pList.email,
           amount: pList.amount,
           payment_type: pList.payment_type,
           createdDate: moment(pList.created_at).format("DD MMM YYYY"),

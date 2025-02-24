@@ -202,14 +202,27 @@ export const canclePayment = (req, res) => {
 export const getTransactionListByType = (req, res) => {
   const { selectedUserType } = req.body
   let paymentType = ''
+
+  // Determine the payment type based on selectedUserType
   if (selectedUserType === 'Transaction') {
     paymentType = 'paypal'
   } else if (selectedUserType === 'Waive Fee') {
     paymentType = 'waive_fee'
   }
+
+  // Query with additional join to fetch protocol name
   const que = paymentType
-    ? 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id WHERE trans.payment_type = ? ORDER BY trans.id DESC '
-    : 'SELECT trans.*, users.name, users.email FROM transactions as trans JOIN users as users ON trans.user_id = users.id ORDER BY trans.id DESC '
+    ? `SELECT trans.*, users.name AS name, users.email, protocols.research_type AS protocol_name, protocols.protocol_user_type as protocol_pi 
+       FROM transactions as trans 
+       JOIN users AS users ON trans.user_id = users.id 
+       JOIN protocols AS protocols ON trans.protocol_id = protocols.protocol_id 
+       WHERE trans.payment_type = ? 
+       ORDER BY trans.id DESC`
+    : `SELECT trans.*, users.name AS name, users.email, protocols.research_type AS protocol_name, protocols.protocol_user_type as protocol_pi
+       FROM transactions as trans 
+       JOIN users AS users ON trans.user_id = users.id 
+       JOIN protocols AS protocols ON trans.protocol_id = protocols.protocol_id 
+       ORDER BY trans.id DESC`
 
   db.query(que, paymentType ? [paymentType] : [], (err, data) => {
     if (err) return res.status(500).json(err)
