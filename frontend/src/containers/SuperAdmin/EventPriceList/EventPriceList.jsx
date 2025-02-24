@@ -446,6 +446,7 @@ function EventPriceList() {
             open={isEditPriceModalOpen}
             onClose={() => {
               // reset all states
+              reset();
               setCurrentEditPriceRowDetails({})
               setIsEditPriceModalOpen(false)
             }}
