@@ -47,7 +47,7 @@ function StudyInformationForm({
   protocolTypeDetails,
   studyInformation,
   handleNextTab,
-  submissionForm = {}
+  submissionForm = {},
 }) {
   const [loader, setLoader] = useState(false);
   const [submissionFormDetails, setSubmissionFormDetails] = useState({
@@ -192,6 +192,23 @@ function StudyInformationForm({
     dispatch(fetchProtocolDetailsById(data));
   };
 
+  const shouldShowSaveButton = () => {
+    // allowEdit
+    // waiveFee
+    const waiseFeeStatus = Number(submissionFormDetails.waiveFee);
+    const allowEdit = Number(submissionFormDetails.allowEdit);
+    if (waiseFeeStatus === 1) {
+      return true; // Always show for status 1
+    } else if (waiseFeeStatus === 2) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 3) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 4) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    }
+    return false; // Default case (if status is something else)
+  };
+
   if (loader) {
     return <Loader />;
   }
@@ -311,16 +328,19 @@ function StudyInformationForm({
               <div className="error">{errors.ingredient_list}</div>
             )}
           </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button variant="contained" color="primary" type="Submit">
-              SAVE AND CONTINUE
-            </Button>
-          </Form.Group>
+
+          {shouldShowSaveButton() && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button variant="contained" color="primary" type="Submit">
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

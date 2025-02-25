@@ -660,13 +660,11 @@ function InvestigatorInformationForm({
     dispatch(fetchProtocolDetailsById(data));
   };
 
-  console.log(submissionFormDetails)
+  // console.log(submissionFormDetails);
 
   const shouldShowSaveButton = () => {
-    // allowEdit
-    // waiveFee
-    const waiseFeeStatus = Number(submissionFormDetails.waiveFee)
-    const allowEdit = Number(submissionFormDetails.allowEdit)
+    const waiseFeeStatus = Number(submissionFormDetails.waiveFee);
+    const allowEdit = Number(submissionFormDetails.allowEdit);
     if (waiseFeeStatus === 1) {
       return true; // Always show for status 1
     } else if (waiseFeeStatus === 2) {
@@ -678,7 +676,6 @@ function InvestigatorInformationForm({
     }
     return false; // Default case (if status is something else)
   };
-
 
   if (loader) {
     return <Loader />;

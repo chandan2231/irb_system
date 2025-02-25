@@ -27,28 +27,34 @@ import { RadioGroup, Radio } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInformation = {} }) => {
+const SubmissionForm = ({
+  protocolTypeDetails,
+  submissionForm = {},
+  monitorInformation = {},
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
   const [termsSelected, setTermsSelected] = useState(
-    submissionForm?.applicant_terms ? Number(submissionForm?.applicant_terms) === 1 :
-      false);
+    submissionForm?.applicant_terms
+      ? Number(submissionForm?.applicant_terms) === 1
+      : false
+  );
   const [checkForTerms, setCheckForTerms] = useState(
-    submissionForm?.applicant_acknowledge ? Number(submissionForm?.applicant_acknowledge) === 1 :
-      false);
+    submissionForm?.applicant_acknowledge
+      ? Number(submissionForm?.applicant_acknowledge) === 1
+      : false
+  );
   const [errors, setErrors] = useState({});
   const [addExternalMonitorDetails, setAddExternalMonitorDetails] = useState(
-    typeof monitorInformation?.id ===
-      "number"
-      ? true :
-      false);
+    typeof monitorInformation?.external_monitor_id === "string" ? true : false
+  );
   const [externalMonitorsList, setExternalMonitorsList] = useState([]);
   const [selectedExternalMonitor, setSelectedExternalMonitor] = useState(
-    typeof monitorInformation?.id ===
-      "number"
-      ? monitorInformation?.id.toString() :
-      "");
+    typeof monitorInformation?.external_monitor_id === "string"
+      ? monitorInformation?.external_monitor_id.toString()
+      : ""
+  );
   const [loader, setLoader] = useState(false);
   const [notSavedForms, setNotSavedForms] = useState([]);
   const [payloadFormData, setPayloadFormData] = useState({
@@ -65,22 +71,15 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
     paymentType: protocolTypeDetails.protocolUserType,
   });
   const [name, setName] = useState(
-    submissionForm?.applicant_acknowledge_name ? submissionForm?.applicant_acknowledge_name :
-      "");
+    submissionForm?.applicant_acknowledge_name
+      ? submissionForm?.applicant_acknowledge_name
+      : ""
+  );
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [submissionFormDetails, setSubmissionFormDetails] = useState({
     waiveFee: submissionForm?.waive_fee,
     allowEdit: submissionForm?.allow_edit,
   });
-
-  // useEffect(() => {
-  //   if (submissionFormDetails) {
-  //     setSubmissionFormDetails({
-  //       waiveFee: submissionFormDetails?.waive_fee,
-  //       allowEdit: submissionFormDetails?.allow_edit,
-  //     });
-  //   }
-  // }, []);
 
   const [monitorInformationDetails, setMonitorInformationDetails] = useState({
     created_at: monitorInformation?.created_at,
@@ -90,8 +89,7 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
     protocol_id: monitorInformation?.protocol_id,
     protocol_type: monitorInformation?.protocol_type,
     updated_at: monitorInformation?.updated_at,
-  })
-
+  });
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -348,17 +346,21 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
   ]);
 
   const whichSubmitButtonToShow = () => {
-    const isSubmitAndPayVisible = protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 1;
-    const isSubmitVisible = protocolTypeDetails?.protocolStatus === "Created" && Number(submissionFormDetails?.waiveFee) === 2;
-    const isSubmitForTrailMonitorVisible = !isSubmitAndPayVisible && !isSubmitVisible;
+    const isSubmitAndPayVisible =
+      protocolTypeDetails?.protocolStatus === "Created" &&
+      Number(submissionFormDetails?.waiveFee) === 1;
+    const isSubmitVisible =
+      protocolTypeDetails?.protocolStatus === "Created" &&
+      Number(submissionFormDetails?.waiveFee) === 2;
+    const isSubmitForTrailMonitorVisible =
+      !isSubmitAndPayVisible && !isSubmitVisible;
 
     return {
       isSubmitAndPayVisible,
       isSubmitVisible,
-      isSubmitForTrailMonitorVisible
-    }
-  }
-
+      isSubmitForTrailMonitorVisible,
+    };
+  };
 
   if (loader) {
     return <Loader />;
@@ -435,7 +437,7 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
                     externalMonitorsList.map((user) => (
                       <FormControlLabel
                         key={user.id}
-                        value={user.id.toString()} // Convert ID to string for value
+                        value={user.id.toString()}
                         control={<Radio />}
                         label={user.name}
                       />
@@ -453,11 +455,7 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
               className="mt-mb-20"
               style={{ textAlign: "left" }}
             >
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-              >
+              <Button variant="contained" color="primary" type="submit">
                 Submit
               </Button>
             </Form.Group>
@@ -511,7 +509,9 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
                 }
                 label="I agree to the terms."
                 // when show submit for trail monitor button is visible then disable the text field
-                disabled={whichSubmitButtonToShow().isSubmitForTrailMonitorVisible}
+                disabled={
+                  whichSubmitButtonToShow().isSubmitForTrailMonitorVisible
+                }
               />
             </FormControl>
           </Form.Group>
@@ -529,7 +529,9 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
                   }
                   label="I acknowledge that processed payment for protocol approval submission is non-refundable."
                   // when show submit for trail monitor button is visible then disable the text field
-                  disabled={whichSubmitButtonToShow().isSubmitForTrailMonitorVisible}
+                  disabled={
+                    whichSubmitButtonToShow().isSubmitForTrailMonitorVisible
+                  }
                 />
               </FormGroup>
             </FormControl>
@@ -546,7 +548,9 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 // when show submit for trail monitor button is visible then disable the text field
-                disabled={whichSubmitButtonToShow().isSubmitForTrailMonitorVisible}
+                disabled={
+                  whichSubmitButtonToShow().isSubmitForTrailMonitorVisible
+                }
               />
             </Box>
           </Form.Group>
