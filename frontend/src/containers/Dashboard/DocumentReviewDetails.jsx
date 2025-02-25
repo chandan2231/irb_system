@@ -163,7 +163,6 @@ const DocumentReviewDetails = ({
           protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
           submissionForm={protocolDetailsByIdState?.submission_information}
-          monitorInformation={protocolDetailsByIdState?.clinical_trail_monitor_information}
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>

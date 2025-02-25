@@ -180,7 +180,6 @@ const ContractorResearcherDetails = ({
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
           submissionForm={protocolDetailsByIdState?.submission_information}
-          monitorInformation={protocolDetailsByIdState?.clinical_trail_monitor_information}
           protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
