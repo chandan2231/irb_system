@@ -133,15 +133,47 @@ const handleExternalMonitorProtocol = async (
 export const savePrincipalInvestigatorSubmission = async (req, res) => {
   const datetime = new Date()
 
-  const setParams = {
-    applicant_terms: req.body.terms,
-    applicant_acknowledge: req.body.acknowledge,
-    applicant_acknowledge_name: req.body.acknowledge_name
+  // Function to handle the external monitor protocol
+  const processExternalMonitorProtocol = async () => {
+    await handleExternalMonitorProtocol(
+      req.body.protocol_id,
+      req.body.external_monitor_id,
+      req.body.protocol_type,
+      req.body.created_by,
+      datetime
+    )
   }
-  const whereParams = {
-    protocol_id: req.body.protocol_id
+
+  // If the identifier is 1, only handle external monitor protocol
+  if (req.body.identifier === 1) {
+    try {
+      await processExternalMonitorProtocol()
+      return res.json({
+        status: 200,
+        msg: 'External monitor protocol processed successfully'
+      })
+    } catch (err) {
+      console.error(
+        'Error in savePrincipalInvestigatorSubmission (identifier 1):',
+        err
+      )
+      return res
+        .status(500)
+        .json({ error: 'An error occurred while processing the request.' })
+    }
   }
+
+  // Otherwise, handle protocol submission, waive fee, and external monitor protocol
   try {
+    const setParams = {
+      applicant_terms: req.body.terms,
+      applicant_acknowledge: req.body.acknowledge,
+      applicant_acknowledge_name: req.body.acknowledge_name
+    }
+    const whereParams = {
+      protocol_id: req.body.protocol_id
+    }
+
     // Update protocol submission with CTM
     await saveCommonProtocolSubmission('protocols', setParams, whereParams)
 
@@ -155,13 +187,7 @@ export const savePrincipalInvestigatorSubmission = async (req, res) => {
     }
 
     // Update or insert external monitor protocol
-    await handleExternalMonitorProtocol(
-      req.body.protocol_id,
-      req.body.external_monitor_id,
-      req.body.protocol_type,
-      req.body.created_by,
-      datetime
-    )
+    await processExternalMonitorProtocol()
 
     // Send response after all async operations are completed
     return res.json({
@@ -169,8 +195,79 @@ export const savePrincipalInvestigatorSubmission = async (req, res) => {
       msg: 'Protocol submission processed successfully'
     })
   } catch (err) {
-    console.error('Error in savePrincipalInvestigatorSubmission:', err)
-    // Return error response if any error occurs during the process
+    console.error(
+      'Error in savePrincipalInvestigatorSubmission (standard process):',
+      err
+    )
+    return res
+      .status(500)
+      .json({ error: 'An error occurred while processing the request.' })
+  }
+}
+
+export const saveMultiSiteSubmission = async (req, res) => {
+  const datetime = new Date()
+
+  // Helper function to handle external monitor protocol
+  const processExternalMonitorProtocol = async () => {
+    await handleExternalMonitorProtocol(
+      req.body.protocol_id,
+      req.body.external_monitor_id,
+      req.body.protocol_type,
+      req.body.created_by,
+      datetime
+    )
+  }
+
+  // If the identifier is 1, just handle the external monitor protocol
+  if (req.body.identifier === 1) {
+    try {
+      await processExternalMonitorProtocol()
+      return res.json({
+        status: 200,
+        msg: 'External monitor protocol processed successfully'
+      })
+    } catch (err) {
+      console.error('Error in saveMultiSiteSubmission (identifier 1):', err)
+      return res
+        .status(500)
+        .json({ error: 'An error occurred while processing the request.' })
+    }
+  }
+
+  // Otherwise, proceed with protocol submission, waive fee, and external monitor protocol
+  const setParams = {
+    applicant_terms: req.body.terms,
+    applicant_acknowledge: req.body.acknowledge,
+    applicant_acknowledge_name: req.body.acknowledge_name
+  }
+  const whereParams = {
+    protocol_id: req.body.protocol_id
+  }
+
+  try {
+    // Save the protocol submission
+    await saveCommonProtocolSubmission('protocols', setParams, whereParams)
+
+    // Handle waive_fee logic if applicable
+    if (req.body.waive_fee === 2) {
+      await handleWaiveFee(
+        req.body.protocol_id,
+        req.body.protocol_type,
+        req.body.created_by
+      )
+    }
+
+    // Update or insert external monitor protocol
+    await processExternalMonitorProtocol()
+
+    // Respond after all async operations are completed
+    return res.json({
+      status: 200,
+      msg: 'Protocol submission processed successfully'
+    })
+  } catch (err) {
+    console.error('Error in saveMultiSiteSubmission (standard process):', err)
     return res
       .status(500)
       .json({ error: 'An error occurred while processing the request.' })
@@ -210,50 +307,6 @@ export const saveDocumentSubmission = async (req, res) => {
     })
   } catch (err) {
     console.error('Error in saveDocumentSubmission:', err)
-    return res
-      .status(500)
-      .json({ error: 'An error occurred while processing the request.' })
-  }
-}
-
-export const saveMultiSiteSubmission = async (req, res) => {
-  const datetime = new Date()
-
-  const setParams = {
-    applicant_terms: req.body.terms,
-    applicant_acknowledge: req.body.acknowledge,
-    applicant_acknowledge_name: req.body.acknowledge_name
-  }
-  const whereParams = {
-    protocol_id: req.body.protocol_id
-  }
-  try {
-    await saveCommonProtocolSubmission('protocols', setParams, whereParams)
-
-    // Handle waive_fee logic
-    if (req.body.waive_fee === 2) {
-      await handleWaiveFee(
-        req.body.protocol_id,
-        req.body.protocol_type,
-        req.body.created_by
-      )
-    }
-
-    // Update or insert external monitor protocol
-    await handleExternalMonitorProtocol(
-      req.body.protocol_id,
-      req.body.external_monitor_id,
-      req.body.protocol_type,
-      req.body.created_by,
-      datetime
-    )
-
-    return res.json({
-      status: 200,
-      msg: 'Protocol submission processed successfully'
-    })
-  } catch (err) {
-    console.error(err)
     return res
       .status(500)
       .json({ error: 'An error occurred while processing the request.' })
@@ -1263,3 +1316,94 @@ export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
     })
   }
 }
+
+// export const savePrincipalInvestigatorSubmission = async (req, res) => {
+//   const datetime = new Date()
+
+//   const setParams = {
+//     applicant_terms: req.body.terms,
+//     applicant_acknowledge: req.body.acknowledge,
+//     applicant_acknowledge_name: req.body.acknowledge_name
+//   }
+//   const whereParams = {
+//     protocol_id: req.body.protocol_id
+//   }
+//   try {
+//     // Update protocol submission with CTM
+//     await saveCommonProtocolSubmission('protocols', setParams, whereParams)
+
+//     // Handle waive fee if applicable
+//     if (req.body.waive_fee === 2) {
+//       await handleWaiveFee(
+//         req.body.protocol_id,
+//         req.body.paymentType,
+//         req.body.created_by
+//       )
+//     }
+
+//     // Update or insert external monitor protocol
+//     await handleExternalMonitorProtocol(
+//       req.body.protocol_id,
+//       req.body.external_monitor_id,
+//       req.body.protocol_type,
+//       req.body.created_by,
+//       datetime
+//     )
+
+//     // Send response after all async operations are completed
+//     return res.json({
+//       status: 200,
+//       msg: 'Protocol submission processed successfully'
+//     })
+//   } catch (err) {
+//     console.error('Error in savePrincipalInvestigatorSubmission:', err)
+//     // Return error response if any error occurs during the process
+//     return res
+//       .status(500)
+//       .json({ error: 'An error occurred while processing the request.' })
+//   }
+// }
+
+// export const saveMultiSiteSubmission = async (req, res) => {
+//   const datetime = new Date()
+
+//   const setParams = {
+//     applicant_terms: req.body.terms,
+//     applicant_acknowledge: req.body.acknowledge,
+//     applicant_acknowledge_name: req.body.acknowledge_name
+//   }
+//   const whereParams = {
+//     protocol_id: req.body.protocol_id
+//   }
+//   try {
+//     await saveCommonProtocolSubmission('protocols', setParams, whereParams)
+
+//     // Handle waive_fee logic
+//     if (req.body.waive_fee === 2) {
+//       await handleWaiveFee(
+//         req.body.protocol_id,
+//         req.body.protocol_type,
+//         req.body.created_by
+//       )
+//     }
+
+//     // Update or insert external monitor protocol
+//     await handleExternalMonitorProtocol(
+//       req.body.protocol_id,
+//       req.body.external_monitor_id,
+//       req.body.protocol_type,
+//       req.body.created_by,
+//       datetime
+//     )
+
+//     return res.json({
+//       status: 200,
+//       msg: 'Protocol submission processed successfully'
+//     })
+//   } catch (err) {
+//     console.error(err)
+//     return res
+//       .status(500)
+//       .json({ error: 'An error occurred while processing the request.' })
+//   }
+// }

@@ -141,6 +141,7 @@ const ClinicalResearcherDetails = ({
           investigatorInformation={
             protocolDetailsById?.investigator_protocol_information
           }
+          submissionForm={protocolDetailsById?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -149,6 +150,7 @@ const ClinicalResearcherDetails = ({
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsById?.consent_information}
+          submissionForm={protocolDetailsById?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -157,6 +159,7 @@ const ClinicalResearcherDetails = ({
         <SubmissionForm
           protocolTypeDetails={protocolTypeDetails}
           submissionForm={protocolDetailsById?.submission_information}
+          monitorInformation={protocolDetailsByIdState?.clinical_trail_monitor_information}
           protocolDetailsById={protocolDetailsById}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}

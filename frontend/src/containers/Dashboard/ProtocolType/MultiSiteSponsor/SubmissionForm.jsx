@@ -27,17 +27,34 @@ import { RadioGroup, Radio } from "@mui/material";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
-const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
+const SubmissionForm = ({
+  protocolTypeDetails,
+  submissionForm = {},
+  monitorInformation = {},
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  const [termsSelected, setTermsSelected] = useState(false);
-  const [checkForTerms, setCheckForTerms] = useState(false);
+  const [termsSelected, setTermsSelected] = useState(
+    submissionForm?.applicant_terms
+      ? Number(submissionForm?.applicant_terms) === 1
+      : false
+  );
+  const [checkForTerms, setCheckForTerms] = useState(
+    submissionForm?.applicant_acknowledge
+      ? Number(submissionForm?.applicant_acknowledge) === 1
+      : false
+  );
   const [errors, setErrors] = useState({});
-  const [addExternalMonitorDetails, setAddExternalMonitorDetails] =
-    useState(false);
+  const [addExternalMonitorDetails, setAddExternalMonitorDetails] = useState(
+    typeof monitorInformation?.external_monitor_id === "string" ? true : false
+  );
   const [externalMonitorsList, setExternalMonitorsList] = useState([]);
-  const [selectedExternalMonitor, setSelectedExternalMonitor] = useState("");
+  const [selectedExternalMonitor, setSelectedExternalMonitor] = useState(
+    typeof monitorInformation?.external_monitor_id === "string"
+      ? monitorInformation?.external_monitor_id.toString()
+      : ""
+  );
   const [loader, setLoader] = useState(false);
   const [notSavedForms, setNotSavedForms] = useState([]);
   const [payloadFormData, setPayloadFormData] = useState({
@@ -53,21 +70,26 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
     created_by: userDetails.id,
     paymentType: protocolTypeDetails.protocolUserType,
   });
-  const [name, setName] = useState("");
+  const [name, setName] = useState(
+    submissionForm?.applicant_acknowledge_name
+      ? submissionForm?.applicant_acknowledge_name
+      : ""
+  );
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [submissionFormDetails, setSubmissionFormDetails] = useState({
     waiveFee: submissionForm?.waive_fee,
     allowEdit: submissionForm?.allow_edit,
   });
 
-  // useEffect(() => {
-  //   if (submissionFormDetails) {
-  //     setSubmissionFormDetails({
-  //       waiveFee: submissionFormDetails?.waive_fee,
-  //       allowEdit: submissionFormDetails?.allow_edit,
-  //     });
-  //   }
-  // }, []);
+  const [monitorInformationDetails, setMonitorInformationDetails] = useState({
+    created_at: monitorInformation?.created_at,
+    created_by: monitorInformation?.created_by,
+    external_monitor_id: monitorInformation?.external_monitor_id,
+    id: monitorInformation?.id,
+    protocol_id: monitorInformation?.protocol_id,
+    protocol_type: monitorInformation?.protocol_type,
+    updated_at: monitorInformation?.updated_at,
+  });
 
   const navigateToPaymentPage = (params) => {
     navigate("/payment", {
@@ -123,51 +145,66 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
     } else {
       try {
         if (addExternalMonitorDetails === true) {
-          if (selectedExternalMonitor !== "") {
-            formData.external_monitor_id = selectedExternalMonitor;
-            formData.terms = termsSelected;
-            formData.acknowledge = checkForTerms;
-            formData.acknowledge_name = name;
-            formData.waive_fee = submissionFormDetails?.waiveFee;
-          }
-          setLoader(true);
-          dispatch(createMultiSiteSubmission(formData)).then((data) => {
-            if (data.payload.status === 200) {
-              setLoader(false);
-              toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-              if (Number(submissionFormDetails?.waiveFee) === 2) {
-                const timer = setTimeout(() => {
-                  navigateToPaymentSuccessPage(formData);
-                }, 1000);
-                return () => clearTimeout(timer);
-              } else {
-                const timer = setTimeout(() => {
-                  navigateToPaymentPage(formData);
-                }, 1000);
-                return () => clearTimeout(timer);
-              }
-            } else {
-              toast.error(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
+          // validation for selectedExternalMonitor field should not be empty
+          if (selectedExternalMonitor === "") {
+            toast.error("Please select external monitor", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+            return;
+          } else {
+            if (selectedExternalMonitor !== "") {
+              formData.external_monitor_id = selectedExternalMonitor;
+              formData.terms = termsSelected;
+              formData.acknowledge = checkForTerms;
+              formData.acknowledge_name = name;
+              formData.waive_fee = submissionFormDetails?.waiveFee;
             }
-          });
+            setLoader(true);
+            dispatch(createMultiSiteSubmission(formData)).then((data) => {
+              if (data.payload.status === 200) {
+                setLoader(false);
+                toast.success(data.payload.data.msg, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+                if (Number(submissionFormDetails?.waiveFee) === 2) {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentSuccessPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                } else {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                }
+              } else {
+                toast.error(data.payload.data.msg, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "dark",
+                });
+              }
+            });
+          }
         } else {
           formData.terms = termsSelected;
           formData.acknowledge = checkForTerms;
@@ -308,6 +345,23 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
     selectedExternalMonitor,
   ]);
 
+  const whichSubmitButtonToShow = () => {
+    const isSubmitAndPayVisible =
+      protocolTypeDetails?.protocolStatus === "Created" &&
+      Number(submissionFormDetails?.waiveFee) === 1;
+    const isSubmitVisible =
+      protocolTypeDetails?.protocolStatus === "Created" &&
+      Number(submissionFormDetails?.waiveFee) === 2;
+    const isSubmitForTrailMonitorVisible =
+      !isSubmitAndPayVisible && !isSubmitVisible;
+
+    return {
+      isSubmitAndPayVisible,
+      isSubmitVisible,
+      isSubmitForTrailMonitorVisible,
+    };
+  };
+
   if (loader) {
     return <Loader />;
   }
@@ -383,7 +437,7 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                     externalMonitorsList.map((user) => (
                       <FormControlLabel
                         key={user.id}
-                        value={user.id.toString()} // Convert ID to string for value
+                        value={user.id.toString()}
                         control={<Radio />}
                         label={user.name}
                       />
@@ -391,6 +445,20 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                 </RadioGroup>
               </FormControl>
             </Box>
+          )}
+
+          {/* show submit for trail monitor */}
+          {whichSubmitButtonToShow().isSubmitForTrailMonitorVisible && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik012"
+              className="mt-mb-20"
+              style={{ textAlign: "left" }}
+            >
+              <Button variant="contained" color="primary" type="submit">
+                Submit
+              </Button>
+            </Form.Group>
           )}
 
           <Form.Group as={Col} controlId="protocol-terms" className="ul-list">
@@ -440,6 +508,10 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                   />
                 }
                 label="I agree to the terms."
+                // when show submit for trail monitor button is visible then disable the text field
+                disabled={
+                  whichSubmitButtonToShow().isSubmitForTrailMonitorVisible
+                }
               />
             </FormControl>
           </Form.Group>
@@ -456,6 +528,10 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                     protocolTypeDetails?.protocolStatus !== "Created"
                   }
                   label="I acknowledge that processed payment for protocol approval submission is non-refundable."
+                  // when show submit for trail monitor button is visible then disable the text field
+                  disabled={
+                    whichSubmitButtonToShow().isSubmitForTrailMonitorVisible
+                  }
                 />
               </FormGroup>
             </FormControl>
@@ -471,47 +547,49 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {} }) => {
                 name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                // when show submit for trail monitor button is visible then disable the text field
+                disabled={
+                  whichSubmitButtonToShow().isSubmitForTrailMonitorVisible
+                }
               />
             </Box>
           </Form.Group>
 
-          {protocolTypeDetails?.protocolStatus === "Created" &&
-            Number(submissionFormDetails?.waiveFee) === 1 && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20"
-                style={{ textAlign: "right" }}
+          {whichSubmitButtonToShow().isSubmitAndPayVisible && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={isButtonDisabled}
               >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={isButtonDisabled}
-                >
-                  Submit And Pay
-                </Button>
-              </Form.Group>
-            )}
+                Submit And Pay
+              </Button>
+            </Form.Group>
+          )}
 
-          {protocolTypeDetails?.protocolStatus === "Created" &&
-            Number(submissionFormDetails?.waiveFee) === 2 && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20"
-                style={{ textAlign: "right" }}
+          {whichSubmitButtonToShow().isSubmitVisible && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={isButtonDisabled}
               >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={isButtonDisabled}
-                >
-                  Submit
-                </Button>
-              </Form.Group>
-            )}
+                Submit
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

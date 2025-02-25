@@ -129,6 +129,7 @@ function InvestigatorInformationForm({
   protocolTypeDetails,
   investigatorInformation,
   handleNextTab,
+  submissionForm = {},
 }) {
   const [loader, setLoader] = useState(false);
 
@@ -179,6 +180,10 @@ function InvestigatorInformationForm({
   const [showOtherQuestion, setShowOtherQuestion] = React.useState(false);
   const [otherQuestionSelection, setOtherQuestionSelection] =
     React.useState("");
+  const [submissionFormDetails, setSubmissionFormDetails] = React.useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
+  });
   const [formData, setFormData] = useState({
     investigator_name: "",
     investigator_email: "",
@@ -653,6 +658,23 @@ function InvestigatorInformationForm({
       protocolType: protocolType,
     };
     dispatch(fetchProtocolDetailsById(data));
+  };
+
+  // console.log(submissionFormDetails);
+
+  const shouldShowSaveButton = () => {
+    const waiseFeeStatus = Number(submissionFormDetails.waiveFee);
+    const allowEdit = Number(submissionFormDetails.allowEdit);
+    if (waiseFeeStatus === 1) {
+      return true; // Always show for status 1
+    } else if (waiseFeeStatus === 2) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 3) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 4) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    }
+    return false; // Default case (if status is something else)
   };
 
   if (loader) {
@@ -1841,16 +1863,19 @@ function InvestigatorInformationForm({
               <div className="error">{errors.training_certificates}</div>
             )}
           </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button variant="contained" color="primary" type="Submit">
-              SAVE AND CONTINUE
-            </Button>
-          </Form.Group>
+
+          {shouldShowSaveButton() && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
+            >
+              <Button variant="contained" color="primary" type="Submit">
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

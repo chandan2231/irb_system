@@ -133,6 +133,7 @@ const ContractorResearcherDetails = ({
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
           protocolInformation={protocolDetailsByIdState?.protocol_information}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -143,6 +144,7 @@ const ContractorResearcherDetails = ({
           investigatorInformation={
             protocolDetailsByIdState?.investigator_information
           }
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -151,6 +153,7 @@ const ContractorResearcherDetails = ({
         <StudyInformationForm
           protocolTypeDetails={protocolTypeDetails}
           studyInformation={protocolDetailsByIdState?.study_information}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -159,6 +162,7 @@ const ContractorResearcherDetails = ({
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsByIdState?.informed_consent}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -167,6 +171,7 @@ const ContractorResearcherDetails = ({
         <ProtocolProceduresForm
           protocolTypeDetails={protocolTypeDetails}
           protocolProcedure={protocolDetailsByIdState?.protocol_procedure}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />

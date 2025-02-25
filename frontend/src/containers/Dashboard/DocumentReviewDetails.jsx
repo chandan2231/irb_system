@@ -129,6 +129,7 @@ const DocumentReviewDetails = ({
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
           protocolInformation={protocolDetailsByIdState?.protocol_information}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -140,6 +141,7 @@ const DocumentReviewDetails = ({
           investigatorInformation={
             protocolDetailsByIdState?.investigator_information
           }
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -149,6 +151,7 @@ const DocumentReviewDetails = ({
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsByIdState?.informed_consent}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />

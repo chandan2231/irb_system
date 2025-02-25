@@ -31,9 +31,13 @@ function InformedConsentForm({
   protocolTypeDetails,
   informedConsent,
   handleNextTab,
+  submissionForm = {},
 }) {
   const [loader, setLoader] = useState(false);
-
+  const [submissionFormDetails, setSubmissionFormDetails] = useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
+  });
   const theme = useTheme();
   const dispatch = useDispatch();
   const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -150,6 +154,25 @@ function InformedConsentForm({
       protocolType: protocolType,
     };
     dispatch(fetchProtocolDetailsById(data));
+  };
+
+  console.log(submissionFormDetails)
+
+  const shouldShowSaveButton = () => {
+    // allowEdit
+    // waiveFee
+    const waiseFeeStatus = Number(submissionFormDetails.waiveFee)
+    const allowEdit = Number(submissionFormDetails.allowEdit)
+    if (waiseFeeStatus === 1) {
+      return true; // Always show for status 1
+    } else if (waiseFeeStatus === 2) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 3) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 4) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    }
+    return false; // Default case (if status is something else)
   };
 
   if (loader) {
@@ -388,21 +411,24 @@ function InformedConsentForm({
               </FormGroup>
             </FormControl>
           </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              type="Submit"
-              disabled={!termsSelected}
+
+          {shouldShowSaveButton() && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
             >
-              SAVE AND CONTINUE
-            </Button>
-          </Form.Group>
+              <Button
+                variant="contained"
+                color="primary"
+                type="Submit"
+                disabled={!termsSelected}
+              >
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </Row>
     </>

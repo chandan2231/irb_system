@@ -92,6 +92,7 @@ function ProtocolInformationForm({
   protocolTypeDetails,
   protocolInformation,
   handleNextTab,
+  submissionForm = {}
 }) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -131,8 +132,11 @@ function ProtocolInformationForm({
   });
 
   const [errors, setErrors] = useState({});
-
   const [loader, setLoader] = useState(false);
+  const [submissionFormDetails, setSubmissionFormDetails] = useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
+  });
 
   const { protocolDetailsById, loading, error } = useSelector((state) => ({
     error: state.admin.error,
@@ -293,9 +297,30 @@ function ProtocolInformationForm({
     }
   };
 
+  console.log(submissionFormDetails)
+
+  const shouldShowSaveButton = () => {
+    // allowEdit
+    // waiveFee
+    const waiseFeeStatus = Number(submissionFormDetails.waiveFee)
+    const allowEdit = Number(submissionFormDetails.allowEdit)
+    if (waiseFeeStatus === 1) {
+      return true; // Always show for status 1
+    } else if (waiseFeeStatus === 2) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 3) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    } else if (waiseFeeStatus === 4) {
+      return allowEdit === 2; // Show only if allowEdit is 2
+    }
+    return false; // Default case (if status is something else)
+  };
+
+
   if (loader) {
     return <Loader />;
   }
+
 
   return (
     <Row>
@@ -603,21 +628,23 @@ function ProtocolInformationForm({
               </Grid>
             </Form.Group>
           </Box>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button
-              // disabled={!dirty || !isValid}
-              variant="contained"
-              color="primary"
-              type="Submit"
+          {shouldShowSaveButton() && (
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20"
+              style={{ textAlign: "right" }}
             >
-              SAVE AND CONTINUE
-            </Button>
-          </Form.Group>
+              <Button
+                // disabled={!dirty || !isValid}
+                variant="contained"
+                color="primary"
+                type="Submit"
+              >
+                SAVE AND CONTINUE
+              </Button>
+            </Form.Group>
+          )}
         </form>
       </>
     </Row>
