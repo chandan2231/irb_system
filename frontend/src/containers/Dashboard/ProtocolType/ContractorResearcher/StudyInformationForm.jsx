@@ -47,8 +47,13 @@ function StudyInformationForm({
   protocolTypeDetails,
   studyInformation,
   handleNextTab,
+  submissionForm = {}
 }) {
   const [loader, setLoader] = useState(false);
+  const [submissionFormDetails, setSubmissionFormDetails] = useState({
+    waiveFee: submissionForm?.waive_fee,
+    allowEdit: submissionForm?.allow_edit,
+  });
 
   const theme = useTheme();
   const dispatch = useDispatch();

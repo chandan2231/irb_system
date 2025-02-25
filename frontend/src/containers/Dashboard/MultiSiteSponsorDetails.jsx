@@ -191,6 +191,7 @@ const MultiSiteSponsorDetails = ({
         <ProtocolInformationForm
           protocolTypeDetails={protocolTypeDetails}
           protocolInformation={protocolDetailsByIdState?.protocol_information}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -199,6 +200,7 @@ const MultiSiteSponsorDetails = ({
         <ContactInformationForm
           protocolTypeDetails={protocolTypeDetails}
           contactInformation={protocolDetailsByIdState?.contact_information}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -207,6 +209,7 @@ const MultiSiteSponsorDetails = ({
         <StudyInformationForm
           protocolTypeDetails={protocolTypeDetails}
           studyInformation={protocolDetailsByIdState?.study_information}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -215,6 +218,7 @@ const MultiSiteSponsorDetails = ({
         <InformedConsentForm
           protocolTypeDetails={protocolTypeDetails}
           informedConsent={protocolDetailsByIdState?.informed_consent}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -223,6 +227,7 @@ const MultiSiteSponsorDetails = ({
         <ProtocolProceduresForm
           protocolTypeDetails={protocolTypeDetails}
           protocolProcedures={protocolDetailsByIdState?.protocol_procedure}
+          submissionForm={protocolDetailsByIdState?.submission_information}
           apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
@@ -233,6 +238,7 @@ const MultiSiteSponsorDetails = ({
           protocolDetailsById={protocolDetailsByIdState}
           apiCallIdentifier={apiCallIdentifier}
           submissionForm={protocolDetailsByIdState?.submission_information}
+          monitorInformation={protocolDetailsByIdState?.clinical_trail_monitor_information}
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
