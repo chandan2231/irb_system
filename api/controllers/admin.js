@@ -630,9 +630,8 @@ export const getCreatedProtocolList = (req, res) => {
 }
 
 export const getAllUsers = (req, res) => {
-  const que =
-    'select * from users where researcher_type != ? AND researcher_type!=?'
-  db.query(que, ['admin', 'member'], (err, data) => {
+  const que = 'select * from users where researcher_type = ?'
+  db.query(que, ['user'], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)

@@ -62,7 +62,7 @@ function SignIn() {
         localStorage.setItem("user", JSON.stringify(data.payload.data.user));
         setTimeout(() => {
           const userRoutes = {
-            super_admin: "/admin/created-protocols",
+            super_admin: "/admin/super/created-protocols",
             admin: "/admin/created-protocols",
             "Voting Member": "/member/protocol-list",
             "Committee Chair": "/committee-chair/protocol-list",
