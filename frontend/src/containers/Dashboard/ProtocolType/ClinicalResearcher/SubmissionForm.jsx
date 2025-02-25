@@ -30,8 +30,12 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  const [termsSelected, setTermsSelected] = useState(false);
-  const [checkForTerms, setCheckForTerms] = useState(false);
+  const [termsSelected, setTermsSelected] = useState(
+    submissionForm?.applicant_terms ? Number(submissionForm?.applicant_terms) === 1 :
+      false);
+  const [checkForTerms, setCheckForTerms] = useState(
+    submissionForm?.applicant_acknowledge ? Number(submissionForm?.applicant_acknowledge) === 1 :
+      false);
   const [errors, setErrors] = useState({});
   const [addExternalMonitorDetails, setAddExternalMonitorDetails] = useState(
     typeof monitorInformation?.id ===
@@ -52,7 +56,9 @@ const SubmissionForm = ({ protocolTypeDetails, submissionForm = {}, monitorInfor
     created_by: userDetails.id,
     paymentType: protocolTypeDetails.protocolUserType,
   });
-  const [name, setName] = useState("");
+  const [name, setName] = useState(
+    submissionForm?.applicant_acknowledge_name ? submissionForm?.applicant_acknowledge_name :
+      "");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [submissionFormDetails, setSubmissionFormDetails] = useState({
     waiveFee: submissionForm?.waive_fee,
