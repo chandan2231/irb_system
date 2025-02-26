@@ -1363,7 +1363,7 @@ const principalInvestigatorQuestions = {
       {
         documentHeader:
           'Upload investigator and sub-investigator (if applicable) CV here *',
-        documentName: 'cv_files'
+        documentName: 'investigator_cv' // prev key -> cv_files 
       },
       {
         documentHeader: 'Upload copy of medical license (if applicable) here',
