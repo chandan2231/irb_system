@@ -11,10 +11,22 @@ const getMappedStatus = (status) => {
   return ''
 }
 
+// const getCreatedData = (createDate) => {
+//   if (createDate) {
+//     const date = new Date(createDate)
+//     return date.toDateString()
+//   }
+//   return ''
+// }
+
 const getCreatedData = (createDate) => {
   if (createDate) {
     const date = new Date(createDate)
-    return date.toDateString()
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
   }
   return ''
 }
@@ -573,8 +585,8 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
 
   const children = `<main>
         <h2 style="text-align: center;">${headerText}</h2>
-        <h3 style="text-align: center;">(${protocolId})</h3>
-        <h3 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h3>
+        <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
          <div style="page-break-after: always;">
          ${renderHeader(protocolInformation)}
          ${RenderQuestion(1, protocolInformation.question1.text)}
@@ -815,8 +827,8 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
 
   const children = `<main>
       <h2 style="text-align: center;">${headerText}</h2>
-      <h3 style="text-align: center;">(${protocolId})</h3>
-      <h3 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h3>
+      <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
       <div style="page-break-after: always;">
         ${renderHeader(protocolInformation)}
         ${RenderQuestion(1, protocolInformation.question1.text)}
@@ -1031,8 +1043,8 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
 
   const children = `<main>
       <h2 style="text-align: center;">${headerText} (${protocol_user_type})</h2>
-      <h3 style="text-align: center;">(${protocolId})</h3>
-      <h3 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h3>
+      <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
       <div style="page-break-after: always;">
         ${renderHeader(investigatorInformation)}
         ${investigatorInformation.subQuestions
@@ -1147,8 +1159,8 @@ const DocumentReviewHTMLTemplate = (templateProps) => {
 
   const children = `<main>
         <h2 style="text-align: center;">${headerText}</h2>
-        <h3 style="text-align: center;">(${protocolId})</h3>
-        <h3 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h3>
+        <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
          <div style="page-break-after: always;">
          ${renderHeader(protocolInformation)}
          ${RenderQuestion(1, protocolInformation.question1.text)}
