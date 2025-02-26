@@ -148,9 +148,9 @@ const SubmissionForm = ({
               formData.waive_fee = submissionFormDetails?.waiveFee;
             }
             if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
-              formData.identifier = 1
+              formData.identifier = 1;
             } else {
-              formData.identifier = 2
+              formData.identifier = 2;
             }
 
             setLoader(true);
@@ -158,6 +158,7 @@ const SubmissionForm = ({
             // return;
             dispatch(createPrincipalInvestigatorSubmission(formData)).then(
               (data) => {
+                console.log("data", data);
                 if (data.payload.status === 200) {
                   setLoader(false);
                   toast.success(data.payload.data.msg, {
@@ -170,7 +171,9 @@ const SubmissionForm = ({
                     progress: undefined,
                     theme: "dark",
                   });
-                  if (whichSubmitButtonToShow()?.isSubmitForTrailMonitorVisible) {
+                  if (
+                    whichSubmitButtonToShow()?.isSubmitForTrailMonitorVisible
+                  ) {
                     // Do nothing
                   } else {
                     if (Number(submissionFormDetails?.waiveFee) === 2) {
@@ -205,12 +208,12 @@ const SubmissionForm = ({
           formData.acknowledge = checkForTerms;
           formData.acknowledge_name = name;
           formData.waive_fee = submissionFormDetails?.waiveFee;
-          formData.external_monitor_id = ""
+          formData.external_monitor_id = "";
 
           if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
-            formData.identifier = 1
+            formData.identifier = 1;
           } else {
-            formData.identifier = 2
+            formData.identifier = 2;
           }
 
           setLoader(true);

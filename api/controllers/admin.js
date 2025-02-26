@@ -362,12 +362,39 @@ export const changeEventPriceStatus = (req, res) => {
   })
 }
 
+// export const createEventPrice = (req, res) => {
+//   const que = 'insert into event_price (`event_type`, `price`) value (?)'
+//   const values = [req.body.event_type, req.body.price]
+//   db.query(que, [values], (err, data) => {
+//     if (err) return res.status(500).json(err)
+//     return res.status(200).json('Event Price has been created Successfully.')
+//   })
+// }
+
 export const createEventPrice = (req, res) => {
-  const que = 'insert into event_price (`event_type`, `price`) value (?)'
-  const values = [req.body.event_type, req.body.price]
-  db.query(que, [values], (err, data) => {
+  const eventType = req.body.event_type
+  const price = req.body.price
+
+  // First, check if the event_type already exists
+  const checkQuery = 'SELECT * FROM event_price WHERE event_type = ?'
+
+  db.query(checkQuery, [eventType], (err, result) => {
     if (err) return res.status(500).json(err)
-    return res.status(200).json('Event Price has been created Successfully.')
+
+    if (result.length > 0) {
+      // Event type already exists
+      return res.status(400).json('Event already exists')
+    }
+
+    // Proceed to insert the new event price
+    const insertQuery =
+      'INSERT INTO event_price (`event_type`, `price`) VALUES (?)'
+    const values = [eventType, price]
+
+    db.query(insertQuery, [values], (err, data) => {
+      if (err) return res.status(500).json(err)
+      return res.status(200).json('Event Price has been created successfully.')
+    })
   })
 }
 
