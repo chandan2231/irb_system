@@ -276,6 +276,7 @@ function InformedConsentForm({
               return {
                 name: doc.file_name,
                 type: doc.protocol_type,
+                file_url: doc?.file_url
               };
             }) || [],
       });
@@ -603,9 +604,17 @@ function InformedConsentForm({
               />
             </Button>
             {formData?.consent_file !== undefined &&
-              Array.from(formData?.consent_file)?.map((file, i) => (
-                <div key={i}>{file?.name}</div>
-              ))}
+              Array.from(formData?.consent_file)?.map((file, i) => {
+                return file?.file_url ? <div>
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    className="no_underline"
+                  >
+                    {file.name}
+                  </a>
+                </div> : <div key={i}>{file?.name}</div>
+              })}
             {errors.consent_file && (
               <div className="error">{errors.consent_file}</div>
             )}

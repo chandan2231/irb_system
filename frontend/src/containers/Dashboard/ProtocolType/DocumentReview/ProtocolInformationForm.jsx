@@ -131,6 +131,7 @@ function ProtocolInformationForm({
           return {
             name: doc.file_name,
             type: doc.protocol_type,
+            file_url: doc?.file_url
           };
         }) || [],
   });
@@ -177,6 +178,7 @@ function ProtocolInformationForm({
               return {
                 name: doc.file_name,
                 type: doc.protocol_type,
+                file_url: doc?.file_url
               };
             }) || [],
       });
@@ -634,9 +636,17 @@ function ProtocolInformationForm({
                     <div className="error">{errors.protocol_file}</div>
                   )}
                   {formData?.protocol_file &&
-                    Array.from(formData?.protocol_file).map((file, i) => (
-                      <div key={i}>{file?.name}</div>
-                    ))}
+                    Array.from(formData?.protocol_file).map((file, i) => {
+                      return file?.file_url ? <div>
+                        <a
+                          href={file.file_url}
+                          target="_blank"
+                          className="no_underline"
+                        >
+                          {file.name}
+                        </a>
+                      </div> : <div key={i}>{file?.name}</div>
+                    })}
                 </Grid>
               </Grid>
             </Form.Group>
