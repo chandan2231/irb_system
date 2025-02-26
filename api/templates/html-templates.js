@@ -1,5 +1,36 @@
 import questionsToRender from './constant.js'
 
+const getMappedStatus = (status) => {
+  const statusType = Number(status)
+
+  if (statusType === 1) return 'Created'
+  if (statusType === 2) return 'Under Review'
+  if (statusType === 3) return 'Approved'
+  if (statusType === 4) return 'Approved'
+
+  return ''
+}
+
+// const getCreatedData = (createDate) => {
+//   if (createDate) {
+//     const date = new Date(createDate)
+//     return date.toDateString()
+//   }
+//   return ''
+// }
+
+const getCreatedData = (createDate) => {
+  if (createDate) {
+    const date = new Date(createDate)
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+  }
+  return ''
+}
+
 // base template
 const renderHeader = (props) => {
   const { title } = props
@@ -61,24 +92,15 @@ const RenderAnswer = (answerObject, answer) => {
     </div>`
 }
 
-const RenderCheckboxAnswer = (answerObject, checkBoxObject) => {
-  const { header, options, answer, explanation } = checkBoxObject
-  const selectedAnswers = answerObject?.[answer]?.split(',') || []
-  return `
-    <div>
-      <h4>${header}</h4>
-      ${options
-        ?.map((option) => {
-          const isChecked = selectedAnswers.includes(option.value)
-          return `
-            <div>
-              <input type="checkbox" ${isChecked ? 'checked' : 'disabled'} />
-              <label>${option.label}</label>
-            </div>
-          `
-        })
-        .join('')}
-          ${explanation ? RenderElplanation(answerObject, explanation) : ''}
+const RenderAnswerPro = (answerObject, answer) => {
+  return `<div>
+      <p>
+        ${
+          answerObject[answer]
+            ? `<span>${answerObject[answer]}</span>`
+            : `<h4>N/A</h4>`
+        }
+      </p>
     </div>`
 }
 
@@ -111,8 +133,18 @@ const RenderDocuments = (answerObject, documentHeader, documentName) => {
 }
 
 const RenderSingleCheckboxAnswer = (answerObject, checkBoxObject) => {
-  const { label, value } = checkBoxObject
+  const { label, value } = checkBoxObject || {}
   const isChecked = answerObject[value] === 'Yes' ? true : false
+  return `
+    <div>
+      <input type="checkbox" ${isChecked ? 'checked' : 'disabled'} />
+      <label>${label}</label>
+    </div>`
+}
+
+const RenderSingleCheckboxAnswerPro = (answerObject, checkBoxObject) => {
+  const { label, value } = checkBoxObject || {}
+  const isChecked = Number(answerObject[value]) === 1 ? true : false
   return `
     <div>
       <input type="checkbox" ${isChecked ? 'checked' : 'disabled'} />
@@ -422,12 +454,14 @@ const continuingReviewHTMLTemplate = (templateProps) => {
     informedConsentProcess,
     investigatorInstuationInfo,
     researchProgressInfo
+    // submissionAdditionalInfo
   } = continuingReviewQuestions
   const {
     risk_assessment,
     informed_consent_process,
     investigator_instuation_info,
     research_progress_info
+    // protocol_details
   } = templateProps
   const children = `
       <main>
@@ -530,7 +564,8 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
     investigator_information,
     study_information,
     informed_consent,
-    protocol_procedure
+    protocol_procedure,
+    protocol_details
   } = templateProps
   const {
     informedConsentForm,
@@ -538,12 +573,20 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
     protocolInformation,
     protocolProcedure,
     studyInformation,
-    submissinForm
+    submissinForm,
+    submissionAdditionalInfo
   } = clinicalReviewQuestions
+
+  // additional details
+  const { created_at, status } = protocol_details
+
+  const statusToRender = getMappedStatus(status)
+  const createdDateToRender = getCreatedData(created_at)
+
   const children = `<main>
-       <h1>
-          ${headerText} (${protocolId})
-        </h1>
+        <h2 style="text-align: center;">${headerText}</h2>
+        <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
          <div style="page-break-after: always;">
          ${renderHeader(protocolInformation)}
          ${RenderQuestion(1, protocolInformation.question1.text)}
@@ -738,12 +781,14 @@ const ClinicalSiteHTMLTemplate = (templateProps) => {
         </div>
 
         <div style="page-break-after: always;">
-        ${renderHeader(submissinForm)}
-        ${RenderTextOnly(submissinForm.text)}
-        ${RenderSingleCheckboxAnswer(
-          protocol_procedure,
-          submissinForm.checkBox
-        )}
+         ${renderHeader(submissinForm)}
+         ${RenderTextOnly(submissinForm.text)}
+
+         ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox1)}
+         ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox2)}
+
+         ${RenderTextOnly(submissionAdditionalInfo.text)}
+         ${RenderAnswerPro(protocol_details, submissionAdditionalInfo.answer)}
         </div>
     </main>`
   return RenderBody(children)
@@ -761,7 +806,8 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
     contact_information,
     study_information,
     informed_consent,
-    protocol_procedure
+    protocol_procedure,
+    protocol_details
   } = templateProps
   const {
     contactInformation,
@@ -769,10 +815,20 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
     protocolInformation,
     protocolProcedure,
     studyInformation,
-    submissinForm
+    submissinForm,
+    submissionAdditionalInfo
   } = multiSiteSponsorQuestions
+
+  // additional details
+  const { created_at, status } = protocol_details
+
+  const statusToRender = getMappedStatus(status)
+  const createdDateToRender = getCreatedData(created_at)
+
   const children = `<main>
-       <h1>${headerText} (${protocolId})</h1>
+      <h2 style="text-align: center;">${headerText}</h2>
+      <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
       <div style="page-break-after: always;">
         ${renderHeader(protocolInformation)}
         ${RenderQuestion(1, protocolInformation.question1.text)}
@@ -948,11 +1004,13 @@ const MultiSiteSponsorHTMLTemplate = (templateProps) => {
 
       <div style="page-break-after: always;">
        ${renderHeader(submissinForm)}
-        ${RenderTextOnly(submissinForm.text)}
-        ${RenderSingleCheckboxAnswer(
-          protocol_procedure,
-          submissinForm.checkBox
-        )}
+       ${RenderTextOnly(submissinForm.text)}
+        
+        ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox1)}
+        ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox2)}
+
+         ${RenderTextOnly(submissionAdditionalInfo.text)}
+         ${RenderAnswerPro(protocol_details, submissionAdditionalInfo.answer)}
       </div>
     </main>`
   return RenderBody(children)
@@ -967,12 +1025,26 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
     protocolId,
     protocolType,
     investigator_protocol_information,
-    consent_information
+    consent_information,
+    protocol_details
   } = templateProps
-  const { informedConsentForm, investigatorInformation, submissinForm } =
-    principalInvestigatorQuestions
+  const {
+    informedConsentForm,
+    investigatorInformation,
+    submissinForm,
+    submissionAdditionalInfo
+  } = principalInvestigatorQuestions
+
+  // additional details
+  const { created_at, status, protocol_user_type } = protocol_details
+
+  const statusToRender = getMappedStatus(status)
+  const createdDateToRender = getCreatedData(created_at)
+
   const children = `<main>
-      <h1>${headerText} (${protocolId})</h1>
+      <h2 style="text-align: center;">${headerText} (${protocol_user_type})</h2>
+      <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
       <div style="page-break-after: always;">
         ${renderHeader(investigatorInformation)}
         ${investigatorInformation.subQuestions
@@ -1046,10 +1118,12 @@ const PrincipalInvestigatorHTMLTemplate = (templateProps) => {
         <div style="page-break-after: always;">
         ${renderHeader(submissinForm)}
         ${RenderTextOnly(submissinForm.text)}
-        ${RenderSingleCheckboxAnswer(
-          consent_information,
-          submissinForm.checkBox
-        )}
+        
+        ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox1)}
+        ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox2)}
+
+         ${RenderTextOnly(submissionAdditionalInfo.text)}
+         ${RenderAnswerPro(protocol_details, submissionAdditionalInfo.answer)}
        </div>
           
     </main>`
@@ -1066,18 +1140,27 @@ const DocumentReviewHTMLTemplate = (templateProps) => {
     protocolType,
     protocol_information,
     investigator_information,
-    informed_consent
+    informed_consent,
+    protocol_details
   } = templateProps
   const {
     informedConsentForm,
     investigatorInformation,
     protocolInformation,
-    submissinForm
+    submissinForm,
+    submissionAdditionalInfo
   } = documentReviewQuestions
+
+  // additional details
+  const { created_at, status } = protocol_details
+
+  const statusToRender = getMappedStatus(status)
+  const createdDateToRender = getCreatedData(created_at)
+
   const children = `<main>
-       <h1>
-          ${headerText} (${protocolId})
-        </h1>
+        <h2 style="text-align: center;">${headerText}</h2>
+        <h3 style="text-align: center;">Protocol Number : ${protocolId}</h3>
+      <h4 style="text-align: center;">Status : ${statusToRender} | Created Date : ${createdDateToRender}</h4>
          <div style="page-break-after: always;">
          ${renderHeader(protocolInformation)}
          ${RenderQuestion(1, protocolInformation.question1.text)}
@@ -1194,8 +1277,16 @@ const DocumentReviewHTMLTemplate = (templateProps) => {
         <div style="page-break-after: always;">
         ${renderHeader(submissinForm)}
         ${RenderTextOnly(submissinForm.text)}
-        ${RenderSingleCheckboxAnswer(informed_consent, submissinForm.checkBox)}
-        </div>
+
+         ${RenderTextOnly(submissionAdditionalInfo.checkBox1.label)}
+         ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox1)}
+
+        ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox1)}
+        ${RenderSingleCheckboxAnswerPro(protocol_details, submissionAdditionalInfo.checkBox2)}
+
+         ${RenderTextOnly(submissionAdditionalInfo.text)}
+         ${RenderAnswerPro(protocol_details, submissionAdditionalInfo.answer)}
+         </div>
     </main>`
   return RenderBody(children)
 }

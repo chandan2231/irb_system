@@ -588,6 +588,7 @@ function InvestigatorInformationForm({
               return {
                 name: doc.file_name,
                 type: doc.protocol_type,
+                file_url: doc?.file_url
               };
             }) || [],
         training_certificates:
@@ -597,6 +598,7 @@ function InvestigatorInformationForm({
               return {
                 name: doc.file_name,
                 type: doc.protocol_type,
+                file_url: doc?.file_url
               };
             }) || [],
         medical_license:
@@ -606,6 +608,7 @@ function InvestigatorInformationForm({
               return {
                 name: doc.file_name,
                 type: doc.protocol_type,
+                file_url: doc?.file_url
               };
             }) || [],
       });
@@ -1780,9 +1783,17 @@ function InvestigatorInformationForm({
               />
             </Button>
             {formData?.cv_files !== undefined &&
-              Array.from(formData?.cv_files)?.map((file, i) => (
-                <div key={i}>{file?.name}</div>
-              ))}
+              Array.from(formData?.cv_files)?.map((file, i) => {
+                return file?.file_url ? <div>
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    className="no_underline"
+                  >
+                    {file.name}
+                  </a>
+                </div> : <div key={i}>{file?.name}</div>
+              })}
             {errors.cv_files && <div className="error">{errors.cv_files}</div>}
           </Form.Group>
           <Form.Group
@@ -1817,9 +1828,17 @@ function InvestigatorInformationForm({
               />
             </Button>
             {formData?.medical_license !== undefined &&
-              Array.from(formData?.medical_license)?.map((file, i) => (
-                <div key={i}>{file?.name}</div>
-              ))}
+              Array.from(formData?.medical_license)?.map((file, i) => {
+                return file?.file_url ? <div>
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    className="no_underline"
+                  >
+                    {file.name}
+                  </a>
+                </div> : <div key={i}>{file?.name}</div>
+              })}
             {errors.medical_license && (
               <div className="error">{errors.medical_license}</div>
             )}
@@ -1856,9 +1875,17 @@ function InvestigatorInformationForm({
               />
             </Button>
             {formData?.training_certificates !== undefined &&
-              Array.from(formData?.training_certificates)?.map((file, i) => (
-                <div key={i}>{file?.name}</div>
-              ))}
+              Array.from(formData?.training_certificates)?.map((file, i) => {
+                return file?.file_url ? <div>
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    className="no_underline"
+                  >
+                    {file.name}
+                  </a>
+                </div> : <div key={i}>{file?.name}</div>
+              })}
             {errors.training_certificates && (
               <div className="error">{errors.training_certificates}</div>
             )}

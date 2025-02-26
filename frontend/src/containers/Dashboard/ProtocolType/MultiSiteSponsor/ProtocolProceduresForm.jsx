@@ -341,6 +341,7 @@ function ProtocolProceduresForm({
             name: doc.file_name,
             url: doc.file_url,
             type: doc.protocol_type,
+            file_url: doc?.file_url,
           })) || [],
       });
 
@@ -1059,9 +1060,17 @@ function ProtocolProceduresForm({
               />
             </Button>
             {formData?.facing_materials !== undefined &&
-              Array.from(formData?.facing_materials)?.map((file, i) => (
-                <div key={i}>{file?.name}</div>
-              ))}
+              Array.from(formData?.facing_materials)?.map((file, i) => {
+                return file?.file_url ? <div>
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    className="no_underline"
+                  >
+                    {file.name}
+                  </a>
+                </div> : <div key={i}>{file?.name}</div>
+              })}
             {errors.facing_materials && (
               <div className="error">{errors.facing_materials}</div>
             )}

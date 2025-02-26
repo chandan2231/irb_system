@@ -74,6 +74,7 @@ function StudyInformationForm({
           return {
             name: doc.file_name,
             type: doc.protocol_type,
+            file_url: doc?.file_url
           };
         }) || [],
   });
@@ -172,6 +173,7 @@ function StudyInformationForm({
               return {
                 name: doc.file_name,
                 type: doc.protocol_type,
+                file_url: doc?.file_url
               };
             }) || [],
       });
@@ -321,9 +323,17 @@ function StudyInformationForm({
               />
             </Button>
             {formData?.ingredient_list !== undefined &&
-              Array.from(formData?.ingredient_list)?.map((file, i) => (
-                <div key={i}>{file?.name}</div>
-              ))}
+              Array.from(formData?.ingredient_list)?.map((file, i) => {
+                return file?.file_url ? <div>
+                  <a
+                    href={file.file_url}
+                    target="_blank"
+                    className="no_underline"
+                  >
+                    {file.name}
+                  </a>
+                </div> : <div key={i}>{file?.name}</div>
+              })}
             {errors.ingredient_list && (
               <div className="error">{errors.ingredient_list}</div>
             )}

@@ -14,6 +14,7 @@ const ContinuingReviewPdfTemplate = (
     investigator_instuation_info:
       continuinReviewDetailObj.investigator_instuation_info,
     research_progress_info: continuinReviewDetailObj.research_progress_info
+    // protocol_details: continuinReviewDetailObj.protocol_details
   }
   const template = {
     content: `${htmlTemplates.continuingReviewHTMLTemplate(templatePayload)}`
@@ -28,7 +29,8 @@ const ClinicalSitePdfTemplate = (clinicalSiteDetailObj, protocolIdObj) => {
     investigator_information,
     study_information,
     informed_consent,
-    protocol_procedure
+    protocol_procedure,
+    protocol_details
   } = clinicalSiteDetailObj
   const templatePayload = {
     headerText: 'Clinical Site Details',
@@ -38,7 +40,8 @@ const ClinicalSitePdfTemplate = (clinicalSiteDetailObj, protocolIdObj) => {
     investigator_information,
     study_information,
     informed_consent,
-    protocol_procedure
+    protocol_procedure,
+    protocol_details
   }
   const template = {
     content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.ClinicalSiteHTMLTemplate(
@@ -58,7 +61,8 @@ const MultiSiteSponsorPdfTemplate = (
     contact_information,
     study_information,
     informed_consent,
-    protocol_procedure
+    protocol_procedure,
+    protocol_details
   } = multiSiteSponsorDetailObj
   const templatePayload = {
     headerText: 'Multi-Site Sponsor Details',
@@ -68,7 +72,8 @@ const MultiSiteSponsorPdfTemplate = (
     contact_information,
     study_information,
     informed_consent,
-    protocol_procedure
+    protocol_procedure,
+    protocol_details
   }
   const template = {
     content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.MultiSiteSponsorHTMLTemplate(
@@ -83,14 +88,18 @@ const PrincipalInvestigatorPdfTemplate = (
   protocolIdObj
 ) => {
   const { protocolId, protocolType } = protocolIdObj
-  const { investigator_protocol_information, consent_information } =
-    principalInvestigatorDetailObj
+  const {
+    investigator_protocol_information,
+    consent_information,
+    protocol_details
+  } = principalInvestigatorDetailObj
   const templatePayload = {
     headerText: 'Principal Investigator Details',
     protocolId,
     protocolType,
     investigator_protocol_information,
-    consent_information
+    consent_information,
+    protocol_details
   }
   const template = {
     content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.PrincipalInvestigatorHTMLTemplate(
@@ -102,15 +111,20 @@ const PrincipalInvestigatorPdfTemplate = (
 
 const DocumentReviewPdfTemplate = (clinicalSiteDetailObj, protocolIdObj) => {
   const { protocolId, protocolType } = protocolIdObj
-  const { protocol_information, investigator_information, informed_consent } =
-    clinicalSiteDetailObj
+  const {
+    protocol_information,
+    investigator_information,
+    informed_consent,
+    protocol_details
+  } = clinicalSiteDetailObj
   const templatePayload = {
     headerText: 'Document Review Details',
     protocolId,
     protocolType,
     protocol_information,
     investigator_information,
-    informed_consent
+    informed_consent,
+    protocol_details
   }
   const template = {
     content: `${htmlTemplates.protocolAmendmentRequestHTMLTemplate.DocumentReviewHTMLTemplate(
