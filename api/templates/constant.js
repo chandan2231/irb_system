@@ -226,6 +226,21 @@ const continuingReviewQuestions = {
       explanation: 'changes_not_reported_to_irb'
     }
   }
+  // submission form does not exist in this, so i am not adding submissionAdditionalInfo here...
+  // submissionAdditionalInfo: {
+  //   checkBox1: {
+  //     label:
+  //       'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
+  //     value: 'applicant_terms'
+  //   },
+  //   checkBox2: {
+  //     label:
+  //       'I acknowledge that processed payment for protocol approval submission is non-refundable.',
+  //     value: 'applicant_acknowledge'
+  //   },
+  //   text: `Electronic Signature`,
+  //   answer: 'applicant_acknowledge_name'
+  // }
 }
 
 const clinicalReviewQuestions = {
@@ -675,12 +690,26 @@ const clinicalReviewQuestions = {
 							<li>All findings from the study that directly affect subject safety will be communicated to subjects and to this IRB</li>
 							<li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
 							<li>The sponsor agrees to submit and provide payment to this IRB for annual review yearly</li>
-						</ul>`,
-    checkBox: {
+						</ul>`
+    // checkBox: {
+    //   label:
+    //     'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
+    //   value: 'terms_selected'
+    // }
+  },
+  submissionAdditionalInfo: {
+    checkBox1: {
       label:
         'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
-      value: 'terms_selected'
-    }
+      value: 'applicant_terms'
+    },
+    checkBox2: {
+      label:
+        'I acknowledge that processed payment for protocol approval submission is non-refundable.',
+      value: 'applicant_acknowledge'
+    },
+    text: `Electronic Signature`,
+    answer: 'applicant_acknowledge_name'
   }
 }
 
@@ -1116,12 +1145,26 @@ here (if applying for waiver of consent, document explaining reasoning must be u
               <li>All findings from the study that directly affect subject safety will be communicated to subjects and to this IRB</li>
               <li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
               <li>The sponsor agrees to submit and provide payment to this IRB for annual review yearly</li>
-            </ul>`,
-    checkBox: {
+            </ul>`
+    // checkBox: {
+    //   label:
+    //     'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
+    //   value: 'terms_selected'
+    // }
+  },
+  submissionAdditionalInfo: {
+    checkBox1: {
       label:
         'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
-      value: 'terms_selected'
-    }
+      value: 'applicant_terms'
+    },
+    checkBox2: {
+      label:
+        'I acknowledge that processed payment for protocol approval submission is non-refundable.',
+      value: 'applicant_acknowledge'
+    },
+    text: `Electronic Signature`,
+    answer: 'applicant_acknowledge_name'
   }
 }
 
@@ -1413,12 +1456,26 @@ const principalInvestigatorQuestions = {
 							<li>All findings from the study that directly affect subject safety will be communicated to subjects, the sponsor, and to this IRB</li>
 							<li>All serious adverse events (SAEs), whether related to the study procedures or not, will be reported to this IRB within 2 business days of the investigator becoming aware of the event for IRB safety review</li>
 							<li>The investigator will submit annual review and reviews in compliance with sponsor</li>
-						</ul>`,
-    checkBox: {
+						</ul>`
+    // checkBox: {
+    //   label:
+    //     'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
+    //   value: 'terms_selected'
+    // }
+  },
+  submissionAdditionalInfo: {
+    checkBox1: {
       label:
         'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
-      value: 'terms_selected'
-    }
+      value: 'applicant_terms'
+    },
+    checkBox2: {
+      label:
+        'I acknowledge that processed payment for protocol approval submission is non-refundable.',
+      value: 'applicant_acknowledge'
+    },
+    text: `Electronic Signature`,
+    answer: 'applicant_acknowledge_name'
   }
 }
 
@@ -1499,7 +1556,6 @@ const documentReviewQuestions = {
       }
     ]
   },
-
   informedConsentForm: {
     title: 'Informed Consent Form',
     checkboxes: {
@@ -1577,7 +1633,6 @@ const documentReviewQuestions = {
       }
     }
   },
-
   submissinForm: {
     title: 'Submission Form',
     text: `<p>By submitting this application you attest to the following:</p>
@@ -1594,12 +1649,26 @@ const documentReviewQuestions = {
               <li>All paper-based records will be stored in a double-locked area such as a locking filing cabinet inside of a locking door and only accessible to authorized staff.</li>
               <li>All electronic-based records will only be accessed by authorized staff using secure login credentials.</li>
               <li>You acknowledge that you read the term and agree with them.</li>
-            </ul>`,
-    checkBox: {
+            </ul>`
+    // checkBox: {
+    //   label:
+    //     'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
+    //   value: 'terms_selected'
+    // }
+  },
+  submissionAdditionalInfo: {
+    checkBox1: {
       label:
         'Your initial below certifies that you have read and agree to the research compliance terms listed in above protocol application.',
-      value: 'terms_selected'
-    }
+      value: 'applicant_terms'
+    },
+    checkBox2: {
+      label:
+        'I acknowledge that processed payment for protocol approval submission is non-refundable.',
+      value: 'applicant_acknowledge'
+    },
+    text: `Electronic Signature`,
+    answer: 'applicant_acknowledge_name'
   }
 }
 
