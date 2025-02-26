@@ -166,6 +166,14 @@ const SubmissionForm = ({
               formData.acknowledge_name = name;
               formData.waive_fee = submissionFormDetails?.waiveFee;
             }
+            // if submit and pay is visible
+            if (whichSubmitButtonToShow().isSubmitAndPayVisible) {
+              formData.identifier = 2
+            }
+            // if submit is visible
+            if (whichSubmitButtonToShow().isSubmitVisible) {
+              formData.identifier = 1
+            }
             setLoader(true);
             dispatch(createMultiSiteSubmission(formData)).then((data) => {
               if (data.payload.status === 200) {
