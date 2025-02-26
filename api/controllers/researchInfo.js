@@ -132,7 +132,8 @@ const handleExternalMonitorProtocol = async (
 
 export const savePrincipalInvestigatorSubmission = async (req, res) => {
   const datetime = new Date()
-
+  // console.log('req.body.identifier', req.body.identifier)
+  // return
   // Function to handle the external monitor protocol
   const processExternalMonitorProtocol = async () => {
     await handleExternalMonitorProtocol(

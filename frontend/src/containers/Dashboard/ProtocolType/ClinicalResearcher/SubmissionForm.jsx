@@ -147,11 +147,18 @@ const SubmissionForm = ({
               formData.acknowledge_name = name;
               formData.waive_fee = submissionFormDetails?.waiveFee;
             }
+            if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
+              formData.identifier = 1;
+            } else {
+              formData.identifier = 2;
+            }
+
             setLoader(true);
             // console.log("formData", formData);
             // return;
             dispatch(createPrincipalInvestigatorSubmission(formData)).then(
               (data) => {
+                console.log("data", data);
                 if (data.payload.status === 200) {
                   setLoader(false);
                   toast.success(data.payload.data.msg, {
@@ -164,16 +171,22 @@ const SubmissionForm = ({
                     progress: undefined,
                     theme: "dark",
                   });
-                  if (Number(submissionFormDetails?.waiveFee) === 2) {
-                    const timer = setTimeout(() => {
-                      navigateToPaymentSuccessPage(formData);
-                    }, 1000);
-                    return () => clearTimeout(timer);
+                  if (
+                    whichSubmitButtonToShow()?.isSubmitForTrailMonitorVisible
+                  ) {
+                    // Do nothing
                   } else {
-                    const timer = setTimeout(() => {
-                      navigateToPaymentPage(formData);
-                    }, 1000);
-                    return () => clearTimeout(timer);
+                    if (Number(submissionFormDetails?.waiveFee) === 2) {
+                      const timer = setTimeout(() => {
+                        navigateToPaymentSuccessPage(formData);
+                      }, 1000);
+                      return () => clearTimeout(timer);
+                    } else {
+                      const timer = setTimeout(() => {
+                        navigateToPaymentPage(formData);
+                      }, 1000);
+                      return () => clearTimeout(timer);
+                    }
                   }
                 } else {
                   toast.error(data.payload.data.msg, {
@@ -195,8 +208,15 @@ const SubmissionForm = ({
           formData.acknowledge = checkForTerms;
           formData.acknowledge_name = name;
           formData.waive_fee = submissionFormDetails?.waiveFee;
-          setLoader(true);
+          formData.external_monitor_id = "";
 
+          if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
+            formData.identifier = 1;
+          } else {
+            formData.identifier = 2;
+          }
+
+          setLoader(true);
           dispatch(createPrincipalInvestigatorSubmission(formData)).then(
             (data) => {
               if (data.payload.status === 200) {
@@ -211,16 +231,20 @@ const SubmissionForm = ({
                   progress: undefined,
                   theme: "dark",
                 });
-                if (Number(submissionFormDetails?.waiveFee) === 2) {
-                  const timer = setTimeout(() => {
-                    navigateToPaymentSuccessPage(formData);
-                  }, 1000);
-                  return () => clearTimeout(timer);
+                if (whichSubmitButtonToShow()?.isSubmitForTrailMonitorVisible) {
+                  // Do nothing
                 } else {
-                  const timer = setTimeout(() => {
-                    navigateToPaymentPage(formData);
-                  }, 1000);
-                  return () => clearTimeout(timer);
+                  if (Number(submissionFormDetails?.waiveFee) === 2) {
+                    const timer = setTimeout(() => {
+                      navigateToPaymentSuccessPage(formData);
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                  } else {
+                    const timer = setTimeout(() => {
+                      navigateToPaymentPage(formData);
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                  }
                 }
               } else {
                 toast.error(data.payload.data.msg, {

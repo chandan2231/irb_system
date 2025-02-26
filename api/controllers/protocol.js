@@ -682,6 +682,10 @@ const getProtocolDetails = async (protocolId, protocolType) => {
       {
         key: 'protocol_procedure',
         query: 'select * from protocol_procedure where protocol_id = ?'
+      },
+      {
+        key: 'protocol_details',
+        query: 'select * from protocols where protocol_id = ?'
       }
     ],
     'Multi-Site Sponsor': [
@@ -704,6 +708,10 @@ const getProtocolDetails = async (protocolId, protocolType) => {
       {
         key: 'protocol_procedure',
         query: 'select * from protocol_procedure where protocol_id = ?'
+      },
+      {
+        key: 'protocol_details',
+        query: 'select * from protocols where protocol_id = ?'
       }
     ],
     'Document Review': [
@@ -718,6 +726,10 @@ const getProtocolDetails = async (protocolId, protocolType) => {
       {
         key: 'informed_consent',
         query: 'select * from informed_consent where protocol_id = ?'
+      },
+      {
+        key: 'protocol_details',
+        query: 'select * from protocols where protocol_id = ?'
       }
     ],
     default: [
@@ -730,6 +742,10 @@ const getProtocolDetails = async (protocolId, protocolType) => {
         key: 'consent_information',
         query:
           'select * from clinical_consent_information where protocol_id = ?'
+      },
+      {
+        key: 'protocol_details',
+        query: 'select * from protocols where protocol_id = ?'
       }
     ]
   }
