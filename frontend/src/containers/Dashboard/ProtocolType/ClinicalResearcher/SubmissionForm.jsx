@@ -152,6 +152,7 @@ const SubmissionForm = ({
             } else {
               formData.identifier = 2
             }
+
             setLoader(true);
             // console.log("formData", formData);
             // return;
@@ -200,8 +201,15 @@ const SubmissionForm = ({
           formData.acknowledge = checkForTerms;
           formData.acknowledge_name = name;
           formData.waive_fee = submissionFormDetails?.waiveFee;
-          setLoader(true);
+          formData.external_monitor_id = ""
+          
+          if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
+            formData.identifier = 1
+          } else {
+            formData.identifier = 2
+          }
 
+          setLoader(true);
           dispatch(createPrincipalInvestigatorSubmission(formData)).then(
             (data) => {
               if (data.payload.status === 200) {

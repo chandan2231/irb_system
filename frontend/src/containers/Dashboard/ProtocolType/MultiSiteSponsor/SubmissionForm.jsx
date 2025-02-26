@@ -171,6 +171,7 @@ const SubmissionForm = ({
             } else {
               formData.identifier = 2
             }
+
             setLoader(true);
             dispatch(createMultiSiteSubmission(formData)).then((data) => {
               if (data.payload.status === 200) {
@@ -215,6 +216,14 @@ const SubmissionForm = ({
           formData.acknowledge = checkForTerms;
           formData.acknowledge_name = name;
           formData.waive_fee = submissionFormDetails?.waiveFee;
+          formData.external_monitor_id = ""
+
+          if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
+            formData.identifier = 1
+          } else {
+            formData.identifier = 2
+          }
+
           setLoader(true);
           dispatch(createMultiSiteSubmission(formData)).then((data) => {
             if (data.payload.status === 200) {
