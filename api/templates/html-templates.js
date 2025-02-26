@@ -123,7 +123,7 @@ const RenderDocuments = (answerObject, documentHeader, documentName) => {
         ${answerObject['documents']
           ?.map((docListItem) => {
             if (docListItem['document_name'] === documentName) {
-              return `<div><a href=${docListItem[documentName]} target='_blank'>${docListItem['file_name']}</a></div>`
+              return `<div><a href=${docListItem[documentName]} target='_blank'>${docListItem['file_url']}</a></div>`
             }
           })
           .join('')}`
