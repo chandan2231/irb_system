@@ -147,13 +147,10 @@ const SubmissionForm = ({
               formData.acknowledge_name = name;
               formData.waive_fee = submissionFormDetails?.waiveFee;
             }
-            // if submit and pay is visible
-            if (whichSubmitButtonToShow().isSubmitAndPayVisible) {
-              formData.identifier = 2
-            }
-            // if submit is visible
-            if (whichSubmitButtonToShow().isSubmitVisible) {
+            if (whichSubmitButtonToShow().isSubmitForTrailMonitorVisible) {
               formData.identifier = 1
+            } else {
+              formData.identifier = 2
             }
             setLoader(true);
             // console.log("formData", formData);
