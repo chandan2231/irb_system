@@ -137,8 +137,10 @@ function EventPriceList() {
 
   const addNewData = (data) => {
     dispatch(createEventPrice(data)).then((data) => {
+      console.log("Data ====>", data);
       if (data.payload.status === 200) {
         setOpen(false);
+        console.log("Data ====>", data);
         toast.success(data.payload.data, {
           position: "top-right",
           autoClose: 5000,
@@ -149,10 +151,10 @@ function EventPriceList() {
           progress: undefined,
           theme: "dark",
         });
-        setFo;
       } else {
+        console.log("Data ====>", data);
         setOpen(false);
-        toast.error(data.payload, {
+        toast.error(data.payload.data, {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
