@@ -186,16 +186,20 @@ const SubmissionForm = ({
                   progress: undefined,
                   theme: "dark",
                 });
-                if (Number(submissionFormDetails?.waiveFee) === 2) {
-                  const timer = setTimeout(() => {
-                    navigateToPaymentSuccessPage(formData);
-                  }, 1000);
-                  return () => clearTimeout(timer);
+                if (whichSubmitButtonToShow()?.isSubmitForTrailMonitorVisible) {
+                  // Do nothing
                 } else {
-                  const timer = setTimeout(() => {
-                    navigateToPaymentPage(formData);
-                  }, 1000);
-                  return () => clearTimeout(timer);
+                  if (Number(submissionFormDetails?.waiveFee) === 2) {
+                    const timer = setTimeout(() => {
+                      navigateToPaymentSuccessPage(formData);
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                  } else {
+                    const timer = setTimeout(() => {
+                      navigateToPaymentPage(formData);
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                  }
                 }
               } else {
                 toast.error(data.payload.data.msg, {
@@ -238,16 +242,20 @@ const SubmissionForm = ({
                 progress: undefined,
                 theme: "dark",
               });
-              if (Number(submissionFormDetails?.waiveFee) === 2) {
-                const timer = setTimeout(() => {
-                  navigateToPaymentSuccessPage(formData);
-                }, 1000);
-                return () => clearTimeout(timer);
+              if (whichSubmitButtonToShow()?.isSubmitForTrailMonitorVisible) {
+                // Do nothing
               } else {
-                const timer = setTimeout(() => {
-                  navigateToPaymentPage(formData);
-                }, 1000);
-                return () => clearTimeout(timer);
+                if (Number(submissionFormDetails?.waiveFee) === 2) {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentSuccessPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                } else {
+                  const timer = setTimeout(() => {
+                    navigateToPaymentPage(formData);
+                  }, 1000);
+                  return () => clearTimeout(timer);
+                }
               }
             } else {
               toast.error(data.payload.data.msg, {
