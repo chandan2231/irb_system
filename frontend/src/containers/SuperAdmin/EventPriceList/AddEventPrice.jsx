@@ -15,7 +15,7 @@ const defaultInputValues = {
 const AddEventPrice = ({ open, onClose, addNewData, title }) => {
   const [values, setValues] = useState(defaultInputValues);
   const [eventTypeList, setEventTypeList] = React.useState([
-    { name: "Clinical Site", id: "Clinical Site" },
+    { name: "PI initiated Trial", id: "Clinical Site" },
     { name: "Multi-Site Sponsor", id: "Multi-Site Sponsor" },
     { name: "Document Review", id: "Document Review" },
     { name: "High School", id: "High School" },
@@ -23,7 +23,7 @@ const AddEventPrice = ({ open, onClose, addNewData, title }) => {
     { name: "Graduate", id: "Graduate" },
     { name: "Commercial", id: "Commercial" },
     { name: "Continue Yearly Review", id: "Continue Yearly Review" },
-    { name: "Protocol Revision", id: "Protocol Revision" },
+    { name: "Protocol Amendment", id: "Protocol Amendment" },
   ]);
   const modalStyles = {
     inputFields: {

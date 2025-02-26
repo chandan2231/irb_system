@@ -244,8 +244,9 @@ function EventPriceList() {
   // < 1000
   // can accept decimal values upto 2 decimal places
 
-  const priceRegex =
-    /^(?:(?:0\.(?:0[1-9]|[1-9]\d?))|(?:[1-9]\d{0,2}(?:\.\d{1,2})?))$/;
+  const priceRegex = /^(?:[1-9]\d{0,3}|\d{1,4})?(?:\.\d{1,2})?$/;
+
+  // const priceRegex = /^(?:(?:0\.(?:0[1-9]|[1-9]\d?))|(?:[1-9]\d{0,2}(?:\.\d{1,2})?))$/;
   const validationSchema = Yup.object().shape({
     price: Yup.string()
       .required("Price is required")
