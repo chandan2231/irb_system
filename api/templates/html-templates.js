@@ -104,6 +104,34 @@ const RenderAnswerPro = (answerObject, answer) => {
     </div>`
 }
 
+const RenderCheckboxAnswer = (checkBoxObject, answerObject) => {
+  const { header, options, answer } = checkBoxObject
+  if (!options) return ''
+  return `
+    <div>
+      <h4>${header}</h4>
+      ${options
+        .map((option) => {
+          const isChecked = answerObject[answer]?.includes(option.value)
+          if (!isChecked) return ''
+          return `
+            <div>
+              <input
+                type="checkbox"
+                id="${option.value}"
+                name="${option.value}"
+                value="${option.value}"
+                checked
+                disabled
+              />
+              <label for="${option.value}">${option.label}</label>
+            </div>
+          `
+        })
+        .join('')}
+    </div>`
+}
+
 const RenderElplanation = (answerObject, explanation) => {
   return `<div>
       <h4>Explanation</h4>
