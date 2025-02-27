@@ -2,6 +2,234 @@ import { db } from '../connect.js'
 import { client } from '../paypalConfig.js'
 import paypal from '@paypal/checkout-server-sdk'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
+import sendEmail from '../emailService.js'
+
+export const capturePayment = async (req, res) => {
+  const {
+    orderId,
+    payerId,
+    amount,
+    currencyCode,
+    protocolId,
+    researchType,
+    userId
+  } = req.body
+
+  const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
+  captureOrderRequest.requestBody({
+    payer_id: payerId // Ensure payer_id is included in the capture request
+  })
+
+  try {
+    const captureResult = await client().execute(captureOrderRequest)
+
+    // Store payment details in the database
+    const paymentData = {
+      payment_id: captureResult.result.id,
+      payer_id: payerId,
+      amount: amount,
+      currency: currencyCode,
+      status: captureResult.result.status,
+      protocol_id: protocolId,
+      user_id: userId,
+      payment_type: 'paypal'
+    }
+
+    // Insert payment data into the transactions table
+    await new Promise((resolve, reject) => {
+      db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {
+        if (err) {
+          console.error('Error storing payment in database:', err)
+          return reject('Error storing payment in database')
+        }
+        resolve(result)
+      })
+    })
+
+    // Update protocol status
+    await new Promise((resolve, reject) => {
+      const updateQuery =
+        'UPDATE protocols SET status = ?, allow_edit = ? WHERE protocol_id = ?'
+      const updateValues = [2, 1, protocolId]
+      db.query(updateQuery, updateValues, (err, result) => {
+        if (err) {
+          console.error('Error updating protocol status:', err)
+          return reject('Error updating protocol status')
+        }
+        resolve(result)
+      })
+    })
+
+    // Handle Multi-Site Sponsor logic
+    if (researchType === 'Multi-Site Sponsor') {
+      await handleMultiSiteProtocols(protocolId)
+
+      // Fetch user details
+      const user = await getUserInfo(userId)
+
+      if (user) {
+        // Fetch all protocols related to the parent protocol_id
+        const protocolDetails = await new Promise((resolve, reject) => {
+          db.query(
+            'SELECT protocol_id, varification_code FROM protocols WHERE parent_protocol_id = ?',
+            [protocolId],
+            (err, result) => {
+              if (err) {
+                console.error('Error fetching protocol details:', err)
+                return reject('Error fetching protocol details')
+              }
+              resolve(result) // This will return an array of protocols with their verification codes
+            }
+          )
+        })
+        // Prepare email content
+        const transactionDate = new Date().toLocaleDateString() // MM/DD/YYYY
+        const transactionTime = new Date().toLocaleTimeString() // HH:MM AM/PM
+
+        const emailSubject =
+          'Protocol Submission Confirmation & Protocol Approval & Processing Receipt'
+        let emailBody = `
+          <p>Dear Mr. ${user.name},</p>
+          <p>You have successfully submitted your protocol ID # ${protocolId}.</p>
+          <p>You will be contacted within 7 days for any further information needed for the approval process.</p>
+
+          <h3>Receipt of Payment</h3>
+          <table>
+            <tr><td><strong>Merchant Name:</strong></td><td>IRB-HUB.COM</td></tr>
+            <tr><td><strong>Merchant Address:</strong></td><td>IBR-HUB.COM DBA Young Scientist Of America 501C3, 3010 Legacy Dr. Frisco.Tx-75034</td></tr>
+            <tr><td><strong>Transaction Date:</strong></td><td>${transactionDate}</td></tr>
+            <tr><td><strong>Transaction Time:</strong></td><td>${transactionTime}</td></tr>
+            <tr><td><strong>Customer Name:</strong></td><td>${user.name}</td></tr>
+            <tr><td><strong>Customer Email Address:</strong></td><td>${user.email}</td></tr>
+            <tr><td><strong>Payment Method:</strong></td><td>Credit Card (Last 4 digits: XXXX)</td></tr>
+            <tr><td><strong>Description of Goods/Services:</strong></td><td>[Commercial Approval of Protocol ID # ${protocolId}] - $${amount}</td></tr>
+          </table>
+
+          <p>No service tax is collected due to Tax Exempt Status.</p>
+          <p>Please Note: The above payment is non-refundable.</p>
+          <p>If you have any questions about your submission or this invoice, please contact us via email.</p>
+
+          <h3>Protocol IDs and Verification Codes</h3>
+          <table border="1" cellpadding="5">
+            <tr><th>Protocol ID</th><th>Verification Code</th></tr>
+        `
+
+        // Add each protocol's protocol_id and verification code to the email body
+        protocolDetails.forEach((protocol) => {
+          emailBody += `
+            <tr>
+              <td>${protocol.protocol_id}</td>
+              <td>${protocol.varification_code}</td>
+            </tr>
+          `
+        })
+
+        emailBody += `
+          </table>
+          <p>We have generated 5 clinical site registration access code 
+            Please provide one Access code to every  clinical research site for registration.</p>
+          <p>If you wish to have more clinical research sites please go to your protocol number on the right the three dots select and add clinical sites.</p>
+          <p> It will direct you to the payment portal to add more clinical sites.</p>
+          <p>Regards,<br/>Admin<br/>IRB-HUB.COM</p>
+        `
+        const text = emailBody
+        const html = emailBody
+        // Send email to the user
+        await sendEmail(user.email, emailSubject, text, html)
+      }
+    } else {
+      // Fetch user details
+      const user = await getUserInfo(userId)
+      if (user) {
+        // Prepare email content
+        const transactionDate = new Date().toLocaleDateString() // MM/DD/YYYY
+        const transactionTime = new Date().toLocaleTimeString() // HH:MM AM/PM
+
+        const emailSubject =
+          'Protocol Submission Confirmation & Protocol Approval & Processing Receipt'
+        let emailBody = `
+          <p>Dear Mr. ${user.name},</p>
+          <p>You have successfully submitted your protocol ID # ${protocolId}.</p>
+          <p>You will be contacted within 7 days for any further information needed for the approval process.</p>
+
+          <h3>Receipt of Payment</h3>
+          <table>
+            <tr><td><strong>Merchant Name:</strong></td><td>IRB-HUB.COM</td></tr>
+            <tr><td><strong>Merchant Address:</strong></td><td>IBR-HUB.COM DBA Young Scientist Of America 501C3, 3010 Legacy Dr. Frisco.Tx-75034</td></tr>
+            <tr><td><strong>Transaction Date:</strong></td><td>${transactionDate}</td></tr>
+            <tr><td><strong>Transaction Time:</strong></td><td>${transactionTime}</td></tr>
+            <tr><td><strong>Customer Name:</strong></td><td>${user.name}</td></tr>
+            <tr><td><strong>Customer Email Address:</strong></td><td>${user.email}</td></tr>
+            <tr><td><strong>Payment Method:</strong></td><td>Credit Card (Last 4 digits: XXXX)</td></tr>
+            <tr><td><strong>Description of Goods/Services:</strong></td><td>[Commercial Approval of Protocol ID # ${protocolId}] - $${amount}</td></tr>
+          </table>
+
+          <p>No service tax is collected due to Tax Exempt Status.</p>
+          <p>Please Note: The above payment is non-refundable.</p>
+          <p>If you have any questions about your submission or this invoice, please contact us via email.</p>
+          <p>Regards,<br/>Admin<br/>IRB-HUB.COM</p>
+        `
+        const text = emailBody
+        const html = emailBody
+        // Send email to the user
+        await sendEmail(user.email, emailSubject, text, html)
+      }
+    }
+
+    // Respond back with the capture result
+    return res.json({
+      message: 'Payment captured successfully',
+      captureResult
+    })
+  } catch (error) {
+    console.error('Error during payment capture process:', error)
+    return res.status(500).send('Error during payment capture process')
+  }
+}
+
+// Function to handle Multi-Site Sponsor Protocols
+const handleMultiSiteProtocols = async (protocolId) => {
+  const baseProtocolId = protocolId
+  for (let i = 1; i <= 5; i++) {
+    const newProtocolId = `${baseProtocolId}-${String(i).padStart(2, '0')}`
+    const randomString = generateRandomString(10)
+    const insertQuery = `
+      INSERT INTO protocols (\`protocol_id\`, \`parent_protocol_id\`, \`research_type\`, \`status\`, \`varification_code\`, \`protocol_user_type\`) 
+      VALUES (?)
+    `
+    const newGeneratedProtocol = [
+      newProtocolId,
+      baseProtocolId,
+      'Clinical Site',
+      2,
+      randomString,
+      'Clinical Site'
+    ]
+    try {
+      await new Promise((resolve, reject) => {
+        db.query(insertQuery, [newGeneratedProtocol], (err, results) => {
+          if (err) {
+            console.error('Error inserting protocol ID:', err)
+            return reject(err)
+          }
+          console.log(`Inserted Protocol ID: ${newProtocolId}`)
+          resolve(results)
+        })
+      })
+    } catch (error) {
+      console.error('Error generating protocol IDs:', error)
+    }
+  }
+}
+
+function generateRandomString(length = 10) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return result
+}
 
 export const getPaymentAmountInfo = (req, res) => {
   const que = 'select * from event_price WHERE event_type=?'
@@ -42,149 +270,6 @@ export const createPayment = async (req, res) => {
   }
 }
 
-// export const capturePayment = async (req, res) => {
-//   console.log('req.body', req.body)
-//   const { orderId, payerId } = req.body
-
-//   const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
-//   captureOrderRequest.requestBody({})
-
-//   try {
-//     const captureResult = await client().execute(captureOrderRequest)
-//     // Store payment details in the database
-//     const paymentData = {
-//       payment_id: captureResult.result.id,
-//       payer_id: payerId,
-//       amount: req.body.amount,
-//       currency: req.body.currencyCode,
-//       status: captureResult.result.status,
-//       protocol_id: req.body.protocolId
-//     }
-
-//     db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {
-//       if (err) {
-//         console.error(err)
-//         res.status(500).send('Error storing payment in database')
-//       } else {
-//         const query =
-//           'UPDATE protocols SET status = ?, allow_edit = ? WHERE protocol_id = ?'
-//         const values = [2, 1, req.body.protocolId]
-//         db.query(query, values, (err, result) => {
-//           if (err) {
-//             console.error(
-//               'Error moving the protocol to under review status: ',
-//               err
-//             )
-//             return
-//           } else {
-//             res.json({
-//               message: 'Payment captured successfully',
-//               captureResult
-//             })
-//           }
-//         })
-//       }
-//     })
-//   } catch (error) {
-//     console.error(error)
-//     res.status(500).send('Error capturing PayPal order')
-//   }
-// }
-
-function generateRandomString(length = 10) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return result
-}
-
-export const capturePayment = async (req, res) => {
-  const {
-    orderId,
-    payerId,
-    amount,
-    currencyCode,
-    protocolId,
-    researchType,
-    userId
-  } = req.body
-
-  const captureOrderRequest = new paypal.orders.OrdersCaptureRequest(orderId)
-  captureOrderRequest.requestBody({
-    payer_id: payerId // Ensure you are passing payer_id in the capture request
-  })
-
-  try {
-    const captureResult = await client().execute(captureOrderRequest)
-
-    // Store payment details in the database
-    const paymentData = {
-      payment_id: captureResult.result.id,
-      payer_id: payerId,
-      amount: amount,
-      currency: currencyCode,
-      status: captureResult.result.status,
-      protocol_id: protocolId,
-      user_id: userId,
-      payment_type: 'paypal'
-    }
-
-    db.query('INSERT INTO transactions SET ?', paymentData, (err, result) => {
-      if (err) {
-        console.error(err)
-        return res.status(500).send('Error storing payment in database')
-      }
-
-      const updateQuery =
-        'UPDATE protocols SET status = ?, allow_edit = ? WHERE protocol_id = ?'
-      const updateValues = [2, 1, protocolId]
-      db.query(updateQuery, updateValues, (err, result) => {
-        if (err) {
-          console.error('Error updating protocol status: ', err)
-          return res.status(500).send('Error updating protocol status')
-        }
-
-        if (researchType === 'Multi-Site Sponsor') {
-          let baseProtocolId = protocolId
-          for (let i = 1; i <= 5; i++) {
-            const newProtocolId = `${baseProtocolId}-${String(i).padStart(2, '0')}`
-            const randomString = generateRandomString(10)
-            const insertQuery =
-              'INSERT INTO protocols (`protocol_id`, `parent_protocol_id`, `research_type`, `status`, `varification_code`, `protocol_user_type`) VALUES (?)'
-            const newGeneratedProtocol = [
-              newProtocolId,
-              baseProtocolId,
-              'Clinical Site',
-              2,
-              randomString,
-              'Clinical Site'
-            ]
-            // Execute the SQL query to insert the protocol ID
-            db.query(insertQuery, [newGeneratedProtocol], (err, results) => {
-              if (err) {
-                console.error('Error inserting protocol ID:', err)
-              } else {
-                console.log(`Inserted Protocol ID: ${newProtocolId}`)
-              }
-            })
-          }
-        }
-
-        // Respond back with the capture result
-        return res.json({
-          message: 'Payment captured successfully',
-          captureResult
-        })
-      })
-    })
-  } catch (error) {
-    console.error('Error capturing PayPal order: ', error)
-    return res.status(500).send('Error capturing PayPal order')
-  }
-}
-
 export const successPayment = (req, res) => {
   let result = {}
   result.status = 200
@@ -202,15 +287,12 @@ export const canclePayment = (req, res) => {
 export const getTransactionListByType = (req, res) => {
   const { selectedUserType } = req.body
   let paymentType = ''
-
-  // Determine the payment type based on selectedUserType
   if (selectedUserType === 'Transaction') {
     paymentType = 'paypal'
   } else if (selectedUserType === 'Waive Fee') {
     paymentType = 'waive_fee'
   }
 
-  // Query with additional join to fetch protocol name
   const que = paymentType
     ? `SELECT trans.*, users.name AS name, users.email, protocols.research_type AS protocol_name, protocols.protocol_user_type as protocol_pi 
        FROM transactions as trans 
