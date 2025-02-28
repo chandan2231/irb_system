@@ -4,6 +4,73 @@ import sendEmail from '../emailService.js'
 import { getUserInfo, getUserInfoByProtocolId } from '../userData.js'
 import { v4 as uuidv4 } from 'uuid'
 
+export const allowVoteForMember = async (req, res) => {
+  try {
+    const { id, allow_voting, protocol_id } = req.body
+    const protocolIds = protocol_id
+      .split(',')
+      .map((protocol) => protocol.trim())
+
+    for (const protocol of protocolIds) {
+      await new Promise((resolve, reject) => {
+        const updateVotingQuery = `
+          UPDATE members_protocol
+          SET allow_voting = ?
+          WHERE protocol_id = ?;
+        `
+
+        db.query(updateVotingQuery, [allow_voting, protocol], (err, result) => {
+          if (err) {
+            console.error('Error updating voting allowed:', err)
+            reject(err) // Reject if error occurs
+          } else {
+            resolve(result) // Resolve if successful
+          }
+        })
+      })
+    }
+
+    // Step 2: Update the 'status' in the member_event table based on the provided id
+    await new Promise((resolve, reject) => {
+      const updateEventStatusQuery = `
+        UPDATE member_event
+        SET status = 2, allow_voting=?
+        WHERE id = ?;
+      `
+
+      db.query(updateEventStatusQuery, [allow_voting, id], (err, result) => {
+        if (err) {
+          console.error('Error updating event status:', err)
+          reject(err) // Reject if error occurs
+        } else {
+          resolve(result) // Resolve if successful
+        }
+      })
+    })
+
+    // Respond with a success message
+    return res.status(200).json({
+      status: 200,
+      message: 'Voting status and event status updated successfully'
+    })
+  } catch (error) {
+    console.error('Error during process:', error)
+    return res.status(500).json({
+      error: 'Error updating voting status and event status'
+    })
+  }
+}
+
+export const assignedMembersProtocolList = (req, res) => {
+  const que = 'SELECT * FROM members_protocol WHERE member_id=?'
+  db.query(que, [req.body.memberId], (err, data) => {
+    if (err) return res.status(500).json(err)
+    if (data.length >= 0) {
+      return res.status(200).json(data)
+    }
+  })
+}
+
 export const memberEventList = (req, res) => {
   const que = `
     SELECT 
@@ -16,13 +83,12 @@ export const memberEventList = (req, res) => {
       users AS users 
     ON 
       FIND_IN_SET(users.id, me.member_id) > 0 
-    WHERE 
-      me.status = ? 
+    
     GROUP BY 
       me.id
   `
 
-  db.query(que, [1], (err, data) => {
+  db.query(que, [], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)
@@ -32,20 +98,27 @@ export const memberEventList = (req, res) => {
 
 export const createMemberEvent = async (req, res) => {
   const formattedMemberIds = req.body.member_id.join(',')
-  const formattedProtocolIds = req.body.protocol_id
+  const formattedProtocolIdWithLabel = req.body.protocol_id
     .map((id) => {
       const [protocolId, researchType] = id.split('_')
       return `${protocolId} (${researchType})`
     })
     .join(', ')
+  const formattedProtocolId = req.body.protocol_id
+    .map((id) => {
+      const [protocolId, researchType] = id.split('_')
+      return protocolId
+    })
+    .join(', ')
   const que =
-    'insert into member_event (`event_date_with_time`, `event_subject`, `event_message`, `event_protocols`, `member_id`, `created_by`) values (?)'
+    'insert into member_event (`event_date_with_time`, `event_subject`, `event_message`, `event_protocols`, `event_protocol_id_label`, `member_id`, `created_by`) values (?)'
 
   const values = [
     req.body.event_date_with_time,
     req.body.event_subject,
     req.body.event_msg,
-    formattedProtocolIds,
+    formattedProtocolId,
+    formattedProtocolIdWithLabel,
     formattedMemberIds,
     req.body.created_by
   ]
@@ -1265,16 +1338,6 @@ export const assignedMembersList = (req, res) => {
   const que =
     'SELECT mp.*, users.name FROM members_protocol as mp JOIN users ON mp.member_id = users.id AND mp.protocol_id=?'
   db.query(que, [req.body.protocolId], (err, data) => {
-    if (err) return res.status(500).json(err)
-    if (data.length >= 0) {
-      return res.status(200).json(data)
-    }
-  })
-}
-
-export const assignedMembersProtocolList = (req, res) => {
-  const que = 'SELECT * FROM members_protocol WHERE member_id=?'
-  db.query(que, [req.body.memberId], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)

@@ -224,3 +224,19 @@ export const fetchMemberListForSuperAdmin = createAsyncThunk(
     }
   }
 );
+
+export const allowVoteForMember = createAsyncThunk(
+  "Members/allowVoteForMember",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/admin/member/allowVoteForMember`,
+        data,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

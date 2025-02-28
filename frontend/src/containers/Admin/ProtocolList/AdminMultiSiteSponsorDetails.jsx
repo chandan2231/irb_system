@@ -211,9 +211,6 @@ const MultiSiteSponsorDetails = ({
                 {errors.protocol && (
                   <div className="error">{errors.protocol}</div>
                 )}
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={5} lg={5}>
                 <FormControl fullWidth>
                   <FormLabel>Consent</FormLabel>
                   <RadioGroup
@@ -237,9 +234,6 @@ const MultiSiteSponsorDetails = ({
                 {errors.consent && (
                   <div className="error">{errors.consent}</div>
                 )}
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={5} lg={5}>
                 <FormControl fullWidth>
                   <FormLabel>Supported Documents</FormLabel>
                   <RadioGroup
@@ -264,8 +258,7 @@ const MultiSiteSponsorDetails = ({
                   <div className="error">{errors.supported_documents}</div>
                 )}
               </Grid>
-
-              <Grid item xs={12} sm={6} md={7} lg={7}>
+              <Grid item xs={12} sm={6} md={7} lg={7} className="pr-25">
                 <TextField
                   fullWidth
                   placeholder="Enter your comment"
@@ -281,29 +274,41 @@ const MultiSiteSponsorDetails = ({
                 {errors.comment && (
                   <div className="error">{errors.comment}</div>
                 )}
-              </Grid>
-
-              <Grid item xs={12} sm={6} md={7} lg={7}>
-                <TextField
-                  fullWidth
-                  placeholder="Enter your name"
-                  label="Electronic Signature *"
-                  id="electronic_signature"
-                  name="electronic_signature"
-                  onChange={handleInputChange}
-                  value={formData.electronic_signature}
-                />
-                {errors.electronic_signature && (
-                  <div className="error">{errors.electronic_signature}</div>
-                )}
-              </Grid>
-
-              <Grid item xs={12} style={{ textAlign: "right" }}>
-                <Button variant="contained" color="primary" type="Submit">
-                  Submit
-                </Button>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik05"
+                  className="mt-mb-10"
+                >
+                  <TextField
+                    fullWidth
+                    placeholder="Enter your name"
+                    label="Electronic Signature *"
+                    id="electronic_signature"
+                    name="electronic_signature"
+                    onChange={handleInputChange}
+                    defaultValue={formData.electronic_signature}
+                  />
+                  {errors.electronic_signature && (
+                    <div className="error">{errors.electronic_signature}</div>
+                  )}
+                </Form.Group>
               </Grid>
             </Grid>
+            <Form.Group
+              as={Col}
+              controlId="validationFormik010"
+              className="mt-mb-20 pr-25"
+              style={{ textAlign: "right" }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                type="Submit"
+                disabled={protocolTypeDetails?.allow_voting === "1"}
+              >
+                SUBMIT
+              </Button>
+            </Form.Group>
           </form>
         </Row>
       )}

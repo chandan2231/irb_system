@@ -111,3 +111,16 @@ export function ToggleStatusForAllowEdit({ status, onStatusChange }) {
 
   return <IOSSwitch checked={getCheck()} onChange={handleToggle} />;
 }
+
+export function ToggleStatusForAllowVoting({ status, onStatusChange }) {
+  const handleToggle = () => {
+    const newStatus = status === 1 ? 2 : 2 ? 1 : 1;
+    onStatusChange(newStatus);
+  };
+  return (
+    <IOSSwitch
+      checked={status === "1" || status === 1 ? false : true}
+      onChange={handleToggle}
+    />
+  );
+}

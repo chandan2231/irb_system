@@ -12,10 +12,13 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EventDetails from "./EventDetails";
+import { ToggleStatusForAllowVoting } from "../../../components/ToggleStatus";
+import { Chip } from "@mui/material";
 
 import {
   fetchActiveVotingMemberList,
   fetchMemberEventList,
+  allowVoteForMember,
 } from "../../../services/Admin/MembersService";
 
 function ProtocolEventList() {
@@ -39,29 +42,54 @@ function ProtocolEventList() {
     {
       field: "event_subject",
       headerName: "Subject",
-      flex: 2,
+      flex: 1,
     },
     {
       field: "protocol_name",
       headerName: "Protocol",
-      flex: 2,
+      flex: 1,
     },
 
     {
       field: "members",
       headerName: "Members",
-      flex: 2,
+      flex: 1,
+    },
+    {
+      field: "allowVoting",
+      headerName: "Allow Voting",
+      flex: 1,
+      renderCell: (params) => (
+        <ToggleStatusForAllowVoting
+          status={params.row.allowVoting}
+          onStatusChange={(newAllowVoting) => {
+            const payload = {
+              id: params.row.id,
+              allowVoting: newAllowVoting,
+              protocol_id: params.row.event_protocols,
+            };
+            handleAllowVoteChange(payload);
+          }}
+        />
+      ),
+    },
+    {
+      field: "eventStatus",
+      headerName: "Event Status",
+      flex: 1,
+      renderCell: (params) => params.row.eventStatus,
     },
     {
       field: "createdDate",
       headerName: "Created Date",
       flex: 1,
     },
-    // {
-    //   field: "status",
-    //   headerName: "Status",
-    //   width: 100,
-    // },
+    {
+      field: "updatedDate",
+      headerName: "Updated Date",
+      flex: 1,
+    },
+
     {
       field: "actions",
       type: "actions",
@@ -85,13 +113,19 @@ function ProtocolEventList() {
     setViewDetailsData(null);
   };
   var totalElements = 0;
-  const { memberEventList, loading, error, activeVotingMemberList } =
-    useSelector((state) => ({
-      error: state.member.error,
-      memberEventList: state.member.memberEventList,
-      loading: state.member.loading,
-      activeVotingMemberList: state.member.activeVotingMemberList,
-    }));
+  const {
+    memberEventList,
+    loading,
+    error,
+    activeVotingMemberList,
+    votingAllowedForMember,
+  } = useSelector((state) => ({
+    error: state.member.error,
+    memberEventList: state.member.memberEventList,
+    loading: state.member.loading,
+    activeVotingMemberList: state.member.activeVotingMemberList,
+    votingAllowedForMember: state.member.votingAllowedForMember,
+  }));
   if (memberEventList !== "" && memberEventList?.length > 0) {
     totalElements = memberEventList.totalElements;
   }
@@ -111,11 +145,13 @@ function ProtocolEventList() {
           id: uList.id,
           event_date_time: uList.event_date_with_time,
           event_subject: uList.event_subject,
-          protocol_name: uList.event_protocols,
+          protocol_name: uList.event_protocol_id_label,
           members: uList.member_with_role,
           createdDate: moment(uList.created_date).format("DD MMM YYYY"),
-          // status: uList.status === 1 ? "Pending" : "Completed",
-          // updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
+          allowVoting: Number(uList.allow_voting),
+          eventStatus: <EventStatusLabel status={uList.status} />,
+          updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
+          event_protocols: uList.event_protocols,
         };
         uListArr.push(listObject);
       });
@@ -141,8 +177,61 @@ function ProtocolEventList() {
     dispatch(fetchActiveVotingMemberList());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchMemberEventList());
+  }, [dispatch, votingAllowedForMember]);
+
   const navigateToaddNewEvent = (params) => {
     navigate("/admin/add-event");
+  };
+
+  const handleAllowVoteChange = (status) => {
+    // console.log("status", status);
+    // return;
+    let data = {
+      id: status.id,
+      allow_voting: status.allowVoting,
+      protocol_id: status.protocol_id,
+    };
+    dispatch(allowVoteForMember(data)).then((data) => {
+      console.log("data ====>", data);
+      if (data.payload.status === 200) {
+        toast.success(data.payload.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      } else {
+        toast.error(data.payload.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    });
+  };
+
+  const EventStatusLabel = ({ status }) => {
+    const statusLabel = status === 1 ? "Pending" : "Completed";
+    const color = status === 1 ? "primary" : "success"; // "primary" for Pending, "success" for Completed
+
+    return (
+      <Chip
+        label={statusLabel}
+        color={color}
+        style={{ textTransform: "capitalize" }} // Optional, to make the first letter capitalized
+      />
+    );
   };
 
   return (

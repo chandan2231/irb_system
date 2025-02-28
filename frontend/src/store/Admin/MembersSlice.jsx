@@ -14,6 +14,7 @@ import {
   fetchApprovedProtocolsByMembersList,
   chairCommitteeApprovalProtocol,
   fetchMemberListForSuperAdmin,
+  allowVoteForMember,
 } from "../../services/Admin/MembersService";
 
 const MembersSlice = createSlice({
@@ -38,6 +39,7 @@ const MembersSlice = createSlice({
     approvedProtocolsByMembersList: null,
     createdChairCommitteeApprovalProtocol: null,
     memberListSuperAdmin: null,
+    votingAllowedForMember: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -219,6 +221,29 @@ const MembersSlice = createSlice({
         state.memberListSuperAdmin = action.payload;
       })
       .addCase(fetchMemberListForSuperAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(allowVoteForMember.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(allowVoteForMember.fulfilled, (state, action) => {
+        state.loading = false;
+        // console.log("state.memberEventList", state.memberEventList);
+        // let updateMemberEventList = state.memberEventList.map(
+        //   (element, index) =>
+        //     element.id === action.payload.id
+        //       ? { ...element, allow_voting: action.payload.allow_voting }
+        //       : element
+        // );
+        // state.memberEventList = {
+        //   ...state.memberEventList,
+        //   data: updateMemberEventList,
+        // };
+        state.votingAllowedForMember = action.payload;
+      })
+      .addCase(allowVoteForMember.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
