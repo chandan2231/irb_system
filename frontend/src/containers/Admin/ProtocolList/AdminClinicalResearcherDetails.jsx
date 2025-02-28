@@ -334,7 +334,12 @@ const ClinicalResearcherDetails = ({
               className="mt-mb-20 pr-25"
               style={{ textAlign: "right" }}
             >
-              <Button variant="contained" color="primary" type="Submit">
+              <Button
+                variant="contained"
+                color="primary"
+                type="Submit"
+                disabled={protocolTypeDetails?.allow_voting === "1"}
+              >
                 SUBMIT
               </Button>
             </Form.Group>

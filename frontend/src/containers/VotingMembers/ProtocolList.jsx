@@ -135,8 +135,10 @@ function VotingMemberProtocolList() {
           id: pList.id,
           protocolId: pList.protocol_id,
           researchType: pList.protocol_name,
-          assignedDate: moment(pList.created_at).format("DD MMM YYYY"),
-          updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
+          assignedDate: moment(pList.created_date).format("DD MMM YYYY"),
+          updatedDate: moment(pList.updated_date).format("DD MMM YYYY"),
+          allow_voting: pList.allow_voting,
+          protocol_user_type: pList.protocol_user_type,
         };
         pListArr.push(protocolObject);
       });

@@ -12,7 +12,7 @@ import moment from "moment";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { useNavigate } from "react-router-dom";
 import { protocolReport } from "../../../services/UserManagement/UserService";
-import ToggleStatus, { ToggleStatusForWaiveFee } from "../../../components/ToggleStatus";
+import { ToggleStatusForWaiveFee } from "../../../components/ToggleStatus";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -86,13 +86,12 @@ function CreatedProtocolList() {
           onStatusChange={(newWaiveFee) => {
             const payload = {
               id: params.row.id,
-              waiveFee: newWaiveFee
-            }
+              waiveFee: newWaiveFee,
+            };
             handleChangeStatus(payload);
           }}
         />
       ),
-      // renderCell: (params) => <ToggleStatus status={params.row.waiveFee} />,
     },
     {
       field: "status",
@@ -243,41 +242,6 @@ function CreatedProtocolList() {
         });
       }
     });
-    // if (status.row.waiveFee === 1 || status.row.waiveFee === 2) {
-    //   let waiveFeevalue = "";
-    //   if (status.row.waiveFee === 1) {
-    //     waiveFeevalue = 2;
-    //   } else if (status.row.waiveFee === 2) {
-    //     waiveFeevalue = 1;
-    //   }
-    //   let data = { id: status.id, waive_fee: waiveFeevalue };
-    //   dispatch(allowProtocolWaiveFee(data)).then((data) => {
-    //     console.log("data", data);
-    //     if (data.payload.status === 200) {
-    //       toast.success(data.payload.msg, {
-    //         position: "top-right",
-    //         autoClose: 5000,
-    //         hideProgressBar: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //         theme: "dark",
-    //       });
-    //     } else {
-    //       toast.error(data.payload.msg, {
-    //         position: "top-right",
-    //         autoClose: 5000,
-    //         hideProgressBar: false,
-    //         closeOnClick: true,
-    //         pauseOnHover: true,
-    //         draggable: true,
-    //         progress: undefined,
-    //         theme: "dark",
-    //       });
-    //     }
-    //   });
-    // }
   };
   const handleViewCTMReport = (params) => {
     setIsViewCTMModalOpen(true);
