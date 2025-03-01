@@ -166,20 +166,6 @@ function VotingMemberProtocolList() {
     }
   };
 
-  // console.log('protocolList', protocolList)
-
-  // const handleItemDelete = (params) => {
-  //     //console.log('Delete Item', params)
-  // }
-
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
-
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
-
   if (loader) {
     return <Loader />;
   }
