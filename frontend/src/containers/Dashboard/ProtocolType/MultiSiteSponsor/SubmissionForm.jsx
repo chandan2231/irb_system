@@ -16,14 +16,16 @@ import {
   FormGroup,
   Checkbox,
   Button,
-  TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ApiCall from "../../../../utility/ApiCall";
 import Loader from "../../../../components/Loader";
 import { Box, IconButton } from "@mui/material";
-import FormLabel from "@mui/material/FormLabel";
 import { RadioGroup, Radio } from "@mui/material";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 

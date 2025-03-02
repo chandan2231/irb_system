@@ -4,7 +4,6 @@ import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -19,10 +18,12 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import ApiCall from "../../../../utility/ApiCall";
-import { Box, IconButton, TextField } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { RadioGroup, Radio } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 

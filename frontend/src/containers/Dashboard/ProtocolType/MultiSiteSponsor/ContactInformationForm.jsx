@@ -3,7 +3,6 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
 import { createContactInformation } from "../../../../services/ProtocolType/MultiSiteSponsorService";
@@ -14,6 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { useSelector } from "react-redux";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 
 const contactInfoSchema = yup.object().shape({
   name: yup.string().required("This is required"),
