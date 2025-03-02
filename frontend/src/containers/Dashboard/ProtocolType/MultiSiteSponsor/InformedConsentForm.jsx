@@ -6,9 +6,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -24,6 +21,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 
 const informedConsentSchema = yup.object().shape({
   consent_type: yup

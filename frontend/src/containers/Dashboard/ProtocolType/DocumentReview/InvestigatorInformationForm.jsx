@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
@@ -15,6 +14,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
+
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",

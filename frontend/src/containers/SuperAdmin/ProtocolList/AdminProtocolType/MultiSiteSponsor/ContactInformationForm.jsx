@@ -3,7 +3,6 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
@@ -11,6 +10,10 @@ import { createContactInformation } from "../../../../../services/ProtocolType/M
 import { useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../../components/Mui/CustomInputLabel";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
