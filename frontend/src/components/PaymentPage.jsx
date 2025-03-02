@@ -6,6 +6,7 @@ import {
   createPayment,
   capturePayment,
   canclePayment,
+  capturePaymentAdditionClinicSite,
 } from "../services/Payment/PaymentService";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
@@ -16,6 +17,9 @@ const PayPalButton = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const protocolTypeDetails = location?.state?.details;
+  const identifierType = location?.state?.identifierType;
+  console.log("protocolTypeDetails", protocolTypeDetails);
+  console.log("identifierType", identifierType);
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
     if (userDetails) {
@@ -66,8 +70,17 @@ const PayPalButton = () => {
     if (paymentAmount !== null && paymentAmount?.data?.length > 0) {
       const script = document.createElement("script");
       script.src = `https://www.paypal.com/sdk/js?client-id=AUJ2ExPRI7HOoaNHIxWP-3wngxA-Bk_Bxew7RpIUxlLBkJDEyCiSBruQntP3BCYxP3rxMxlm6UZg0zMs&components=buttons`;
-
-      let amountData = { amount: paymentAmount?.data[0]?.price };
+      let amountData = "";
+      if (identifierType === "add_more_site") {
+        amountData = {
+          amount:
+            paymentAmount?.data[0]?.price *
+            0.2 *
+            protocolTypeDetails?.protocol_count,
+        };
+      } else {
+        amountData = { amount: paymentAmount?.data[0]?.price };
+      }
 
       script.onload = () => {
         window.paypal
@@ -100,24 +113,48 @@ const PayPalButton = () => {
             onApprove: async (data, actions) => {
               try {
                 const { orderID, payerID } = data;
-
+                let response = "";
                 // Dispatch capture payment action
-                const response = await dispatch(
-                  capturePayment({
-                    orderId: orderID,
-                    payerId: payerID,
-                    currencyCode: "USD",
-                    amount: paymentAmount?.data[0]?.price,
-                    protocolId: protocolTypeDetails?.protocol_id,
-                    researchType: protocolTypeDetails?.protocol_type,
-                    userId: user.id,
-                  })
-                );
-                if (response.payload.status === 200) {
-                  navigateToSuccessPayment(
-                    protocolTypeDetails,
-                    paymentAmount?.data[0]?.price
+                if (identifierType === "add_more_site") {
+                  response = await dispatch(
+                    capturePaymentAdditionClinicSite({
+                      orderId: orderID,
+                      payerId: payerID,
+                      currencyCode: "USD",
+                      amount:
+                        paymentAmount?.data[0]?.price *
+                        0.2 *
+                        protocolTypeDetails?.protocol_count,
+                      protocolId: protocolTypeDetails?.protocol_id,
+                      researchType: protocolTypeDetails?.protocol_type,
+                      userId: user.id,
+                      protocolCount: protocolTypeDetails?.protocol_count,
+                    })
                   );
+                } else {
+                  response = await dispatch(
+                    capturePayment({
+                      orderId: orderID,
+                      payerId: payerID,
+                      currencyCode: "USD",
+                      amount: paymentAmount?.data[0]?.price,
+                      protocolId: protocolTypeDetails?.protocol_id,
+                      researchType: protocolTypeDetails?.protocol_type,
+                      userId: user.id,
+                    })
+                  );
+                }
+                if (response.payload.status === 200) {
+                  let amountPaid = "";
+                  if (identifierType === "add_more_site") {
+                    amountPaid =
+                      paymentAmount?.data[0]?.price *
+                      0.2 *
+                      protocolTypeDetails?.protocol_count;
+                  } else {
+                    amountPaid = paymentAmount?.data[0]?.price;
+                  }
+                  navigateToSuccessPayment(protocolTypeDetails, amountPaid);
                 }
               } catch (error) {
                 console.error("Payment approval failed:", error);
@@ -129,10 +166,16 @@ const PayPalButton = () => {
                 const response = await dispatch(canclePayment()); // Dispatch the cancel payment action
                 console.log("Cancel response", response); // Log the cancel response
                 if (response.payload.status === 200) {
-                  navigateToCanclePayment(
-                    protocolTypeDetails,
-                    paymentAmount?.data[0]?.price
-                  );
+                  let amountPaid = "";
+                  if (identifierType === "add_more_site") {
+                    amountPaid =
+                      paymentAmount?.data[0]?.price *
+                      0.2 *
+                      protocolTypeDetails?.protocol_count;
+                  } else {
+                    amountPaid = paymentAmount?.data[0]?.price;
+                  }
+                  navigateToCanclePayment(protocolTypeDetails, amountPaid);
                 }
               } catch (error) {
                 console.error("Error cancelling payment:", error);

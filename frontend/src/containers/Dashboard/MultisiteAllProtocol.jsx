@@ -4,6 +4,7 @@ import Loader from "../../components/Loader";
 import { getMultiSiteChildProtocols } from "../../services/Dashboard/DashboardService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mui/material";
+import moment from "moment";
 
 const MultisiteChildProtocol = ({ open, onClose, data = {} }) => {
   const [loader, setLoader] = React.useState(false);
@@ -43,6 +44,7 @@ const MultisiteChildProtocol = ({ open, onClose, data = {} }) => {
                   <th>Assigned Applicant</th>
                   <th>Applicant Mobile No.</th>
                   <th>Applicant Email</th>
+                  <th>Created Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -53,6 +55,11 @@ const MultisiteChildProtocol = ({ open, onClose, data = {} }) => {
                       <td>{item?.name ? item?.name : "-"}</td>
                       <td>{item?.mobile ? item?.mobile : "-"}</td>
                       <td>{item?.email ? item?.email : "-"}</td>
+                      <td>
+                        {item?.created_at
+                          ? moment(item?.created_at).format("DD MMM YYYY")
+                          : "-"}
+                      </td>
                     </tr>
                   );
                 })}
@@ -80,6 +87,7 @@ const MultisiteChildProtocol = ({ open, onClose, data = {} }) => {
         content={getContentForHaveProtocolId()}
         hideSubmitButton={true}
         hideCancelButton={true}
+        identifier="childClinicalSite"
       />
     </React.Fragment>
   );

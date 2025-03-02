@@ -37,7 +37,11 @@ const CommonModal = ({
         open={open}
         fullWidth={true}
         maxWidth={
-          identifier === "external" || identifier === "ctm" ? "xl" : "sm"
+          identifier === "external" ||
+          identifier === "ctm" ||
+          identifier === "childClinicalSite"
+            ? "xl"
+            : "sm"
         }
       >
         <DialogTitle
@@ -73,10 +77,7 @@ const CommonModal = ({
 
           {/* Upload file */}
 
-
           {/* Multi File Upload */}
-
-
         </DialogContent>
         <DialogActions>
           {hideCancelButton === true ? null : (

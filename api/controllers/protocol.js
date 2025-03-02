@@ -212,6 +212,7 @@ export const multiSiteChildProtocolsList = (req, res) => {
   const que = `SELECT 
       ps.protocol_id, 
       ps.parent_protocol_id, 
+      ps.created_at, 
       users.name, 
       users.mobile, 
       users.email

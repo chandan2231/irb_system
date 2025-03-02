@@ -29,8 +29,6 @@ function EventPriceList() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
-  const [userId, setUserId] = useState();
   const [eventPriceDataList, setEventPriceDataList] = useState([]);
   const [isEditPriceModalOpen, setIsEditPriceModalOpen] = useState(false);
   const [currentEditPriceRowDetails, setCurrentEditPriceRowDetails] = useState(
@@ -41,7 +39,6 @@ function EventPriceList() {
     const { row } = params;
     setCurrentEditPriceRowDetails(row);
     setIsEditPriceModalOpen(true);
-    console.log("Edit Price Action", params.row);
   };
 
   const columns = [
@@ -100,8 +97,6 @@ function EventPriceList() {
     eventPriceUpdated: state.eventPrice.eventPriceUpdated,
   }));
 
-  console.log("Event Price List", { eventPriceList, eventPriceUpdated });
-
   if (eventPriceList !== "" && eventPriceList?.length > 0) {
     totalElements = eventPriceList?.length;
   }
@@ -120,7 +115,7 @@ function EventPriceList() {
         let listObject = {
           id: uList.id,
           eventName: uList.event_type,
-          price: uList.price,
+          price: `$${uList.price}`,
           // status: uList.status,
           createdDate: moment(uList.created_at).format("DD MMM YYYY"),
           updatedDate: moment(uList.updated_at).format("DD MMM YYYY"),
@@ -137,10 +132,8 @@ function EventPriceList() {
 
   const addNewData = (data) => {
     dispatch(createEventPrice(data)).then((data) => {
-      console.log("Data ====>", data);
       if (data.payload.status === 200) {
         setOpen(false);
-        console.log("Data ====>", data);
         toast.success(data.payload.data, {
           position: "top-right",
           autoClose: 5000,
@@ -152,7 +145,6 @@ function EventPriceList() {
           theme: "dark",
         });
       } else {
-        console.log("Data ====>", data);
         setOpen(false);
         toast.error(data.payload.data, {
           position: "top-right",
@@ -180,52 +172,8 @@ function EventPriceList() {
     }
   }, [eventPriceUpdated]);
 
-  const handleChangeStatus = (status) => {
-    if (Number(status.value) === 1 || Number(status.value) === 2) {
-      let statusValue = "";
-      if (Number(status.value) === 1) {
-        statusValue = 2;
-      } else if (Number(status.value) === 2) {
-        statusValue = 1;
-      }
-      let data = { id: status.id, status: statusValue };
-      dispatch(changeStatus(data)).then((data) => {
-        if (data.payload.status === 200) {
-          toast.success(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        } else {
-          toast.error(data.payload.msg, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      });
-    }
-  };
-
   const addNew = () => {
     setOpen(true);
-  };
-
-  const handleChangePassword = (params) => {
-    if (params.row.userType) {
-      setUserId(params.row.id);
-      setPasswordChangeOpen(true);
-    }
   };
 
   const modalStyles = {
@@ -239,10 +187,6 @@ function EventPriceList() {
       },
     },
   };
-
-  // 1 >
-  // < 1000
-  // can accept decimal values upto 2 decimal places
 
   const priceRegex = /^(?:[1-9]\d{0,3}|\d{1,4})?(?:\.\d{1,2})?$/;
 
@@ -271,25 +215,15 @@ function EventPriceList() {
   };
 
   const handleSubmitForEditPrice = (data) => {
-    console.log("Submit for Edit Price", errors, data);
-    // dispatch action to update price
-
     const payload = {
       price: data.price,
       id: currentEditPriceRowDetails.id,
     };
-
-    console.log("Payload", payload);
-
     dispatch(updateEventPrice(payload)).then((data) => {
       if (data.payload.status === 200) {
-        // reset all states
         setCurrentEditPriceRowDetails({});
         setIsEditPriceModalOpen(false);
-
-        // reset formik state
         reset();
-
         setOpen(false);
         toast.success(data.payload.data, {
           position: "top-right",
@@ -412,7 +346,6 @@ function EventPriceList() {
           <CommonModal
             open={isEditPriceModalOpen}
             onClose={() => {
-              // reset all states
               reset();
               setCurrentEditPriceRowDetails({});
               setIsEditPriceModalOpen(false);

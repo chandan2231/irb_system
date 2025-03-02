@@ -115,10 +115,6 @@ function Dashboard() {
 
   const handleSubmitForAddMoreProtocol = (data) => {
     const { number_of_protocols } = data;
-
-    // Validate the number_of_protocols field.
-
-    // Validate that number_of_protocols is not empty.
     if (
       number_of_protocols === undefined ||
       number_of_protocols === null ||
@@ -128,66 +124,62 @@ function Dashboard() {
         ...data,
         error: {
           ...data.error,
-          number_of_protocols: "Error: number_of_protocols cannot be empty.",
+          number_of_protocols: "Error: Number of protocols can not be empty.",
         },
       });
       return;
     }
-
-    // Validate that number_of_protocols is a valid integer.
     const parsedNumber = parseInt(number_of_protocols, 10);
-
     if (isNaN(parsedNumber)) {
       setAddProtocolData({
         ...data,
         error: {
           ...data.error,
           number_of_protocols:
-            "Error: number_of_protocols should be a valid integer.",
+            "Error: Number of protocols should be a valid number.",
         },
       });
-      console.error("Error: number_of_protocols should be a valid integer.");
       return;
     }
 
-    // Validate that number_of_protocols is not less than 1.
     if (parsedNumber < 1) {
       setAddProtocolData({
         ...data,
         error: {
           ...data.error,
           number_of_protocols:
-            "Error: number_of_protocols cannot be less than 1.",
+            "Error: Number of protocols can not be less than 1.",
         },
       });
-      console.error("Error: number_of_protocols cannot be less than 1.");
       return;
     }
 
-    // Validate that number_of_protocols is less than or equal to 10.
     if (parsedNumber > 10) {
       setAddProtocolData({
         ...data,
         error: {
           ...data.error,
           number_of_protocols:
-            "Error: number_of_protocols cannot be greater than 10.",
+            "Error: Number of protocols can not be greater than 10.",
         },
       });
-      console.error("Error: number_of_protocols cannot be greater than 10.");
       return;
     }
 
     const payload = {
       rowId: data.row.id,
-      addMoreProtocolCount: parsedNumber,
-      protocolTitle: data.row.researchType,
-      protocolNumber: data.row.protocolId,
+      protocol_count: parsedNumber,
+      protocol_type: data.row.researchType,
+      protocol_id: data.row.protocolId,
+      paymentType: "Multi-Site Joining Clinical Site",
     };
+    navigateToPaymentPage(payload);
+  };
 
-    console.log("data ====>", data, payload);
-
-    // Call the API to add more protocols.
+  const navigateToPaymentPage = (params) => {
+    navigate("/payment", {
+      state: { details: params, identifierType: "add_more_site" },
+    });
   };
 
   const getContentForAddMoreProtocol = () => {
