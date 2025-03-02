@@ -713,6 +713,16 @@ function InvestigatorInformationForm({
                 name="investigator_name"
                 value={formData.investigator_name}
                 onChange={handleChange}
+                InputLabelProps={{
+                  sx: {
+                    "&.Mui-focused": {
+                      color: "red",
+                      fontSize: "28px",
+                      background: "white",
+                      marginTop: "-6px"
+                    },
+                  },
+                }}
               />
             </Box>
             {errors.investigator_name && (
