@@ -49,6 +49,22 @@ export const capturePayment = createAsyncThunk(
     }
   }
 );
+
+export const capturePaymentAdditionClinicSite = createAsyncThunk(
+  "Payment/capturePaymentAdditionClinicSite",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/payment/capturePaymentAdditionClinicSite`,
+        data,
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 export const successPayment = createAsyncThunk(
   "Payment/successPayment",
   async (data, { rejectWithValue }) => {
