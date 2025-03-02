@@ -22,6 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+
 import { CustomMUITextFieldWrapper } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel } from "../../../../components/Mui/CustomInputLabel";
@@ -713,7 +714,6 @@ function InvestigatorInformationForm({
                 name="investigator_name"
                 value={formData.investigator_name}
                 onChange={handleChange}
-                
               />
             </Box>
             {errors.investigator_name && (
@@ -733,7 +733,7 @@ function InvestigatorInformationForm({
                 name="investigator_email"
                 value={formData.investigator_email}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.investigator_email && (
@@ -822,7 +822,7 @@ function InvestigatorInformationForm({
                 name="site_name"
                 value={formData.site_name}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.site_name && (
@@ -842,7 +842,7 @@ function InvestigatorInformationForm({
                 name="site_address"
                 value={formData.site_address}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.site_address && (
@@ -882,7 +882,7 @@ function InvestigatorInformationForm({
                   name="site_name_address"
                   value={formData.site_name_address}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.site_name_address && (
@@ -903,7 +903,7 @@ function InvestigatorInformationForm({
                 name="protocol_title"
                 value={formData.protocol_title}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.protocol_title && (
@@ -923,7 +923,7 @@ function InvestigatorInformationForm({
                 name="protocol_number"
                 value={formData.protocol_number}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.protocol_number && (
@@ -943,7 +943,7 @@ function InvestigatorInformationForm({
                 id="study_criteria"
                 value={formData.study_criteria}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.study_criteria && (
@@ -963,7 +963,7 @@ function InvestigatorInformationForm({
                 id="subject_number"
                 value={formData.subject_number}
                 onChange={handleChange}
-                
+
               />
             </Box>
             {errors.subject_number && (
@@ -1135,7 +1135,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.immediate_family_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.immediate_family_explain && (
@@ -1191,7 +1191,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.stock_ownership_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.stock_ownership_explain && (
@@ -1247,7 +1247,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.property_interest_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.property_interest_explain && (
@@ -1307,7 +1307,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.financial_agreement_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.financial_agreement_explain && (
@@ -1365,7 +1365,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.server_position_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.server_position_explain && (
@@ -1420,7 +1420,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.influence_conduct_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.influence_conduct_explain && (
@@ -1476,7 +1476,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.interest_conflict_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.interest_conflict_explain && (
@@ -1524,7 +1524,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.fda_audit_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.fda_audit_explain && (
@@ -1691,7 +1691,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.training_completed_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.training_completed_explain && (
@@ -1759,7 +1759,7 @@ function InvestigatorInformationForm({
                   multiline
                   value={formData.pending_or_active_research_explain}
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {errors.pending_or_active_research_explain && (
