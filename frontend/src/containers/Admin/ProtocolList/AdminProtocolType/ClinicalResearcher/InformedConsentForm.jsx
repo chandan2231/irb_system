@@ -6,10 +6,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -18,6 +15,10 @@ import Checkbox from "@mui/material/Checkbox";
 import * as yup from "yup";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../..components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../..components/Mui/CustomInputLabel";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
