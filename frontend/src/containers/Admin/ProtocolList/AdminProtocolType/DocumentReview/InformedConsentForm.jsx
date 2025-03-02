@@ -16,8 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 
 import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
-import { CustomMUIFormLabel as FormLabel } from "../../../../..components/Mui/CustomFormLabel";
-import { CustomInputLabel as InputLabel } from "../../../../..components/Mui/CustomInputLabel";
+import { CustomMUIFormLabel as FormLabel } from "../../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../../components/Mui/CustomInputLabel";
 
 const consentType = [
   { label: "Pre study consent", value: "1" },

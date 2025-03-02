@@ -17,8 +17,8 @@ import Grid from "@mui/material/Grid";
 import axios from "axios";
 
 import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
-import { CustomMUIFormLabel as FormLabel } from "../../../../..components/Mui/CustomFormLabel";
-import { CustomInputLabel as InputLabel } from "../../../../..components/Mui/CustomInputLabel";
+import { CustomMUIFormLabel as FormLabel } from "../../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../../components/Mui/CustomInputLabel";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 

@@ -11,6 +11,10 @@ import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import { Box, TextField } from "@mui/material";
 
+import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../../components/Mui/CustomInputLabel";
+
 function SubmissionForm({ type }) {
   const [termsSelected, setTermsSelected] = React.useState(false);
   const initialValues = {
