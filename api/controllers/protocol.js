@@ -371,24 +371,84 @@ export const createProtocol = async (req, res) => {
 //   })
 // }
 
+// export const getProtocolList = (req, res) => {
+//   const { login_id, selectedStatus } = req.body
+//   const page = Number(req.body.page) || 0 // Default to page 0
+//   const pageSize = Number(req.body.pageSize) || 10 // Default to 10 records per page
+//   const offset = page * pageSize // Offset calculation based on 0-based index
+
+//   const countQuery =
+//     'SELECT COUNT(*) AS total FROM protocols WHERE added_by = ?'
+//   const dataQuery =
+//     'SELECT * FROM protocols WHERE added_by = ? ORDER BY id DESC LIMIT ? OFFSET ?'
+
+//   db.query(countQuery, [login_id], (err, countResult) => {
+//     if (err) return res.status(500).json({ error: err.message })
+
+//     const totalRecords = countResult[0].total
+//     const totalPages = Math.ceil(totalRecords / pageSize)
+
+//     db.query(dataQuery, [login_id, pageSize, offset], (err, data) => {
+//       if (err) return res.status(500).json({ error: err.message })
+
+//       return res.status(200).json({
+//         data,
+//         pagination: {
+//           currentPage: page, // Starts from 0
+//           totalPages,
+//           totalRecords,
+//           pageSize
+//         }
+//       })
+//     })
+//   })
+// }
+
 export const getProtocolList = (req, res) => {
-  const { login_id } = req.body
+  const { login_id, selectedStatus } = req.body
+  const status =
+    selectedStatus === 'Created'
+      ? 1
+      : selectedStatus === 'Under Review'
+        ? 2
+        : selectedStatus === 'Approved'
+          ? 3
+          : selectedStatus === 'Approved'
+            ? 4
+            : null
   const page = Number(req.body.page) || 0 // Default to page 0
   const pageSize = Number(req.body.pageSize) || 10 // Default to 10 records per page
   const offset = page * pageSize // Offset calculation based on 0-based index
 
-  const countQuery =
-    'SELECT COUNT(*) AS total FROM protocols WHERE added_by = ?'
-  const dataQuery =
-    'SELECT * FROM protocols WHERE added_by = ? ORDER BY id DESC LIMIT ? OFFSET ?'
+  // Base query to count the total protocols
+  let countQuery = 'SELECT COUNT(*) AS total FROM protocols WHERE added_by = ?'
+  let countParams = [login_id]
 
-  db.query(countQuery, [login_id], (err, countResult) => {
+  // Base query to fetch protocols
+  let dataQuery = 'SELECT * FROM protocols WHERE added_by = ?'
+  let dataParams = [login_id]
+
+  // Modify queries if selectedStatus is provided
+  if (selectedStatus !== 'All' && status !== null) {
+    countQuery += ' AND status = ?'
+    dataQuery += ' AND status = ?'
+    countParams.push(status)
+    dataParams.push(status)
+  }
+
+  // Add ORDER BY, LIMIT, and OFFSET clauses to data query
+  dataQuery += ' ORDER BY id DESC LIMIT ? OFFSET ?'
+  dataParams.push(pageSize, offset)
+
+  // Execute count query
+  db.query(countQuery, countParams, (err, countResult) => {
     if (err) return res.status(500).json({ error: err.message })
 
     const totalRecords = countResult[0].total
     const totalPages = Math.ceil(totalRecords / pageSize)
 
-    db.query(dataQuery, [login_id, pageSize, offset], (err, data) => {
+    // Execute data query
+    db.query(dataQuery, dataParams, (err, data) => {
       if (err) return res.status(500).json({ error: err.message })
 
       return res.status(200).json({

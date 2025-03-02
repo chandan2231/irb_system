@@ -27,6 +27,7 @@ import MultisiteChildProtocol from "./MultisiteAllProtocol";
 import CTMProtocolReport from "./CTMProtocolReport";
 import { uploadFile } from "../../services/UserManagement/UserService";
 import CommonModal from "../../components/CommonModal/Modal";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 function Dashboard() {
   const theme = useTheme();
@@ -47,9 +48,17 @@ function Dashboard() {
     page: 0,
     pageSize: 10,
   });
-  const [isAddProtocolModalOpen, setIsAddProtocolModalOpen] = React.useState(false);
+  const [isAddProtocolModalOpen, setIsAddProtocolModalOpen] =
+    React.useState(false);
   const [addProtocolData, setAddProtocolData] = React.useState(null);
-
+  const [options, setOptions] = useState("All");
+  const optionsList = [
+    "Created",
+    "Under Review",
+    "Approved",
+    "Rejected",
+    "All",
+  ];
   var totalElements = 0;
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -97,20 +106,24 @@ function Dashboard() {
       number_of_protocols: 0,
       error: {},
     });
-  }
+  };
 
   const handleCloseAddProtocolModal = () => {
     setIsAddProtocolModalOpen(false);
     setAddProtocolData(null);
-  }
+  };
 
   const handleSubmitForAddMoreProtocol = (data) => {
-    const { number_of_protocols } = data
+    const { number_of_protocols } = data;
 
     // Validate the number_of_protocols field.
 
     // Validate that number_of_protocols is not empty.
-    if (number_of_protocols === undefined || number_of_protocols === null || number_of_protocols === "") {
+    if (
+      number_of_protocols === undefined ||
+      number_of_protocols === null ||
+      number_of_protocols === ""
+    ) {
       setAddProtocolData({
         ...data,
         error: {
@@ -129,7 +142,8 @@ function Dashboard() {
         ...data,
         error: {
           ...data.error,
-          number_of_protocols: "Error: number_of_protocols should be a valid integer.",
+          number_of_protocols:
+            "Error: number_of_protocols should be a valid integer.",
         },
       });
       console.error("Error: number_of_protocols should be a valid integer.");
@@ -142,7 +156,8 @@ function Dashboard() {
         ...data,
         error: {
           ...data.error,
-          number_of_protocols: "Error: number_of_protocols cannot be less than 1.",
+          number_of_protocols:
+            "Error: number_of_protocols cannot be less than 1.",
         },
       });
       console.error("Error: number_of_protocols cannot be less than 1.");
@@ -155,7 +170,8 @@ function Dashboard() {
         ...data,
         error: {
           ...data.error,
-          number_of_protocols: "Error: number_of_protocols cannot be greater than 10.",
+          number_of_protocols:
+            "Error: number_of_protocols cannot be greater than 10.",
         },
       });
       console.error("Error: number_of_protocols cannot be greater than 10.");
@@ -172,8 +188,7 @@ function Dashboard() {
     console.log("data ====>", data, payload);
 
     // Call the API to add more protocols.
-  
-  }
+  };
 
   const getContentForAddMoreProtocol = () => {
     // show a number input
@@ -185,17 +200,23 @@ function Dashboard() {
           id="number_of_protocols"
           name="number_of_protocols"
           value={addProtocolData?.number_of_protocols}
-          onChange={(e) => setAddProtocolData({ ...addProtocolData, number_of_protocols: e.target.value })}
+          onChange={(e) =>
+            setAddProtocolData({
+              ...addProtocolData,
+              number_of_protocols: e.target.value,
+            })
+          }
           variant="outlined"
           type="number"
         />
         {addProtocolData?.error?.number_of_protocols && (
-          <div className="error">{addProtocolData.error.number_of_protocols}</div>
+          <div className="error">
+            {addProtocolData.error.number_of_protocols}
+          </div>
         )}
       </Box>
-    )
-  }
-
+    );
+  };
 
   const columns = [
     {
@@ -235,72 +256,72 @@ function Dashboard() {
       width: 80,
       getActions: (params) =>
         params.row.protocolStatus !== "Created" &&
-          params.row.researchType === "Multi-Site Sponsor" &&
-          params.row.isParent
+        params.row.researchType === "Multi-Site Sponsor" &&
+        params.row.isParent
           ? [
-            <GridActionsCellItem
-              icon={<PictureAsPdfIcon />}
-              label="View Pdf"
-              onClick={() => handleViewPdf(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<CompareArrowsIcon />}
-              label="Communication"
-              onClick={() => navigateToCommunicationDetails(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<CloudUploadIcon />}
-              label="Upload Document"
-              onClick={() => navigateToUploadDocument(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="View Clinical Site Protocol"
-              onClick={() => handleViewChildProtocol(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="Add More Clinical Site Protocol"
-              onClick={() => handleAddMoreClinicalSiteProtocol(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="View CTM Report"
-              onClick={() => handleViewCTMReport(params)}
-              showInMenu
-            />,
-          ]
+              <GridActionsCellItem
+                icon={<PictureAsPdfIcon />}
+                label="View Pdf"
+                onClick={() => handleViewPdf(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<CompareArrowsIcon />}
+                label="Communication"
+                onClick={() => navigateToCommunicationDetails(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<CloudUploadIcon />}
+                label="Upload Document"
+                onClick={() => navigateToUploadDocument(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View Clinical Site Protocol"
+                onClick={() => handleViewChildProtocol(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="Add More Clinical Site Protocol"
+                onClick={() => handleAddMoreClinicalSiteProtocol(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
+            ]
           : [
-            <GridActionsCellItem
-              icon={<PictureAsPdfIcon />}
-              label="View Pdf"
-              onClick={() => handleViewPdf(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<CompareArrowsIcon />}
-              label="Communication"
-              onClick={() => navigateToCommunicationDetails(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<CloudUploadIcon />}
-              label="Upload Document"
-              onClick={() => navigateToUploadDocument(params)}
-              showInMenu
-            />,
-            <GridActionsCellItem
-              icon={<PreviewIcon />}
-              label="View CTM Report"
-              onClick={() => handleViewCTMReport(params)}
-              showInMenu
-            />,
-          ],
+              <GridActionsCellItem
+                icon={<PictureAsPdfIcon />}
+                label="View Pdf"
+                onClick={() => handleViewPdf(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<CompareArrowsIcon />}
+                label="Communication"
+                onClick={() => navigateToCommunicationDetails(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<CloudUploadIcon />}
+                label="Upload Document"
+                onClick={() => navigateToUploadDocument(params)}
+                showInMenu
+              />,
+              <GridActionsCellItem
+                icon={<PreviewIcon />}
+                label="View CTM Report"
+                onClick={() => handleViewCTMReport(params)}
+                showInMenu
+              />,
+            ],
     },
   ];
 
@@ -317,9 +338,16 @@ function Dashboard() {
       page: paginationModel.page,
       pageSize: paginationModel.pageSize,
       login_id: user.id,
+      selectedStatus: options,
     };
     dispatch(fetchProtocolList(data));
-  }, [dispatch, user.id, paginationModel.page, paginationModel.pageSize]);
+  }, [
+    dispatch,
+    user.id,
+    paginationModel.page,
+    paginationModel.pageSize,
+    options,
+  ]);
 
   if (protocolList !== "" && protocolList?.length > 0) {
     totalElements = pagination?.totalRecords;
@@ -361,6 +389,8 @@ function Dashboard() {
         pListArr.push(protocolObject);
       });
       setProtocolDataList(pListArr);
+    } else {
+      setProtocolDataList();
     }
   }, [protocolList]);
 
@@ -480,6 +510,10 @@ function Dashboard() {
     }
   };
 
+  const handleChange = (event) => {
+    setOptions(event.target.value);
+  };
+
   if (loader) {
     return <Loader />;
   }
@@ -525,6 +559,34 @@ function Dashboard() {
               </Box>
             </Grid>
           </Grid>
+          {/* Dropdown for Role Selection */}
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            lg={12}
+            style={{ marginTop: "2rem" }}
+          >
+            <FormControl fullWidth className="mt-mb-10">
+              <InputLabel id="demo-simple-select-label">
+                Search By Protocol Status
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Search By Protocol Status"
+                value={options}
+                onChange={handleChange}
+              >
+                {optionsList.map((role, index) => (
+                  <MenuItem key={index} value={role}>
+                    {role}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
         </Box>
         <Box>
           <AddResearch
@@ -562,7 +624,6 @@ function Dashboard() {
           type="ctm"
         />
       </Box>
-
 
       <CommonModal
         open={isAddProtocolModalOpen}
