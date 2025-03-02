@@ -6,8 +6,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -19,6 +17,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
 import { useDispatch, useSelector } from "react-redux";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 
 const informedConsentInfoSchema = yup.object().shape({
   principal_investigator_name: yup.string().required("This is required"),
@@ -221,6 +221,7 @@ function InformedConsentForm({
                 name="principal_investigator_name"
                 onChange={handleChange}
                 value={formData.principal_investigator_name}
+                
               />
             </Box>
             {errors.principal_investigator_name && (
@@ -240,6 +241,7 @@ function InformedConsentForm({
                 name="site_address"
                 onChange={handleChange}
                 value={formData.site_address}
+                
               />
             </Box>
             {errors.site_address && (
@@ -275,6 +277,7 @@ function InformedConsentForm({
                 name="primary_phone"
                 onChange={handleChange}
                 value={formData.primary_phone}
+                
               />
             </Box>
             {errors.primary_phone && (
@@ -294,6 +297,7 @@ function InformedConsentForm({
                 name="always_primary_phone"
                 onChange={handleChange}
                 value={formData.always_primary_phone}
+                
               />
             </Box>
             {errors.always_primary_phone && (

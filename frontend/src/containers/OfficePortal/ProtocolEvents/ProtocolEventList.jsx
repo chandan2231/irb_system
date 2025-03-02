@@ -5,55 +5,91 @@ import Grid from "@mui/material/Grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CommonButton from "../../../components/CommonButton";
 import moment from "moment";
-import ToggleStatus from "../../../components/ToggleStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import LockResetIcon from "@mui/icons-material/LockReset";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import "react-toastify/dist/ReactToastify.css";
 import {
   fetchActiveVotingMemberList,
   fetchMemberEventList,
+  allowVoteForMember
 } from "../../../services/Admin/MembersService";
+import CommonModal from "../../../components/CommonModal/Modal";
+import { Chip } from "@mui/material";
+import { ToggleStatusForAllowVoting } from "../../../components/ToggleStatus";
+import EventDetails from "./EventDetails";
 
 function ProtocolEventList() {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
   const [userDataList, setUserDataList] = useState([]);
+  const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] =
+    React.useState(false);
+  const [viewDetailsData, setViewDetailsData] = React.useState(null);
+  const [confirmAllowVoting, setConfirmAllowVoting] = React.useState(false);
+  const [currentAllowVotingData, setCurrentAllowVotingData] = React.useState(null);
 
   const columns = [
     {
-      field: "protocol_id",
-      headerName: "Protocol Id",
+      field: "event_date_time",
+      headerName: "Event Date Time",
+      flex: 2,
+    },
+    {
+      field: "event_subject",
+      headerName: "Subject",
       flex: 1,
     },
     {
       field: "protocol_name",
-      headerName: "Protocol Name",
+      headerName: "Protocol",
       flex: 1,
     },
-    {
-      field: "event_subject",
-      headerName: "Event Subject",
-      flex: 1,
-    },
+
     {
       field: "members",
       headerName: "Members",
-      flex: 2,
+      flex: 1,
     },
     {
-      field: "status",
-      headerName: "Status",
-      width: 100,
+      field: "allowVoting",
+      headerName: "Allow Voting",
+      flex: 1,
+      renderCell: (params) => (
+        <ToggleStatusForAllowVoting
+          status={params.row.allowVoting}
+          onStatusChange={(newAllowVoting) => {
+            const payload = {
+              id: params.row.id,
+              allowVoting: newAllowVoting,
+              protocol_id: params.row.event_protocols,
+              params: params,
+            };
+            handleAllowVoteChange(payload);
+          }}
+        />
+      ),
+    },
+    {
+      field: "eventStatus",
+      headerName: "Event Status",
+      flex: 1,
+      renderCell: (params) => params.row.eventStatus,
     },
     {
       field: "createdDate",
       headerName: "Created Date",
+      flex: 1,
+    },
+    {
+      field: "updatedDate",
+      headerName: "Updated Date",
       flex: 1,
     },
 
@@ -62,42 +98,37 @@ function ProtocolEventList() {
       type: "actions",
       width: 80,
       getActions: (params) => [
-        // <GridActionsCellItem
-        //     icon={<LockResetIcon />}
-        //     label="Change Password"
-        //     onClick={() => handleChangePassword(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<DeleteIcon />}
-        //     label="Delete"
-        //     onClick={handleItemDelete(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<EditNoteIcon />}
-        //     label="Edit"
-        //     onClick={handleItemEdit(params)}
-        //     showInMenu
-        // />,
-        // <GridActionsCellItem
-        //     icon={<SettingsSuggestIcon />}
-        //     label="Details"
-        //     onClick={handleItemDetail(params)}
-        //     showInMenu
-        // />,
+        <GridActionsCellItem
+          icon={<VisibilityIcon />}
+          label="View Details"
+          onClick={() => handleViewDetails(params)}
+          showInMenu
+        />,
       ],
     },
   ];
+  const handleViewDetails = (params) => {
+    setIsViewDetailsModalOpen(true);
+    setViewDetailsData(params.row);
+  };
+  const handleCloseDetails = (params) => {
+    setIsViewDetailsModalOpen(false);
+    setViewDetailsData(null);
+  };
   var totalElements = 0;
-  const { memberEventList, loading, error, activeVotingMemberList } =
-    useSelector((state) => ({
-      error: state.member.error,
-      memberEventList: state.member.memberEventList,
-      loading: state.member.loading,
-      activeVotingMemberList: state.member.activeVotingMemberList,
-    }));
-
+  const {
+    memberEventList,
+    loading,
+    error,
+    activeVotingMemberList,
+    votingAllowedForMember,
+  } = useSelector((state) => ({
+    error: state.member.error,
+    memberEventList: state.member.memberEventList,
+    loading: state.member.loading,
+    activeVotingMemberList: state.member.activeVotingMemberList,
+    votingAllowedForMember: state.member.votingAllowedForMember,
+  }));
   if (memberEventList !== "" && memberEventList?.length > 0) {
     totalElements = memberEventList.totalElements;
   }
@@ -115,13 +146,15 @@ function ProtocolEventList() {
       memberEventList.map((uList, index) => {
         let listObject = {
           id: uList.id,
-          protocol_id: uList.protocol_id,
-          protocol_name: uList.protocol_name,
+          event_date_time: uList.event_date_with_time,
           event_subject: uList.event_subject,
-          members: uList.members,
-          status: uList.status === 1 ? "Pending" : "Completed",
+          protocol_name: uList.event_protocol_id_label,
+          members: uList.member_with_role,
           createdDate: moment(uList.created_date).format("DD MMM YYYY"),
+          allowVoting: Number(uList.allow_voting),
+          eventStatus: <EventStatusLabel status={uList.status} />,
           updatedDate: moment(uList.updated_date).format("DD MMM YYYY"),
+          event_protocols: uList.event_protocols,
         };
         uListArr.push(listObject);
       });
@@ -147,13 +180,111 @@ function ProtocolEventList() {
     dispatch(fetchActiveVotingMemberList());
   }, [dispatch]);
 
-  // const handleItemDetail = (params) => {
-  //     //console.log('Details Item', params)
-  // }
+  useEffect(() => {
+    dispatch(fetchMemberEventList());
+  }, [dispatch, votingAllowedForMember]);
 
-  // const handleItemEdit = (params) => {
-  //     //console.log('Edit Item', params)
-  // }
+  const navigateToaddNewEvent = (params) => {
+    navigate("/admin/add-event");
+  };
+
+
+  const handleAllowVotingModalOpen = (status) => {
+    setConfirmAllowVoting(true);
+    setCurrentAllowVotingData(status);
+  }
+
+  const handleAllowVotingModalClose = () => {
+    setConfirmAllowVoting(false);
+    setCurrentAllowVotingData(null);
+  }
+
+  const handleAllowVoteChange = (status) => {
+    //  if allow voting is 1, than disable it
+    const { params } = status;
+    const { allowVoting } = params.row;
+    console.log("allowVoting", allowVoting);
+
+    if (Number(allowVoting) === 2) {
+      return
+    }
+
+    // open modal to allow voting
+    return handleAllowVotingModalOpen(status);
+  };
+
+  const handleSubmitForAllowVoting = (status) => {
+    console.log("handleSubmitForAllowVoting ====> ", status);
+    // return;
+    let data = {
+      id: status?.id,
+      allow_voting: status?.allowVoting,
+      protocol_id: status?.protocol_id,
+    };
+    // return
+    dispatch(allowVoteForMember(data)).then((data) => {
+      console.log("data ====>", data);
+      if (data.payload.status === 200) {
+        toast.success(data.payload.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        handleAllowVotingModalClose();
+      } else {
+        toast.error(data.payload.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        handleAllowVotingModalClose();
+      }
+    });
+  }
+
+  const EventStatusLabel = ({ status }) => {
+    const statusLabel = status === 1 ? "Pending" : "Completed";
+    const color = status === 1 ? "primary" : "success"; // "primary" for Pending, "success" for Completed
+
+    return (
+      <Chip
+        label={statusLabel}
+        color={color}
+        style={{ textTransform: "capitalize" }} // Optional, to make the first letter capitalized
+      />
+    );
+  };
+
+  const getContentForVotingForMember = () => {
+    return (
+      <Box>
+        <Typography variant="h6" gutterBottom
+          sx={{ fontSize: "20px" }}
+        >
+          Are you sure you want to allow voting for members?
+        </Typography>
+        <Typography variant="h6" gutterBottom
+          style={{ color: "red" }}
+          sx={{ fontSize: "20px" }}
+        >
+          *Once you allowed voting, it can't be reverted back.
+        </Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: "20px" }}>
+          Event Date Time: {currentAllowVotingData?.params?.row?.event_date_time}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -175,14 +306,26 @@ function ProtocolEventList() {
             {/* Title Grid Item */}
             <Grid item xs={12} sm={8} md={8} lg={8}>
               <Typography
-                variant="h5"
-                mb={2}
+                variant="h2"
                 sx={{
-                  fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem" },
+                  textAlign: "left",
+                  fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                  fontWeight: "bold",
                 }}
               >
                 Protocol Meeting Events List
               </Typography>
+            </Grid>
+            <Grid item xs={12} sm={12} md={4} lg={4}>
+              <Box display="flex" justifyContent="flex-end">
+                <CommonButton
+                  variant="contained"
+                  startIcon={<AddOutlinedIcon />}
+                  onClick={() => navigateToaddNewEvent()}
+                >
+                  Schedule Meeting
+                </CommonButton>
+              </Box>
             </Grid>
           </Grid>
         </Box>
@@ -191,12 +334,34 @@ function ProtocolEventList() {
           <DataGrid
             rows={userDataList}
             columns={columns}
-            rowCount={rowCount}
-            loading={loading}
+            pageSize={10}
+            rowCount={userDataList.length}
+            loading={false}
             paginationMode="server"
-            onCellClick={(param) => handleChangeStatus(param)}
+            disableSelectionOnClick
+            autoHeight
           />
         </Box>
+        {viewDetailsData !== null && (
+          <Box>
+            <EventDetails
+              open={isViewDetailsModalOpen}
+              data={viewDetailsData}
+              onClose={() => handleCloseDetails()}
+              type="view_event_details"
+            />
+          </Box>
+        )}
+
+        <CommonModal
+          open={confirmAllowVoting}
+          onClose={() => handleAllowVotingModalClose()}
+          title="Allow Voting"
+          subTitle=""
+          content={getContentForVotingForMember()}
+          onSubmit={() => handleSubmitForAllowVoting(currentAllowVotingData)}
+        />
+
       </Box>
     </>
   );

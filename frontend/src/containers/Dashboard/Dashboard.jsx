@@ -5,7 +5,7 @@ import {
   createProtocol,
   fetchProtocolList,
 } from "../../services/Dashboard/DashboardService";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import Grid from "@mui/material/Grid";
@@ -26,6 +26,7 @@ import PreviewIcon from "@mui/icons-material/Preview";
 import MultisiteChildProtocol from "./MultisiteAllProtocol";
 import CTMProtocolReport from "./CTMProtocolReport";
 import { uploadFile } from "../../services/UserManagement/UserService";
+import CommonModal from "../../components/CommonModal/Modal";
 
 function Dashboard() {
   const theme = useTheme();
@@ -46,6 +47,9 @@ function Dashboard() {
     page: 0,
     pageSize: 10,
   });
+  const [isAddProtocolModalOpen, setIsAddProtocolModalOpen] = React.useState(false);
+  const [addProtocolData, setAddProtocolData] = React.useState(null);
+
   var totalElements = 0;
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("user"));
@@ -85,6 +89,114 @@ function Dashboard() {
     setIsViewCTMModalOpen(false);
     setViewCTMProtocolData(null);
   };
+
+  const handleAddMoreClinicalSiteProtocol = (params) => {
+    setIsAddProtocolModalOpen(true);
+    setAddProtocolData({
+      ...params,
+      number_of_protocols: 0,
+      error: {},
+    });
+  }
+
+  const handleCloseAddProtocolModal = () => {
+    setIsAddProtocolModalOpen(false);
+    setAddProtocolData(null);
+  }
+
+  const handleSubmitForAddMoreProtocol = (data) => {
+    const { number_of_protocols } = data
+
+    // Validate the number_of_protocols field.
+
+    // Validate that number_of_protocols is not empty.
+    if (number_of_protocols === undefined || number_of_protocols === null || number_of_protocols === "") {
+      setAddProtocolData({
+        ...data,
+        error: {
+          ...data.error,
+          number_of_protocols: "Error: number_of_protocols cannot be empty.",
+        },
+      });
+      return;
+    }
+
+    // Validate that number_of_protocols is a valid integer.
+    const parsedNumber = parseInt(number_of_protocols, 10);
+
+    if (isNaN(parsedNumber)) {
+      setAddProtocolData({
+        ...data,
+        error: {
+          ...data.error,
+          number_of_protocols: "Error: number_of_protocols should be a valid integer.",
+        },
+      });
+      console.error("Error: number_of_protocols should be a valid integer.");
+      return;
+    }
+
+    // Validate that number_of_protocols is not less than 1.
+    if (parsedNumber < 1) {
+      setAddProtocolData({
+        ...data,
+        error: {
+          ...data.error,
+          number_of_protocols: "Error: number_of_protocols cannot be less than 1.",
+        },
+      });
+      console.error("Error: number_of_protocols cannot be less than 1.");
+      return;
+    }
+
+    // Validate that number_of_protocols is less than or equal to 10.
+    if (parsedNumber > 10) {
+      setAddProtocolData({
+        ...data,
+        error: {
+          ...data.error,
+          number_of_protocols: "Error: number_of_protocols cannot be greater than 10.",
+        },
+      });
+      console.error("Error: number_of_protocols cannot be greater than 10.");
+      return;
+    }
+
+    const payload = {
+      rowId: data.row.id,
+      addMoreProtocolCount: parsedNumber,
+      protocolTitle: data.row.researchType,
+      protocolNumber: data.row.protocolId,
+    };
+
+    console.log("data ====>", data, payload);
+
+    // Call the API to add more protocols.
+  
+  }
+
+  const getContentForAddMoreProtocol = () => {
+    // show a number input
+    return (
+      <Box sx={{ width: "100%", maxWidth: "100%" }}>
+        <TextField
+          fullWidth
+          label="Number of Protocols"
+          id="number_of_protocols"
+          name="number_of_protocols"
+          value={addProtocolData?.number_of_protocols}
+          onChange={(e) => setAddProtocolData({ ...addProtocolData, number_of_protocols: e.target.value })}
+          variant="outlined"
+          type="number"
+        />
+        {addProtocolData?.error?.number_of_protocols && (
+          <div className="error">{addProtocolData.error.number_of_protocols}</div>
+        )}
+      </Box>
+    )
+  }
+
+
   const columns = [
     {
       field: "protocolId",
@@ -123,66 +235,72 @@ function Dashboard() {
       width: 80,
       getActions: (params) =>
         params.row.protocolStatus !== "Created" &&
-        params.row.researchType === "Multi-Site Sponsor" &&
-        params.row.isParent
+          params.row.researchType === "Multi-Site Sponsor" &&
+          params.row.isParent
           ? [
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CloudUploadIcon />}
-                label="Upload Document"
-                onClick={() => navigateToUploadDocument(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View Clinical Site Protocol"
-                onClick={() => handleViewChildProtocol(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View CTM Report"
-                onClick={() => handleViewCTMReport(params)}
-                showInMenu
-              />,
-            ]
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CloudUploadIcon />}
+              label="Upload Document"
+              onClick={() => navigateToUploadDocument(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View Clinical Site Protocol"
+              onClick={() => handleViewChildProtocol(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="Add More Clinical Site Protocol"
+              onClick={() => handleAddMoreClinicalSiteProtocol(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View CTM Report"
+              onClick={() => handleViewCTMReport(params)}
+              showInMenu
+            />,
+          ]
           : [
-              <GridActionsCellItem
-                icon={<PictureAsPdfIcon />}
-                label="View Pdf"
-                onClick={() => handleViewPdf(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CompareArrowsIcon />}
-                label="Communication"
-                onClick={() => navigateToCommunicationDetails(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<CloudUploadIcon />}
-                label="Upload Document"
-                onClick={() => navigateToUploadDocument(params)}
-                showInMenu
-              />,
-              <GridActionsCellItem
-                icon={<PreviewIcon />}
-                label="View CTM Report"
-                onClick={() => handleViewCTMReport(params)}
-                showInMenu
-              />,
-            ],
+            <GridActionsCellItem
+              icon={<PictureAsPdfIcon />}
+              label="View Pdf"
+              onClick={() => handleViewPdf(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CompareArrowsIcon />}
+              label="Communication"
+              onClick={() => navigateToCommunicationDetails(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<CloudUploadIcon />}
+              label="Upload Document"
+              onClick={() => navigateToUploadDocument(params)}
+              showInMenu
+            />,
+            <GridActionsCellItem
+              icon={<PreviewIcon />}
+              label="View CTM Report"
+              onClick={() => handleViewCTMReport(params)}
+              showInMenu
+            />,
+          ],
     },
   ];
 
@@ -444,6 +562,16 @@ function Dashboard() {
           type="ctm"
         />
       </Box>
+
+
+      <CommonModal
+        open={isAddProtocolModalOpen}
+        onClose={() => handleCloseAddProtocolModal()}
+        title="Add More Clinical Site Protocol"
+        subTitle=""
+        content={getContentForAddMoreProtocol()}
+        onSubmit={() => handleSubmitForAddMoreProtocol(addProtocolData)}
+      />
     </>
   );
 }

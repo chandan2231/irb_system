@@ -4,7 +4,6 @@ import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +21,10 @@ import StarBorder from "@mui/icons-material/StarBorder";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import ApiCall from "../../../../utility/ApiCall";
-import { Box, FormGroup, TextField } from "@mui/material";
+import { Box, FormGroup } from "@mui/material";
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 

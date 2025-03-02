@@ -4,12 +4,16 @@ import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
-import { Box, TextField } from "@mui/material";
+import { Box } from "@mui/material";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../../components/Mui/CustomInputLabel";
+
 
 function SubmissionForm({ type }) {
   const [termsSelected, setTermsSelected] = React.useState(false);

@@ -6,9 +6,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -24,6 +21,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -483,6 +483,8 @@ function InvestigatorInformationForm({
                 name="investigator_name"
                 value={formData.investigator_name || ""}
                 onChange={handleChange}
+                
+
               />
             </Box>
             {errors.investigator_name && (
@@ -502,6 +504,8 @@ function InvestigatorInformationForm({
                 name="investigator_email"
                 value={formData.investigator_email || ""}
                 onChange={handleChange}
+                
+
               />
             </Box>
             {errors.investigator_email && (
@@ -611,6 +615,8 @@ function InvestigatorInformationForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
+                  
+
                 />
               </Box>
               {errors.fda_audit_explain && (
@@ -774,6 +780,8 @@ function InvestigatorInformationForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
+                  
+
                 />
               </Box>
               {errors.training_completed_explain && (
@@ -842,6 +850,8 @@ function InvestigatorInformationForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
+                  
+
                 />
               </Box>
               {errors.pending_or_active_research_explain && (
@@ -883,6 +893,8 @@ function InvestigatorInformationForm({
                   name="fwa_number"
                   value={formData.fwa_number || ""}
                   onChange={handleChange}
+                  
+
                 />
               </Box>
               {errors.fwa_number && (

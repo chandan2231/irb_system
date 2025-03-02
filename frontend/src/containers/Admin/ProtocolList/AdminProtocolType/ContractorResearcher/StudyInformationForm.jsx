@@ -3,11 +3,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -17,6 +13,11 @@ import { createStudyInformation } from "../../../../../services/ProtocolType/Con
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../../../components/Mui/CustomSelectWrapper"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -92,10 +93,11 @@ function StudyInformationForm({ protocolTypeDetails, studyInformation, type }) {
       <form onSubmit={handleSubmitData}>
         <Form.Group as={Col} controlId="validationFormik09">
           <FormControl fullWidth className="mt-mb-20">
-            <InputLabel id="demo-simple-select-label">
+            {/* <InputLabel id="demo-simple-select-label">
               What type of research study are you submitting *
-            </InputLabel>
+            </InputLabel> */}
             <Select
+            inputLabel={"What type of research study are you submitting *"}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={studyInformation?.research_type}
