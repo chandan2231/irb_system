@@ -7,7 +7,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Form from "react-bootstrap/Form";
 import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -22,9 +21,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../../components/Loader";
 import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolListService";
+
 import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../../components/Mui/CustomSelectWrapper"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -412,7 +413,7 @@ function ProtocolInformationForm({
                       multiline
                       onChange={handleChange}
                       value={formData.disapproved_or_withdrawn_explain}
-                      
+
 
                     />
                   </Box>
@@ -467,7 +468,7 @@ function ProtocolInformationForm({
                       multiline
                       onChange={handleChange}
                       value={formData.oversite_explain}
-                      
+
 
                     />
                   </Box>
@@ -491,7 +492,7 @@ function ProtocolInformationForm({
                 name="protocol_title"
                 onChange={handleChange}
                 value={formData.protocol_title}
-                
+
 
               />
             </Box>
@@ -512,7 +513,7 @@ function ProtocolInformationForm({
                 name="protocol_number"
                 onChange={handleChange}
                 value={formData.protocol_number}
-                
+
 
               />
             </Box>
@@ -533,7 +534,7 @@ function ProtocolInformationForm({
                 name="sponsor"
                 onChange={handleChange}
                 value={formData.sponsor}
-                
+
 
               />
             </Box>
@@ -560,10 +561,11 @@ function ProtocolInformationForm({
           </Form.Group>
           <Form.Group as={Col} controlId="validationFormik09">
             <FormControl fullWidth className="mt-mb-20">
-              <InputLabel id="demo-simple-select-label">
+              {/* <InputLabel id="demo-simple-select-label">
                 Funding source *
-              </InputLabel>
+              </InputLabel> */}
               <Select
+                inputLabel={"Funding source *"}
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Funding source"
