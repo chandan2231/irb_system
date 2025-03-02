@@ -14,12 +14,12 @@ import "react-toastify/dist/ReactToastify.css";
 import EventDetails from "./EventDetails";
 import { ToggleStatusForAllowVoting } from "../../../components/ToggleStatus";
 import { Chip } from "@mui/material";
-
 import {
   fetchActiveVotingMemberList,
   fetchMemberEventList,
   allowVoteForMember,
 } from "../../../services/Admin/MembersService";
+import CommonModal from "../../../components/CommonModal/Modal";
 
 function ProtocolEventList() {
   const theme = useTheme();
@@ -32,6 +32,8 @@ function ProtocolEventList() {
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] =
     React.useState(false);
   const [viewDetailsData, setViewDetailsData] = React.useState(null);
+  const [confirmAllowVoting, setConfirmAllowVoting] = React.useState(false);
+  const [currentAllowVotingData, setCurrentAllowVotingData] = React.useState(null);
 
   const columns = [
     {
@@ -67,6 +69,7 @@ function ProtocolEventList() {
               id: params.row.id,
               allowVoting: newAllowVoting,
               protocol_id: params.row.event_protocols,
+              params: params,
             };
             handleAllowVoteChange(payload);
           }}
@@ -185,14 +188,40 @@ function ProtocolEventList() {
     navigate("/admin/add-event");
   };
 
+
+  const handleAllowVotingModalOpen = (status) => {
+    setConfirmAllowVoting(true);
+    setCurrentAllowVotingData(status);
+  }
+
+  const handleAllowVotingModalClose = () => {
+    setConfirmAllowVoting(false);
+    setCurrentAllowVotingData(null);
+  }
+
   const handleAllowVoteChange = (status) => {
-    // console.log("status", status);
+    //  if allow voting is 1, than disable it
+    const { params } = status;
+    const { allowVoting } = params.row;
+    console.log("allowVoting", allowVoting);
+
+    if (Number(allowVoting) === 2) {
+      return
+    }
+
+    // open modal to allow voting
+    return handleAllowVotingModalOpen(status);
+  };
+
+  const handleSubmitForAllowVoting = (status) => {
+    console.log("handleSubmitForAllowVoting ====> ", status);
     // return;
     let data = {
-      id: status.id,
-      allow_voting: status.allowVoting,
-      protocol_id: status.protocol_id,
+      id: status?.id,
+      allow_voting: status?.allowVoting,
+      protocol_id: status?.protocol_id,
     };
+    // return
     dispatch(allowVoteForMember(data)).then((data) => {
       console.log("data ====>", data);
       if (data.payload.status === 200) {
@@ -206,6 +235,7 @@ function ProtocolEventList() {
           progress: undefined,
           theme: "dark",
         });
+        handleAllowVotingModalClose();
       } else {
         toast.error(data.payload.message, {
           position: "top-right",
@@ -217,9 +247,10 @@ function ProtocolEventList() {
           progress: undefined,
           theme: "dark",
         });
+        handleAllowVotingModalClose();
       }
     });
-  };
+  }
 
   const EventStatusLabel = ({ status }) => {
     const statusLabel = status === 1 ? "Pending" : "Completed";
@@ -233,6 +264,27 @@ function ProtocolEventList() {
       />
     );
   };
+
+  const getContentForVotingForMember = () => {
+    return (
+      <Box>
+        <Typography variant="h6" gutterBottom
+          sx={{ fontSize: "20px" }}
+        >
+          Are you sure you want to allow voting for members?
+        </Typography>
+        <Typography variant="h6" gutterBottom
+          style={{ color: "red" }}
+          sx={{ fontSize: "20px" }}
+        >
+          *Once you allowed voting, it can't be reverted back.
+        </Typography>
+        <Typography variant="h6" gutterBottom sx={{ fontSize: "20px" }}>
+          Event Date Time: {currentAllowVotingData?.params?.row?.event_date_time}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -300,6 +352,16 @@ function ProtocolEventList() {
             />
           </Box>
         )}
+
+        <CommonModal
+          open={confirmAllowVoting}
+          onClose={() => handleAllowVotingModalClose()}
+          title="Allow Voting"
+          subTitle=""
+          content={getContentForVotingForMember()}
+          onSubmit={() => handleSubmitForAllowVoting(currentAllowVotingData)}
+        />
+
       </Box>
     </>
   );
