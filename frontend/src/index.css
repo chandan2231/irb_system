@@ -123,3 +123,11 @@ body,
   border: 1px solid #000;
   padding: 8px;
 }
+
+
+.MuiInputLabel-root.Mui-focused {
+  color: red !important;
+  font-size: 28px !important;
+  background: white !important;
+  margin-top: -6px !important;
+}
