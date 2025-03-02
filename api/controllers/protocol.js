@@ -413,7 +413,7 @@ export const getProtocolList = (req, res) => {
         ? 2
         : selectedStatus === 'Approved'
           ? 3
-          : selectedStatus === 'Approved'
+          : selectedStatus === 'Rejected'
             ? 4
             : null
   const page = Number(req.body.page) || 0 // Default to page 0
