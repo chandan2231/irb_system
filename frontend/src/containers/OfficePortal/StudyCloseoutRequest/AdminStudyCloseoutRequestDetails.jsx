@@ -4,9 +4,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import * as yup from "yup";
@@ -17,6 +15,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchStudyCloseoutRequestDetailsById } from "../../../services/Admin/EventAndRequestService";
 import moment from "moment";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../components/Mui/CustomSelectWrapper"
+import { CustomDatePickerWrapper as DatePicker } from "../../../components/Mui/CustomDatePickerWrapper";
 
 const studyCloseSchema = yup.object().shape({
   protocol_number: yup.string().required("This is required"),
@@ -398,24 +402,24 @@ function AdminStudyCloseoutRequestDetails() {
               </Form.Group>
               {studyCloseoutRequestDetailsById[0]?.study_closeout_reason ===
                 "Other" && (
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-20"
-                >
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Explain *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        studyCloseoutRequestDetailsById[0]
-                          ?.study_closeout_reason_other
-                      }
-                    </p>
-                  </Box>
-                </Form.Group>
-              )}
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Explain *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          studyCloseoutRequestDetailsById[0]
+                            ?.study_closeout_reason_other
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
               <Form.Group
                 as={Col}
                 controlId="validationFormik08"
@@ -566,24 +570,24 @@ function AdminStudyCloseoutRequestDetails() {
               </Form.Group>
               {studyCloseoutRequestDetailsById[0]?.subject_complaints_review ===
                 "Yes" && (
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-20"
-                >
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Explain *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        studyCloseoutRequestDetailsById[0]
-                          ?.subject_complaints_review_explain
-                      }
-                    </p>
-                  </Box>
-                </Form.Group>
-              )}
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Explain *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          studyCloseoutRequestDetailsById[0]
+                            ?.subject_complaints_review_explain
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
               <Form.Group
                 as={Col}
                 controlId="validationFormik01"
@@ -622,26 +626,26 @@ function AdminStudyCloseoutRequestDetails() {
               </Form.Group>
               {studyCloseoutRequestDetailsById[0]?.not_reported_irb ===
                 "Yes" && (
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-20"
-                >
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Please explain the changes, what document(s) were changed,
-                      the reason for the change(s), and why they were not
-                      reported to the IRB *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        studyCloseoutRequestDetailsById[0]
-                          ?.not_reported_irb_explain
-                      }
-                    </p>
-                  </Box>
-                </Form.Group>
-              )}
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Please explain the changes, what document(s) were changed,
+                        the reason for the change(s), and why they were not
+                        reported to the IRB *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          studyCloseoutRequestDetailsById[0]
+                            ?.not_reported_irb_explain
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
               <Form.Group
                 as={Col}
                 controlId="validationFormik01"

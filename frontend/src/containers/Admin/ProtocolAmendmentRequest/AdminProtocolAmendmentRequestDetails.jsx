@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import Col from "react-bootstrap/Col";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
@@ -16,6 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { CustomDatePickerWrapper as DatePicker } from "../../../components/Mui/CustomDatePickerWrapper";
+import { CustomInputLabel as InputLabel } from "../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../components/Mui/CustomSelectWrapper"
 
 const amendDocumentType = [
   { label: "Protocol", value: "1" },
@@ -72,7 +75,7 @@ function AdminProtocolAmendmentRequestDetails() {
           }
         });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const { protocolAmendmentRequestById, loading, error } = useSelector(

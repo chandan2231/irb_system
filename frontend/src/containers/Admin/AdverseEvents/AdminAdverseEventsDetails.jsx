@@ -5,9 +5,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
 import { fetchAdverseEventById } from "../../../services/Admin/EventAndRequestService";
@@ -19,6 +17,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormGroup from "@mui/material/FormGroup";
 import moment from "moment";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../components/Mui/CustomSelectWrapper"
+import { CustomDatePickerWrapper as DatePicker } from "../../../components/Mui/CustomDatePickerWrapper";
 
 const adverseEventSchema = yup.object().shape({
   protocol_number: yup.string().required("This is required"),
@@ -114,7 +118,7 @@ function AdminAdverseEventsDetails() {
           }
         });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const { adverseEventById, loading, error } = useSelector((state) => ({
     error: state.admin.error,

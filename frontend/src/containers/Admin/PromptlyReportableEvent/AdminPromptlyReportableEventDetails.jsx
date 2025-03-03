@@ -4,11 +4,9 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
 import { Box, useTheme } from "@mui/material";
@@ -18,10 +16,16 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { fetchPromptlyReportableEventById } from "../../../services/Admin/EventAndRequestService";
 import moment from "moment";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../components/Mui/CustomSelectWrapper"
+import { CustomDatePickerWrapper as DatePicker } from "../../../components/Mui/CustomDatePickerWrapper";
 
 const promptlyReportableSchema = yup.object().shape({
   submitter_type: yup.string().required("This is required"),
@@ -436,24 +440,24 @@ function AdminPromptlyReportableEventDetails() {
               </Form.Group>
               {promptlyReportableEventById[0]?.described_category ===
                 "Other" && (
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-20"
-                >
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Explain *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        promptlyReportableEventById[0]
-                          ?.described_category_explain
-                      }
-                    </p>
-                  </Box>
-                </Form.Group>
-              )}
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Explain *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          promptlyReportableEventById[0]
+                            ?.described_category_explain
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
               <Form.Group
                 as={Col}
                 controlId="validationFormik02"
