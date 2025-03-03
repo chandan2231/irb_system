@@ -1,8 +1,9 @@
 import React from "react";
 import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const CustomMUITextField = styled(TextField, {
+const CustomDatePickerTextField = styled(DatePicker, {
   shouldForwardProp: (prop) => prop !== "hasAsterisk" && prop !== "filled",
 })(({ theme, hasAsterisk, filled }) => ({
   "& .MuiOutlinedInput-root": {
@@ -36,9 +37,9 @@ const CustomMUITextField = styled(TextField, {
   },
 }));
 
-CustomMUITextField.defaultProps = {};
+CustomDatePickerTextField.defaultProps = {};
 
-export const CustomMUITextFieldWrapper = (props) => {
+export const CustomDatePickerWrapper = (props) => {
   //    if props.label have * than hasAsterisk is true
 
   const getHasAsterisk = (label) => {
@@ -49,7 +50,7 @@ export const CustomMUITextFieldWrapper = (props) => {
   };
 
   return (
-    <CustomMUITextField
+    <CustomDatePickerTextField
       {...props}
       filled={Boolean(props.value) ?? false}
       hasAsterisk={getHasAsterisk(String(props.label) ?? "")}

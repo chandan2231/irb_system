@@ -4,11 +4,9 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
 import { Box, useTheme } from "@mui/material";
@@ -19,8 +17,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { createPromptlyReportableEvent } from "../../services/EventAndRequest/EventAndRequestService";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
+import { CustomDatePickerWrapper as DatePicker } from "../../components/Mui/CustomDatePickerWrapper";
 
 const promptlyReportableSchema = yup.object().shape({
   submitter_type: yup.string().required("This is required"),
@@ -138,7 +139,7 @@ function PromptlyReportableEventDetails() {
       // }
       const getValidatedform = await promptlyReportableSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid = await promptlyReportableSchema.isValid(getValidatedform);
       // const isValid = true
@@ -169,7 +170,7 @@ function PromptlyReportableEventDetails() {
                 theme: "dark",
               });
             }
-          },
+          }
         );
       }
     } catch (error) {
@@ -180,7 +181,7 @@ function PromptlyReportableEventDetails() {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({

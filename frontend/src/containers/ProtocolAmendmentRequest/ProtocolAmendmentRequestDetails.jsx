@@ -3,9 +3,7 @@ import Col from "react-bootstrap/Col";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -21,6 +19,8 @@ import { useLocation } from "react-router-dom";
 import { uploadFile } from "../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -83,7 +83,7 @@ function ProtocolAmendmentRequestDetails() {
       amendDocTypeChecked.push(value);
     } else {
       amendDocTypeChecked = amendDocTypeChecked.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
     }
     setFormData({ ...formData, amend_document: amendDocTypeChecked });
@@ -108,7 +108,7 @@ function ProtocolAmendmentRequestDetails() {
       }
       const getValidatedform = await protocoalAmendmentSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid = await protocoalAmendmentSchema.isValid(getValidatedform);
       // const isValid = true
@@ -157,7 +157,7 @@ function ProtocolAmendmentRequestDetails() {
                 theme: "dark",
               });
             }
-          },
+          }
         );
       }
     } catch (error) {
@@ -168,7 +168,7 @@ function ProtocolAmendmentRequestDetails() {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({

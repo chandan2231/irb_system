@@ -4,9 +4,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -19,8 +17,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
+import { CustomDatePickerWrapper as DatePicker } from "../../components/Mui/CustomDatePickerWrapper";
 
 const studyCloseSchema = yup.object().shape({
   protocol_number: yup.string().required("This is required"),
@@ -153,7 +154,7 @@ function StudyCloseoutRequestDetails() {
       event.target.value === "Yes"
     ) {
       setShowErrorMsgPromptlyReportableNotSubmitted(
-        "you must complete a Promptly Reportable Information submission",
+        "you must complete a Promptly Reportable Information submission"
       );
     } else if (
       radio_name === "promptly_reportable_info" &&
@@ -167,7 +168,7 @@ function StudyCloseoutRequestDetails() {
   const handleAdverseEventInfo = (event, radio_name) => {
     if (radio_name === "adverse_event_info" && event.target.value === "Yes") {
       setShowErrorMsgAdverseEventNotSubmitted(
-        "you must complete and submit an Adverse Event report",
+        "you must complete and submit an Adverse Event report"
       );
     } else if (
       radio_name === "adverse_event_info" &&
@@ -244,7 +245,7 @@ function StudyCloseoutRequestDetails() {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -541,7 +542,7 @@ function StudyCloseoutRequestDetails() {
                 onChange={(event) =>
                   handleSubjectComplainsReview(
                     event,
-                    "subject_complaints_review",
+                    "subject_complaints_review"
                   )
                 }
               >
@@ -645,7 +646,7 @@ function StudyCloseoutRequestDetails() {
                 onChange={(event) =>
                   handlePromptlyReportableInfo(
                     event,
-                    "promptly_reportable_info",
+                    "promptly_reportable_info"
                   )
                 }
               >

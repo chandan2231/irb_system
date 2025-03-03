@@ -75,7 +75,7 @@ const ContinuingReviewDetails = () => {
       continuinReviewDetailsById:
         state.continuinReview.continuinReviewDetailsById,
       loading: state.continuinReview.loading,
-    }),
+    })
   );
 
   console.log("continuinReviewDetails", {
