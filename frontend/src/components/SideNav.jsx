@@ -18,12 +18,14 @@ import FormatListBulletedOutlinedIcon from "@mui/icons-material/FormatListBullet
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 function SideNav() {
   const theme = useTheme();
   const location = useLocation();
   const dispatch = useDispatch();
-  const userDetails = JSON.parse(localStorage.getItem("user"))
+  const userDetails = JSON.parse(localStorage.getItem("user"));
   const { approvedProtocolListCount, loading, error } = useSelector(
     (state) => ({
       error: state.dashboard.error,
@@ -186,7 +188,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/admin/continuin-review-list" ||
-                  location.pathname === "/admin/continuin-review-details"
+                location.pathname === "/admin/continuin-review-details"
                   ? true
                   : false
               }
@@ -202,13 +204,13 @@ function SideNav() {
             </MenuItem>
             <SubMenu
               label="Event And Request"
-              icon={<AddBusinessOutlinedIcon />}
+              icon={<ListAltIcon />}
               style={{ fontWeight: "900", fontSize: "0.9rem" }}
             >
               <MenuItem
                 active={
                   location.pathname === "/admin/protocol-amendment-request" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/protocol-amendment-request-details"
                     ? true
                     : false
@@ -225,7 +227,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/adverse-events" ||
-                    location.pathname === "/admin/adverse-events-details"
+                  location.pathname === "/admin/adverse-events-details"
                     ? true
                     : false
                 }
@@ -241,7 +243,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/promptly-reportable-event" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/promptly-reportable-event-details"
                     ? true
                     : false
@@ -258,7 +260,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/study-close-request" ||
-                    location.pathname === "/admin/study-close-request-details"
+                  location.pathname === "/admin/study-close-request-details"
                     ? true
                     : false
                 }
@@ -278,12 +280,12 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/dashboard" ||
-                  location.pathname === "/protocol-details"
+                location.pathname === "/protocol-details"
                   ? true
                   : false
               }
               component={<Link to="/dashboard" />}
-              icon={<AddBusinessOutlinedIcon />}
+              icon={<ListAltIcon />}
             >
               <Typography
                 variant="body2"
@@ -299,12 +301,12 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/continuin-review" ||
-                        location.pathname === "/continuin-review-details"
+                      location.pathname === "/continuin-review-details"
                         ? true
                         : false
                     }
                     component={<Link to="/continuin-review" />}
-                    icon={<GroupAddOutlinedIcon />}
+                    icon={<ListAltIcon />}
                   >
                     <Typography
                       variant="body2"
@@ -316,13 +318,13 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/protocol-amendment-request" ||
-                        location.pathname ===
+                      location.pathname ===
                         "/protocol-amendment-request-details"
                         ? true
                         : false
                     }
                     component={<Link to="/protocol-amendment-request" />}
-                    icon={<AddBusinessOutlinedIcon />}
+                    icon={<ListAltIcon />}
                   >
                     <Typography
                       variant="body2"
@@ -334,12 +336,12 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/adverse-events" ||
-                        location.pathname === "/adverse-events-details"
+                      location.pathname === "/adverse-events-details"
                         ? true
                         : false
                     }
                     component={<Link to="/adverse-events" />}
-                    icon={<AddBusinessOutlinedIcon />}
+                    icon={<ListAltIcon />}
                   >
                     <Typography
                       variant="body2"
@@ -351,12 +353,12 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/promptly-reportable-event" ||
-                        location.pathname === "/promptly-reportable-event-details"
+                      location.pathname === "/promptly-reportable-event-details"
                         ? true
                         : false
                     }
                     component={<Link to="/promptly-reportable-event" />}
-                    icon={<AddBusinessOutlinedIcon />}
+                    icon={<ListAltIcon />}
                   >
                     <Typography
                       variant="body2"
@@ -368,12 +370,12 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/study-close-request" ||
-                        location.pathname === "/study-close-request-details"
+                      location.pathname === "/study-close-request-details"
                         ? true
                         : false
                     }
                     component={<Link to="/study-close-request" />}
-                    icon={<AddBusinessOutlinedIcon />}
+                    icon={<ListAltIcon />}
                   >
                     <Typography
                       variant="body2"
@@ -387,7 +389,7 @@ function SideNav() {
             <MenuItem
               active={location.pathname === "/external-monitor" ? true : false}
               component={<Link to="/external-monitor" />}
-              icon={<SupervisedUserCircleIcon />}
+              icon={<PeopleAltIcon />}
             >
               <Typography
                 variant="body2"
@@ -399,7 +401,7 @@ function SideNav() {
             <MenuItem
               active={location.pathname === "/crc" ? true : false}
               component={<Link to="/crc" />}
-              icon={<SupervisedUserCircleIcon />}
+              icon={<PeopleAltIcon />}
             >
               <Typography
                 variant="body2"
@@ -413,7 +415,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/member/protocol-list" ||
-                location.pathname === "/member/protocol-details"
+              location.pathname === "/member/protocol-details"
                 ? true
                 : false
             }
@@ -431,7 +433,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/committee-chair/protocol-list" ||
-                location.pathname === "/committee-chair/protocol-details"
+              location.pathname === "/committee-chair/protocol-details"
                 ? true
                 : false
             }
@@ -538,7 +540,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/office/continuin-review-list" ||
-                  location.pathname === "/office/continuin-review-details"
+                location.pathname === "/office/continuin-review-details"
                   ? true
                   : false
               }
@@ -560,7 +562,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/protocol-amendment-request" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/office/protocol-amendment-request-details"
                     ? true
                     : false
@@ -577,7 +579,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/adverse-events" ||
-                    location.pathname === "/office/adverse-events-details"
+                  location.pathname === "/office/adverse-events-details"
                     ? true
                     : false
                 }
@@ -593,7 +595,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/promptly-reportable-event" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/office/promptly-reportable-event-details"
                     ? true
                     : false
@@ -610,7 +612,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/study-close-request" ||
-                    location.pathname === "/office/study-close-request-details"
+                  location.pathname === "/office/study-close-request-details"
                     ? true
                     : false
                 }
@@ -629,7 +631,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/external/monitor" ||
-                location.pathname === "/protocol-details"
+              location.pathname === "/protocol-details"
                 ? true
                 : false
             }
@@ -793,7 +795,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/admin/continuin-review-list" ||
-                  location.pathname === "/admin/continuin-review-details"
+                location.pathname === "/admin/continuin-review-details"
                   ? true
                   : false
               }
@@ -815,7 +817,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/protocol-amendment-request" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/protocol-amendment-request-details"
                     ? true
                     : false
@@ -832,7 +834,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/adverse-events" ||
-                    location.pathname === "/admin/adverse-events-details"
+                  location.pathname === "/admin/adverse-events-details"
                     ? true
                     : false
                 }
@@ -848,7 +850,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/promptly-reportable-event" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/promptly-reportable-event-details"
                     ? true
                     : false
@@ -865,7 +867,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/study-close-request" ||
-                    location.pathname === "/admin/study-close-request-details"
+                  location.pathname === "/admin/study-close-request-details"
                     ? true
                     : false
                 }

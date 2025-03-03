@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import Col from "react-bootstrap/Col";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
@@ -16,6 +13,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { CustomDatePickerWrapper as DatePicker } from "../../../components/Mui/CustomDatePickerWrapper";
+import { CustomInputLabel as InputLabel } from "../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../components/Mui/CustomSelectWrapper";
 
 const amendDocumentType = [
   { label: "Protocol", value: "1" },
@@ -80,7 +83,7 @@ function AdminProtocolAmendmentRequestDetails() {
       error: state.admin.error,
       protocolAmendmentRequestById: state.admin.protocolAmendmentRequestById,
       loading: state.admin.loading,
-    }),
+    })
   );
   useEffect(() => {
     let data = { protocolId: protocolDetails.protocolId };
@@ -89,172 +92,186 @@ function AdminProtocolAmendmentRequestDetails() {
   const amendDocumentTypeArr =
     protocolAmendmentRequestById &&
     protocolAmendmentRequestById.protocol_amendment_request?.amend_document?.split(
-      ",",
+      ","
     );
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">
         Protocol Amendment Request Details ({protocolDetails.protocolId})
       </h2>
-      <Box className="pd-25">
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-        <form onSubmit={handleSubmitData} id="protocol_information">
-          {protocolAmendmentRequestById && (
-            <>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik07"
-                className="mt-mb-20"
-              >
-                <TextField
-                  fullWidth
-                  disabled
-                  label="Protocol number"
-                  id="protocol_number"
-                  name="protocol_number"
-                  defaultValue={
-                    protocolAmendmentRequestById.protocol_amendment_request
-                      ?.protocol_number
-                  }
-                />
-              </Form.Group>
-              <Form.Group as={Col} controlId="validationFormik01">
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    What documents are you wanting to modify or amend?
-                  </FormLabel>
-                  <FormGroup name="amend_document">
-                    {amendDocumentType.map((appliedChanges, index) => {
-                      return (
-                        <FormControlLabel
-                          key={index}
-                          control={<Checkbox />}
-                          label={appliedChanges.label}
-                          value={appliedChanges.value}
-                          checked={amendDocumentTypeArr?.find(
-                            (id) => Number(id) === Number(appliedChanges.value),
-                          )}
-                        />
-                      );
-                    })}
-                  </FormGroup>
-                </FormControl>
-              </Form.Group>
-              {amendDocumentTypeArr?.includes("4") && (
+      <Box
+        sx={{
+          border: "1px solid #d3d3d3",
+          backgroundColor: "#ffffff",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          gap: 1,
+          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+          flexWrap: "wrap", // Allow wrapping for smaller screens
+          margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          overflow: "hidden", // Prevent any overflow from buttons
+          borderColor: "",
+        }}
+      >
+        <Box
+          sx={{
+            padding: "25px",
+          }}
+        >
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+          <form onSubmit={handleSubmitData} id="protocol_information">
+            {protocolAmendmentRequestById && (
+              <>
                 <Form.Group
                   as={Col}
-                  controlId="validationFormik03"
+                  controlId="validationFormik07"
                   className="mt-mb-20"
                 >
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Explain
-                  </FormLabel>
-                  <p className="explain_text">
-                    {
+                  <TextField
+                    fullWidth
+                    label="Protocol number"
+                    id="protocol_number"
+                    name="protocol_number"
+                    value={
                       protocolAmendmentRequestById.protocol_amendment_request
-                        ?.amend_document_explain
+                        ?.protocol_number
                     }
-                  </p>
+                  />
                 </Form.Group>
-              )}
-              <Box sx={{ flexGrow: 1 }}>
+                <Form.Group as={Col} controlId="validationFormik01">
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      What documents are you wanting to modify or amend?
+                    </FormLabel>
+                    <FormGroup name="amend_document">
+                      {amendDocumentType.map((appliedChanges, index) => {
+                        return (
+                          <FormControlLabel
+                            key={index}
+                            control={<Checkbox />}
+                            label={appliedChanges.label}
+                            value={appliedChanges.value}
+                            checked={amendDocumentTypeArr?.find(
+                              (id) =>
+                                Number(id) === Number(appliedChanges.value)
+                            )}
+                          />
+                        );
+                      })}
+                    </FormGroup>
+                  </FormControl>
+                </Form.Group>
+                {amendDocumentTypeArr?.includes("4") && (
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Explain
+                    </FormLabel>
+                    <p className="explain_text">
+                      {
+                        protocolAmendmentRequestById.protocol_amendment_request
+                          ?.amend_document_explain
+                      }
+                    </p>
+                  </Form.Group>
+                )}
+                <Box sx={{ flexGrow: 1 }}>
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik010"
+                    className="mt-mb-20"
+                  >
+                    <InputLabel id="demo-simple-select-autowidth-label">
+                      Uploaded redlined document(s) here
+                    </InputLabel>
+                    {/* <div className='highlight-text'>Please note: Documents must be in WORD version showing “track changes” </div> */}
+                    {protocolAmendmentRequestById.protocol_amendment_request
+                      ?.documents?.length > 0 &&
+                      protocolAmendmentRequestById.protocol_amendment_request?.documents?.map(
+                        (docList, index) => {
+                          if (docList.document_name === "redlined document") {
+                            return (
+                              <div>
+                                <a
+                                  href={docList.file_url}
+                                  target="_blank"
+                                  className="no_underline"
+                                >
+                                  {docList.file_name}
+                                </a>
+                              </div>
+                            );
+                          }
+                        }
+                      )}
+                  </Form.Group>
+                  <h3>Summary of changes:</h3>
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Use the text box below to describe the changes requested
+                        in full detail
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          protocolAmendmentRequestById
+                            .protocol_amendment_request?.describe_change_request
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                  <h3>Rationale for changes:</h3>
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Use the text box below to describe the reasoning for
+                        each of the changes requested
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          protocolAmendmentRequestById
+                            .protocol_amendment_request?.describe_reasoning
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                </Box>
                 <Form.Group
                   as={Col}
                   controlId="validationFormik010"
                   className="mt-mb-20"
+                  style={{ textAlign: "right" }}
                 >
-                  <InputLabel id="demo-simple-select-autowidth-label">
-                    Uploaded redlined document(s) here
-                  </InputLabel>
-                  {/* <div className='highlight-text'>Please note: Documents must be in WORD version showing “track changes” </div> */}
-                  {protocolAmendmentRequestById.protocol_amendment_request
-                    ?.documents?.length > 0 &&
-                    protocolAmendmentRequestById.protocol_amendment_request?.documents?.map(
-                      (docList, index) => {
-                        if (docList.document_name === "redlined document") {
-                          return (
-                            <div>
-                              <a
-                                href={docList.file_url}
-                                target="_blank"
-                                className="no_underline"
-                              >
-                                {docList.file_name}
-                              </a>
-                            </div>
-                          );
-                        }
-                      },
-                    )}
+                  {/* <Button variant="contained" color="primary" type="Submit">
+                    SAVE AND CONTINUE
+                  </Button> */}
                 </Form.Group>
-                <h3>Summary of changes:</h3>
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-20"
-                >
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Use the text box below to describe the changes requested
-                      in full detail
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        protocolAmendmentRequestById.protocol_amendment_request
-                          ?.describe_change_request
-                      }
-                    </p>
-                  </Box>
-                </Form.Group>
-                <h3>Rationale for changes:</h3>
-                <Form.Group
-                  as={Col}
-                  controlId="validationFormik03"
-                  className="mt-mb-20"
-                >
-                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Use the text box below to describe the reasoning for each
-                      of the changes requested
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        protocolAmendmentRequestById.protocol_amendment_request
-                          ?.describe_reasoning
-                      }
-                    </p>
-                  </Box>
-                </Form.Group>
-              </Box>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20"
-                style={{ textAlign: "right" }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="Submit"
-                  disabled
-                >
-                  SAVE AND CONTINUE
-                </Button>
-              </Form.Group>
-            </>
-          )}
-        </form>
+              </>
+            )}
+          </form>
+        </Box>
       </Box>
     </Box>
   );

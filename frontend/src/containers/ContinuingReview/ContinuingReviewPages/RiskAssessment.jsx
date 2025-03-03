@@ -7,8 +7,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -20,6 +18,8 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -146,7 +146,7 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -179,10 +179,10 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
       });
 
       setShowAdditionalQuestionIrbReport(
-        riskAssessment?.irb_report === "Yes" ? true : false,
+        riskAssessment?.irb_report === "Yes" ? true : false
       );
       setShowAdditionalQuestionCriteriaReport(
-        riskAssessment?.criteria_report === "Yes" ? true : false,
+        riskAssessment?.criteria_report === "Yes" ? true : false
       );
     }
   }, [riskAssessment, continuinReviewDetails]);
@@ -321,8 +321,8 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
                 id="demo-row-radio-buttons-group-label"
                 style={{ marginTop: "15px" }}
               >
-                2. is related or possibly related to a subject’s participation
-                in the research; and
+                2. Is related or possibly related to a subject’s participation
+                in the research
               </FormLabel>
               <FormLabel
                 id="demo-row-radio-buttons-group-label"

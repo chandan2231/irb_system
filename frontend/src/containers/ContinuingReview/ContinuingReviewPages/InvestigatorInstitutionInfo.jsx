@@ -6,8 +6,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -22,6 +20,8 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -289,7 +289,7 @@ function InvestigatorInstitutionInfo({
             q2_supporting_documents,
             q3_supporting_documents,
             q4_supporting_documents,
-          }),
+          })
         ).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
@@ -315,7 +315,7 @@ function InvestigatorInstitutionInfo({
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -386,24 +386,24 @@ function InvestigatorInstitutionInfo({
       });
 
       setShowAdditionalSelectionList(
-        investigatorInstitutionInfo.inv_sit_quali === "Yes" ? true : false,
+        investigatorInstitutionInfo.inv_sit_quali === "Yes" ? true : false
       );
       setShowAdditionalQuestionInvOrComp(
-        investigatorInstitutionInfo.inv_or_comp === "Yes" ? true : false,
+        investigatorInstitutionInfo.inv_or_comp === "Yes" ? true : false
       );
       setShowAdditionalQuestionFacilityChanges(
-        investigatorInstitutionInfo.facility_changes === "Yes" ? true : false,
+        investigatorInstitutionInfo.facility_changes === "Yes" ? true : false
       );
       setShowAdditionalQuestionChangesReported(
-        investigatorInstitutionInfo.changes_reported === "No" ? true : false,
+        investigatorInstitutionInfo.changes_reported === "No" ? true : false
       );
       setShowAdditionalQuestionFacilityAnyChanges(
         investigatorInstitutionInfo.facility_any_changes === "Yes"
           ? true
-          : false,
+          : false
       );
       setShowAdditionalQuestionChangesLaw(
-        investigatorInstitutionInfo.changes_law === "Yes" ? true : false,
+        investigatorInstitutionInfo.changes_law === "Yes" ? true : false
       );
     }
   }, [investigatorInstitutionInfo, continuinReviewDetails]);
@@ -840,7 +840,7 @@ function InvestigatorInstitutionInfo({
                 onChange={(event) =>
                   handleRadioButtonFacilityAnyChanges(
                     event,
-                    "facility_any_changes",
+                    "facility_any_changes"
                   )
                 }
               >

@@ -4,9 +4,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import * as yup from "yup";
@@ -17,6 +15,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchStudyCloseoutRequestDetailsById } from "../../../services/Admin/EventAndRequestService";
 import moment from "moment";
+
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomInputLabel as InputLabel } from "../../../components/Mui/CustomInputLabel";
+import { CustomMUISelectWrapper as Select } from "../../../components/Mui/CustomSelectWrapper";
+import { CustomDatePickerWrapper as DatePicker } from "../../../components/Mui/CustomDatePickerWrapper";
 
 const studyCloseSchema = yup.object().shape({
   protocol_number: yup.string().required("This is required"),
@@ -148,7 +152,7 @@ function AdminStudyCloseoutRequestDetails() {
       event.target.value === "Yes"
     ) {
       setShowErrorMsgPromptlyReportableNotSubmitted(
-        "you must complete a Promptly Reportable Information submission",
+        "you must complete a Promptly Reportable Information submission"
       );
     } else if (
       radio_name === "promptly_reportable_info" &&
@@ -162,7 +166,7 @@ function AdminStudyCloseoutRequestDetails() {
   const handleAdverseEventInfo = (event, radio_name) => {
     if (radio_name === "adverse_event_info" && event.target.value === "Yes") {
       setShowErrorMsgAdverseEventNotSubmitted(
-        "you must complete and submit an Adverse Event report",
+        "you must complete and submit an Adverse Event report"
       );
     } else if (
       radio_name === "adverse_event_info" &&
@@ -239,7 +243,7 @@ function AdminStudyCloseoutRequestDetails() {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -261,7 +265,7 @@ function AdminStudyCloseoutRequestDetails() {
       studyCloseoutRequestDetailsById:
         state.admin.studyCloseoutRequestDetailsById,
       loading: state.admin.loading,
-    }),
+    })
   );
   useEffect(() => {
     let data = { protocolId: protocolDetails.protocolId };
@@ -269,519 +273,524 @@ function AdminStudyCloseoutRequestDetails() {
   }, [dispatch, userDetails.id]);
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">
         Study Closeout Request Details ({protocolDetails.protocolId})
       </h2>
-      <Box className="pd-25">
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-        <form onSubmit={handleSubmitData} id="protocol_information">
-          {studyCloseoutRequestDetailsById && (
-            <>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik06"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Protocol Number *"
-                    id="protocol_number"
-                    name="protocol_number"
-                    defaultValue={
-                      studyCloseoutRequestDetailsById[0]?.protocol_number
-                    }
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik07"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="PI Name *"
-                    id="pi_name"
-                    name="pi_name"
-                    defaultValue={studyCloseoutRequestDetailsById[0]?.pi_name}
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Date of Study Completion *"
-                    id="study_completion_date"
-                    name="study_completion_date"
-                    defaultValue={moment(
-                      studyCloseoutRequestDetailsById[0]?.study_completion_date,
-                    ).format("DD-MM-YYYY")}
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-20"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Reason for Study Closeout *
-                  </FormLabel>
-                  <RadioGroup
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="study_closeout_reason"
-                  >
-                    <FormControlLabel
-                      value="Completed study per protocol including completing enrollment and collection/analysis of all data"
-                      control={<Radio />}
-                      label="Completed study per protocol including completing enrollment and collection/analysis of all data"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.study_closeout_reason ===
-                        "Completed study per protocol including completing enrollment and collection/analysis of all data"
-                      }
-                    />
-                    <FormControlLabel
-                      value="Early closure due to PI, sponsor, or other agency decision"
-                      control={<Radio />}
-                      label="Early closure due to PI, sponsor, or other agency decision"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.study_closeout_reason ===
-                        "Early closure due to PI, sponsor, or other agency decision"
-                      }
-                    />
-                    <FormControlLabel
-                      value="Early closure due to enrollment challenges"
-                      control={<Radio />}
-                      label="Early closure due to enrollment challenges"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.study_closeout_reason ===
-                        "Early closure due to enrollment challenges"
-                      }
-                    />
-                    <FormControlLabel
-                      value="Other"
-                      control={<Radio />}
-                      label="Other"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.study_closeout_reason === "Other"
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Form.Group>
-              {studyCloseoutRequestDetailsById[0]?.study_closeout_reason ===
-                "Other" && (
+      <Box
+        sx={{
+          border: "1px solid #d3d3d3",
+          backgroundColor: "#ffffff",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          gap: 1,
+          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+          flexWrap: "wrap", // Allow wrapping for smaller screens
+          margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          overflow: "hidden", // Prevent any overflow from buttons
+        }}
+      >
+        <Box
+          sx={{
+            padding: "25px",
+          }}
+        >
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+          <form onSubmit={handleSubmitData} id="protocol_information">
+            {studyCloseoutRequestDetailsById && (
+              <>
                 <Form.Group
                   as={Col}
-                  controlId="validationFormik03"
+                  controlId="validationFormik06"
                   className="mt-mb-20"
                 >
                   <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Explain *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        studyCloseoutRequestDetailsById[0]
-                          ?.study_closeout_reason_other
+                    <TextField
+                      fullWidth
+                      label="Protocol Number *"
+                      id="protocol_number"
+                      name="protocol_number"
+                      value={
+                        studyCloseoutRequestDetailsById[0]?.protocol_number
                       }
-                    </p>
+                    />
                   </Box>
                 </Form.Group>
-              )}
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Number of subjects enrolled since study start-up *"
-                    id="subject_enrolled_number"
-                    name="subject_enrolled_number"
-                    defaultValue={
-                      studyCloseoutRequestDetailsById[0]
-                        ?.subject_enrolled_number
-                    }
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="How many subjects withdrew on their own *"
-                    id="subject_withdrew_number"
-                    name="subject_withdrew_number"
-                    defaultValue={
-                      studyCloseoutRequestDetailsById[0]
-                        ?.subject_withdrew_number
-                    }
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="How many subjects were withdrawn by the sponsor, PI, or other study personnel *"
-                    id="subject_withdrew_by_other"
-                    name="subject_withdrew_by_other"
-                    defaultValue={
-                      studyCloseoutRequestDetailsById[0]
-                        ?.subject_withdrew_by_other
-                    }
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="How many subjects were screen fails *"
-                    id="subject_fails"
-                    name="subject_fails"
-                    value={studyCloseoutRequestDetailsById[0]?.subject_fails}
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="How many subjects are lost to follow up *"
-                    id="subject_lost_followup"
-                    name="subject_lost_followup"
-                    value={
-                      studyCloseoutRequestDetailsById[0]?.subject_lost_followup
-                    }
-                  />
-                </Box>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik08"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="How many subjects have completed the research *"
-                    id="subject_completed"
-                    name="subject_completed"
-                    value={
-                      studyCloseoutRequestDetailsById[0]?.subject_completed
-                    }
-                  />
-                </Box>
-                <div className="highlight-text">
-                  Note: There should be no remaining subjects in order to close
-                  the study
-                </div>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-20"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Have you received any subject complaints since last review
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="subject_complaints_review"
-                  >
-                    <FormControlLabel
-                      value="Yes"
-                      control={<Radio />}
-                      label="Yes"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.subject_complaints_review === "Yes"
-                      }
-                    />
-                    <FormControlLabel
-                      value="No"
-                      control={<Radio />}
-                      label="No"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.subject_complaints_review === "No"
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Form.Group>
-              {studyCloseoutRequestDetailsById[0]?.subject_complaints_review ===
-                "Yes" && (
                 <Form.Group
                   as={Col}
-                  controlId="validationFormik03"
+                  controlId="validationFormik07"
                   className="mt-mb-20"
                 >
                   <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Explain *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
-                        studyCloseoutRequestDetailsById[0]
-                          ?.subject_complaints_review_explain
-                      }
-                    </p>
+                    <TextField
+                      fullWidth
+                      label="PI Name *"
+                      id="pi_name"
+                      name="pi_name"
+                      value={studyCloseoutRequestDetailsById[0]?.pi_name}
+                    />
                   </Box>
                 </Form.Group>
-              )}
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-20"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Were there any changes to the protocol, consent form, or
-                    other subject materials not yet reported to IRB?{" "}
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="not_reported_irb"
-                  >
-                    <FormControlLabel
-                      value="Yes"
-                      control={<Radio />}
-                      label="Yes"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]?.not_reported_irb ===
-                        "Yes"
-                      }
-                    />
-                    <FormControlLabel
-                      value="No"
-                      control={<Radio />}
-                      label="No"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]?.not_reported_irb ===
-                        "No"
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Form.Group>
-              {studyCloseoutRequestDetailsById[0]?.not_reported_irb ===
-                "Yes" && (
                 <Form.Group
                   as={Col}
-                  controlId="validationFormik03"
+                  controlId="validationFormik08"
                   className="mt-mb-20"
                 >
                   <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Please explain the changes, what document(s) were changed,
-                      the reason for the change(s), and why they were not
-                      reported to the IRB *
-                    </FormLabel>
-                    <p className="explain_text">
-                      {
+                    <TextField
+                      fullWidth
+                      label="Date of Study Completion *"
+                      id="study_completion_date"
+                      name="study_completion_date"
+                      value={moment(
                         studyCloseoutRequestDetailsById[0]
-                          ?.not_reported_irb_explain
-                      }
-                    </p>
+                          ?.study_completion_date
+                      ).format("DD-MM-YYYY")}
+                    />
                   </Box>
                 </Form.Group>
-              )}
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-20"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Is there any promptly reportable information that has not
-                    been reported to the IRB?
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="promptly_reportable_info"
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-20"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Reason for Study Closeout *
+                    </FormLabel>
+                    <RadioGroup
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="study_closeout_reason"
+                    >
+                      <FormControlLabel
+                        value="Completed study per protocol including completing enrollment and collection/analysis of all data"
+                        control={<Radio />}
+                        label="Completed study per protocol including completing enrollment and collection/analysis of all data"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.study_closeout_reason ===
+                          "Completed study per protocol including completing enrollment and collection/analysis of all data"
+                        }
+                      />
+                      <FormControlLabel
+                        value="Early closure due to PI, sponsor, or other agency decision"
+                        control={<Radio />}
+                        label="Early closure due to PI, sponsor, or other agency decision"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.study_closeout_reason ===
+                          "Early closure due to PI, sponsor, or other agency decision"
+                        }
+                      />
+                      <FormControlLabel
+                        value="Early closure due to enrollment challenges"
+                        control={<Radio />}
+                        label="Early closure due to enrollment challenges"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.study_closeout_reason ===
+                          "Early closure due to enrollment challenges"
+                        }
+                      />
+                      <FormControlLabel
+                        value="Other"
+                        control={<Radio />}
+                        label="Other"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.study_closeout_reason === "Other"
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Form.Group>
+                {studyCloseoutRequestDetailsById[0]?.study_closeout_reason ===
+                  "Other" && (
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
                   >
-                    <FormControlLabel
-                      value="Yes"
-                      control={<Radio />}
-                      label="Yes"
-                      checked={
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Explain *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          studyCloseoutRequestDetailsById[0]
+                            ?.study_closeout_reason_other
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik08"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Number of subjects enrolled since study start-up *"
+                      id="subject_enrolled_number"
+                      name="subject_enrolled_number"
+                      value={
                         studyCloseoutRequestDetailsById[0]
-                          ?.promptly_reportable_info === "Yes"
+                          ?.subject_enrolled_number
                       }
                     />
-                    <FormControlLabel
-                      value="No"
-                      control={<Radio />}
-                      label="No"
-                      checked={
+                  </Box>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik08"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="How many subjects withdrew on their own *"
+                      id="subject_withdrew_number"
+                      name="subject_withdrew_number"
+                      value={
                         studyCloseoutRequestDetailsById[0]
-                          ?.promptly_reportable_info === "No"
+                          ?.subject_withdrew_number
                       }
                     />
-                  </RadioGroup>
-                </FormControl>
-              </Form.Group>
+                  </Box>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik08"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="How many subjects were withdrawn by the sponsor, PI, or other study personnel *"
+                      id="subject_withdrew_by_other"
+                      name="subject_withdrew_by_other"
+                      value={
+                        studyCloseoutRequestDetailsById[0]
+                          ?.subject_withdrew_by_other
+                      }
+                    />
+                  </Box>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik08"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="How many subjects were screen fails *"
+                      id="subject_fails"
+                      name="subject_fails"
+                      value={studyCloseoutRequestDetailsById[0]?.subject_fails}
+                    />
+                  </Box>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik08"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="How many subjects are lost to follow up *"
+                      id="subject_lost_followup"
+                      name="subject_lost_followup"
+                      value={
+                        studyCloseoutRequestDetailsById[0]
+                          ?.subject_lost_followup
+                      }
+                    />
+                  </Box>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik08"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="How many subjects have completed the research *"
+                      id="subject_completed"
+                      name="subject_completed"
+                      value={
+                        studyCloseoutRequestDetailsById[0]?.subject_completed
+                      }
+                    />
+                  </Box>
+                  <div className="highlight-text">
+                    Note: There should be no remaining subjects in order to
+                    close the study
+                  </div>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-20"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Have you received any subject complaints since last review
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="subject_complaints_review"
+                    >
+                      <FormControlLabel
+                        value="Yes"
+                        control={<Radio />}
+                        label="Yes"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.subject_complaints_review === "Yes"
+                        }
+                      />
+                      <FormControlLabel
+                        value="No"
+                        control={<Radio />}
+                        label="No"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.subject_complaints_review === "No"
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Form.Group>
+                {studyCloseoutRequestDetailsById[0]
+                  ?.subject_complaints_review === "Yes" && (
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Explain *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          studyCloseoutRequestDetailsById[0]
+                            ?.subject_complaints_review_explain
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-20"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Were there any changes to the protocol, consent form, or
+                      other subject materials not yet reported to IRB?{" "}
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="not_reported_irb"
+                    >
+                      <FormControlLabel
+                        value="Yes"
+                        control={<Radio />}
+                        label="Yes"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.not_reported_irb === "Yes"
+                        }
+                      />
+                      <FormControlLabel
+                        value="No"
+                        control={<Radio />}
+                        label="No"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.not_reported_irb === "No"
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Form.Group>
+                {studyCloseoutRequestDetailsById[0]?.not_reported_irb ===
+                  "Yes" && (
+                  <Form.Group
+                    as={Col}
+                    controlId="validationFormik03"
+                    className="mt-mb-20"
+                  >
+                    <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                      <FormLabel id="demo-row-radio-buttons-group-label">
+                        Please explain the changes, what document(s) were
+                        changed, the reason for the change(s), and why they were
+                        not reported to the IRB *
+                      </FormLabel>
+                      <p className="explain_text">
+                        {
+                          studyCloseoutRequestDetailsById[0]
+                            ?.not_reported_irb_explain
+                        }
+                      </p>
+                    </Box>
+                  </Form.Group>
+                )}
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-20"
+                >
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Is there any promptly reportable information that has not
+                      been reported to the IRB?
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="promptly_reportable_info"
+                    >
+                      <FormControlLabel
+                        value="Yes"
+                        control={<Radio />}
+                        label="Yes"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.promptly_reportable_info === "Yes"
+                        }
+                      />
+                      <FormControlLabel
+                        value="No"
+                        control={<Radio />}
+                        label="No"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.promptly_reportable_info === "No"
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Form.Group>
 
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-20"
-              >
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Is there any adverse events that have not been reported to
-                    the IRB?
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="adverse_event_info"
-                  >
-                    <FormControlLabel
-                      value="Yes"
-                      control={<Radio />}
-                      label="Yes"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.adverse_event_info === "Yes"
-                      }
-                    />
-                    <FormControlLabel
-                      value="No"
-                      control={<Radio />}
-                      label="No"
-                      checked={
-                        studyCloseoutRequestDetailsById[0]
-                          ?.adverse_event_info === "No"
-                      }
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Form.Group>
-
-              <h3>Acknowledgement</h3>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik01"
-                className="mt-mb-20"
-              >
-                <FormControl>
-                  <FormGroup>
-                    <FormLabel>
-                      - By submitting this form, you guarantee that all research
-                      has completed and no new study procedures or enrollments
-                      will occur.
-                    </FormLabel>
-                    <FormLabel>
-                      - You certify that all data collection has completed and
-                      no new data will be collected.
-                    </FormLabel>
-                    <FormLabel>
-                      - You also certify that any biological samples related to
-                      the study have been destroyed and no new samples will be
-                      collected.
-                    </FormLabel>
-                  </FormGroup>
-                </FormControl>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik06"
-                className="mt-mb-20"
-              >
-                <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                  <TextField
-                    fullWidth
-                    disabled
-                    label="Your Name *"
-                    id="your_name"
-                    name="your_name"
-                    onChange={handleChange}
-                    defaultValue={studyCloseoutRequestDetailsById[0]?.your_name}
-                  />
-                </Box>
-                <div className="highlight-text">
-                  Note: Your name above is the equivalent of a hand-written
-                  signature and is legally binding. Your signature confirms that
-                  you are authorized to submit this document and you acknowledge
-                  that it is accurate.
-                </div>
-              </Form.Group>
-              <Form.Group
-                as={Col}
-                controlId="validationFormik010"
-                className="mt-mb-20"
-                style={{ textAlign: "right" }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="Submit"
-                  disabled
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-20"
                 >
-                  SUBMIT
-                </Button>
-              </Form.Group>
-            </>
-          )}
-        </form>
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Is there any adverse events that have not been reported to
+                      the IRB?
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="adverse_event_info"
+                    >
+                      <FormControlLabel
+                        value="Yes"
+                        control={<Radio />}
+                        label="Yes"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.adverse_event_info === "Yes"
+                        }
+                      />
+                      <FormControlLabel
+                        value="No"
+                        control={<Radio />}
+                        label="No"
+                        checked={
+                          studyCloseoutRequestDetailsById[0]
+                            ?.adverse_event_info === "No"
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Form.Group>
+
+                <h3>Acknowledgement</h3>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik01"
+                  className="mt-mb-20"
+                >
+                  <FormControl>
+                    <FormGroup>
+                      <FormLabel>
+                        - By submitting this form, you guarantee that all
+                        research has completed and no new study procedures or
+                        enrollments will occur.
+                      </FormLabel>
+                      <FormLabel>
+                        - You certify that all data collection has completed and
+                        no new data will be collected.
+                      </FormLabel>
+                      <FormLabel>
+                        - You also certify that any biological samples related
+                        to the study have been destroyed and no new samples will
+                        be collected.
+                      </FormLabel>
+                    </FormGroup>
+                  </FormControl>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik06"
+                  className="mt-mb-20"
+                >
+                  <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                    <TextField
+                      fullWidth
+                      label="Your Name *"
+                      id="your_name"
+                      name="your_name"
+                      onChange={handleChange}
+                      value={studyCloseoutRequestDetailsById[0]?.your_name}
+                    />
+                  </Box>
+                  <div className="highlight-text">
+                    Note: Your name above is the equivalent of a hand-written
+                    signature and is legally binding. Your signature confirms
+                    that you are authorized to submit this document and you
+                    acknowledge that it is accurate.
+                  </div>
+                </Form.Group>
+                <Form.Group
+                  as={Col}
+                  controlId="validationFormik010"
+                  className="mt-mb-20"
+                  style={{ textAlign: "right" }}
+                >
+                  {/* <Button variant="contained" color="primary" type="Submit">
+                    SUBMIT
+                  </Button> */}
+                </Form.Group>
+              </>
+            )}
+          </form>
+        </Box>
       </Box>
     </Box>
   );

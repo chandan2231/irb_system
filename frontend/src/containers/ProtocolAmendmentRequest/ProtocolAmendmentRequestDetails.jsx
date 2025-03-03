@@ -3,9 +3,7 @@ import Col from "react-bootstrap/Col";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import Form from "react-bootstrap/Form";
-import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
@@ -21,6 +19,8 @@ import { useLocation } from "react-router-dom";
 import { uploadFile } from "../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -83,7 +83,7 @@ function ProtocolAmendmentRequestDetails() {
       amendDocTypeChecked.push(value);
     } else {
       amendDocTypeChecked = amendDocTypeChecked.filter(
-        (item) => item !== value,
+        (item) => item !== value
       );
     }
     setFormData({ ...formData, amend_document: amendDocTypeChecked });
@@ -108,7 +108,7 @@ function ProtocolAmendmentRequestDetails() {
       }
       const getValidatedform = await protocoalAmendmentSchema.validate(
         formData,
-        { abortEarly: false },
+        { abortEarly: false }
       );
       const isValid = await protocoalAmendmentSchema.isValid(getValidatedform);
       // const isValid = true
@@ -157,7 +157,7 @@ function ProtocolAmendmentRequestDetails() {
                 theme: "dark",
               });
             }
-          },
+          }
         );
       }
     } catch (error) {
@@ -168,7 +168,7 @@ function ProtocolAmendmentRequestDetails() {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -180,285 +180,303 @@ function ProtocolAmendmentRequestDetails() {
     }
   };
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">
         Protocol Amendment Request Details ({protocolDetails.protocolId})
       </h2>
-      <Box className="pd-25">
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-        <form onSubmit={handleSubmitData} id="protocol_information">
-          <Form.Group
-            as={Col}
-            controlId="validationFormik07"
-            className="mt-mb-20"
-          >
-            <Box sx={{ width: "100%", maxWidth: "100%" }}>
-              <TextField
-                fullWidth
-                label="Protocol number *"
-                id="protocol_number"
-                name="protocol_number"
-                onChange={handleChange}
-                value={formData.protocol_number}
-              />
-            </Box>
-            {errors.protocol_number && (
-              <div className="error">{errors.protocol_number}</div>
-            )}
-          </Form.Group>
-          <Form.Group as={Col} controlId="validationFormik01">
-            <FormControl>
-              <FormLabel id="demo-row-radio-buttons-group-label">
-                What documents are you wanting to modify or amend?
-              </FormLabel>
-              <FormGroup
-                onChange={(event) => handleAmendDocumentChecked(event)}
-                name="amend_document"
-              >
-                <FormControlLabel
-                  control={<Checkbox />}
-                  value="1"
-                  label="Protocol"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  value="2"
-                  label="Consent form"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  value="3"
-                  label="Subject facing material"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  value="4"
-                  label="Other"
-                />
-              </FormGroup>
-            </FormControl>
-          </Form.Group>
-          {showAdditionalQuestionAmendType === true && (
+      <Box
+        sx={{
+          border: "1px solid #d3d3d3",
+          backgroundColor: "#ffffff",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          gap: 1,
+          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+          flexWrap: "wrap", // Allow wrapping for smaller screens
+          margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          overflow: "hidden", // Prevent any overflow from buttons
+        }}
+      >
+        <Box
+          sx={{
+            padding: "25px",
+          }}
+        >
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+          <form onSubmit={handleSubmitData} id="protocol_information">
             <Form.Group
               as={Col}
-              controlId="validationFormik03"
+              controlId="validationFormik07"
               className="mt-mb-20"
             >
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
-                  variant="outlined"
-                  placeholder="Explain *"
                   fullWidth
-                  id="amend_document_explain"
-                  name="amend_document_explain"
-                  rows={3}
-                  multiline
+                  label="Protocol number *"
+                  id="protocol_number"
+                  name="protocol_number"
                   onChange={handleChange}
+                  value={formData.protocol_number}
                 />
               </Box>
-              {explainEnrolledTypeErrors && (
-                <div className="error">{explainEnrolledTypeErrors}</div>
+              {errors.protocol_number && (
+                <div className="error">{errors.protocol_number}</div>
               )}
             </Form.Group>
-          )}
+            <Form.Group as={Col} controlId="validationFormik01">
+              <FormControl>
+                <FormLabel id="demo-row-radio-buttons-group-label">
+                  What documents are you wanting to modify or amend?
+                </FormLabel>
+                <FormGroup
+                  onChange={(event) => handleAmendDocumentChecked(event)}
+                  name="amend_document"
+                >
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    value="1"
+                    label="Protocol"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    value="2"
+                    label="Consent form"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    value="3"
+                    label="Subject facing material"
+                  />
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    value="4"
+                    label="Other"
+                  />
+                </FormGroup>
+              </FormControl>
+            </Form.Group>
+            {showAdditionalQuestionAmendType === true && (
+              <Form.Group
+                as={Col}
+                controlId="validationFormik03"
+                className="mt-mb-20"
+              >
+                <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                  <TextField
+                    variant="outlined"
+                    placeholder="Explain *"
+                    fullWidth
+                    id="amend_document_explain"
+                    name="amend_document_explain"
+                    rows={3}
+                    multiline
+                    onChange={handleChange}
+                  />
+                </Box>
+                {explainEnrolledTypeErrors && (
+                  <div className="error">{explainEnrolledTypeErrors}</div>
+                )}
+              </Form.Group>
+            )}
 
-          <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{ flexGrow: 1 }}>
+              <Form.Group
+                as={Col}
+                controlId="validationFormik010"
+                className="mt-mb-20"
+              >
+                <InputLabel id="demo-simple-select-autowidth-label">
+                  Upload redlined document(s) here *
+                </InputLabel>
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Upload file
+                  <VisuallyHiddenInput
+                    type="file"
+                    name="redlined_document"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length) {
+                        setFormData({
+                          ...formData,
+                          redlined_document: e.target.files,
+                        });
+                      }
+                    }}
+                  />
+                </Button>
+                {errors.redlined_document && (
+                  <div className="error">{errors.redlined_document}</div>
+                )}
+                {formData?.redlined_document !== undefined &&
+                  Array.from(formData?.redlined_document).map((file, i) => (
+                    <div key={i}>{file?.name}</div>
+                  ))}
+                <div className="highlight-text">
+                  Please note: Documents must be in WORD version showing “track
+                  changes”{" "}
+                </div>
+              </Form.Group>
+              <h3>Summary of changes:</h3>
+              <Form.Group
+                as={Col}
+                controlId="validationFormik03"
+                className="mt-mb-20"
+              >
+                <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                  <FormLabel id="demo-row-radio-buttons-group-label">
+                    Use the text box below to describe the changes requested in
+                    full detail *
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    placeholder="Explain"
+                    name="describe_change_request"
+                    fullWidth
+                    id="describe_change_request"
+                    rows={5}
+                    multiline
+                    onChange={handleChange}
+                    value={formData.describe_change_request}
+                  />
+                </Box>
+                {errors.describe_change_request && (
+                  <div className="error">{errors.describe_change_request}</div>
+                )}
+              </Form.Group>
+              <h3>Rationale for changes:</h3>
+              <Form.Group
+                as={Col}
+                controlId="validationFormik03"
+                className="mt-mb-20"
+              >
+                <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                  <FormLabel id="demo-row-radio-buttons-group-label">
+                    Use the text box below to describe the reasoning for each of
+                    the changes requested *
+                  </FormLabel>
+                  <TextField
+                    variant="outlined"
+                    placeholder="Explain"
+                    name="describe_reasoning"
+                    fullWidth
+                    id="describe_reasoning"
+                    rows={5}
+                    multiline
+                    onChange={handleChange}
+                    value={formData.describe_reasoning}
+                  />
+                </Box>
+                {errors.describe_reasoning && (
+                  <div className="error">{errors.describe_reasoning}</div>
+                )}
+              </Form.Group>
+            </Box>
+            <Form.Group
+              as={Col}
+              controlId="validationFormik08"
+              className="mt-mb-20"
+            >
+              <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                <TextField
+                  fullWidth
+                  label="Person submitting this form *"
+                  id="person_name"
+                  name="person_name"
+                  onChange={handleChange}
+                  value={formData.person_name}
+                />
+              </Box>
+              {errors.person_name && (
+                <div className="error">{errors.person_name}</div>
+              )}
+            </Form.Group>
+            <Form.Group
+              as={Col}
+              controlId="validationFormik08"
+              className="mt-mb-20"
+            >
+              <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                <TextField
+                  fullWidth
+                  label="Email *"
+                  id="email"
+                  name="email"
+                  onChange={handleChange}
+                  value={formData.email}
+                />
+              </Box>
+              {errors.email && <div className="error">{errors.email}</div>}
+            </Form.Group>
+            <Form.Group
+              as={Col}
+              controlId="validationFormik08"
+              className="mt-mb-20"
+            >
+              <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                <TextField
+                  fullWidth
+                  label="Phone *"
+                  id="phone"
+                  name="phone"
+                  onChange={handleChange}
+                  value={formData.phone}
+                />
+              </Box>
+              {errors.phone && <div className="error">{errors.phone}</div>}
+            </Form.Group>
+            <Form.Group
+              as={Col}
+              controlId="validationFormik06"
+              className="mt-mb-20"
+            >
+              <Box sx={{ width: "100%", maxWidth: "100%" }}>
+                <TextField
+                  fullWidth
+                  label="Your Name *"
+                  id="your_name"
+                  name="your_name"
+                  onChange={handleChange}
+                  value={formData.your_name}
+                />
+              </Box>
+              <div className="highlight-text">
+                Note: Your name above is the equivalent of a hand-written
+                signature and is legally binding. Your signature confirms that
+                you are authorized to submit this document and you acknowledge
+                that it is accurate.
+              </div>
+              {errors.your_name && (
+                <div className="error">{errors.your_name}</div>
+              )}
+            </Form.Group>
             <Form.Group
               as={Col}
               controlId="validationFormik010"
               className="mt-mb-20"
+              style={{ textAlign: "right" }}
             >
-              <InputLabel id="demo-simple-select-autowidth-label">
-                Upload redlined document(s) here *
-              </InputLabel>
-              <Button
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload file
-                <VisuallyHiddenInput
-                  type="file"
-                  name="redlined_document"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length) {
-                      setFormData({
-                        ...formData,
-                        redlined_document: e.target.files,
-                      });
-                    }
-                  }}
-                />
+              <Button variant="contained" color="primary" type="Submit">
+                SUBMIT
               </Button>
-              {errors.redlined_document && (
-                <div className="error">{errors.redlined_document}</div>
-              )}
-              {formData?.redlined_document !== undefined &&
-                Array.from(formData?.redlined_document).map((file, i) => (
-                  <div key={i}>{file?.name}</div>
-                ))}
-              <div className="highlight-text">
-                Please note: Documents must be in WORD version showing “track
-                changes”{" "}
-              </div>
             </Form.Group>
-            <h3>Summary of changes:</h3>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik03"
-              className="mt-mb-20"
-            >
-              <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                <FormLabel id="demo-row-radio-buttons-group-label">
-                  Use the text box below to describe the changes requested in
-                  full detail *
-                </FormLabel>
-                <TextField
-                  variant="outlined"
-                  placeholder="Explain"
-                  name="describe_change_request"
-                  fullWidth
-                  id="describe_change_request"
-                  rows={5}
-                  multiline
-                  onChange={handleChange}
-                  value={formData.describe_change_request}
-                />
-              </Box>
-              {errors.describe_change_request && (
-                <div className="error">{errors.describe_change_request}</div>
-              )}
-            </Form.Group>
-            <h3>Rationale for changes:</h3>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik03"
-              className="mt-mb-20"
-            >
-              <Box sx={{ width: "100%", maxWidth: "100%" }}>
-                <FormLabel id="demo-row-radio-buttons-group-label">
-                  Use the text box below to describe the reasoning for each of
-                  the changes requested *
-                </FormLabel>
-                <TextField
-                  variant="outlined"
-                  placeholder="Explain"
-                  name="describe_reasoning"
-                  fullWidth
-                  id="describe_reasoning"
-                  rows={5}
-                  multiline
-                  onChange={handleChange}
-                  value={formData.describe_reasoning}
-                />
-              </Box>
-              {errors.describe_reasoning && (
-                <div className="error">{errors.describe_reasoning}</div>
-              )}
-            </Form.Group>
-          </Box>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik08"
-            className="mt-mb-20"
-          >
-            <Box sx={{ width: "100%", maxWidth: "100%" }}>
-              <TextField
-                fullWidth
-                label="Person submitting this form *"
-                id="person_name"
-                name="person_name"
-                onChange={handleChange}
-                value={formData.person_name}
-              />
-            </Box>
-            {errors.person_name && (
-              <div className="error">{errors.person_name}</div>
-            )}
-          </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik08"
-            className="mt-mb-20"
-          >
-            <Box sx={{ width: "100%", maxWidth: "100%" }}>
-              <TextField
-                fullWidth
-                label="Email *"
-                id="email"
-                name="email"
-                onChange={handleChange}
-                value={formData.email}
-              />
-            </Box>
-            {errors.email && <div className="error">{errors.email}</div>}
-          </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik08"
-            className="mt-mb-20"
-          >
-            <Box sx={{ width: "100%", maxWidth: "100%" }}>
-              <TextField
-                fullWidth
-                label="Phone *"
-                id="phone"
-                name="phone"
-                onChange={handleChange}
-                value={formData.phone}
-              />
-            </Box>
-            {errors.phone && <div className="error">{errors.phone}</div>}
-          </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik06"
-            className="mt-mb-20"
-          >
-            <Box sx={{ width: "100%", maxWidth: "100%" }}>
-              <TextField
-                fullWidth
-                label="Your Name *"
-                id="your_name"
-                name="your_name"
-                onChange={handleChange}
-                value={formData.your_name}
-              />
-            </Box>
-            <div className="highlight-text">
-              Note: Your name above is the equivalent of a hand-written
-              signature and is legally binding. Your signature confirms that you
-              are authorized to submit this document and you acknowledge that it
-              is accurate.
-            </div>
-            {errors.your_name && (
-              <div className="error">{errors.your_name}</div>
-            )}
-          </Form.Group>
-          <Form.Group
-            as={Col}
-            controlId="validationFormik010"
-            className="mt-mb-20"
-            style={{ textAlign: "right" }}
-          >
-            <Button variant="contained" color="primary" type="Submit">
-              SUBMIT
-            </Button>
-          </Form.Group>
-        </form>
+          </form>
+        </Box>
       </Box>
     </Box>
   );

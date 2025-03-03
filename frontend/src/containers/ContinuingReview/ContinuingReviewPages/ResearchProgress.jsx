@@ -6,8 +6,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -22,6 +20,8 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { uploadFile } from "../../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
+import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -126,13 +126,13 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
       });
 
       setShowAdverseEventAdditionalQuestion(
-        researchProgress.adverse_event_submission === "No" ? true : false,
+        researchProgress.adverse_event_submission === "No" ? true : false
       );
       setShowLastApprovalChangeAdditionalQuestion(
-        researchProgress.last_approval_change === "Yes" ? true : false,
+        researchProgress.last_approval_change === "Yes" ? true : false
       );
       setShowLastApprovalChangeReportAdditionalQuestion(
-        researchProgress.last_approval_change_report === "No" ? true : false,
+        researchProgress.last_approval_change_report === "No" ? true : false
       );
     }
   }, [researchProgress, continuinReviewDetails?.protocolId]);
@@ -234,7 +234,7 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
         const firstErrorField = document.querySelector(
-          `[name="${Object.keys(newErrors)[0]}"]`,
+          `[name="${Object.keys(newErrors)[0]}"]`
         );
         if (firstErrorField) {
           firstErrorField.scrollIntoView({
@@ -432,7 +432,7 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
                 onChange={(event) =>
                   handleAdverseEventSubmission(
                     event,
-                    "adverse_event_submission",
+                    "adverse_event_submission"
                   )
                 }
               >
@@ -531,7 +531,7 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
                 </Button>
                 {formData?.q3_supporting_documents !== undefined &&
                   Array.from(formData?.q3_supporting_documents)?.map(
-                    (file, i) => <div key={i}>{file?.name}</div>,
+                    (file, i) => <div key={i}>{file?.name}</div>
                   )}
                 {errors.q3_supporting_documents && (
                   <div className="error">{errors.q3_supporting_documents}</div>
@@ -594,7 +594,7 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
                   onChange={(event) =>
                     handleLastApprovalChangeReport(
                       event,
-                      "last_approval_change_report",
+                      "last_approval_change_report"
                     )
                   }
                 >

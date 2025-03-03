@@ -148,8 +148,17 @@ function AdverseEvents() {
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={5} sm={5} md={8} lg={8}>
-            <Typography variant="h5" mb={2}>
+          {/* Title Grid Item */}
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Typography
+              variant="h2"
+              sx={{
+                textAlign: "left",
+                fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                fontWeight: "bold",
+                mb: 2,
+              }}
+            >
               Adverse Events
             </Typography>
           </Grid>
