@@ -58,37 +58,37 @@ function AdminPromptlyReportableEvent() {
       headerName: "Updated Date",
       flex: 1,
     },
-    {
-      field: "actions",
-      type: "actions",
-      width: 80,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<RadioButtonUncheckedIcon />}
-          label="Change Status"
-          onClick={handleChangeStatus(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<EditNoteIcon />}
-          label="Edit"
-          onClick={handleItemEdit(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<SettingsSuggestIcon />}
-          label="Details"
-          onClick={handleItemDetail(params)}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Delete"
-          onClick={handleItemDelete(params)}
-          showInMenu
-        />,
-      ],
-    },
+    // {
+    //   field: "actions",
+    //   type: "actions",
+    //   width: 80,
+    //   getActions: (params) => [
+    //     <GridActionsCellItem
+    //       icon={<RadioButtonUncheckedIcon />}
+    //       label="Change Status"
+    //       onClick={handleChangeStatus(params)}
+    //       showInMenu
+    //     />,
+    //     <GridActionsCellItem
+    //       icon={<EditNoteIcon />}
+    //       label="Edit"
+    //       onClick={handleItemEdit(params)}
+    //       showInMenu
+    //     />,
+    //     <GridActionsCellItem
+    //       icon={<SettingsSuggestIcon />}
+    //       label="Details"
+    //       onClick={handleItemDetail(params)}
+    //       showInMenu
+    //     />,
+    //     <GridActionsCellItem
+    //       icon={<DeleteIcon />}
+    //       label="Delete"
+    //       onClick={handleItemDelete(params)}
+    //       showInMenu
+    //     />,
+    //   ],
+    // },
   ];
 
   var totalElements = 0;
@@ -131,7 +131,7 @@ function AdminPromptlyReportableEvent() {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
-          researchType: pList.research_type,
+          researchType: pList.protocol_type,
           createdDate: moment(pList.created_at).format("DD MMM YYYY"),
           updatedDate: moment(pList.updated_at).format("DD MMM YYYY"),
         };
@@ -159,8 +159,17 @@ function AdminPromptlyReportableEvent() {
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={5} sm={5} md={8} lg={8}>
-            <Typography variant="h5" mb={2}>
+          {/* Title Grid Item */}
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Typography
+              variant="h2"
+              sx={{
+                textAlign: "left",
+                fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                fontWeight: "bold",
+                mb: 2,
+              }}
+            >
               Promptly Reportable Event
             </Typography>
           </Grid>
@@ -173,8 +182,6 @@ function AdminPromptlyReportableEvent() {
           rowCount={rowCount}
           loading={loading}
           paginationMode="server"
-          onCellClick={(param) => handleChangeStatus(param)}
-          // onRowClick={(param) => handleChangeStatus(param)}
         />
       </Box>
     </Box>

@@ -12,7 +12,6 @@ const AdminProtocolDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const protocolTypeDetails = location.state.details;
-  console.log("protocolTypeDetails", protocolTypeDetails);
   const type = location.state.type;
   const [user, setUser] = useState([]);
   useEffect(() => {
