@@ -29,6 +29,7 @@ export const login = (req, res) => {
     if (!user.verified) {
       return res.status(400).json({ error: 'Please verify your email first.' })
     }
+
     const token = jwt.sign(
       { userId: user.id, userType: user.user_type },
       process.env.JWT_SECRET,
@@ -47,12 +48,74 @@ export const login = (req, res) => {
       token: token
     }
 
-    res.status(200).json({
-      message: 'Login successful',
-      user: usersData
+    // Fetch the routes based on user type
+    const routesQuery = 'SELECT * FROM routes_config WHERE user_type = ?'
+
+    db.query(routesQuery, [user.user_type], (err, routesData) => {
+      if (err) {
+        console.error('Error fetching routes:', err)
+        return res.status(500).json({ error: 'Error fetching routes' })
+      }
+
+      // Add the routes to the response
+      res.status(200).json({
+        message: 'Login successful',
+        user: usersData,
+        routes: routesData // Include routes based on user type
+      })
     })
   })
 }
+
+// export const login = (req, res) => {
+//   const query = 'SELECT * FROM users WHERE email = ? AND status = ?'
+
+//   db.query(query, [req.body.email, 1], (err, data) => {
+//     if (err) {
+//       console.error('Database Error:', err)
+//       return res.status(500).json({ error: 'Internal Server Error' })
+//     }
+
+//     if (data.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ error: 'Email not found! Try with a valid email.' })
+//     }
+
+//     const user = data[0]
+//     const isPasswordValid = bcrypt.compareSync(req.body.password, user.password)
+
+//     if (!isPasswordValid) {
+//       return res.status(400).json({ error: 'Wrong password!' })
+//     }
+
+//     if (!user.verified) {
+//       return res.status(400).json({ error: 'Please verify your email first.' })
+//     }
+//     const token = jwt.sign(
+//       { userId: user.id, userType: user.user_type },
+//       process.env.JWT_SECRET,
+//       {
+//         expiresIn: '1h'
+//       }
+//     )
+
+//     const { password, ...otherUserData } = user
+
+//     const usersData = {
+//       name: user.name,
+//       email: user.email,
+//       id: user.id,
+//       user_type: user.user_type,
+//       token: token
+//     }
+
+//     res.status(200).json({
+//       message: 'Login successful',
+//       user: usersData
+//     })
+//   })
+// }
 
 export const emailVerification = (req, res) => {
   const { token } = req.body
