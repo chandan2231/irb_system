@@ -4,7 +4,7 @@ import JSONBigInt from "json-bigint";
 const getTokenFromLocalStorage = () => {
   const userDetails = JSON.parse(localStorage.getItem("user"))
   if (userDetails) {
-    return userDetails.accessToken;
+    return userDetails.token;
   }
   return null;
 }
@@ -36,6 +36,26 @@ export default function ApiCall({ method, url, data, params, headers = null }) {
       },
     ],
   });
+
+  // Add response interceptor for handling token expiration errors
+  http.interceptors.response.use(
+    (response) => {
+      console.log("response", response);
+      return response;
+    },
+    (error) => {
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message;
+
+      if (status === 404 && message === "Invalid or expired token.") {
+        window.localStorage.clear();
+        window.location.replace("/signin");
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
 
   return new Promise(async (resolve) => {
     try {

@@ -39,9 +39,17 @@ export const login = (req, res) => {
 
     const { password, ...otherUserData } = user
 
+    const usersData = {
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      user_type: user.user_type,
+      token: token
+    }
+
     res.status(200).json({
       message: 'Login successful',
-      user: { ...otherUserData, token: token }
+      user: usersData
     })
   })
 }

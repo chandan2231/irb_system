@@ -1,4 +1,5 @@
 import multer from 'multer'
+import jwt from 'jsonwebtoken'
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
@@ -18,12 +19,12 @@ export const authenticateUser = (req, res, next) => {
 
   if (!token)
     return res
-      .status(401)
+      .status(404)
       .json({ message: 'Access denied. No token provided.' })
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err)
-      return res.status(403).json({ message: 'Invalid or expired token.' })
+      return res.status(404).json({ message: 'Invalid or expired token.' })
 
     req.user = user
     next()

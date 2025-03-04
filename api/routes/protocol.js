@@ -1,5 +1,5 @@
 import express from 'express'
-import { upload } from '../utils/middleware.js'
+import { authenticateUser, upload } from '../utils/middleware.js'
 import {
   saveFile,
   continueinReviewGeneratePdf,
@@ -18,19 +18,31 @@ import {
 } from '../controllers/protocol.js'
 
 const router = express.Router()
-router.post('/multiSiteChildProtocolsList', multiSiteChildProtocolsList)
-router.post('/checkMultisiteProtocolExist', checkMultisiteProtocolExist)
-router.post('/approvedListCheck', getApprovedProtocolCheck)
-router.post('/approved/list', getApprovedProtocolList)
-router.post('/list', getProtocolList)
-router.post('/create', createProtocol)
-router.post('/upload/file', upload.single('file'), saveFile)
-router.post('/continuein/generate/pdf', continueinReviewGeneratePdf)
-router.post('/protocol/generate/pdf', protocolGeneratePdf)
-router.post('/createExternalMonitor', createExternalMonitor)
-router.post('/external/monitor/list', getExternalMonitorList)
-router.post('/createCRC', createCRC)
-router.post('/crc/list', getCRCList)
-router.post('/getCTMProtocolsReport', getCTMProtocolsReport)
+router.post(
+  '/multiSiteChildProtocolsList',
+  authenticateUser,
+  multiSiteChildProtocolsList
+)
+router.post(
+  '/checkMultisiteProtocolExist',
+  authenticateUser,
+  checkMultisiteProtocolExist
+)
+router.post('/approvedListCheck', authenticateUser, getApprovedProtocolCheck)
+router.post('/approved/list', authenticateUser, getApprovedProtocolList)
+router.post('/list', authenticateUser, getProtocolList)
+router.post('/create', authenticateUser, createProtocol)
+router.post('/upload/file', authenticateUser, upload.single('file'), saveFile)
+router.post(
+  '/continuein/generate/pdf',
+  authenticateUser,
+  continueinReviewGeneratePdf
+)
+router.post('/protocol/generate/pdf', authenticateUser, protocolGeneratePdf)
+router.post('/createExternalMonitor', authenticateUser, createExternalMonitor)
+router.post('/external/monitor/list', authenticateUser, getExternalMonitorList)
+router.post('/createCRC', authenticateUser, createCRC)
+router.post('/crc/list', authenticateUser, getCRCList)
+router.post('/getCTMProtocolsReport', authenticateUser, getCTMProtocolsReport)
 
 export default router
