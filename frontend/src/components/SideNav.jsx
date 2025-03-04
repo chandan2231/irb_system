@@ -275,7 +275,7 @@ function SideNav() {
               </MenuItem>
             </SubMenu>
           </>
-        ) : userDetails.researcher_type === "user" ? (
+        ) : userDetails.user_type === "user" ? (
           <>
             <MenuItem
               active={
