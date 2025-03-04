@@ -1,11 +1,25 @@
 import axios from "axios";
 import JSONBigInt from "json-bigint";
 
+const getTokenFromLocalStorage = () => {
+  const userDetails = JSON.parse(localStorage.getItem("user"))
+  if (userDetails) {
+    return userDetails.accessToken;
+  }
+  return null;
+}
+
 export const commonHeaders = {
   "Content-Type": "application/json",
 };
 
 export default function ApiCall({ method, url, data, params, headers = null }) {
+  const token = getTokenFromLocalStorage();
+
+  if (token) {
+    commonHeaders["Authorization"] = `${token}`;
+  }
+
   const newHeader = headers ? { ...commonHeaders, ...headers } : commonHeaders;
   const http = axios.create({
     baseURL: url,

@@ -174,7 +174,6 @@ function App() {
           <Box sx={styles.mainSection} component={"main"}>
             <Routes>
               {/* <Route element={<PrivateRoutes />}> */}
-
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/external-monitor" element={<ExternalMonitor />} />
               <Route path="/crc" element={<ClinicalResearchCoordinator />} />
