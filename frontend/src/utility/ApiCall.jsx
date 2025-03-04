@@ -1,5 +1,6 @@
 import axios from "axios";
 import JSONBigInt from "json-bigint";
+import { persistor } from "../store";
 
 const getTokenFromLocalStorage = () => {
   const userDetails = JSON.parse(localStorage.getItem("user"))
@@ -48,6 +49,8 @@ export default function ApiCall({ method, url, data, params, headers = null }) {
       const message = error?.response?.data?.message;
 
       if (status === 404 && message === "Invalid or expired token.") {
+        // persistor.purge();
+        persistor.flush();
         window.localStorage.clear();
         window.location.replace("/signin");
       }
