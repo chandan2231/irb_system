@@ -35,9 +35,6 @@ const AuthSlice = createSlice({
       .addCase(userSignUp.fulfilled, (state, action) => {
         state.loading = false;
         state.signupUser = action.payload;
-        // add details to state  persistor.purge();
-        state.userDetail = action.payload?.signinUser?.data?.user
-        state.mappedPermissions = action.payload?.signinUser?.data?.routes
       })
       .addCase(userSignUp.rejected, (state, action) => {
         state.loading = false;
@@ -50,6 +47,9 @@ const AuthSlice = createSlice({
       .addCase(userSignin.fulfilled, (state, action) => {
         state.loading = false;
         state.signinUser = action.payload;
+        // add details to state  persistor.purge();
+        state.userDetail = action.payload?.data?.user
+        state.mappedPermissions = action.payload?.data?.routes
       })
       .addCase(userSignin.rejected, (state, action) => {
         state.loading = false;

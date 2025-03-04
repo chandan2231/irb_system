@@ -2,7 +2,13 @@ import React from "react";
 import SideNav from "./components/SideNav";
 import AppHeader from "./components/AppHeader";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import ForgetPassword from "./containers/Auth/ForgetPassword";
 import SignIn from "./containers/Auth/SignIn";
 import SignUp from "./containers/Auth/SignUp";
@@ -78,6 +84,8 @@ import EmailVerification from "./containers/Auth/EmailVerification";
 import AddEvents from "./containers/Admin/ProtocolEvents/AddEvents";
 import TransactionList from "./containers/SuperAdmin/TransactionList";
 import CreatedProtocolListSuperAdmin from "./containers/SuperAdmin/ProtocolList/CreatedProtocolList";
+import NotAuthorized from "./components/NotAuthorized";
+import { userRoutes } from "./utility/Constants";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -164,6 +172,54 @@ function App() {
     );
   }
 
+  const ProtectedRoute = ({ children }) => {
+    const location = useLocation();
+
+    // mapped paths from redux
+    const { mappedPermissions, loading, error } = useSelector((state) => ({
+      error: state.auth.error,
+      mappedPermissions: state.auth.mappedPermissions,
+      loading: state.auth.loading,
+    }));
+
+    console.log("app ===>", mappedPermissions);
+    const allowedRoutes = mappedPermissions.map((perm) => perm.route);
+
+    // Check if the current route (location.pathname) is allowed.
+    if (!allowedRoutes.includes(location.pathname)) {
+      // Redirect to a "Not Authorized" page
+      return <Navigate to="/not-authorized" replace />;
+    }
+
+    return children;
+  };
+
+  const OnlyLoggedOutRoute = ({ children }) => {
+    // user details
+    // mapped paths from redux
+    const {
+      userDetail: userDetailsFromStore,
+      userDetailsLoading,
+      userDetailsError,
+    } = useSelector((state) => ({
+      userDetailsError: state.auth.error,
+      userDetail: state.auth.userDetail,
+      userDetailsLoading: state.auth.loading,
+    }));
+
+    if (
+      !userDetailsFromStore?.token ||
+      !userDetailsFromStore?.token === null ||
+      !userDetailsFromStore?.token === ""
+    ) {
+      return children;
+    }
+
+    const path = userRoutes[userDetailsFromStore?.user_type] || "/dashboard"
+
+    return <Navigate to={`${path}`} replace />;
+  };
+
   return (
     <ProSidebarProvider>
       <CssBaseline />
@@ -173,241 +229,588 @@ function App() {
           <SideNav />
           <Box sx={styles.mainSection} component={"main"}>
             <Routes>
-              {/* <Route element={<PrivateRoutes />}> */}
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/external-monitor" element={<ExternalMonitor />} />
-              <Route path="/crc" element={<ClinicalResearchCoordinator />} />
-              <Route path="/protocol-details" element={<ProtocolDetails />} />
-              <Route path="/communication" element={<Communication />} />
-              <Route path="/payment" element={<PayPalButton />} />
-              <Route path="/success" element={<SuccessPayment />} />
-              <Route path="/cancel" element={<CanclePayment />} />
-              <Route path="/continuin-review" element={<ContinuingReview />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/external-monitor"
+                element={
+                  <ProtectedRoute>
+                    <ExternalMonitor />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/crc"
+                element={
+                  <ProtectedRoute>
+                    <ClinicalResearchCoordinator />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/protocol-details"
+                element={
+                  <ProtectedRoute>
+                    <ProtocolDetails />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/communication"
+                element={
+                  <ProtectedRoute>
+                    <Communication />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/payment"
+                element={
+                  <ProtectedRoute>
+                    <PayPalButton />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/success"
+                element={
+                  <ProtectedRoute>
+                    <SuccessPayment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/cancel"
+                element={
+                  <ProtectedRoute>
+                    <CanclePayment />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/continuin-review"
+                element={
+                  <ProtectedRoute>
+                    <ContinuingReview />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/upload-protocol-document"
-                element={<UploadProtocolDocument />}
+                element={
+                  <ProtectedRoute>
+                    <UploadProtocolDocument />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/continuin-review-details"
-                element={<ContinuingReviewDetails />}
+                element={
+                  <ProtectedRoute>
+                    <ContinuingReviewDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/protocol-amendment-request"
-                element={<ProtocolAmendmentRequest />}
+                element={
+                  <ProtectedRoute>
+                    <ProtocolAmendmentRequest />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/protocol-amendment-request-details"
-                element={<ProtocolAmendmentRequestDetails />}
+                element={
+                  <ProtectedRoute>
+                    <ProtocolAmendmentRequestDetails />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/adverse-events" element={<AdverseEvents />} />
+              <Route
+                path="/adverse-events"
+                element={
+                  <ProtectedRoute>
+                    <AdverseEvents />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/adverse-events-details"
-                element={<AdverseEventsDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdverseEventsDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/promptly-reportable-event"
-                element={<PromptlyReportableEvent />}
+                element={
+                  <ProtectedRoute>
+                    <PromptlyReportableEvent />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/promptly-reportable-event-details"
-                element={<PromptlyReportableEventDetails />}
+                element={
+                  <ProtectedRoute>
+                    <PromptlyReportableEventDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/study-close-request"
-                element={<StudyCloseoutRequest />}
+                element={
+                  <ProtectedRoute>
+                    <StudyCloseoutRequest />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/study-close-request-details"
-                element={<StudyCloseoutRequestDetails />}
+                element={
+                  <ProtectedRoute>
+                    <StudyCloseoutRequestDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/approved-protocol-list"
-                element={<ApprovedProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <ApprovedProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/under-review-protocols"
-                element={<UnderReviewProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <UnderReviewProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/rejected-protocols"
-                element={<AdminRejectedProtocols />}
+                element={
+                  <ProtectedRoute>
+                    <AdminRejectedProtocols />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/created-protocols"
-                element={<CreatedProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <CreatedProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/super/created-protocols"
-                element={<CreatedProtocolListSuperAdmin />}
+                element={
+                  <ProtectedRoute>
+                    <CreatedProtocolListSuperAdmin />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/protocol-details"
-                element={<AdminProtocolDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminProtocolDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/continuin-review-list"
-                element={<ContinuinReviewList />}
+                element={
+                  <ProtectedRoute>
+                    <ContinuinReviewList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/continuin-review-details"
-                element={<AdminContinuingReviewDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminContinuingReviewDetails />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/admin/users-list" element={<UsersList />} />
+              <Route
+                path="/admin/users-list"
+                element={
+                  <ProtectedRoute>
+                    <UsersList />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/admin/protocol-amendment-request"
-                element={<AdminProtocolAmendmentRequest />}
+                element={
+                  <ProtectedRoute>
+                    <AdminProtocolAmendmentRequest />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/protocol-amendment-request-details"
-                element={<AdminProtocolAmendmentRequestDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminProtocolAmendmentRequestDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/adverse-events"
-                element={<AdminAdverseEvents />}
+                element={
+                  <ProtectedRoute>
+                    <AdminAdverseEvents />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/adverse-events-details"
-                element={<AdminAdverseEventsDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminAdverseEventsDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/promptly-reportable-event"
-                element={<AdminPromptlyReportableEvent />}
+                element={
+                  <ProtectedRoute>
+                    <AdminPromptlyReportableEvent />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/promptly-reportable-event-details"
-                element={<AdminPromptlyReportableEventDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminPromptlyReportableEventDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/study-close-request"
-                element={<AdminStudyCloseoutRequest />}
+                element={
+                  <ProtectedRoute>
+                    <AdminStudyCloseoutRequest />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/study-close-request-details"
-                element={<AdminStudyCloseoutRequestDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminStudyCloseoutRequestDetails />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/admin/members" element={<Members />} />
+              <Route
+                path="/admin/members"
+                element={
+                  <ProtectedRoute>
+                    <Members />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/admin/super/members"
-                element={<SuperAdminMembers />}
+                element={
+                  <ProtectedRoute>
+                    <SuperAdminMembers />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/event-price-list"
-                element={<EventPriceList />}
+                element={
+                  <ProtectedRoute>
+                    <EventPriceList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/protocol-event-list"
-                element={<ProtocolEventList />}
+                element={
+                  <ProtectedRoute>
+                    <ProtocolEventList />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/admin/master-list" element={<MasterList />} />
+              <Route
+                path="/admin/master-list"
+                element={
+                  <ProtectedRoute>
+                    <MasterList />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/admin/transaction-list"
-                element={<TransactionList />}
+                element={
+                  <ProtectedRoute>
+                    <TransactionList />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/admin/add-event" element={<AddEvents />} />
+              <Route
+                path="/admin/add-event"
+                element={
+                  <ProtectedRoute>
+                    <AddEvents />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/member/protocol-list"
-                element={<VotingMemberProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <VotingMemberProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/member/protocol-details"
-                element={<AdminProtocolDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminProtocolDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/committee-chair/protocol-list"
-                element={<CommitteeChairProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <CommitteeChairProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/committee-chair/protocol-details"
-                element={<AdminProtocolDetails />}
+                element={
+                  <ProtectedRoute>
+                    <AdminProtocolDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/committee-chair/approval-member-details"
-                element={<ApprovalMemberDetails />}
-              />
-
-              {/* </Route> */}
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/forget-password" element={<ForgetPassword />} />
-              <Route
-                path="/reset-password/:token"
-                element={<ResetPassword />}
-              />
-              <Route
-                path="/verify-email/:token"
-                element={<EmailVerification />}
+                element={
+                  <ProtectedRoute>
+                    <ApprovalMemberDetails />
+                  </ProtectedRoute>
+                }
               />
 
               <Route
                 path="/office/approved-protocol-list"
-                element={<OfficeApprovedProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeApprovedProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/under-review-protocols"
-                element={<OfficeUnderReviewProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeUnderReviewProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/rejected-protocols"
-                element={<OfficeRejectedProtocols />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeRejectedProtocols />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/created-protocols"
-                element={<OfficeCreatedProtocolList />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeCreatedProtocolList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/protocol-details"
-                element={<OfficeProtocolDetails />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeProtocolDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/continuin-review-list"
-                element={<OfficeContinuinReviewList />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeContinuinReviewList />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/continuin-review-details"
-                element={<OfficeContinuingReviewDetails />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeContinuingReviewDetails />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/office/users-list" element={<OfficeUsersList />} />
+              <Route
+                path="/office/users-list"
+                element={
+                  <ProtectedRoute>
+                    <OfficeUsersList />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/office/protocol-amendment-request"
-                element={<OfficeProtocolAmendmentRequest />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeProtocolAmendmentRequest />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/protocol-amendment-request-details"
-                element={<OfficeProtocolAmendmentRequestDetails />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeProtocolAmendmentRequestDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/adverse-events"
-                element={<OfficeAdverseEvents />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeAdverseEvents />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/adverse-events-details"
-                element={<OfficeAdverseEventsDetails />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeAdverseEventsDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/promptly-reportable-event"
-                element={<OfficePromptlyReportableEvent />}
+                element={
+                  <ProtectedRoute>
+                    <OfficePromptlyReportableEvent />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/promptly-reportable-event-details"
-                element={<OfficePromptlyReportableEventDetails />}
+                element={
+                  <ProtectedRoute>
+                    <OfficePromptlyReportableEventDetails />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/study-close-request"
-                element={<OfficeStudyCloseoutRequest />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeStudyCloseoutRequest />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/office/study-close-request-details"
-                element={<OfficeStudyCloseoutRequestDetails />}
+                element={
+                  <ProtectedRoute>
+                    <OfficeStudyCloseoutRequestDetails />
+                  </ProtectedRoute>
+                }
               />
-              <Route path="/office/master-list" element={<MasterList />} />
+              <Route
+                path="/office/master-list"
+                element={
+                  <ProtectedRoute>
+                    <MasterList />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/external/monitor"
-                element={<ExternalMonitorProtocol />}
+                element={
+                  <ProtectedRoute>
+                    <ExternalMonitorProtocol />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/external/monitor/upload/report"
-                element={<UploadProtocolDocument />}
+                element={
+                  <ProtectedRoute>
+                    <UploadProtocolDocument />
+                  </ProtectedRoute>
+                }
               />
+
+              {/* special routes */}
+              <Route
+                path="/signin"
+                element={
+                  <OnlyLoggedOutRoute>
+                    <SignIn />
+                  </OnlyLoggedOutRoute>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <OnlyLoggedOutRoute>
+                    <SignUp />
+                  </OnlyLoggedOutRoute>
+                }
+              />
+              <Route
+                path="/forget-password"
+                element={
+                  <OnlyLoggedOutRoute>
+                    <ForgetPassword />
+                  </OnlyLoggedOutRoute>
+                }
+              />
+              <Route
+                path="/reset-password/:token"
+                element={
+                  <OnlyLoggedOutRoute>
+                    <ResetPassword />
+                  </OnlyLoggedOutRoute>
+                }
+              />
+              <Route
+                path="/verify-email/:token"
+                element={
+                  <OnlyLoggedOutRoute>
+                    <EmailVerification />
+                  </OnlyLoggedOutRoute>
+                }
+              />
+
+              {/* not authorized route  */}
+              <Route path="/not-authorized" element={<NotAuthorized />} />
             </Routes>
           </Box>
         </BrowserRouter>
