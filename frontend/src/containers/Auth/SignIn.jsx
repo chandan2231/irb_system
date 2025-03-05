@@ -19,6 +19,7 @@ import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { userRoutes } from "../../utility/Constants";
 
 const defaultInputValues = {
   email: "",
@@ -61,16 +62,6 @@ function SignIn() {
         setCurrentUser(data.payload.data);
         localStorage.setItem("user", JSON.stringify(data.payload.data.user));
         setTimeout(() => {
-          const userRoutes = {
-            super_admin: "/admin/super/created-protocols",
-            admin: "/admin/created-protocols",
-            "Voting Member": "/member/protocol-list",
-            "Committee Chair": "/committee-chair/protocol-list",
-            "Office Staff": "/office/created-protocols",
-            "Non Voting Member": "/dashboard",
-            user: "/dashboard",
-            external_monitor: "/external/monitor",
-          };
           const userType = data?.payload?.data?.user?.user_type;
           navigate(userRoutes[userType] || "/dashboard");
         }, 2000);
@@ -158,10 +149,10 @@ function SignIn() {
                     {...register("email")}
                     error={errors.email ? true : false}
                     helperText={errors.email?.message}
-                    // value={values.email}
-                    // onChange={(event) =>
-                    //   handleChange({ ...values, email: event.target.value })
-                    // }
+                  // value={values.email}
+                  // onChange={(event) =>
+                  //   handleChange({ ...values, email: event.target.value })
+                  // }
                   />
                 </FormControl>
                 <FormControl fullWidth variant="outlined">

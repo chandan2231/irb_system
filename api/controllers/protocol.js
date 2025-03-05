@@ -30,7 +30,7 @@ export const getCTMProtocolsReport = (req, res) => {
 export const getCRCList = (req, res) => {
   const que =
     'select * from clinical_research_coordinator WHERE status=? AND added_by=?'
-  db.query(que, [1, req.body.added_by], (err, data) => {
+  db.query(que, [1, req.user.userId], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)
@@ -110,7 +110,7 @@ export const createCRC = async (req, res) => {
 export const getExternalMonitorList = (req, res) => {
   const que =
     'select * from users WHERE user_type=? AND status=? AND added_by=?'
-  db.query(que, ['external_monitor', 1, req.body.added_by], (err, data) => {
+  db.query(que, ['external_monitor', 1, req.user.userId], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)
@@ -159,7 +159,7 @@ export const createExternalMonitor = async (req, res) => {
       req.body.researcher_type,
       req.body.user_type,
       req.body.license_number,
-      req.body.added_by
+      req.user.userId
     ]
 
     const insertResult = await new Promise((resolve, reject) => {
@@ -304,7 +304,7 @@ export const createProtocol = async (req, res) => {
       newProtocolNumber,
       req.body.research_type_id,
       req.body.protocol_user_type,
-      req.body.login_id
+      req.user.userId
     ]
 
     // Wrap the insert query in a promise to use async/await
@@ -319,7 +319,7 @@ export const createProtocol = async (req, res) => {
     })
 
     // Fetch user info
-    const user = await getUserInfo(req.body.login_id)
+    const user = await getUserInfo(req.user.userId)
     const to = user.email
     const subject = `Save Protocol ID ${newProtocolNumber}`
     const grettingHtml = `<p>Save Protocol ID</p><p>Dear ${user.name},</p>`
@@ -362,51 +362,8 @@ export const createProtocol = async (req, res) => {
   }
 }
 
-// export const getProtocolList = (req, res) => {
-//   const que = 'select * from protocols where added_by = ?'
-//   db.query(que, [req.body.login_id], (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length >= 0) {
-//       return res.status(200).json(data)
-//     }
-//   })
-// }
-
-// export const getProtocolList = (req, res) => {
-//   const { login_id, selectedStatus } = req.body
-//   const page = Number(req.body.page) || 0 // Default to page 0
-//   const pageSize = Number(req.body.pageSize) || 10 // Default to 10 records per page
-//   const offset = page * pageSize // Offset calculation based on 0-based index
-
-//   const countQuery =
-//     'SELECT COUNT(*) AS total FROM protocols WHERE added_by = ?'
-//   const dataQuery =
-//     'SELECT * FROM protocols WHERE added_by = ? ORDER BY id DESC LIMIT ? OFFSET ?'
-
-//   db.query(countQuery, [login_id], (err, countResult) => {
-//     if (err) return res.status(500).json({ error: err.message })
-
-//     const totalRecords = countResult[0].total
-//     const totalPages = Math.ceil(totalRecords / pageSize)
-
-//     db.query(dataQuery, [login_id, pageSize, offset], (err, data) => {
-//       if (err) return res.status(500).json({ error: err.message })
-
-//       return res.status(200).json({
-//         data,
-//         pagination: {
-//           currentPage: page, // Starts from 0
-//           totalPages,
-//           totalRecords,
-//           pageSize
-//         }
-//       })
-//     })
-//   })
-// }
-
 export const getProtocolList = (req, res) => {
-  const { login_id, selectedStatus } = req.body
+  const { selectedStatus } = req.body
   const status =
     selectedStatus === 'Created'
       ? 1
@@ -423,11 +380,11 @@ export const getProtocolList = (req, res) => {
 
   // Base query to count the total protocols
   let countQuery = 'SELECT COUNT(*) AS total FROM protocols WHERE added_by = ?'
-  let countParams = [login_id]
+  let countParams = [req.user.userId]
 
   // Base query to fetch protocols
   let dataQuery = 'SELECT * FROM protocols WHERE added_by = ?'
-  let dataParams = [login_id]
+  let dataParams = [req.user.userId]
 
   // Modify queries if selectedStatus is provided
   if (selectedStatus !== 'All' && status !== null) {
@@ -467,7 +424,7 @@ export const getProtocolList = (req, res) => {
 
 export const getApprovedProtocolCheck = (req, res) => {
   const que = 'SELECT * from protocols WHERE added_by=? AND status=?'
-  db.query(que, [req.body.userId, 3], (err, data) => {
+  db.query(que, [req.user.userId, 3], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data.length)
@@ -477,7 +434,7 @@ export const getApprovedProtocolCheck = (req, res) => {
 
 export const getApprovedProtocolList = (req, res) => {
   const que = 'SELECT * from protocols WHERE added_by=? AND status=?'
-  db.query(que, [req.body.login_id, 3], (err, data) => {
+  db.query(que, [req.user.userId, 3], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)
@@ -527,7 +484,7 @@ export const saveFile = async (req, res) => {
         req.file.filename,
         imageUrl,
         req.body.createdByUserType,
-        req.body.createdBy,
+        req.user.userId,
         datetime,
         datetime
       ]
@@ -561,7 +518,7 @@ export const saveFile = async (req, res) => {
         req.body.documentName,
         req.file.filename,
         imageUrl,
-        req.body.createdBy,
+        req.user.userId,
         datetime,
         datetime
       ]
@@ -911,7 +868,7 @@ export const protocolGeneratePdf = async (req, res) => {
 //           req.body.documentName,
 //           req.file.filename,
 //           imageUrl,
-//           req.body.createdBy,
+//           req.user.userId,
 //           datetime.toISOString().slice(0, 10),
 //           datetime.toISOString().slice(0, 10)
 //         ]
@@ -931,7 +888,7 @@ export const protocolGeneratePdf = async (req, res) => {
 //           req.body.documentName,
 //           req.file.filename,
 //           imageUrl,
-//           req.body.createdBy,
+//           req.user.userId,
 //           datetime.toISOString().slice(0, 10),
 //           datetime.toISOString().slice(0, 10)
 //         ]
@@ -952,7 +909,7 @@ export const protocolGeneratePdf = async (req, res) => {
 //           req.file.filename,
 //           imageUrl,
 //           req.body.createdByUserType,
-//           req.body.createdBy,
+//           req.user.userId,
 //           datetime.toISOString().slice(0, 10),
 //           datetime.toISOString().slice(0, 10)
 //         ]
@@ -972,7 +929,7 @@ export const protocolGeneratePdf = async (req, res) => {
 //           req.body.documentName,
 //           req.file.filename,
 //           imageUrl,
-//           req.body.createdBy,
+//           req.user.userId,
 //           datetime.toISOString().slice(0, 10),
 //           datetime.toISOString().slice(0, 10)
 //         ]
@@ -992,7 +949,7 @@ export const protocolGeneratePdf = async (req, res) => {
 //           req.body.documentName,
 //           req.file.filename,
 //           imageUrl,
-//           req.body.createdBy,
+//           req.user.userId,
 //           datetime.toISOString().slice(0, 10),
 //           datetime.toISOString().slice(0, 10)
 //         ]
@@ -1412,7 +1369,7 @@ export const protocolGeneratePdf = async (req, res) => {
 // export const createProtocol = (req, res) => {
 //     // CHECK RESEARCH TYPE IF EXIST
 //     const que = "select * from protocols where research_type = ? AND added_by = ?"
-//     db.query(que, [req.body.research_type_id, req.body.login_id], (err, data) => {
+//     db.query(que, [req.body.research_type_id, req.user.userId], (err, data) => {
 //         if (err) return res.status(500).json(err)
 //         if (data.length > 0) {
 //             return res.status(400).json('You have already added the selected research type, try with other')
@@ -1423,7 +1380,7 @@ export const protocolGeneratePdf = async (req, res) => {
 //         const protocolValue = [
 //             protocolNumber,
 //             req.body.research_type_id,
-//             req.body.login_id,
+//             req.user.userId,
 //             new Date().getTime(),
 //             new Date().getTime(),
 //         ]

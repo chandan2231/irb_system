@@ -4,14 +4,20 @@ import {
   getCommunicationListByProtocolId,
   downloadCommunicationPdf
 } from '../controllers/communication.js'
+import { authenticateUser } from '../utils/middleware.js'
 
 const router = express.Router()
 
-router.post('/saveEnquiry', saveEnquiryRequest)
+router.post('/saveEnquiry', authenticateUser, saveEnquiryRequest)
 router.post(
   '/getCommunicationListByProtocolId',
+  authenticateUser,
   getCommunicationListByProtocolId
 )
-router.post('/downloadCommunicationPdf', downloadCommunicationPdf)
+router.post(
+  '/downloadCommunicationPdf',
+  authenticateUser,
+  downloadCommunicationPdf
+)
 
 export default router

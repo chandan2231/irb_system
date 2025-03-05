@@ -1,3 +1,14 @@
+export const userRoutes = {
+  super_admin: "/admin/super/created-protocols",
+  admin: "/admin/created-protocols",
+  "Voting Member": "/member/protocol-list",
+  "Committee Chair": "/committee-chair/protocol-list",
+  "Office Staff": "/office/created-protocols",
+  "Non Voting Member": "/dashboard",
+  user: "/dashboard",
+  external_monitor: "/external/monitor",
+};
+
 const RESEARCH_TYPE = {
   CLINICAL_SITE: "Clinical Site",
   PRINCIPAL_INVESTIGATOR: "Principal Investigator",

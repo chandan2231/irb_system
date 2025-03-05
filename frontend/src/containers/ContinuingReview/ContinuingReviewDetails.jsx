@@ -2,8 +2,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import { Box, Typography, Button } from "@mui/material";
 import InformedConsentProcess from "../ContinuingReview/ContinuingReviewPages/InformedConsentProcess";
 import InvestigatorInstitutionInfo from "../ContinuingReview/ContinuingReviewPages/InvestigatorInstitutionInfo";
 import ResearchProgress from "../ContinuingReview/ContinuingReviewPages/ResearchProgress";
@@ -11,12 +10,15 @@ import RiskAssessment from "../ContinuingReview/ContinuingReviewPages/RiskAssess
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchContinuinReviewDetailsById } from "../../services/Admin/ContinuinReviewListService";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 
 const ContinuingReviewDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const continuinReviewDetails = location.state.details;
   const [user, setUser] = React.useState([]);
+  const [value, setValue] = React.useState(0);
+
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -28,8 +30,17 @@ const ContinuingReviewDetails = () => {
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
+          <Box>
+            <Typography
+              sx={{
+                mx: { xs: 1, sm: 3, md: 3 },
+                p: 3,
+                backgroundColor: "#ffffff",
+                border: "1px solid #cccccc",
+              }}
+            >
+              {children}
+            </Typography>
           </Box>
         )}
       </div>
@@ -49,7 +60,6 @@ const ContinuingReviewDetails = () => {
     };
   }
 
-  const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -78,50 +88,75 @@ const ContinuingReviewDetails = () => {
     })
   );
 
-  console.log("continuinReviewDetails", {
-    continuinReviewDetails,
-    continuinReviewDetailsById,
-  });
+  const handleButtonClick = (index) => {
+    setValue(index);
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
-      <h2 className="ml-20">
-        Continuin Review ({continuinReviewDetails.protocolId})
-      </h2>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          <Tab
-            label="Risk Assessment"
-            {...a11yProps(0)}
-            style={{ maxWidth: "400px" }}
-          />
-          <Tab
-            label="Informed Consent Process"
-            {...a11yProps(1)}
-            style={{ maxWidth: "400px" }}
-          />
-          <Tab
-            label="Investigator and Institution Information"
-            {...a11yProps(2)}
-            style={{ maxWidth: "400px" }}
-          />
-          <Tab
-            label="Research Progress"
-            {...a11yProps(3)}
-            style={{ maxWidth: "400px" }}
-          />
-        </Tabs>
+      {/* Title Section */}
+      <Typography
+        variant="h2"
+        sx={{
+          mb: 3,
+          mt: 3,
+          textAlign: "left",
+          fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+          padding: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          fontWeight: "bold",
+        }}
+      >
+        Continuin Review Details&nbsp;({continuinReviewDetails.researchType}) (
+        {continuinReviewDetails.protocolId})
+      </Typography>
+      {/* Button Tabs (Horizontal on larger screens, stacked on smaller screens) */}
+      <Box
+        sx={{
+          borderColor: "#d3d3d3",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          gap: 1,
+          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+          flexWrap: "wrap", // Allow wrapping for smaller screens
+          margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
+          overflow: "hidden", // Prevent any overflow from buttons
+        }}
+      >
+        {[...Array(4).keys()].map((index) => (
+          <Button
+            key={index}
+            endIcon={<DoubleArrowIcon />}
+            variant={value === index ? "contained" : "text"}
+            onClick={() => handleButtonClick(index)}
+            sx={{
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              borderBottom: 0, // No bottom border by default
+              backgroundColor: value === index ? "#325ca8" : "#d3d3d3", // Gray by default, White when selected
+              color: value === index ? "white" : "rgba(0, 0, 0, 0.6)",
+              flex: 1,
+              minWidth: { xs: "100%", sm: "auto" }, // Full width on small screens
+              letterSpacing: 0,
+              whiteSpace: "nowrap", // Prevents text from breaking into two lines
+            }}
+          >
+            {
+              [
+                "Risk Assessment",
+                "Informed Consent Process",
+                "Investigator and Institution Info",
+                "Research Progress",
+              ][index]
+            }
+          </Button>
+        ))}
       </Box>
+
       <CustomTabPanel value={value} index={0}>
         <RiskAssessment
           continuinReviewDetails={continuinReviewDetails}
           riskAssessment={continuinReviewDetailsById?.risk_assessment}
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
@@ -130,6 +165,7 @@ const ContinuingReviewDetails = () => {
           informedConsentProcess={
             continuinReviewDetailsById?.informed_consent_process
           }
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
@@ -138,6 +174,7 @@ const ContinuingReviewDetails = () => {
           investigatorInstitutionInfo={
             continuinReviewDetailsById?.investigator_instuation_info
           }
+          handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>

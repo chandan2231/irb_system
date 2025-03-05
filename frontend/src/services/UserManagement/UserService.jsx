@@ -88,7 +88,6 @@ export const uploadFile = async (file, fileData = {}) => {
       url: `${baseURL}/protocol/upload/file`,
       data,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -102,9 +101,6 @@ export const continueinReviewReport = async (protocolDetails) => {
       method: "POST",
       url: `${baseURL}/protocol/continuein/generate/pdf`,
       data: protocolDetails,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
     });
     return response.data;
   } catch (error) {}
@@ -116,11 +112,7 @@ export const protocolReport = async (protocolDetails) => {
       method: "POST",
       url: `${baseURL}/protocol/protocol/generate/pdf`,
       data: protocolDetails,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
     });
-    // console.log('response', response)
     return response.data;
   } catch (error) {}
 };

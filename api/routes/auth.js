@@ -3,7 +3,6 @@ import {
   login,
   register,
   logout,
-  validateUserToken,
   forgetPasswordVerifyEmail,
   resetPassword,
   emailVerification
@@ -15,8 +14,5 @@ router.post('/logout', logout)
 router.post('/verify/username', forgetPasswordVerifyEmail)
 router.post('/password/reset/', resetPassword)
 router.post('/email/verify/', emailVerification)
-router.get('/', validateUserToken, (req, res) => {
-  res.status(200).json('Welcome to the your Dashboard!')
-})
 
 export default router

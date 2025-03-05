@@ -23,7 +23,7 @@ export const saveEnquiryRequest = async (req, res) => {
       req.body.created_by_user_type,
       req.body.status,
       req.body.reply_thread_parent_id ?? '',
-      req.body.created_by,
+      req.user.userId,
       datetime.toISOString(),
       datetime.toISOString()
     ]
@@ -136,7 +136,7 @@ GROUP BY cm.id ORDER BY cm.id DESC`
     if (data.length > 0) {
       return res.status(200).json(data)
     } else {
-      return res.status(404).json({ message: 'No data found' })
+      return res.status(200).json({ message: 'No data found' })
     }
   } catch (err) {
     console.error('Database query error:', err)

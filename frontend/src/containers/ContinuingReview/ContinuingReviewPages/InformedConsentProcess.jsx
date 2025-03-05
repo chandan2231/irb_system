@@ -54,13 +54,18 @@ const investigatorInfoSchema = yup.object().shape({
     then: () => yup.string().required("Please explain"),
     otherwise: () => yup.string().nullable(),
   }),
-  icf_file: yup.array().min(1, "At least one ICF file is required"),
+  icf_file: yup
+    .mixed()
+    .test("required", "At least one ICF file is required", (value) => {
+      return value && value.length > 0;
+    }),
   consent_form: yup.array().min(1, "At least one consent form is required"),
 });
 
 function InformedConsentProcess({
   continuinReviewDetails,
   informedConsentProcess,
+  handleNextTab,
 }) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -185,8 +190,7 @@ function InformedConsentProcess({
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
-            e.target.reset();
+            handleNextTab(2);
           }
         });
       }

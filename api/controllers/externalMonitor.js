@@ -10,7 +10,7 @@ export const getExternalMonitorProtocolList = (req, res) => {
       external_monitor_protocol as emp ON ps.protocol_id = emp.protocol_id
     WHERE 
       emp.external_monitor_id = ?`
-  db.query(que, [req.body.login_id], (err, data) => {
+  db.query(que, [req.user.userId], (err, data) => {
     if (err) return res.status(500).json(err)
     if (data.length >= 0) {
       return res.status(200).json(data)

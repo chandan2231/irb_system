@@ -57,37 +57,6 @@ function AdminAdverseEvents() {
       headerName: "Updated Date",
       flex: 1,
     },
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   width: 80,
-    //   getActions: (params) => [
-    //     <GridActionsCellItem
-    //       icon={<RadioButtonUncheckedIcon />}
-    //       label="Change Status"
-    //       onClick={handleChangeStatus(params)}
-    //       showInMenu
-    //     />,
-    //     <GridActionsCellItem
-    //       icon={<EditNoteIcon />}
-    //       label="Edit"
-    //       onClick={handleItemEdit(params)}
-    //       showInMenu
-    //     />,
-    //     <GridActionsCellItem
-    //       icon={<SettingsSuggestIcon />}
-    //       label="Details"
-    //       onClick={handleItemDetail(params)}
-    //       showInMenu
-    //     />,
-    //     <GridActionsCellItem
-    //       icon={<DeleteIcon />}
-    //       label="Delete"
-    //       onClick={handleItemDelete(params)}
-    //       showInMenu
-    //     />,
-    //   ],
-    // },
   ];
 
   var totalElements = 0;
@@ -131,26 +100,21 @@ function AdminAdverseEvents() {
     }
   }, [adverseEventList]);
 
-  const handleChangeStatus = (params) => {
-    //console.log('Status Item', params)
-  };
-  const handleItemDelete = (params) => {
-    //console.log('Delete Item', params)
-  };
-
-  const handleItemDetail = (params) => {
-    //console.log('Details Item', params)
-  };
-
-  const handleItemEdit = (params) => {
-    //console.log('Edit Item', params)
-  };
   return (
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={5} sm={5} md={8} lg={8}>
-            <Typography variant="h5" mb={2}>
+          {/* Title Grid Item */}
+          <Grid item xs={12} sm={12} md={12} lg={12}>
+            <Typography
+              variant="h2"
+              sx={{
+                textAlign: "left",
+                fontSize: { xs: "1.2rem", sm: "1.2rem", md: "1.5rem" },
+                fontWeight: "bold",
+                mb: 2,
+              }}
+            >
               Adverse Events
             </Typography>
           </Grid>

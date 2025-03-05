@@ -5,11 +5,16 @@ import {
   saveInvestigatorAndinstuation,
   saveResearchProcess
 } from '../controllers/continuinReview.js'
+import { authenticateUser } from '../utils/middleware.js'
 const router = express.Router()
 
-router.post('/riskAssessmentSave', saveRiskAssessment)
-router.post('/informedConsentSave', saveInformedConsent)
-router.post('/investigatorAndinstuationSave', saveInvestigatorAndinstuation)
-router.post('/researchProcessSave', saveResearchProcess)
+router.post('/riskAssessmentSave', authenticateUser, saveRiskAssessment)
+router.post('/informedConsentSave', authenticateUser, saveInformedConsent)
+router.post(
+  '/investigatorAndinstuationSave',
+  authenticateUser,
+  saveInvestigatorAndinstuation
+)
+router.post('/researchProcessSave', authenticateUser, saveResearchProcess)
 
 export default router

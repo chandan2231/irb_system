@@ -27,7 +27,7 @@ export const saveStudyCloseoutRequest = (req, res) => {
     req.body.promptly_reportable_info,
     req.body.adverse_event_info,
     req.body.your_name,
-    req.body.created_by,
+    req.user.userId,
     datetime.toISOString().slice(0, 10),
     datetime.toISOString().slice(0, 10)
   ]
@@ -74,7 +74,7 @@ export const savePromptlyReportableEvent = (req, res) => {
     req.body.email,
     req.body.phone,
     req.body.your_name,
-    req.body.created_by,
+    req.user.userId,
     datetime.toISOString().slice(0, 10),
     datetime.toISOString().slice(0, 10)
   ]
@@ -111,7 +111,7 @@ export const saveProtocolAmendmentRequest = (req, res) => {
     req.body.your_name,
     datetime.toISOString().slice(0, 10),
     datetime.toISOString().slice(0, 10),
-    req.body.created_by
+    req.user.userId
   ]
   db.query(que, [values], (err, data) => {
     if (err) {
@@ -156,7 +156,7 @@ export const saveAdverseEvent = (req, res) => {
     req.body.email,
     req.body.phone,
     req.body.your_name,
-    req.body.created_by,
+    req.user.userId,
     datetime.toISOString().slice(0, 10),
     datetime.toISOString().slice(0, 10)
   ]

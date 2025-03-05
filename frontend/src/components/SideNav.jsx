@@ -40,12 +40,36 @@ function SideNav() {
     }
   }, [dispatch, userDetails && userDetails?.id !== null]);
 
-  return location.pathname.includes("/reset-password/") ||
-    location.pathname.includes("/verify-email/") ||
-    location.pathname === "/forget-password" ||
-    location.pathname === "/signin" ||
-    location.pathname === "/signup" ? (
-    <></>
+  // user details
+  // mapped paths from redux
+  const {
+    userDetail: userDetailsFromStore,
+    userDetailsLoading,
+    userDetailsError,
+  } = useSelector((state) => ({
+    userDetailsError: state.auth.error,
+    userDetail: state.auth.userDetail,
+    userDetailsLoading: state.auth.loading,
+  }));
+  useEffect(() => {
+    if (userDetails) {
+      let data = { userId: userDetails.id };
+      dispatch(approvedProtocolListCheck(data));
+    }
+  }, [dispatch, userDetails && userDetails?.id !== null]);
+
+  const showSideNav = () => {
+    return (
+      location.pathname.includes("/reset-password/") ||
+      location.pathname.includes("/verify-email/") ||
+      location.pathname === "/forget-password" ||
+      location.pathname === "/signin" ||
+      location.pathname === "/signup"
+    );
+  };
+
+  return showSideNav() ? (
+    <React.Fragment></React.Fragment>
   ) : (
     <Sidebar
       style={{ height: "100%", top: "auto" }}
@@ -70,7 +94,7 @@ function SideNav() {
           },
         }}
       >
-        {userDetails.user_type === "admin" ? (
+        {userDetailsFromStore?.user_type === "admin" ? (
           <>
             <MenuItem
               active={
@@ -275,7 +299,7 @@ function SideNav() {
               </MenuItem>
             </SubMenu>
           </>
-        ) : userDetails.researcher_type === "user" ? (
+        ) : userDetailsFromStore?.user_type === "user" ? (
           <>
             <MenuItem
               active={
@@ -411,7 +435,7 @@ function SideNav() {
               </Typography>
             </MenuItem>
           </>
-        ) : userDetails.user_type === "Voting Member" ? (
+        ) : userDetailsFromStore?.user_type === "Voting Member" ? (
           <MenuItem
             active={
               location.pathname === "/member/protocol-list" ||
@@ -429,7 +453,7 @@ function SideNav() {
               Protocol Voting List
             </Typography>
           </MenuItem>
-        ) : userDetails.user_type === "Committee Chair" ? (
+        ) : userDetailsFromStore?.user_type === "Committee Chair" ? (
           <MenuItem
             active={
               location.pathname === "/committee-chair/protocol-list" ||
@@ -447,7 +471,7 @@ function SideNav() {
               Protocol List
             </Typography>
           </MenuItem>
-        ) : userDetails.user_type === "Office Staff" ? (
+        ) : userDetailsFromStore?.user_type === "Office Staff" ? (
           <>
             <MenuItem
               active={
@@ -627,7 +651,7 @@ function SideNav() {
               </MenuItem>
             </SubMenu>
           </>
-        ) : userDetails.user_type === "external_monitor" ? (
+        ) : userDetailsFromStore?.user_type === "external_monitor" ? (
           <MenuItem
             active={
               location.pathname === "/external/monitor" ||
@@ -645,7 +669,7 @@ function SideNav() {
               Protocol List
             </Typography>
           </MenuItem>
-        ) : userDetails.user_type === "super_admin" ? (
+        ) : userDetailsFromStore?.user_type === "super_admin" ? (
           <>
             <MenuItem
               active={
@@ -883,7 +907,7 @@ function SideNav() {
             </SubMenu>
           </>
         ) : (
-          <></>
+          <React.Fragment></React.Fragment>
         )}
       </Menu>
     </Sidebar>

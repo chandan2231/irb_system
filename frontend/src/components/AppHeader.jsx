@@ -17,6 +17,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { useProSidebar } from "react-pro-sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { userLogout } from "../services/Auth/AuthService";
+import { persistor } from "../store";
 
 function AppHeader() {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ function AppHeader() {
   const handleCloseUserMenu = () => {
     dispatch(userLogout()).then((data) => {
       if (data.payload.status === 200) {
-        removeCookie("accessToken");
+        persistor.flush();
         window.localStorage.clear();
         window.location.replace("/signin");
       } else {
@@ -42,10 +43,10 @@ function AppHeader() {
   return (
     <AppBar position="sticky" sx={styles.appBar}>
       {window.location.pathname.includes("reset-password") ||
-      window.location.pathname.includes("/verify-email/") ||
-      window.location.pathname === "/forget-password" ||
-      window.location.pathname === "/signin" ||
-      window.location.pathname === "/signup" ? (
+        window.location.pathname.includes("/verify-email/") ||
+        window.location.pathname === "/forget-password" ||
+        window.location.pathname === "/signin" ||
+        window.location.pathname === "/signup" ? (
         <Toolbar>
           <Box className="center-card">
             <h2>IRBHUB</h2>

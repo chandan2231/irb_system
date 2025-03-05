@@ -32,7 +32,7 @@ const handleWaiveFee = async (protocolId, protocolType, createdBy) => {
         currency: 'waive_fee',
         status: 'COMPLETED',
         protocol_id: protocolId,
-        user_id: createdBy,
+        user_id: req.user.userId,
         payment_type: 'waive_fee'
       }
       const insertPaymentQuery = 'INSERT INTO transactions SET ?'
@@ -121,7 +121,7 @@ const handleExternalMonitorProtocol = async (
     const insertValues = [
       protocolId,
       protocolType,
-      createdBy,
+      req.user.userId,
       externalMonitorId,
       datetime.toISOString().slice(0, 10),
       datetime.toISOString().slice(0, 10)
@@ -140,7 +140,7 @@ export const savePrincipalInvestigatorSubmission = async (req, res) => {
       req.body.protocol_id,
       req.body.external_monitor_id,
       req.body.protocol_type,
-      req.body.created_by,
+      req.user.userId,
       datetime
     )
   }
@@ -183,7 +183,7 @@ export const savePrincipalInvestigatorSubmission = async (req, res) => {
       await handleWaiveFee(
         req.body.protocol_id,
         req.body.paymentType,
-        req.body.created_by
+        req.user.userId
       )
     }
 
@@ -215,7 +215,7 @@ export const saveMultiSiteSubmission = async (req, res) => {
       req.body.protocol_id,
       req.body.external_monitor_id,
       req.body.protocol_type,
-      req.body.created_by,
+      req.user.userId,
       datetime
     )
   }
@@ -255,7 +255,7 @@ export const saveMultiSiteSubmission = async (req, res) => {
       await handleWaiveFee(
         req.body.protocol_id,
         req.body.protocol_type,
-        req.body.created_by
+        req.user.userId
       )
     }
 
@@ -297,7 +297,7 @@ export const saveDocumentSubmission = async (req, res) => {
       await handleWaiveFee(
         req.body.protocol_id,
         req.body.protocol_type,
-        req.body.created_by
+        req.user.userId
       )
     }
 
@@ -341,7 +341,7 @@ export const saveClinicalSiteSubmission = async (req, res) => {
       await handleWaiveFee(
         req.body.protocol_id,
         req.body.protocol_type,
-        req.body.created_by
+        req.user.userId
       )
     }
 
@@ -379,7 +379,7 @@ export const saveDocumentReview = (req, res) => {
         req.body.participation_compensated,
         req.body.professional_translator,
         req.body.professional_translator_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -404,7 +404,7 @@ export const saveDocumentReview = (req, res) => {
         req.body.participation_compensated,
         req.body.professional_translator,
         req.body.professional_translator_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -449,7 +449,7 @@ export const saveProtocolInfo = (req, res) => {
         req.body.funding_source,
         req.body.oversite,
         req.body.oversite_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -477,7 +477,7 @@ export const saveProtocolInfo = (req, res) => {
         req.body.funding_source,
         req.body.oversite,
         req.body.oversite_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -537,7 +537,7 @@ export const saveInvestigatorInfo = (req, res) => {
         req.body.sub_investigator_name,
         req.body.training_completed.toString(),
         req.body.training_completed_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -572,7 +572,7 @@ export const saveInvestigatorInfo = (req, res) => {
         req.body.sub_investigator_name,
         req.body.training_completed.toString(),
         req.body.training_completed_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -601,7 +601,7 @@ export const saveStydyInfo = (req, res) => {
       const updateValues = [
         req.body.research_type,
         req.body.research_type_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -621,7 +621,7 @@ export const saveStydyInfo = (req, res) => {
         req.body.protocol_id,
         req.body.research_type,
         req.body.research_type_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -659,7 +659,7 @@ export const saveInformedInfo = (req, res) => {
         req.body.participation_compensated,
         req.body.professional_translator,
         req.body.professional_translator_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -684,7 +684,7 @@ export const saveInformedInfo = (req, res) => {
         req.body.participation_compensated,
         req.body.professional_translator,
         req.body.professional_translator_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -733,7 +733,7 @@ export const saveProtocolProceduresInfo = (req, res) => {
         req.body.research_place_name_address,
         req.body.study_excluded,
         req.body.study_excluded_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -763,7 +763,7 @@ export const saveProtocolProceduresInfo = (req, res) => {
         req.body.research_place_name_address,
         req.body.study_excluded,
         req.body.study_excluded_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -814,7 +814,7 @@ export const saveContactInfo = (req, res) => {
         req.body.secondary_contact_title,
         req.body.secondary_contact_phone_number,
         req.body.secondary_contact_email,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -846,7 +846,7 @@ export const saveContactInfo = (req, res) => {
         req.body.secondary_contact_title,
         req.body.secondary_contact_phone_number,
         req.body.secondary_contact_email,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -957,7 +957,7 @@ export const saveInvestigatorAndProtocolInformation = (req, res) => {
         req.body.investigator_research_number,
         req.body.pending_or_active_research,
         req.body.pending_or_active_research_explain,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -1018,7 +1018,7 @@ export const saveInvestigatorAndProtocolInformation = (req, res) => {
         req.body.investigator_research_number,
         req.body.pending_or_active_research,
         req.body.pending_or_active_research_explain,
-        req.body.created_by,
+        req.user.userId,
         datetime.toISOString().slice(0, 10),
         datetime.toISOString().slice(0, 10)
       ]
@@ -1060,7 +1060,7 @@ export const saveClinicalInformedConsent = (req, res) => {
         req.body.primary_phone,
         req.body.always_primary_phone,
         req.body.site_electronic_consent,
-        req.body.created_by,
+        req.user.userId,
         req.body.protocol_id
       ]
       db.query(updateQuery, updateValues, (err, data) => {
@@ -1085,7 +1085,7 @@ export const saveClinicalInformedConsent = (req, res) => {
         req.body.primary_phone,
         req.body.always_primary_phone,
         req.body.site_electronic_consent,
-        req.body.created_by,
+        req.user.userId,
         datetime.toISOString().slice(0, 10),
         datetime.toISOString().slice(0, 10)
       ]
@@ -1124,7 +1124,7 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
         req.body.expected_number_sites,
         req.body.future_research,
         req.body.future_research_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [updateVaues], (err, data) => {
         if (err) {
@@ -1154,7 +1154,7 @@ export const saveMultiSiteProtocolProceduresInfo = (req, res) => {
         req.body.expected_number_sites,
         req.body.future_research,
         req.body.future_research_explain,
-        req.body.created_by
+        req.user.userId
       ]
       db.query(que, [values], (err, data) => {
         if (err) {
@@ -1317,94 +1317,3 @@ export const getPrincipalInvestigatorSavedProtocolType = (req, res) => {
     })
   }
 }
-
-// export const savePrincipalInvestigatorSubmission = async (req, res) => {
-//   const datetime = new Date()
-
-//   const setParams = {
-//     applicant_terms: req.body.terms,
-//     applicant_acknowledge: req.body.acknowledge,
-//     applicant_acknowledge_name: req.body.acknowledge_name
-//   }
-//   const whereParams = {
-//     protocol_id: req.body.protocol_id
-//   }
-//   try {
-//     // Update protocol submission with CTM
-//     await saveCommonProtocolSubmission('protocols', setParams, whereParams)
-
-//     // Handle waive fee if applicable
-//     if (req.body.waive_fee === 2) {
-//       await handleWaiveFee(
-//         req.body.protocol_id,
-//         req.body.paymentType,
-//         req.body.created_by
-//       )
-//     }
-
-//     // Update or insert external monitor protocol
-//     await handleExternalMonitorProtocol(
-//       req.body.protocol_id,
-//       req.body.external_monitor_id,
-//       req.body.protocol_type,
-//       req.body.created_by,
-//       datetime
-//     )
-
-//     // Send response after all async operations are completed
-//     return res.json({
-//       status: 200,
-//       msg: 'Protocol submission processed successfully'
-//     })
-//   } catch (err) {
-//     console.error('Error in savePrincipalInvestigatorSubmission:', err)
-//     // Return error response if any error occurs during the process
-//     return res
-//       .status(500)
-//       .json({ error: 'An error occurred while processing the request.' })
-//   }
-// }
-
-// export const saveMultiSiteSubmission = async (req, res) => {
-//   const datetime = new Date()
-
-//   const setParams = {
-//     applicant_terms: req.body.terms,
-//     applicant_acknowledge: req.body.acknowledge,
-//     applicant_acknowledge_name: req.body.acknowledge_name
-//   }
-//   const whereParams = {
-//     protocol_id: req.body.protocol_id
-//   }
-//   try {
-//     await saveCommonProtocolSubmission('protocols', setParams, whereParams)
-
-//     // Handle waive_fee logic
-//     if (req.body.waive_fee === 2) {
-//       await handleWaiveFee(
-//         req.body.protocol_id,
-//         req.body.protocol_type,
-//         req.body.created_by
-//       )
-//     }
-
-//     // Update or insert external monitor protocol
-//     await handleExternalMonitorProtocol(
-//       req.body.protocol_id,
-//       req.body.external_monitor_id,
-//       req.body.protocol_type,
-//       req.body.created_by,
-//       datetime
-//     )
-
-//     return res.json({
-//       status: 200,
-//       msg: 'Protocol submission processed successfully'
-//     })
-//   } catch (err) {
-//     console.error(err)
-//     return res
-//       .status(500)
-//       .json({ error: 'An error occurred while processing the request.' })
-//   }
-// }

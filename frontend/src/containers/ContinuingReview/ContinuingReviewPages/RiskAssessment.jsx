@@ -33,22 +33,44 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+// const riskAssessmentSchema = yup.object().shape({
+//   irb_report: yup.string().required("This is required"),
+
+//   irb_report_explain: yup.string().when("irb_report", {
+//     is: () => "Yes",
+//     then: (schema) => schema.required("This is required"),
+//     otherwise: (schema) => schema,
+//   }),
+//   criteria_report: yup.string().required("This is required"),
+//   criteria_report_explain: yup.string().when("criteria_report", {
+//     is: () => "Yes",
+//     then: (schema) => schema.required("This is required"),
+//     otherwise: (schema) => schema,
+//   }),
+// });
+
 const riskAssessmentSchema = yup.object().shape({
   irb_report: yup.string().required("This is required"),
   irb_report_explain: yup.string().when("irb_report", {
-    is: () => "Yes",
+    is: (val) => val === "Yes", // Checks if the value of irb_report is 'Yes'
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
   }),
+
   criteria_report: yup.string().required("This is required"),
+
   criteria_report_explain: yup.string().when("criteria_report", {
-    is: () => "Yes",
+    is: (val) => val === "Yes", // Checks if the value of criteria_report is 'Yes'
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
   }),
 });
 
-function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
+function RiskAssessment({
+  continuinReviewDetails,
+  riskAssessment,
+  handleNextTab,
+}) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,6 +124,7 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
         abortEarly: false,
       });
       const isValid = await riskAssessmentSchema.isValid(getValidatedform);
+      console.log("isValid", isValid);
       if (isValid === true) {
         let q1_supporting_documents = [];
         if (formData.q1_supporting_documents) {
@@ -121,6 +144,7 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
             q1_supporting_documents: "This is required",
           });
         }
+        console.log("formData", formData);
         dispatch(riskAssessmentSave({ ...formData })).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
@@ -133,8 +157,7 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
-            e.target.reset();
+            handleNextTab(1);
           }
         });
       }
@@ -186,11 +209,6 @@ function RiskAssessment({ continuinReviewDetails, riskAssessment }) {
       );
     }
   }, [riskAssessment, continuinReviewDetails]);
-
-  console.log("riskAssessment", {
-    riskAssessment,
-    formData,
-  });
 
   return (
     <>

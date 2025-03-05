@@ -8,18 +8,19 @@ import {
   getTransactionListByType,
   capturePaymentAdditionClinicSite
 } from '../controllers/payment.js'
+import { authenticateUser } from '../utils/middleware.js'
 
 const router = express.Router()
 
-router.post('/getPaymentAmountInfo', getPaymentAmountInfo)
-router.post('/createPayment', createPayment)
-router.post('/capturePayment', capturePayment)
+router.post('/getPaymentAmountInfo',authenticateUser, getPaymentAmountInfo)
+router.post('/createPayment',authenticateUser, createPayment)
+router.post('/capturePayment',authenticateUser, capturePayment)
 router.post(
-  '/capturePaymentAdditionClinicSite',
+  '/capturePaymentAdditionClinicSite',authenticateUser,
   capturePaymentAdditionClinicSite
 )
-router.post('/successPayment', successPayment)
-router.post('/canclePayment', canclePayment)
-router.post('/transaction', getTransactionListByType)
+router.post('/successPayment',authenticateUser, successPayment)
+router.post('/canclePayment',authenticateUser, canclePayment)
+router.post('/transaction',authenticateUser, getTransactionListByType)
 
 export default router
