@@ -58,37 +58,6 @@ function AdminPromptlyReportableEvent() {
       headerName: "Updated Date",
       flex: 1,
     },
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   width: 80,
-    //   getActions: (params) => [
-    //     <GridActionsCellItem
-    //       icon={<RadioButtonUncheckedIcon />}
-    //       label="Change Status"
-    //       onClick={handleChangeStatus(params)}
-    //       showInMenu
-    //     />,
-    //     <GridActionsCellItem
-    //       icon={<EditNoteIcon />}
-    //       label="Edit"
-    //       onClick={handleItemEdit(params)}
-    //       showInMenu
-    //     />,
-    //     <GridActionsCellItem
-    //       icon={<SettingsSuggestIcon />}
-    //       label="Details"
-    //       onClick={handleItemDetail(params)}
-    //       showInMenu
-    //     />,
-    //     <GridActionsCellItem
-    //       icon={<DeleteIcon />}
-    //       label="Delete"
-    //       onClick={handleItemDelete(params)}
-    //       showInMenu
-    //     />,
-    //   ],
-    // },
   ];
 
   var totalElements = 0;
@@ -141,20 +110,6 @@ function AdminPromptlyReportableEvent() {
     }
   }, [promptlyReportableEventList]);
 
-  const handleChangeStatus = (params) => {
-    //console.log('Status Item', params)
-  };
-  const handleItemDelete = (params) => {
-    //console.log('Delete Item', params)
-  };
-
-  const handleItemDetail = (params) => {
-    //console.log('Details Item', params)
-  };
-
-  const handleItemEdit = (params) => {
-    //console.log('Edit Item', params)
-  };
   return (
     <Box m={theme.layoutContainer.layoutSection}>
       <Box>

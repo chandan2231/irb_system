@@ -279,57 +279,7 @@ export const register = async (req, res) => {
   }
 }
 
-// export const login = (req, res) => {
-//   const que = 'select * from users where email=? AND status=?'
-//   db.query(que, [req.body.email, 1], (err, data) => {
-//     if (err) return res.status(500).json(err)
-//     if (data.length === 0)
-//       return res.status(404).json('Email not found! Try with valid email')
-//     const checkpassword = bcrypt.compareSync(
-//       req.body.password,
-//       data[0].password
-//     )
-//     if (!checkpassword) return res.status(400).json('Wrong password or email!')
-//     if (!data[0].verified)
-//       return res.status(400).json({ error: 'Please verify your email first.' })
-
-//     const token = jwt.sign({ id: data[0].id }, 'secretkey')
-//     const { password, ...others } = data[0]
-//     res
-//       .cookie('accessToken', token, { httpOnly: false })
-//       .status(200)
-//       .json(others)
-//   })
-// }
-
 export const logout = (req, res) => {
-  res
-    .clearCookie('accessToken', {
-      secure: true,
-      sameSite: 'none'
-    })
-    .status(200)
-    .json('User has been logged out.')
+  res.status(200).json('User has been logged out.')
   res.end()
-}
-
-export const validateUserToken = (req, res, next) => {
-  try {
-    const authHeader = req.headers.token // get the session cookie from request header
-    if (!authHeader) return res.sendStatus(401) // if there is no cookie from request header, send an unauthorized response.
-    const cookie = authHeader // If there is, split the cookie string to get the actual jwt
-    // Verify using jwt to see if token has been tampered with or if it has expired.
-    // that's like checking the integrity of the cookie
-    jwt.verify(cookie, 'secretkey', async (err, decoded) => {
-      if (err) {
-        // if token has been altered or has expired, return an unauthorized error
-        return res.status(401).json('This session has expired. Please login')
-      }
-      const { id } = decoded // get user id from the decoded token
-      req.userId = id // put the data object into req.user
-      next()
-    })
-  } catch (err) {
-    res.status(500).json('Internal Server Error')
-  }
 }

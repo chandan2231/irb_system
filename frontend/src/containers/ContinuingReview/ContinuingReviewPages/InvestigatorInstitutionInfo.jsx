@@ -63,6 +63,7 @@ const investigatorInfoSchema = yup.object().shape({
 function InvestigatorInstitutionInfo({
   continuinReviewDetails,
   investigatorInstitutionInfo,
+  handleNextTab,
 }) {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -216,6 +217,7 @@ function InvestigatorInstitutionInfo({
         abortEarly: false,
       });
       const isValid = await investigatorInfoSchema.isValid(getValidatedform);
+      console.log("isValid", isValid);
       if (isValid === true) {
         let q1_supporting_documents = [];
         let q2_supporting_documents = [];
@@ -302,8 +304,7 @@ function InvestigatorInstitutionInfo({
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
-            e.target.reset();
+            handleNextTab(3);
           }
         });
       }
@@ -408,10 +409,7 @@ function InvestigatorInstitutionInfo({
     }
   }, [investigatorInstitutionInfo, continuinReviewDetails]);
 
-  console.log("investigatorInstitutionInfo", {
-    investigatorInstitutionInfo,
-    formData,
-  });
+  console.log("formData", formData);
 
   return (
     <>

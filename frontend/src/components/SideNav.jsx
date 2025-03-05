@@ -40,19 +40,17 @@ function SideNav() {
     }
   }, [dispatch, userDetails && userDetails?.id !== null]);
 
-  // user details 
+  // user details
   // mapped paths from redux
-  const { userDetail: userDetailsFromStore, userDetailsLoading, userDetailsError
-  } = useSelector(
-    (state) => ({
-      userDetailsError: state.auth.error,
-      userDetail: state.auth.userDetail,
-      userDetailsLoading: state.auth.loading,
-    })
-  );
-
-  console.log("userDetailsFromStore", userDetailsFromStore);
-
+  const {
+    userDetail: userDetailsFromStore,
+    userDetailsLoading,
+    userDetailsError,
+  } = useSelector((state) => ({
+    userDetailsError: state.auth.error,
+    userDetail: state.auth.userDetail,
+    userDetailsLoading: state.auth.loading,
+  }));
   useEffect(() => {
     if (userDetails) {
       let data = { userId: userDetails.id };
@@ -61,12 +59,14 @@ function SideNav() {
   }, [dispatch, userDetails && userDetails?.id !== null]);
 
   const showSideNav = () => {
-    return location.pathname.includes("/reset-password/") ||
+    return (
+      location.pathname.includes("/reset-password/") ||
       location.pathname.includes("/verify-email/") ||
       location.pathname === "/forget-password" ||
       location.pathname === "/signin" ||
       location.pathname === "/signup"
-  }
+    );
+  };
 
   return showSideNav() ? (
     <React.Fragment></React.Fragment>
@@ -212,7 +212,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/admin/continuin-review-list" ||
-                  location.pathname === "/admin/continuin-review-details"
+                location.pathname === "/admin/continuin-review-details"
                   ? true
                   : false
               }
@@ -234,7 +234,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/protocol-amendment-request" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/protocol-amendment-request-details"
                     ? true
                     : false
@@ -251,7 +251,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/adverse-events" ||
-                    location.pathname === "/admin/adverse-events-details"
+                  location.pathname === "/admin/adverse-events-details"
                     ? true
                     : false
                 }
@@ -267,7 +267,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/promptly-reportable-event" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/promptly-reportable-event-details"
                     ? true
                     : false
@@ -284,7 +284,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/study-close-request" ||
-                    location.pathname === "/admin/study-close-request-details"
+                  location.pathname === "/admin/study-close-request-details"
                     ? true
                     : false
                 }
@@ -304,7 +304,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/dashboard" ||
-                  location.pathname === "/protocol-details"
+                location.pathname === "/protocol-details"
                   ? true
                   : false
               }
@@ -325,7 +325,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/continuin-review" ||
-                        location.pathname === "/continuin-review-details"
+                      location.pathname === "/continuin-review-details"
                         ? true
                         : false
                     }
@@ -342,7 +342,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/protocol-amendment-request" ||
-                        location.pathname ===
+                      location.pathname ===
                         "/protocol-amendment-request-details"
                         ? true
                         : false
@@ -360,7 +360,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/adverse-events" ||
-                        location.pathname === "/adverse-events-details"
+                      location.pathname === "/adverse-events-details"
                         ? true
                         : false
                     }
@@ -377,7 +377,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/promptly-reportable-event" ||
-                        location.pathname === "/promptly-reportable-event-details"
+                      location.pathname === "/promptly-reportable-event-details"
                         ? true
                         : false
                     }
@@ -394,7 +394,7 @@ function SideNav() {
                   <MenuItem
                     active={
                       location.pathname === "/study-close-request" ||
-                        location.pathname === "/study-close-request-details"
+                      location.pathname === "/study-close-request-details"
                         ? true
                         : false
                     }
@@ -439,7 +439,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/member/protocol-list" ||
-                location.pathname === "/member/protocol-details"
+              location.pathname === "/member/protocol-details"
                 ? true
                 : false
             }
@@ -457,7 +457,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/committee-chair/protocol-list" ||
-                location.pathname === "/committee-chair/protocol-details"
+              location.pathname === "/committee-chair/protocol-details"
                 ? true
                 : false
             }
@@ -564,7 +564,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/office/continuin-review-list" ||
-                  location.pathname === "/office/continuin-review-details"
+                location.pathname === "/office/continuin-review-details"
                   ? true
                   : false
               }
@@ -586,7 +586,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/protocol-amendment-request" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/office/protocol-amendment-request-details"
                     ? true
                     : false
@@ -603,7 +603,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/adverse-events" ||
-                    location.pathname === "/office/adverse-events-details"
+                  location.pathname === "/office/adverse-events-details"
                     ? true
                     : false
                 }
@@ -619,7 +619,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/promptly-reportable-event" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/office/promptly-reportable-event-details"
                     ? true
                     : false
@@ -636,7 +636,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/office/study-close-request" ||
-                    location.pathname === "/office/study-close-request-details"
+                  location.pathname === "/office/study-close-request-details"
                     ? true
                     : false
                 }
@@ -655,7 +655,7 @@ function SideNav() {
           <MenuItem
             active={
               location.pathname === "/external/monitor" ||
-                location.pathname === "/protocol-details"
+              location.pathname === "/protocol-details"
                 ? true
                 : false
             }
@@ -819,7 +819,7 @@ function SideNav() {
             <MenuItem
               active={
                 location.pathname === "/admin/continuin-review-list" ||
-                  location.pathname === "/admin/continuin-review-details"
+                location.pathname === "/admin/continuin-review-details"
                   ? true
                   : false
               }
@@ -841,7 +841,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/protocol-amendment-request" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/protocol-amendment-request-details"
                     ? true
                     : false
@@ -858,7 +858,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/adverse-events" ||
-                    location.pathname === "/admin/adverse-events-details"
+                  location.pathname === "/admin/adverse-events-details"
                     ? true
                     : false
                 }
@@ -874,7 +874,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/promptly-reportable-event" ||
-                    location.pathname ===
+                  location.pathname ===
                     "/admin/promptly-reportable-event-details"
                     ? true
                     : false
@@ -891,7 +891,7 @@ function SideNav() {
               <MenuItem
                 active={
                   location.pathname === "/admin/study-close-request" ||
-                    location.pathname === "/admin/study-close-request-details"
+                  location.pathname === "/admin/study-close-request-details"
                     ? true
                     : false
                 }

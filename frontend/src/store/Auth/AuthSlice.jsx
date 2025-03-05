@@ -6,7 +6,6 @@ import {
   userSignin,
   userSignUp,
   userLogout,
-  validateUserToken,
   getEmailVerification,
 } from "../../services/Auth/AuthService";
 
@@ -48,8 +47,8 @@ const AuthSlice = createSlice({
         state.loading = false;
         state.signinUser = action.payload;
         // add details to state  persistor.purge();
-        state.userDetail = action.payload?.data?.user
-        state.mappedPermissions = action.payload?.data?.routes
+        state.userDetail = action.payload?.data?.user;
+        state.mappedPermissions = action.payload?.data?.routes;
       })
       .addCase(userSignin.rejected, (state, action) => {
         state.loading = false;
@@ -79,20 +78,6 @@ const AuthSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-
-      .addCase(validateUserToken.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(validateUserToken.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userTokenValidated = action.payload;
-      })
-      .addCase(validateUserToken.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
-
       .addCase(validateUser.pending, (state) => {
         state.loading = true;
         state.error = null;

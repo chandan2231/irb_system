@@ -14,11 +14,10 @@ const ContractorResearcherDetails = ({
   protocolTypeDetails,
   protocolDetailsById,
 }) => {
+  const location = useLocation();
   const [protocolDetailsByIdState, setProtocolDetailsByIdState] =
     React.useState(protocolDetailsById);
   const [apiCallIdentifier, setApiCallIdentifier] = React.useState(false);
-
-  const location = useLocation();
   const [value, setValue] = React.useState(0); // Active tab state
 
   const handleButtonClick = (index) => {

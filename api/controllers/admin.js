@@ -120,7 +120,7 @@ export const createMemberEvent = async (req, res) => {
     formattedProtocolId,
     formattedProtocolIdWithLabel,
     formattedMemberIds,
-    req.body.created_by
+    req.user.userId
   ]
 
   try {

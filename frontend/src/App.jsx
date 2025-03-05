@@ -16,7 +16,6 @@ import Backdrop from "@mui/material/Backdrop";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import { validateUserToken } from "./services/Auth/AuthService";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, CssBaseline } from "@mui/material";
 import Dashboard from "./containers/Dashboard/Dashboard";
@@ -100,103 +99,23 @@ function App() {
       return match[2];
     }
   }
-  // const validateToken = async (e) => {
-  //   try {
-  //     const cookieName = "accessToken";
-  //     const getCookie = getCookieValue(cookieName);
-  //     let res = await axios.get(baseURL + "/auth/", {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         token: getCookie,
-  //       },
-  //     });
-  //     if (res.status === 200) {
-  //       setLoader(false);
-  //       if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
-  //         window.location.replace("/dashboard");
-  //       }
-  //     } else {
-  //       if (!["/signin", "/signup"].includes(window.location.pathname)) {
-  //         window.location.replace("/signin");
-  //       }
-  //       setLoader(false);
-  //     }
-  //   } catch (err) {
-  //     setLoader(false);
-  //     if (!["/signin", "/signup"].includes(window.location.pathname)) {
-  //       window.location.replace("/signin");
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const cookieName = "accessToken";
-  //   const getCookie = getCookieValue(cookieName);
-  //   let data = { token: getCookie };
-  //   console.log("data", data);
-  //   dispatch(validateUserToken(data)).then((data) => {
-  //     try {
-  //       console.log("Validate token", data);
-  //       if (data.payload.status === 200) {
-  //         setLoader(false);
-  //         if (["/signin", "/signup", "/"].includes(window.location.pathname)) {
-  //           window.location.replace("/dashboard");
-  //         }
-  //       } else {
-  //         if (!["/signin", "/signup"].includes(window.location.pathname)) {
-  //           window.location.replace("/signin");
-  //         }
-  //         setLoader(false);
-  //       }
-  //     } catch (err) {
-  //       setLoader(false);
-  //       if (!["/signin", "/signup"].includes(window.location.pathname)) {
-  //         window.location.replace("/signin");
-  //       }
-  //     }
-  //   });
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   validateToken();
-  // }, [dispatch]);
-
-  if (loader) {
-    return (
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={true}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-  }
 
   const ProtectedRoute = ({ children }) => {
     const location = useLocation();
-
-    // mapped paths from redux
     const { mappedPermissions, loading, error } = useSelector((state) => ({
       error: state.auth.error,
       mappedPermissions: state.auth.mappedPermissions,
       loading: state.auth.loading,
     }));
-
-    console.log("app ===>", mappedPermissions);
     const allowedRoutes = mappedPermissions.map((perm) => perm.route);
-
-    // Check if the current route (location.pathname) is allowed.
+    console.log("location.pathname", location.pathname);
     if (!allowedRoutes.includes(location.pathname)) {
-      // Redirect to a "Not Authorized" page
       return <Navigate to="/not-authorized" replace />;
     }
-
     return children;
   };
 
   const OnlyLoggedOutRoute = ({ children }) => {
-    // user details
-    // mapped paths from redux
     const {
       userDetail: userDetailsFromStore,
       userDetailsLoading,
@@ -214,11 +133,20 @@ function App() {
     ) {
       return children;
     }
-
-    const path = userRoutes[userDetailsFromStore?.user_type] || "/dashboard"
-
+    const path = userRoutes[userDetailsFromStore?.user_type] || "/dashboard";
     return <Navigate to={`${path}`} replace />;
   };
+
+  if (loader) {
+    return (
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={true}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
 
   return (
     <ProSidebarProvider>

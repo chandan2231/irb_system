@@ -32,7 +32,7 @@ export const capturePaymentAdditionClinicSite = async (req, res) => {
       currency: currencyCode,
       status: captureResult.result.status,
       protocol_id: protocolId,
-      user_id: userId,
+      user_id: req.user.userId,
       payment_type: 'paypal'
     }
 
@@ -246,7 +246,7 @@ export const capturePayment = async (req, res) => {
       currency: currencyCode,
       status: captureResult.result.status,
       protocol_id: protocolId,
-      user_id: userId,
+      user_id: req.user.userId,
       payment_type: 'paypal'
     }
 
