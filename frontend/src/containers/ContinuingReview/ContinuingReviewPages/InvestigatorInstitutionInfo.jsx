@@ -22,6 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -147,6 +148,12 @@ function InvestigatorInstitutionInfo({
     q1_supporting_documents: [],
     q2_supporting_documents: [],
     q3_supporting_documents: [],
+
+    // clones
+    q1_clone_supporting_documents: [],
+    q2_clone_supporting_documents: [],
+    q3_clone_supporting_documents: [],
+    q4_clone_supporting_documents: [],
   });
   const [errors, setErrors] = useState({});
 
@@ -323,53 +330,73 @@ function InvestigatorInstitutionInfo({
 
         if (formData.q1_supporting_documents.length > 0) {
           for (let file of formData.q1_supporting_documents) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "investigator_and_institution",
-              documentName: "q1_supporting_documents",
-            });
-            q1_supporting_documents.push(id);
+            const isIdExist = formData.q1_clone_supporting_documents.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isIdExist) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "investigator_and_institution",
+                documentName: "q1_supporting_documents",
+              });
+              q1_supporting_documents.push(id);
+            }
           }
         }
 
         if (formData.q2_supporting_documents.length > 0) {
           for (let file of formData.q2_supporting_documents) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "investigator_and_institution",
-              documentName: "q2_supporting_documents",
-            });
-            q2_supporting_documents.push(id);
+            const isIdExist = formData.q2_clone_supporting_documents.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isIdExist) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "investigator_and_institution",
+                documentName: "q2_supporting_documents",
+              });
+              q2_supporting_documents.push(id);
+            }
           }
         }
 
         if (formData.q4_supporting_documents.length > 0) {
           for (let file of formData.q4_supporting_documents) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "investigator_and_institution",
-              documentName: "q4_supporting_documents",
-            });
-            q4_supporting_documents.push(id);
+            const isIdExist = formData.q4_clone_supporting_documents.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isIdExist) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "investigator_and_institution",
+                documentName: "q4_supporting_documents",
+              });
+              q4_supporting_documents.push(id);
+            }
           }
         }
 
         if (formData.q3_supporting_documents.length > 0) {
           for (let file of formData.q3_supporting_documents) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "investigator_and_institution",
-              documentName: "q3_supporting_documents",
-            });
-            q3_supporting_documents.push(id);
+            const isIdExist = formData.q3_clone_supporting_documents.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isIdExist) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "investigator_and_institution",
+                documentName: "q3_supporting_documents",
+              });
+              q3_supporting_documents.push(id);
+            }
           }
         }
 
@@ -393,6 +420,11 @@ function InvestigatorInstitutionInfo({
               progress: undefined,
               theme: "dark",
             });
+            let data = {
+              protocolId: continuinReviewDetails?.protocolId,
+              protocolType: continuinReviewDetails?.researchType,
+            };
+            dispatch(fetchContinuinReviewDetailsById(payload));
             handleNextTab(3);
           }
         });
@@ -442,6 +474,7 @@ function InvestigatorInstitutionInfo({
           investigatorInstitutionInfo?.documents?.map((doc) => {
             if (doc.document_name === "q4_supporting_documents") {
               return {
+                id: doc.id,
                 name: doc.file_name,
                 url: doc.file_url,
               };
@@ -451,6 +484,7 @@ function InvestigatorInstitutionInfo({
           investigatorInstitutionInfo?.documents?.map((doc) => {
             if (doc.document_name === "q1_supporting_documents") {
               return {
+                id: doc.id,
                 name: doc.file_name,
                 url: doc.file_url,
               };
@@ -460,6 +494,7 @@ function InvestigatorInstitutionInfo({
           investigatorInstitutionInfo?.documents?.map((doc) => {
             if (doc.document_name === "q2_supporting_documents") {
               return {
+                id: doc.id,
                 name: doc.file_name,
                 url: doc.file_url,
               };
@@ -469,11 +504,45 @@ function InvestigatorInstitutionInfo({
           investigatorInstitutionInfo?.documents?.map((doc) => {
             if (doc.document_name === "q3_supporting_documents") {
               return {
+                id: doc.id,
                 name: doc.file_name,
                 url: doc.file_url,
               };
             }
           }) || [],
+
+        q1_clone_supporting_documents: investigatorInstitutionInfo?.documents
+          ?.filter(doc => doc.document_name === "q1_supporting_documents")
+          .map(doc => ({
+            id: doc.id,
+            name: doc.file_name,
+            url: doc.file_url,
+          })) || [],
+
+        q2_clone_supporting_documents: investigatorInstitutionInfo?.documents
+          ?.filter(doc => doc.document_name === "q2_supporting_documents")
+          .map(doc => ({
+            id: doc.id,
+            name: doc.file_name,
+            url: doc.file_url,
+          })) || [],
+
+        q3_clone_supporting_documents: investigatorInstitutionInfo?.documents
+          ?.filter(doc => doc.document_name === "q3_supporting_documents")
+          .map(doc => ({
+            id: doc.id,
+            name: doc.file_name,
+            url: doc.file_url,
+          })) || [],
+
+        q4_clone_supporting_documents: investigatorInstitutionInfo?.documents
+          ?.filter(doc => doc.document_name === "q4_supporting_documents")
+          .map(doc => ({
+            id: doc.id,
+            name: doc.file_name,
+            url: doc.file_url,
+          })) || [],
+
       });
 
       setShowAdditionalSelectionList(

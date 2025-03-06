@@ -20,6 +20,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -97,6 +98,8 @@ function RiskAssessment({
     criteria_report_explain: "",
     protocol_id: continuinReviewDetails.protocolId,
     created_by: userDetails.id,
+    q1_supporting_documents: [],
+    q1_clone_supporting_documents: [],
   });
   const [errors, setErrors] = useState({});
   const handleRadioButtonIRBReport = (event, radio_name) => {
@@ -133,27 +136,26 @@ function RiskAssessment({
         abortEarly: false,
       });
       const isValid = await riskAssessmentSchema.isValid(getValidatedform);
-      console.log("isValid", isValid);
+
       if (isValid === true) {
         let q1_supporting_documents = [];
         if (formData.q1_supporting_documents) {
           for (let file of formData.q1_supporting_documents) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "risk_assessment",
-              documentName: "supporting_document",
-            });
-            q1_supporting_documents.push(id);
+            const isFileIdExistInClone = formData.q1_clone_supporting_documents.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isFileIdExistInClone) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "risk_assessment",
+                documentName: "supporting_document",
+              });
+              q1_supporting_documents.push(id);
+            }
           }
         }
-        // else {
-        //   return setErrors({
-        //     ...errors,
-        //     q1_supporting_documents: "This is required",
-        //   });
-        // }
         console.log("formData", formData);
         dispatch(riskAssessmentSave({ ...formData })).then((data) => {
           if (data.payload.status === 200) {
@@ -167,6 +169,12 @@ function RiskAssessment({
               progress: undefined,
               theme: "dark",
             });
+            let payload = {
+              protocolId: continuinReviewDetails?.protocolId,
+              protocolType: continuinReviewDetails?.researchType,
+            };
+            console.log("payload", payload);
+            dispatch(fetchContinuinReviewDetailsById(payload));
             handleNextTab(1);
           }
         });
@@ -200,15 +208,22 @@ function RiskAssessment({
         criteria_report_explain: riskAssessment?.criteria_report_explain || "",
         protocol_id: continuinReviewDetails?.protocolId || "",
         created_by: userDetails.id,
-        q1_supporting_documents:
-          riskAssessment?.documents?.map((doc) => {
-            if (doc.document_name === "supporting_document") {
-              return {
-                name: doc.file_name,
-                type: doc.protocol_type,
-              };
-            }
-          }) || [],
+
+        q1_supporting_documents: riskAssessment?.documents
+          ?.filter(doc => doc.document_name === "supporting_document")
+          .map(doc => ({
+            id: doc.id,
+            name: doc.file_name,
+            type: doc.protocol_type,
+          })) || [],
+
+        q1_clone_supporting_documents: riskAssessment?.documents
+          ?.filter(doc => doc.document_name === "supporting_document")
+          .map(doc => ({
+            id: doc.id,
+            name: doc.file_name,
+            type: doc.protocol_type,
+          })) || [],
       });
 
       setShowAdditionalQuestionIrbReport(
@@ -219,6 +234,8 @@ function RiskAssessment({
       );
     }
   }, [riskAssessment, continuinReviewDetails]);
+
+  console.log("formData", formData);
 
   return (
     <>
