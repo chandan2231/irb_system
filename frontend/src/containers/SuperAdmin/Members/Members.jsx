@@ -28,6 +28,8 @@ function Members() {
   const [passwordChangeOpen, setPasswordChangeOpen] = useState(false);
   const [userId, setUserId] = useState();
   const [userDataList, setUserDataList] = useState([]);
+  const [flag, setFlag] = useState(false);
+  const [flagForAddMemeber, setFlagForAddMemeber] = useState(false);
 
   const columns = [
     {
@@ -158,7 +160,7 @@ function Members() {
           progress: undefined,
           theme: "dark",
         });
-        setFo;
+        setFlagForAddMemeber(!flagForAddMemeber);
       } else {
         setOpen(false);
         toast.error(data.payload, {
@@ -171,6 +173,7 @@ function Members() {
           progress: undefined,
           theme: "dark",
         });
+        setFlagForAddMemeber(!flagForAddMemeber);
       }
     });
   };
@@ -250,7 +253,7 @@ function Members() {
           progress: undefined,
           theme: "dark",
         });
-        setFo;
+        setFlag(!flag);
       } else {
         setPasswordChangeOpen(false);
         setUserId("");
@@ -264,6 +267,7 @@ function Members() {
           progress: undefined,
           theme: "dark",
         });
+        setFlag(!flag);
       }
     });
   };
@@ -328,14 +332,21 @@ function Members() {
         <Box>
           <AddMember
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={() => {
+              setFlagForAddMemeber(!flagForAddMemeber);
+              setOpen(false)
+            }}
             addNewData={addNewData}
           />
         </Box>
         <Box>
           <ChangePassword
+            key={flag}
             open={passwordChangeOpen}
-            onClose={() => setPasswordChangeOpen(false)}
+            onClose={() => {
+              setFlag(!flag);
+              setPasswordChangeOpen(false)
+            }}
             addNewData={resetPasswordData}
             title="Reset Member Password"
           />
