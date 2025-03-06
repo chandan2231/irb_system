@@ -18,6 +18,7 @@ const ContinuingReviewDetails = () => {
   const continuinReviewDetails = location.state.details;
   const [user, setUser] = React.useState([]);
   const [value, setValue] = React.useState(0);
+  const [apiCallIdentifier, setApiCallIdentifier] = React.useState(false);
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -156,12 +157,14 @@ const ContinuingReviewDetails = () => {
         <RiskAssessment
           continuinReviewDetails={continuinReviewDetails}
           riskAssessment={continuinReviewDetailsById?.risk_assessment}
+          apiCallIdentifier={apiCallIdentifier}
           handleNextTab={handleButtonClick}
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <InformedConsentProcess
           continuinReviewDetails={continuinReviewDetails}
+          apiCallIdentifier={apiCallIdentifier}
           informedConsentProcess={
             continuinReviewDetailsById?.informed_consent_process
           }
@@ -171,6 +174,7 @@ const ContinuingReviewDetails = () => {
       <CustomTabPanel value={value} index={2}>
         <InvestigatorInstitutionInfo
           continuinReviewDetails={continuinReviewDetails}
+          apiCallIdentifier={apiCallIdentifier}
           investigatorInstitutionInfo={
             continuinReviewDetailsById?.investigator_instuation_info
           }
@@ -180,6 +184,7 @@ const ContinuingReviewDetails = () => {
       <CustomTabPanel value={value} index={3}>
         <ResearchProgress
           continuinReviewDetails={continuinReviewDetails}
+          apiCallIdentifier={apiCallIdentifier}
           researchProgress={continuinReviewDetailsById?.research_progress_info}
         />
       </CustomTabPanel>
