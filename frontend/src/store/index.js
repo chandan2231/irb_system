@@ -10,6 +10,7 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
+import { encryptTransform } from "redux-persist-transform-encrypt";
 import AuthReducer from "./Auth/AuthSlice";
 import DashboardReducer from "./Dashboard/DashboardSlice";
 import ContinuinReviewReducer from "./ContinuinReview/ContinuinReviewSlice";
@@ -23,6 +24,27 @@ import EventPriceReducer from "./Admin/EventPriceSlice";
 import CommunicationReducer from "./Communication/CommunicationSlice";
 import PaymentReducer from "./Payment/PaymentSlice";
 import ExternalMonitorReducer from "./ExternalMonitor/ExternalMonitorSlice";
+
+const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
+
+if (!SECRET_KEY) {
+  throw new Error("No secret key. Add it to .env file");
+}
+
+const encryptor = encryptTransform({
+  secretKey: SECRET_KEY,
+  onError: (error) => {
+    console.error("Encryption error:", error);
+  },
+});
+
+const persistConfig = {
+  key: "root",
+  version: 1,
+  storage,
+  whitelist: ["auth"],
+  transforms: [encryptor],
+};
 
 const rootReducer = combineReducers({
   auth: AuthReducer,
@@ -40,25 +62,7 @@ const rootReducer = combineReducers({
   externalMonitor: ExternalMonitorReducer,
 });
 
-const persistConfig = {
-  key: "root",
-  version: 1,
-  storage,
-  whitelist: ["auth"], // Specify which slices you want to persist
-  //whitelist: ["market", "application", "user", 'role', 'privilege', 'UserApplicationRole', 'team', 'hierarchy'], // Specify which slices you want to persist
-};
-
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-// const store = configureStore({
-//   reducer: persistedReducer,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware({
-//       serializableCheck: {
-//         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-//       },
-//     }),
-// });
 
 const store = configureStore({
   reducer: persistedReducer,
