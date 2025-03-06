@@ -91,7 +91,7 @@ function StudyCloseoutRequest() {
         let protocolObject = {
           id: pList.id,
           protocolId: pList.protocol_id,
-          researchType: pList.protocol_type,
+          researchType: pList.research_type,
           createdDate: moment(pList.created_date).format("DD MMM YYYY"),
           updatedDate: moment(pList.updated_date).format("DD MMM YYYY"),
         };
