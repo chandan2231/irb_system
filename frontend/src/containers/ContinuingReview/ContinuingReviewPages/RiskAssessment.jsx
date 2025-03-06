@@ -51,6 +51,15 @@ const VisuallyHiddenInput = styled("input")({
 
 const riskAssessmentSchema = yup.object().shape({
   irb_report: yup.string().required("This is required"),
+  // mandatory only if irb_report is 'Yes'
+  q1_supporting_documents: yup.mixed().when("irb_report", {
+    is: (val) => val === "Yes", // Checks if the value of irb_report is 'Yes'
+    then: () => yup.mixed().test("required", "At least one file is required", (value) => {
+      return value && value.length > 0;
+    }),
+    otherwise: (schema) => schema,
+  }),
+
   irb_report_explain: yup.string().when("irb_report", {
     is: (val) => val === "Yes", // Checks if the value of irb_report is 'Yes'
     then: (schema) => schema.required("This is required"),
@@ -138,12 +147,13 @@ function RiskAssessment({
             });
             q1_supporting_documents.push(id);
           }
-        } else {
-          return setErrors({
-            ...errors,
-            q1_supporting_documents: "This is required",
-          });
         }
+        // else {
+        //   return setErrors({
+        //     ...errors,
+        //     q1_supporting_documents: "This is required",
+        //   });
+        // }
         console.log("formData", formData);
         dispatch(riskAssessmentSave({ ...formData })).then((data) => {
           if (data.payload.status === 200) {

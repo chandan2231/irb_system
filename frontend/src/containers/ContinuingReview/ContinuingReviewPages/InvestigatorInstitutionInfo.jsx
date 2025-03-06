@@ -38,25 +38,61 @@ const VisuallyHiddenInput = styled("input")({
 const investigatorInfoSchema = yup.object().shape({
   inv_sit_quali: yup.string().required("This is required"),
   inv_or_comp_explain: yup.string().when("inv_or_comp", {
-    is: () => "Yes",
+    is: (val) => val === "Yes",
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
   }),
   changes_explain: yup.string().required("This is required"),
   changes_reported_explain: yup.string().when("changes_reported", {
-    is: () => "No",
+    is: (val) => val === "No",
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
   }),
   facility_any_changes_explain: yup.string().when("facility_any_changes", {
-    is: () => "Yes",
+    is: (val) => val === "Yes",
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
   }),
   changes_law_explain: yup.string().when("changes_law", {
-    is: () => "Yes",
+    is: (val) => val === "Yes",
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
+  }),
+
+  // q1 is mandatory, when inv_sit_quali is Yes
+  q1_supporting_documents: yup.array().when("inv_sit_quali", {
+    is: (val) => val === "Yes",
+    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
+      return value.length > 0;
+    }),
+    otherwise: (schema) => schema.nullable()
+  }),
+
+  // q2 is mandatory, when inv_or_comp is Yes
+  q2_supporting_documents: yup.array().when("inv_or_comp", {
+    is: (val) => val === "Yes",
+    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
+      return value.length > 0;
+    }),
+    otherwise: (schema) => schema.nullable()
+  }),
+
+  // q3 is mandatory, when facility_changes is Yes
+  q3_supporting_documents: yup.array().when("facility_changes", {
+    is: (val) => val === "Yes",
+    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
+      return value.length > 0;
+    }),
+    otherwise: (schema) => schema.nullable()
+  }),
+
+  // q4 is mandatory, when facility_any_changes is Yes
+  q4_supporting_documents: yup.array().when("facility_any_changes", {
+    is: (val) => val === "Yes",
+    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
+      return value.length > 0;
+    }),
+    otherwise: (schema) => schema.nullable()
   }),
 });
 
@@ -93,7 +129,7 @@ function InvestigatorInstitutionInfo({
     React.useState("");
   const [formData, setFormData] = useState({
     inv_sit_quali: "",
-    investigator_changes: "",
+    investigator_changes: [],
     inv_or_comp: "",
     inv_or_comp_explain: "",
     facility_changes: "",
@@ -223,24 +259,69 @@ function InvestigatorInstitutionInfo({
         let q2_supporting_documents = [];
         let q3_supporting_documents = [];
         let q4_supporting_documents = [];
-        if (!formData.q1_supporting_documents) {
-          return setErrors({
-            ...errors,
-            ["q1_supporting_documents"]: "This is required",
-          });
-        }
-        if (!formData.q2_supporting_documents) {
-          return setErrors({
-            ...errors,
-            ["q2_supporting_documents"]: "This is required",
-          });
-        }
-        if (!formData.q4_supporting_documents) {
-          return setErrors({
-            ...errors,
-            ["q4_supporting_documents"]: "This is required",
-          });
-        } else {
+        // if (!formData.q1_supporting_documents) {
+        //   return setErrors({
+        //     ...errors,
+        //     ["q1_supporting_documents"]: "This is required",
+        //   });
+        // }
+        // if (!formData.q2_supporting_documents) {
+        //   return setErrors({
+        //     ...errors,
+        //     ["q2_supporting_documents"]: "This is required",
+        //   });
+        // }
+        // if (!formData.q4_supporting_documents) {
+        //   return setErrors({
+        //     ...errors,
+        //     ["q4_supporting_documents"]: "This is required",
+        //   });
+        // } else {
+        //   for (let file of formData.q1_supporting_documents) {
+        //     let id = uploadFile(file, {
+        //       protocolId: formData.protocol_id,
+        //       createdBy: formData.created_by,
+        //       protocolType: "continuein_review",
+        //       informationType: "investigator_and_institution",
+        //       documentName: "q1_supporting_documents",
+        //     });
+        //     q1_supporting_documents.push(id);
+        //   }
+        //   for (let file of formData.q2_supporting_documents) {
+        //     let id = uploadFile(file, {
+        //       protocolId: formData.protocol_id,
+        //       createdBy: formData.created_by,
+        //       protocolType: "continuein_review",
+        //       informationType: "investigator_and_institution",
+        //       documentName: "q2_supporting_documents",
+        //     });
+        //     q2_supporting_documents.push(id);
+        //   }
+        //   for (let file of formData.q4_supporting_documents) {
+        //     let id = uploadFile(file, {
+        //       protocolId: formData.protocol_id,
+        //       createdBy: formData.created_by,
+        //       protocolType: "continuein_review",
+        //       informationType: "investigator_and_institution",
+        //       documentName: "q4_supporting_documents",
+        //     });
+        //     q4_supporting_documents.push(id);
+        //   }
+        //   if (formData.q3_supporting_documents) {
+        //     for (let file of formData.q3_supporting_documents) {
+        //       let id = uploadFile(file, {
+        //         protocolId: formData.protocol_id,
+        //         createdBy: formData.created_by,
+        //         protocolType: "continuein_review",
+        //         informationType: "investigator_and_institution",
+        //         documentName: "q3_supporting_documents",
+        //       });
+        //       q3_supporting_documents.push(id);
+        //     }
+        //   }
+        // }
+
+        if (formData.q1_supporting_documents.length > 0) {
           for (let file of formData.q1_supporting_documents) {
             let id = uploadFile(file, {
               protocolId: formData.protocol_id,
@@ -251,6 +332,9 @@ function InvestigatorInstitutionInfo({
             });
             q1_supporting_documents.push(id);
           }
+        }
+
+        if (formData.q2_supporting_documents.length > 0) {
           for (let file of formData.q2_supporting_documents) {
             let id = uploadFile(file, {
               protocolId: formData.protocol_id,
@@ -261,6 +345,9 @@ function InvestigatorInstitutionInfo({
             });
             q2_supporting_documents.push(id);
           }
+        }
+
+        if (formData.q4_supporting_documents.length > 0) {
           for (let file of formData.q4_supporting_documents) {
             let id = uploadFile(file, {
               protocolId: formData.protocol_id,
@@ -271,19 +358,21 @@ function InvestigatorInstitutionInfo({
             });
             q4_supporting_documents.push(id);
           }
-          if (formData.q3_supporting_documents) {
-            for (let file of formData.q3_supporting_documents) {
-              let id = uploadFile(file, {
-                protocolId: formData.protocol_id,
-                createdBy: formData.created_by,
-                protocolType: "continuein_review",
-                informationType: "investigator_and_institution",
-                documentName: "q3_supporting_documents",
-              });
-              q3_supporting_documents.push(id);
-            }
+        }
+
+        if (formData.q3_supporting_documents.length > 0) {
+          for (let file of formData.q3_supporting_documents) {
+            let id = uploadFile(file, {
+              protocolId: formData.protocol_id,
+              createdBy: formData.created_by,
+              protocolType: "continuein_review",
+              informationType: "investigator_and_institution",
+              documentName: "q3_supporting_documents",
+            });
+            q3_supporting_documents.push(id);
           }
         }
+
         dispatch(
           investigatorAndinstuationSave({
             ...formData,
@@ -310,6 +399,7 @@ function InvestigatorInstitutionInfo({
       }
     } catch (error) {
       const newErrors = {};
+      console.log("error", error);
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
       });
@@ -331,21 +421,21 @@ function InvestigatorInstitutionInfo({
   useEffect(() => {
     if (investigatorInstitutionInfo) {
       setFormData({
-        changes_explain: investigatorInstitutionInfo.changes_explain,
-        changes_law: investigatorInstitutionInfo.changes_law,
-        changes_law_explain: investigatorInstitutionInfo.changes_law_explain,
-        changes_reported: investigatorInstitutionInfo.changes_reported,
+        changes_explain: investigatorInstitutionInfo?.changes_explain || "",
+        changes_law: investigatorInstitutionInfo?.changes_law || "",
+        changes_law_explain: investigatorInstitutionInfo?.changes_law_explain || "",
+        changes_reported: investigatorInstitutionInfo?.changes_reported || "",
         changes_reported_explain:
-          investigatorInstitutionInfo.changes_reported_explain,
-        facility_any_changes: investigatorInstitutionInfo.facility_any_changes,
+          investigatorInstitutionInfo?.changes_reported_explain || "",
+        facility_any_changes: investigatorInstitutionInfo?.facility_any_changes || "",
         facility_any_changes_explain:
-          investigatorInstitutionInfo.facility_any_changes_explain,
-        facility_change_item: investigatorInstitutionInfo.facility_change_item,
-        facility_changes: investigatorInstitutionInfo.facility_changes,
-        inv_or_comp: investigatorInstitutionInfo.inv_or_comp,
-        inv_or_comp_explain: investigatorInstitutionInfo.inv_or_comp_explain,
-        inv_sit_quali: investigatorInstitutionInfo.inv_sit_quali,
-        investigator_changes: investigatorInstitutionInfo.investigator_changes,
+          investigatorInstitutionInfo?.facility_any_changes_explain || "",
+        facility_change_item: investigatorInstitutionInfo?.facility_change_item || [],
+        facility_changes: investigatorInstitutionInfo?.facility_changes || "",
+        inv_or_comp: investigatorInstitutionInfo?.inv_or_comp || "",
+        inv_or_comp_explain: investigatorInstitutionInfo?.inv_or_comp_explain || "",
+        inv_sit_quali: investigatorInstitutionInfo?.inv_sit_quali || "",
+        investigator_changes: investigatorInstitutionInfo?.investigator_changes || [],
         protocol_id: continuinReviewDetails.protocolId,
         created_by: userDetails.id,
         q4_supporting_documents:

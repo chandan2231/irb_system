@@ -38,28 +38,30 @@ const investigatorInfoSchema = yup.object().shape({
   performing_consent: yup.string().required("This field is required"),
   challenges_faced: yup.string().required("Please select an option"),
   challenges_faced_explain: yup.string().when("challenges_faced", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain the challenges"),
-    otherwise: () => yup.string().nullable(),
+    is: (val) => val === "Yes",
+    then: (schema) => schema.required("Please explain the challenges"),
+    otherwise: (schema) => schema,
   }),
   changes_consent: yup.string().required("Please select an option"),
   changes_consent_explain: yup.string().when("changes_consent", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain the changes"),
-    otherwise: () => yup.string().nullable(),
+    is: (val) => val === "Yes",
+    then: (schema) => schema.required("Please explain the changes"),
+    otherwise: (schema) => schema,
   }),
   ensuring_list: yup.string().required("Please select an option"),
   ensuring_list_explain: yup.string().when("ensuring_list", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain"),
-    otherwise: () => yup.string().nullable(),
+    is: (val) => val === "Yes",
+    then: (schema) => schema.required("Please explain"),
+    otherwise: (schema) => schema,
   }),
   icf_file: yup
     .mixed()
     .test("required", "At least one ICF file is required", (value) => {
       return value && value.length > 0;
     }),
-  consent_form: yup.array().min(1, "At least one consent form is required"),
+  consent_form: yup.mixed().test("required", "At least one consent form is required", (value) => {
+    return value && value.length > 0;
+  }),
 });
 
 function InformedConsentProcess({
