@@ -20,45 +20,72 @@ import {
   saveDocumentReview,
   saveDocumentSubmission
 } from '../controllers/researchInfo.js'
+import { authenticateUser } from '../utils/middleware.js'
 
 const router = express.Router()
 
-router.post('/saveProtocolInfo', saveProtocolInfo)
-router.post('/saveInvestigatorInfo', saveInvestigatorInfo)
-router.post('/saveStydyInfo', saveStydyInfo)
-router.post('/saveInformedInfo', saveInformedInfo)
+router.post('/saveProtocolInfo', authenticateUser, saveProtocolInfo)
+router.post('/saveInvestigatorInfo', authenticateUser, saveInvestigatorInfo)
+router.post('/saveStydyInfo', authenticateUser, saveStydyInfo)
+router.post('/saveInformedInfo', authenticateUser, saveInformedInfo)
 
-router.post('/saveProtocolProceduresInfo', saveProtocolProceduresInfo)
+router.post(
+  '/saveProtocolProceduresInfo',
+  authenticateUser,
+  saveProtocolProceduresInfo
+)
 router.post(
   '/saveMultiSiteProtocolProceduresInfo',
+  authenticateUser,
   saveMultiSiteProtocolProceduresInfo
 )
-router.post('/saveContactInfo', saveContactInfo)
+router.post('/saveContactInfo', authenticateUser, saveContactInfo)
 router.post(
   '/saveInvestigatorAndProtocolInformation',
+  authenticateUser,
   saveInvestigatorAndProtocolInformation
 )
-router.post('/saveClinicalInformedConsent', saveClinicalInformedConsent)
-router.post('/saveClinicalSiteSubmission', saveClinicalSiteSubmission)
+router.post(
+  '/saveClinicalInformedConsent',
+  authenticateUser,
+  saveClinicalInformedConsent
+)
+router.post(
+  '/saveClinicalSiteSubmission',
+  authenticateUser,
+  saveClinicalSiteSubmission
+)
 router.post(
   '/getClinicalSiteSavedProtocolType',
+  authenticateUser,
   getClinicalSiteSavedProtocolType
 )
-router.post('/saveMultiSiteSubmission', saveMultiSiteSubmission)
-router.post('/getMultiSiteSavedProtocolType', getMultiSiteSavedProtocolType)
+router.post(
+  '/saveMultiSiteSubmission',
+  authenticateUser,
+  saveMultiSiteSubmission
+)
+router.post(
+  '/getMultiSiteSavedProtocolType',
+  authenticateUser,
+  getMultiSiteSavedProtocolType
+)
 router.post(
   '/savePrincipalInvestigatorSubmission',
+  authenticateUser,
   savePrincipalInvestigatorSubmission
 )
 router.post(
   '/getPrincipalInvestigatorSavedProtocolType',
+  authenticateUser,
   getPrincipalInvestigatorSavedProtocolType
 )
 router.post(
   '/getDocumentReviewSavedProtocolType',
+  authenticateUser,
   getDocumentReviewSavedProtocolType
 )
-router.post('/saveDocumentReview', saveDocumentReview)
-router.post('/saveDocumentSubmission', saveDocumentSubmission)
+router.post('/saveDocumentReview', authenticateUser, saveDocumentReview)
+router.post('/saveDocumentSubmission', authenticateUser, saveDocumentSubmission)
 
 export default router

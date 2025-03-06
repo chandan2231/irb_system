@@ -22,6 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -85,44 +86,54 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
     protocol_id: continuinReviewDetails.protocolId,
     created_by: userDetails.id,
     q3_supporting_documents: [],
+    q3_clone_supporting_documents: [],
   });
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (researchProgress) {
       setFormData({
-        subjects_enrolled: researchProgress.subjects_enrolled || "",
-        discontinued_subjects: researchProgress.discontinued_subjects || "",
-        sub_withdrew: researchProgress.sub_withdrew || "",
+        subjects_enrolled: researchProgress?.subjects_enrolled || "",
+        discontinued_subjects: researchProgress?.discontinued_subjects || "",
+        sub_withdrew: researchProgress?.sub_withdrew || "",
         withdrawal_reason_explain:
-          researchProgress.withdrawal_reason_explain || "",
+          researchProgress?.withdrawal_reason_explain || "",
         sub_terminated_before_completion:
-          researchProgress.sub_terminated_before_completion || "",
+          researchProgress?.sub_terminated_before_completion || "",
         termination_reason_explain:
-          researchProgress.termination_reason_explain || "",
-        occured_adverse_event: researchProgress.occured_adverse_event || "",
+          researchProgress?.termination_reason_explain || "",
+        occured_adverse_event: researchProgress?.occured_adverse_event || "",
         adverse_event_submission:
-          researchProgress.adverse_event_submission || "",
+          researchProgress?.adverse_event_submission || "",
         adverse_event_not_reported_explain:
-          researchProgress.adverse_event_not_reported_explain || "",
-        adverse_event_explain: researchProgress.adverse_event_explain || "",
-        subjecte_completed: researchProgress.subjecte_completed || "",
-        last_approval_change: researchProgress.last_approval_change || "",
+          researchProgress?.adverse_event_not_reported_explain || "",
+        adverse_event_explain: researchProgress?.adverse_event_explain || "",
+        subjecte_completed: researchProgress?.subjecte_completed || "",
+        last_approval_change: researchProgress?.last_approval_change || "",
         last_approval_change_report:
-          researchProgress.last_approval_change_report || "",
+          researchProgress?.last_approval_change_report || "",
         changes_not_reported_to_irb:
-          researchProgress.changes_not_reported_to_irb || "",
+          researchProgress?.changes_not_reported_to_irb || "",
         protocol_id: continuinReviewDetails?.protocolId,
         created_by: userDetails?.id,
+
         q3_supporting_documents:
-          researchProgress?.documents?.map((doc) => {
-            if (doc.document_name === "q3_supporting_documents") {
-              return {
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          researchProgress?.documents
+            ?.filter((doc) => doc.document_name === "q3_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
+        q3_clone_supporting_documents:
+          researchProgress?.documents
+            ?.filter((doc) => doc.document_name === "q3_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
       });
 
       setShowAdverseEventAdditionalQuestion(
@@ -197,18 +208,26 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
       const isValid = await researchProcessSchema.isValid(getValidatedform);
       if (isValid === true) {
         let q3_supporting_documents = [];
+
         if (formData.q3_supporting_documents) {
           for (let file of formData.q3_supporting_documents) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "research_progress",
-              documentName: "q3_supporting_documents",
-            });
-            q3_supporting_documents.push(id);
+            const isFileIdExistInClone =
+              formData.q3_clone_supporting_documents.find(
+                (doc) => doc.name === file.name
+              );
+            if (!isFileIdExistInClone) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "research_progress",
+                documentName: "q3_supporting_documents",
+              });
+              q3_supporting_documents.push(id);
+            }
           }
         }
+
         dispatch(researchProcessSave({ ...formData })).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
@@ -221,6 +240,11 @@ function ResearchProgress({ continuinReviewDetails, researchProgress }) {
               progress: undefined,
               theme: "dark",
             });
+            let data = {
+              protocolId: continuinReviewDetails?.protocolId,
+              protocolType: continuinReviewDetails?.researchType,
+            };
+            dispatch(fetchContinuinReviewDetailsById(payload));
             setFormData({});
             e.target.reset();
           }

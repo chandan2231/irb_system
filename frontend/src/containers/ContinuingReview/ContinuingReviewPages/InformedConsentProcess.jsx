@@ -20,6 +20,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
+import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -38,28 +39,32 @@ const investigatorInfoSchema = yup.object().shape({
   performing_consent: yup.string().required("This field is required"),
   challenges_faced: yup.string().required("Please select an option"),
   challenges_faced_explain: yup.string().when("challenges_faced", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain the challenges"),
-    otherwise: () => yup.string().nullable(),
+    is: (val) => val === "Yes",
+    then: (schema) => schema.required("Please explain the challenges"),
+    otherwise: (schema) => schema,
   }),
   changes_consent: yup.string().required("Please select an option"),
   changes_consent_explain: yup.string().when("changes_consent", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain the changes"),
-    otherwise: () => yup.string().nullable(),
+    is: (val) => val === "Yes",
+    then: (schema) => schema.required("Please explain the changes"),
+    otherwise: (schema) => schema,
   }),
   ensuring_list: yup.string().required("Please select an option"),
   ensuring_list_explain: yup.string().when("ensuring_list", {
-    is: () => "Yes",
-    then: () => yup.string().required("Please explain"),
-    otherwise: () => yup.string().nullable(),
+    is: (val) => val === "Yes",
+    then: (schema) => schema.required("Please explain"),
+    otherwise: (schema) => schema,
   }),
   icf_file: yup
     .mixed()
     .test("required", "At least one ICF file is required", (value) => {
       return value && value.length > 0;
     }),
-  consent_form: yup.array().min(1, "At least one consent form is required"),
+  consent_form: yup
+    .mixed()
+    .test("required", "At least one consent form is required", (value) => {
+      return value && value.length > 0;
+    }),
 });
 
 function InformedConsentProcess({
@@ -96,6 +101,10 @@ function InformedConsentProcess({
     consent_form: [],
     protocol_id: continuinReviewDetails.protocolId,
     created_by: userDetails.id,
+
+    // clones
+    icf_file_clone: [],
+    consent_form_clone: [],
   });
   const [errors, setErrors] = useState({});
 
@@ -151,34 +160,71 @@ function InformedConsentProcess({
       if (isValid === true) {
         let icf_file = [];
         let consent_form = [];
-        if (!formData.icf_file) {
-          return setErrors({ ...errors, ["icf_file"]: "This is required" });
-        }
-        if (!formData.consent_form) {
-          return setErrors({ ...errors, ["consent_form"]: "This is required" });
-        } else {
+        // if (!formData.icf_file) {
+        //   return setErrors({ ...errors, ["icf_file"]: "This is required" });
+        // }
+        // if (!formData.consent_form) {
+        //   return setErrors({ ...errors, ["consent_form"]: "This is required" });
+        // } else {
+        //   for (let file of formData.icf_file) {
+        //     let id = await uploadFile(file, {
+        //       protocolId: formData.protocol_id,
+        //       createdBy: formData.created_by,
+        //       protocolType: "continuein_review",
+        //       informationType: "informed_consent_process",
+        //       documentName: "icf_file",
+        //     });
+        //     icf_file.push(id);
+        //   }
+        //   for (let file of formData.consent_form) {
+        //     let id = uploadFile(file, {
+        //       protocolId: formData.protocol_id,
+        //       createdBy: formData.created_by,
+        //       protocolType: "continuein_review",
+        //       informationType: "informed_consent_process",
+        //       documentName: "consent_form",
+        //     });
+        //     consent_form.push(id);
+        //   }
+        // }
+
+        if (formData.icf_file && formData.icf_file.length > 0) {
           for (let file of formData.icf_file) {
-            let id = await uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "informed_consent_process",
-              documentName: "icf_file",
-            });
-            icf_file.push(id);
-          }
-          for (let file of formData.consent_form) {
-            let id = uploadFile(file, {
-              protocolId: formData.protocol_id,
-              createdBy: formData.created_by,
-              protocolType: "continuein_review",
-              informationType: "informed_consent_process",
-              documentName: "consent_form",
-            });
-            consent_form.push(id);
+            const isIdExist = formData.icf_file_clone.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isIdExist) {
+              let id = await uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "informed_consent_process",
+                documentName: "icf_file",
+              });
+              icf_file.push(id);
+            }
           }
         }
-        dispatch(informedConsentSave({ ...formData })).then((data) => {
+
+        if (formData.consent_form && formData.consent_form.length > 0) {
+          for (let file of formData.consent_form) {
+            const isIdExist = formData.consent_form_clone.find(
+              (doc) => doc.id === file.id
+            );
+            if (!isIdExist) {
+              let id = uploadFile(file, {
+                protocolId: formData.protocol_id,
+                createdBy: formData.created_by,
+                protocolType: "continuein_review",
+                informationType: "informed_consent_process",
+                documentName: "consent_form",
+              });
+              consent_form.push(id);
+            }
+          }
+        }
+
+        dispatch(informedConsentSave(formData)).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
               position: "top-right",
@@ -190,6 +236,11 @@ function InformedConsentProcess({
               progress: undefined,
               theme: "dark",
             });
+            let payload = {
+              protocolId: continuinReviewDetails?.protocolId,
+              protocolType: continuinReviewDetails?.researchType,
+            };
+            dispatch(fetchContinuinReviewDetailsById(payload));
             handleNextTab(2);
           }
         });
@@ -217,43 +268,65 @@ function InformedConsentProcess({
   useEffect(() => {
     if (informedConsentProcess) {
       setFormData({
-        icf_version: informedConsentProcess.icf_version,
-        performing_consent: informedConsentProcess.performing_consent,
-        challenges_faced: informedConsentProcess.challenges_faced,
+        icf_version: informedConsentProcess?.icf_version || "",
+        performing_consent: informedConsentProcess?.performing_consent || "",
+        challenges_faced: informedConsentProcess?.challenges_faced || "",
         challenges_faced_explain:
-          informedConsentProcess.challenges_faced_explain,
-        changes_consent: informedConsentProcess.changes_consent,
-        changes_consent_explain: informedConsentProcess.changes_consent_explain,
-        ensuring_list: informedConsentProcess.ensuring_list,
-        ensuring_list_explain: informedConsentProcess.ensuring_list_explain,
-        protocol_id: continuinReviewDetails.protocolId,
-        created_by: userDetails.id,
+          informedConsentProcess?.challenges_faced_explain || "",
+        changes_consent: informedConsentProcess?.changes_consent || "",
+        changes_consent_explain:
+          informedConsentProcess?.changes_consent_explain || "",
+        ensuring_list: informedConsentProcess?.ensuring_list || "",
+        ensuring_list_explain:
+          informedConsentProcess?.ensuring_list_explain || "",
+        protocol_id: continuinReviewDetails.protocolId || "",
+        created_by: userDetails.id || "",
         icf_file:
-          informedConsentProcess.documents.map((doc) => {
-            if (doc.document_name === "icf_file") {
-              return {
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "icf_file")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
         consent_form:
-          informedConsentProcess.documents.map((doc) => {
-            if (doc.document_name === "consent_form") {
-              return {
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "consent_form")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
+        // clones
+        icf_file_clone:
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "icf_file")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
+        consent_form_clone:
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "consent_form")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
       });
     }
   }, [informedConsentProcess, continuinReviewDetails]);
 
-  console.log("informedConsentProcess", {
-    informedConsentProcess,
-    formData,
-  });
+  useEffect(() => {
+    console.log("informedConsentProcess", {
+      informedConsentProcess,
+      formData,
+    });
+  }, [formData]);
 
   return (
     <>

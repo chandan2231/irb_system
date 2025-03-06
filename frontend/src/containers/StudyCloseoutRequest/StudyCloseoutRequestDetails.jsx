@@ -784,7 +784,7 @@ function StudyCloseoutRequestDetails() {
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
-                  label="Your Name *"
+                  label="Type Name (Electronic Signature) *"
                   id="your_name"
                   name="your_name"
                   onChange={handleChange}

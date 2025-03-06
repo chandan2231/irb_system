@@ -107,7 +107,7 @@ function App() {
       mappedPermissions: state.auth.mappedPermissions,
       loading: state.auth.loading,
     }));
-    const allowedRoutes = mappedPermissions.map((perm) => perm.route);
+    const allowedRoutes = mappedPermissions?.map((perm) => perm.route) || [];
     console.log("location.pathname", location.pathname);
     if (!allowedRoutes.includes(location.pathname)) {
       return <Navigate to="/not-authorized" replace />;
@@ -115,7 +115,7 @@ function App() {
     return children;
   };
 
-  const OnlyLoggedOutRoute = ({ children }) => {
+  const NonProtectedRoute = ({ children }) => {
     const {
       userDetail: userDetailsFromStore,
       userDetailsLoading,
@@ -699,41 +699,41 @@ function App() {
               <Route
                 path="/signin"
                 element={
-                  <OnlyLoggedOutRoute>
+                  <NonProtectedRoute>
                     <SignIn />
-                  </OnlyLoggedOutRoute>
+                  </NonProtectedRoute>
                 }
               />
               <Route
                 path="/signup"
                 element={
-                  <OnlyLoggedOutRoute>
+                  <NonProtectedRoute>
                     <SignUp />
-                  </OnlyLoggedOutRoute>
+                  </NonProtectedRoute>
                 }
               />
               <Route
                 path="/forget-password"
                 element={
-                  <OnlyLoggedOutRoute>
+                  <NonProtectedRoute>
                     <ForgetPassword />
-                  </OnlyLoggedOutRoute>
+                  </NonProtectedRoute>
                 }
               />
               <Route
                 path="/reset-password/:token"
                 element={
-                  <OnlyLoggedOutRoute>
+                  <NonProtectedRoute>
                     <ResetPassword />
-                  </OnlyLoggedOutRoute>
+                  </NonProtectedRoute>
                 }
               />
               <Route
                 path="/verify-email/:token"
                 element={
-                  <OnlyLoggedOutRoute>
+                  <NonProtectedRoute>
                     <EmailVerification />
-                  </OnlyLoggedOutRoute>
+                  </NonProtectedRoute>
                 }
               />
 
