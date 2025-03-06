@@ -236,7 +236,7 @@ function InformedConsentProcess({
               progress: undefined,
               theme: "dark",
             });
-            let data = {
+            let payload = {
               protocolId: continuinReviewDetails?.protocolId,
               protocolType: continuinReviewDetails?.researchType,
             };

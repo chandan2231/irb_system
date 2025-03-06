@@ -424,7 +424,7 @@ function InvestigatorInstitutionInfo({
               progress: undefined,
               theme: "dark",
             });
-            let data = {
+            let payload = {
               protocolId: continuinReviewDetails?.protocolId,
               protocolType: continuinReviewDetails?.researchType,
             };
@@ -480,45 +480,40 @@ function InvestigatorInstitutionInfo({
         protocol_id: continuinReviewDetails.protocolId,
         created_by: userDetails.id,
         q4_supporting_documents:
-          investigatorInstitutionInfo?.documents?.map((doc) => {
-            if (doc.document_name === "q4_supporting_documents") {
-              return {
-                id: doc.id,
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q4_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
         q1_supporting_documents:
-          investigatorInstitutionInfo?.documents?.map((doc) => {
-            if (doc.document_name === "q1_supporting_documents") {
-              return {
-                id: doc.id,
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q1_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
         q2_supporting_documents:
-          investigatorInstitutionInfo?.documents?.map((doc) => {
-            if (doc.document_name === "q2_supporting_documents") {
-              return {
-                id: doc.id,
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q2_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
         q3_supporting_documents:
-          investigatorInstitutionInfo?.documents?.map((doc) => {
-            if (doc.document_name === "q3_supporting_documents") {
-              return {
-                id: doc.id,
-                name: doc.file_name,
-                url: doc.file_url,
-              };
-            }
-          }) || [],
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q3_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
 
         q1_clone_supporting_documents:
           investigatorInstitutionInfo?.documents
