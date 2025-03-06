@@ -55,9 +55,10 @@ const riskAssessmentSchema = yup.object().shape({
   // mandatory only if irb_report is 'Yes'
   q1_supporting_documents: yup.mixed().when("irb_report", {
     is: (val) => val === "Yes", // Checks if the value of irb_report is 'Yes'
-    then: () => yup.mixed().test("required", "At least one file is required", (value) => {
-      return value && value.length > 0;
-    }),
+    then: () =>
+      yup.mixed().test("required", "At least one file is required", (value) => {
+        return value && value.length > 0;
+      }),
     otherwise: (schema) => schema,
   }),
 
@@ -141,9 +142,10 @@ function RiskAssessment({
         let q1_supporting_documents = [];
         if (formData.q1_supporting_documents) {
           for (let file of formData.q1_supporting_documents) {
-            const isFileIdExistInClone = formData.q1_clone_supporting_documents.find(
-              (doc) => doc.id === file.id
-            );
+            const isFileIdExistInClone =
+              formData.q1_clone_supporting_documents.find(
+                (doc) => doc.id === file.id
+              );
             if (!isFileIdExistInClone) {
               let id = uploadFile(file, {
                 protocolId: formData.protocol_id,
@@ -209,21 +211,23 @@ function RiskAssessment({
         protocol_id: continuinReviewDetails?.protocolId || "",
         created_by: userDetails.id,
 
-        q1_supporting_documents: riskAssessment?.documents
-          ?.filter(doc => doc.document_name === "supporting_document")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            type: doc.protocol_type,
-          })) || [],
+        q1_supporting_documents:
+          riskAssessment?.documents
+            ?.filter((doc) => doc.document_name === "supporting_document")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              type: doc.protocol_type,
+            })) || [],
 
-        q1_clone_supporting_documents: riskAssessment?.documents
-          ?.filter(doc => doc.document_name === "supporting_document")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            type: doc.protocol_type,
-          })) || [],
+        q1_clone_supporting_documents:
+          riskAssessment?.documents
+            ?.filter((doc) => doc.document_name === "supporting_document")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              type: doc.protocol_type,
+            })) || [],
       });
 
       setShowAdditionalQuestionIrbReport(

@@ -63,37 +63,41 @@ const investigatorInfoSchema = yup.object().shape({
   // q1 is mandatory, when inv_sit_quali is Yes
   q1_supporting_documents: yup.array().when("inv_sit_quali", {
     is: (val) => val === "Yes",
-    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
-      return value.length > 0;
-    }),
-    otherwise: (schema) => schema.nullable()
+    then: () =>
+      yup.mixed().test("fileRequired", "This is required", (value) => {
+        return value.length > 0;
+      }),
+    otherwise: (schema) => schema.nullable(),
   }),
 
   // q2 is mandatory, when inv_or_comp is Yes
   q2_supporting_documents: yup.array().when("inv_or_comp", {
     is: (val) => val === "Yes",
-    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
-      return value.length > 0;
-    }),
-    otherwise: (schema) => schema.nullable()
+    then: () =>
+      yup.mixed().test("fileRequired", "This is required", (value) => {
+        return value.length > 0;
+      }),
+    otherwise: (schema) => schema.nullable(),
   }),
 
   // q3 is mandatory, when facility_changes is Yes
   q3_supporting_documents: yup.array().when("facility_changes", {
     is: (val) => val === "Yes",
-    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
-      return value.length > 0;
-    }),
-    otherwise: (schema) => schema.nullable()
+    then: () =>
+      yup.mixed().test("fileRequired", "This is required", (value) => {
+        return value.length > 0;
+      }),
+    otherwise: (schema) => schema.nullable(),
   }),
 
   // q4 is mandatory, when facility_any_changes is Yes
   q4_supporting_documents: yup.array().when("facility_any_changes", {
     is: (val) => val === "Yes",
-    then: () => yup.mixed().test("fileRequired", "This is required", (value) => {
-      return value.length > 0;
-    }),
-    otherwise: (schema) => schema.nullable()
+    then: () =>
+      yup.mixed().test("fileRequired", "This is required", (value) => {
+        return value.length > 0;
+      }),
+    otherwise: (schema) => schema.nullable(),
   }),
 });
 
@@ -455,19 +459,24 @@ function InvestigatorInstitutionInfo({
       setFormData({
         changes_explain: investigatorInstitutionInfo?.changes_explain || "",
         changes_law: investigatorInstitutionInfo?.changes_law || "",
-        changes_law_explain: investigatorInstitutionInfo?.changes_law_explain || "",
+        changes_law_explain:
+          investigatorInstitutionInfo?.changes_law_explain || "",
         changes_reported: investigatorInstitutionInfo?.changes_reported || "",
         changes_reported_explain:
           investigatorInstitutionInfo?.changes_reported_explain || "",
-        facility_any_changes: investigatorInstitutionInfo?.facility_any_changes || "",
+        facility_any_changes:
+          investigatorInstitutionInfo?.facility_any_changes || "",
         facility_any_changes_explain:
           investigatorInstitutionInfo?.facility_any_changes_explain || "",
-        facility_change_item: investigatorInstitutionInfo?.facility_change_item || [],
+        facility_change_item:
+          investigatorInstitutionInfo?.facility_change_item || [],
         facility_changes: investigatorInstitutionInfo?.facility_changes || "",
         inv_or_comp: investigatorInstitutionInfo?.inv_or_comp || "",
-        inv_or_comp_explain: investigatorInstitutionInfo?.inv_or_comp_explain || "",
+        inv_or_comp_explain:
+          investigatorInstitutionInfo?.inv_or_comp_explain || "",
         inv_sit_quali: investigatorInstitutionInfo?.inv_sit_quali || "",
-        investigator_changes: investigatorInstitutionInfo?.investigator_changes || [],
+        investigator_changes:
+          investigatorInstitutionInfo?.investigator_changes || [],
         protocol_id: continuinReviewDetails.protocolId,
         created_by: userDetails.id,
         q4_supporting_documents:
@@ -511,38 +520,41 @@ function InvestigatorInstitutionInfo({
             }
           }) || [],
 
-        q1_clone_supporting_documents: investigatorInstitutionInfo?.documents
-          ?.filter(doc => doc.document_name === "q1_supporting_documents")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
+        q1_clone_supporting_documents:
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q1_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
 
-        q2_clone_supporting_documents: investigatorInstitutionInfo?.documents
-          ?.filter(doc => doc.document_name === "q2_supporting_documents")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
+        q2_clone_supporting_documents:
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q2_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
 
-        q3_clone_supporting_documents: investigatorInstitutionInfo?.documents
-          ?.filter(doc => doc.document_name === "q3_supporting_documents")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
+        q3_clone_supporting_documents:
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q3_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
 
-        q4_clone_supporting_documents: investigatorInstitutionInfo?.documents
-          ?.filter(doc => doc.document_name === "q4_supporting_documents")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
-
+        q4_clone_supporting_documents:
+          investigatorInstitutionInfo?.documents
+            ?.filter((doc) => doc.document_name === "q4_supporting_documents")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
       });
 
       setShowAdditionalSelectionList(

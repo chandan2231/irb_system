@@ -60,9 +60,11 @@ const investigatorInfoSchema = yup.object().shape({
     .test("required", "At least one ICF file is required", (value) => {
       return value && value.length > 0;
     }),
-  consent_form: yup.mixed().test("required", "At least one consent form is required", (value) => {
-    return value && value.length > 0;
-  }),
+  consent_form: yup
+    .mixed()
+    .test("required", "At least one consent form is required", (value) => {
+      return value && value.length > 0;
+    }),
 });
 
 function InformedConsentProcess({
@@ -188,7 +190,9 @@ function InformedConsentProcess({
 
         if (formData.icf_file && formData.icf_file.length > 0) {
           for (let file of formData.icf_file) {
-            const isIdExist = formData.icf_file_clone.find((doc) => doc.id === file.id);
+            const isIdExist = formData.icf_file_clone.find(
+              (doc) => doc.id === file.id
+            );
             if (!isIdExist) {
               let id = await uploadFile(file, {
                 protocolId: formData.protocol_id,
@@ -202,10 +206,11 @@ function InformedConsentProcess({
           }
         }
 
-
         if (formData.consent_form && formData.consent_form.length > 0) {
           for (let file of formData.consent_form) {
-            const isIdExist = formData.consent_form_clone.find((doc) => doc.id === file.id);
+            const isIdExist = formData.consent_form_clone.find(
+              (doc) => doc.id === file.id
+            );
             if (!isIdExist) {
               let id = uploadFile(file, {
                 protocolId: formData.protocol_id,
@@ -219,7 +224,7 @@ function InformedConsentProcess({
           }
         }
 
-        dispatch(informedConsentSave({ ...formData })).then((data) => {
+        dispatch(informedConsentSave(formData)).then((data) => {
           if (data.payload.status === 200) {
             toast.success(data.payload.data.msg, {
               position: "top-right",
@@ -263,54 +268,55 @@ function InformedConsentProcess({
   useEffect(() => {
     if (informedConsentProcess) {
       setFormData({
-        icf_version: informedConsentProcess.icf_version,
-        performing_consent: informedConsentProcess.performing_consent,
-        challenges_faced: informedConsentProcess.challenges_faced,
+        icf_version: informedConsentProcess?.icf_version || "",
+        performing_consent: informedConsentProcess?.performing_consent || "",
+        challenges_faced: informedConsentProcess?.challenges_faced || "",
         challenges_faced_explain:
-          informedConsentProcess.challenges_faced_explain,
-        changes_consent: informedConsentProcess.changes_consent,
-        changes_consent_explain: informedConsentProcess.changes_consent_explain,
-        ensuring_list: informedConsentProcess.ensuring_list,
-        ensuring_list_explain: informedConsentProcess.ensuring_list_explain,
-        protocol_id: continuinReviewDetails.protocolId,
-        created_by: userDetails.id,
+          informedConsentProcess?.challenges_faced_explain || "",
+        changes_consent: informedConsentProcess?.changes_consent || "",
+        changes_consent_explain:
+          informedConsentProcess?.changes_consent_explain || "",
+        ensuring_list: informedConsentProcess?.ensuring_list || "",
+        ensuring_list_explain:
+          informedConsentProcess?.ensuring_list_explain || "",
+        protocol_id: continuinReviewDetails.protocolId || "",
+        created_by: userDetails.id || "",
         icf_file:
-        informedConsentProcess.documents
-          .filter(doc => doc.document_name === "icf_file")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
-      
-      consent_form:
-        informedConsentProcess.documents
-          .filter(doc => doc.document_name === "consent_form")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
-      
-      // clones
-      icf_file_clone:
-        informedConsentProcess.documents
-          .filter(doc => doc.document_name === "icf_file")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
-      
-      consent_form_clone:
-        informedConsentProcess.documents
-          .filter(doc => doc.document_name === "consent_form")
-          .map(doc => ({
-            id: doc.id,
-            name: doc.file_name,
-            url: doc.file_url,
-          })) || [],
-      
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "icf_file")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
+        consent_form:
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "consent_form")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
+        // clones
+        icf_file_clone:
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "icf_file")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
+
+        consent_form_clone:
+          informedConsentProcess?.documents
+            .filter((doc) => doc.document_name === "consent_form")
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.file_name,
+              url: doc.file_url,
+            })) || [],
       });
     }
   }, [informedConsentProcess, continuinReviewDetails]);
@@ -320,8 +326,7 @@ function InformedConsentProcess({
       informedConsentProcess,
       formData,
     });
-
-  }, [formData])
+  }, [formData]);
 
   return (
     <>
