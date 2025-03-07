@@ -9,7 +9,10 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import * as yup from "yup";
-import { createStudyCloseoutRequest } from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createStudyCloseoutRequest,
+  fetchEventAndRequestById,
+} from "../../services/EventAndRequest/EventAndRequestService";
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -105,6 +108,24 @@ function StudyCloseoutRequestDetails() {
     protocol_type: protocolDetails.researchType,
   });
   const [errors, setErrors] = useState({});
+
+  React.useEffect(() => {
+    let data = {
+      protocol_id: protocolDetails.protocolId,
+      type: "closeout",
+    };
+    dispatch(fetchEventAndRequestById(data));
+  }, [dispatch, userDetails.id]);
+
+  const { studyCloseoutRequestDetails, loading, error } = useSelector(
+    (state) => ({
+      error: state.eventAndRequest.error,
+      studyCloseoutRequestDetails: state.eventAndRequest.eventAndRequestDetails,
+      loading: state.eventAndRequest.loading,
+    })
+  );
+
+  console.log("studyCloseoutRequestDetails", studyCloseoutRequestDetails);
 
   const handleStudyCloseoutReason = (event, radio_name) => {
     if (

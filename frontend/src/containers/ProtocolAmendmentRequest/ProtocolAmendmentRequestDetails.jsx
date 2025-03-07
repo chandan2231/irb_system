@@ -12,7 +12,10 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import * as yup from "yup";
 import Grid from "@mui/material/Grid";
-import { createProtocolAmendmentRequest } from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createProtocolAmendmentRequest,
+  fetchEventAndRequestById,
+} from "../../services/EventAndRequest/EventAndRequestService";
 import { Box, useTheme } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -179,6 +182,22 @@ function ProtocolAmendmentRequestDetails() {
       }
     }
   };
+
+  React.useEffect(() => {
+    let data = {
+      protocol_id: protocolDetails.protocolId,
+      type: "amendment",
+    };
+    dispatch(fetchEventAndRequestById(data));
+  }, [dispatch, userDetails.id]);
+
+  const { protocolAmendmentDetails, loading, error } = useSelector((state) => ({
+    error: state.eventAndRequest.error,
+    protocolAmendmentDetails: state.eventAndRequest.eventAndRequestDetails,
+    loading: state.eventAndRequest.loading,
+  }));
+
+  console.log("protocolAmendmentDetails", protocolAmendmentDetails);
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">

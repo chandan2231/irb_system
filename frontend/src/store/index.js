@@ -24,6 +24,7 @@ import EventPriceReducer from "./Admin/EventPriceSlice";
 import CommunicationReducer from "./Communication/CommunicationSlice";
 import PaymentReducer from "./Payment/PaymentSlice";
 import ExternalMonitorReducer from "./ExternalMonitor/ExternalMonitorSlice";
+import EventAndRequestReducer from "./EventAndRequest/EventAndRequestSlice";
 
 const SECRET_KEY = import.meta.env.VITE_SECRET_KEY;
 
@@ -60,6 +61,7 @@ const rootReducer = combineReducers({
   communication: CommunicationReducer,
   payment: PaymentReducer,
   externalMonitor: ExternalMonitorReducer,
+  eventAndRequest: EventAndRequestReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

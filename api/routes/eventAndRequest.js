@@ -3,7 +3,8 @@ import {
   saveStudyCloseoutRequest,
   saveProtocolAmendmentRequest,
   savePromptlyReportableEvent,
-  saveAdverseEvent
+  saveAdverseEvent,
+  fetchEventAndRequestById
 } from '../controllers/eventAndRequest.js'
 import { authenticateUser } from '../utils/middleware.js'
 const router = express.Router()
@@ -24,5 +25,10 @@ router.post(
   saveProtocolAmendmentRequest
 )
 router.post('/createAdverseEvent', authenticateUser, saveAdverseEvent)
+router.post(
+  '/fetchEventAndRequestById',
+  authenticateUser,
+  fetchEventAndRequestById
+)
 
 export default router

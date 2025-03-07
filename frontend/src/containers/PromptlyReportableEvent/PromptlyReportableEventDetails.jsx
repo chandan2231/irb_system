@@ -14,7 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createPromptlyReportableEvent } from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createPromptlyReportableEvent,
+  fetchEventAndRequestById,
+} from "../../services/EventAndRequest/EventAndRequestService";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -83,6 +86,25 @@ function PromptlyReportableEventDetails() {
     protocol_type: protocolDetails.researchType,
   });
   const [errors, setErrors] = useState({});
+
+  React.useEffect(() => {
+    let data = {
+      protocol_id: protocolDetails.protocolId,
+      type: "reportable",
+    };
+    dispatch(fetchEventAndRequestById(data));
+  }, [dispatch, userDetails.id]);
+
+  const { promptlyReportableEventDetails, loading, error } = useSelector(
+    (state) => ({
+      error: state.eventAndRequest.error,
+      promptlyReportableEventDetails:
+        state.eventAndRequest.eventAndRequestDetails,
+      loading: state.eventAndRequest.loading,
+    })
+  );
+
+  console.log("promptlyReportableEventDetails", promptlyReportableEventDetails);
 
   const handleSubmitterType = (event, radio_name) => {
     const { name, value } = event.target;

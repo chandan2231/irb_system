@@ -391,3 +391,38 @@ export const saveStudyCloseoutRequest = (req, res) => {
     }
   })
 }
+export const fetchEventAndRequestById = (req, res) => {
+  let checkQuery = ''
+  if (req.body.type === 'amendment') {
+    checkQuery =
+      'SELECT * FROM protocol_amendment_request WHERE protocol_id = ?'
+  } else if (req.body.type === 'adverse') {
+    checkQuery = 'SELECT * FROM adverse_event WHERE protocol_id = ?'
+  } else if (req.body.type === 'reportable') {
+    checkQuery = 'SELECT * FROM promptly_reportable_event WHERE protocol_id = ?'
+  } else if (req.body.type === 'closeout') {
+    checkQuery = 'SELECT * FROM study_closeout_request WHERE protocol_id = ?'
+  } else {
+    return res.status(400).json({ status: 400, msg: 'Invalid type provided' })
+  }
+
+  // Run the query to fetch data
+  db.query(checkQuery, [req.body.protocol_id], (err, data) => {
+    if (err) {
+      return res.status(500).json({ status: 500, msg: err })
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        msg: `No data found for protocol_id: ${req.body.protocol_id} with type: ${req.body.type}`
+      })
+    }
+
+    return res.status(200).json({
+      status: 200,
+      msg: `${req.body.type.charAt(0).toUpperCase() + req.body.type.slice(1)} data fetched successfully`,
+      data: data
+    })
+  })
+}

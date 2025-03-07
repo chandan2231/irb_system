@@ -14,7 +14,10 @@ import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormGroup from "@mui/material/FormGroup";
-import { createAdverseEvent } from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createAdverseEvent,
+  fetchEventAndRequestById,
+} from "../../services/EventAndRequest/EventAndRequestService";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -100,6 +103,22 @@ function AdverseEventsDetails() {
     protocol_type: protocolDetails.researchType,
   });
   const [errors, setErrors] = useState({});
+
+  React.useEffect(() => {
+    let data = {
+      protocol_id: protocolDetails.protocolId,
+      type: "adverse",
+    };
+    dispatch(fetchEventAndRequestById(data));
+  }, [dispatch, userDetails.id]);
+
+  const { adverseEventDetails, loading, error } = useSelector((state) => ({
+    error: state.eventAndRequest.error,
+    adverseEventDetails: state.eventAndRequest.eventAndRequestDetails,
+    loading: state.eventAndRequest.loading,
+  }));
+
+  console.log("adverseEventDetails", adverseEventDetails);
 
   const handleAdverseEventCriteria = (event, radio_name) => {
     const { name, value } = event.target;

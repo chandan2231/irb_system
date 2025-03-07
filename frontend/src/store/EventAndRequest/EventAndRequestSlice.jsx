@@ -4,6 +4,7 @@ import {
   createPromptlyReportableEvent,
   createAdverseEvent,
   createProtocolAmendmentRequest,
+  fetchEventAndRequestById,
 } from "../../services/EventAndRequest/EventAndRequestService";
 
 const EventAndRequestSlice = createSlice({
@@ -15,6 +16,7 @@ const EventAndRequestSlice = createSlice({
     createdAdverseEvent: null,
     createdPromptlyReportableEvent: null,
     createdStudyCloseoutRequest: null,
+    eventAndRequestDetails: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -64,6 +66,18 @@ const EventAndRequestSlice = createSlice({
         state.createdStudyCloseoutRequest = action.payload;
       })
       .addCase(createStudyCloseoutRequest.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(fetchEventAndRequestById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchEventAndRequestById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.eventAndRequestDetails = action.payload;
+      })
+      .addCase(fetchEventAndRequestById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
