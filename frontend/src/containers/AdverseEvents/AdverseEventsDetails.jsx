@@ -14,10 +14,14 @@ import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormGroup from "@mui/material/FormGroup";
-import { createAdverseEvent } from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createAdverseEvent,
+  fetchEventAndRequestById,
+} from "../../services/EventAndRequest/EventAndRequestService";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Loader from "../../components/Loader";
 import dayjs from "dayjs";
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
@@ -63,6 +67,8 @@ function AdverseEventsDetails() {
   const location = useLocation();
   const protocolDetails = location.state.details;
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const [isLoading, setIsLoading] = useState(false)
+
   const [showUnexpectedEventTextArea, setShowUnexpectedEventTextArea] =
     React.useState(false);
   const [showEventNatureDateOfDeath, setShowEventNatureDateOfDeath] =
@@ -95,11 +101,27 @@ function AdverseEventsDetails() {
     email: "",
     phone: "",
     your_name: "",
-    protocol_id: protocolDetails.protocolId,
+    protocol_id: protocolDetails?.protocolId,
     created_by: userDetails.id,
-    protocol_type: protocolDetails.researchType,
+    protocol_type: protocolDetails?.researchType,
   });
   const [errors, setErrors] = useState({});
+
+  React.useEffect(() => {
+    let data = {
+      protocol_id: protocolDetails.protocolId,
+      type: "adverse",
+    };
+    dispatch(fetchEventAndRequestById(data));
+  }, [dispatch, userDetails.id]);
+
+  const { adverseEventDetails, loading, error } = useSelector((state) => ({
+    error: state.eventAndRequest.error,
+    adverseEventDetails: state.eventAndRequest.eventAndRequestDetails,
+    loading: state.eventAndRequest.loading,
+  }));
+
+  console.log("adverseEventDetails", adverseEventDetails);
 
   const handleAdverseEventCriteria = (event, radio_name) => {
     const { name, value } = event.target;
@@ -164,6 +186,7 @@ function AdverseEventsDetails() {
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true)
       const getValidatedform = await adverseEventSchema.validate(formData, {
         abortEarly: false,
       });
@@ -182,8 +205,15 @@ function AdverseEventsDetails() {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+
+            let payload = {
+              protocol_id: protocolDetails.protocolId,
+              type: "adverse",
+            };
+            setIsLoading(false)
+            dispatch(fetchEventAndRequestById(payload));
           } else {
+            setIsLoading(false)
             toast.error(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -198,6 +228,7 @@ function AdverseEventsDetails() {
         });
       }
     } catch (error) {
+      setIsLoading(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -216,6 +247,84 @@ function AdverseEventsDetails() {
       }
     }
   };
+
+  useEffect(() => {
+    if (
+      adverseEventDetails &&
+      adverseEventDetails.data &&
+      adverseEventDetails.data.data &&
+      adverseEventDetails.data.data.length > 0
+    ) {
+
+      const fetchedData = adverseEventDetails.data.data[0];
+
+      setFormData({
+        ...formData,
+        protocol_number: fetchedData?.protocol_number || "",
+        adverse_event_criteria: fetchedData?.adverse_event_criteria || "",
+        participant_id_number: fetchedData?.participant_id_number || "",
+        event_start_date: fetchedData?.event_start_date
+          ? dayjs(fetchedData?.event_start_date).format("YYYY-MM-DD")
+          : "",
+        event_end_date: fetchedData?.event_end_date
+          ? dayjs(fetchedData?.event_end_date).format("YYYY-MM-DD")
+          : "",
+        event_aware_date: fetchedData?.event_aware_date
+          ? dayjs(fetchedData?.event_aware_date).format("YYYY-MM-DD")
+          : "",
+        irb_report_date: fetchedData?.irb_report_date
+          ? dayjs(fetchedData?.irb_report_date).format("YYYY-MM-DD")
+          : "",
+        severity_level: fetchedData?.severity_level || "",
+        unexpected_event: fetchedData?.unexpected_event || "",
+        unexpected_event_explain: fetchedData?.unexpected_event_explain || "",
+        event_nature: fetchedData?.event_nature || "",
+        date_of_death: fetchedData?.date_of_death
+          ? dayjs(fetchedData?.date_of_death).format("YYYY-MM-DD")
+          : "",
+        event_nature_explain: fetchedData?.event_nature_explain || "",
+        event_description: fetchedData?.event_description || "",
+        event_study_relationship: fetchedData?.event_study_relationship || "",
+        study_discontinued: fetchedData?.study_discontinued || "",
+        study_discontinued_explain: fetchedData?.study_discontinued_explain || "",
+        person_name: fetchedData?.person_name || "",
+        email: fetchedData?.email || "",
+        phone: fetchedData?.phone || "",
+        your_name: fetchedData?.your_name || "",
+        // these fields come from your protocolDetails and userDetails
+        // protocol_id: protocolDetails.protocolId,
+        // created_by: userDetails.id,
+        // protocol_type: protocolDetails.researchType,
+      });
+
+      if (fetchedData?.unexpected_event === "Yes") {
+        setShowUnexpectedEventTextArea(true);
+      } else if (fetchedData?.unexpected_event === "No") {
+        setShowUnexpectedEventTextArea(true);
+      }
+
+      if (fetchedData?.event_nature === "Death") {
+        setShowEventNatureDateOfDeath(true);
+      }
+
+      if (fetchedData?.event_nature === "Other") {
+        setShowEventNatureAdditionTextArea(true);
+      }
+
+      if (fetchedData?.study_discontinued === "Yes") {
+        setShowStudyDiscontinuedAdditionTextArea(true);
+      }
+    }
+  }, [adverseEventDetails]);
+
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
+
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">
@@ -306,13 +415,16 @@ function AdverseEventsDetails() {
                   onChange={(event) =>
                     handleAdverseEventCriteria(event, "adverse_event_criteria")
                   }
+                  value={formData.adverse_event_criteria}
+
                 >
                   <FormControlLabel
                     value="Yes"
                     control={<Radio />}
                     label="Yes"
                   />
-                  <FormControlLabel value="No" control={<Radio />} label="No" />
+                  <FormControlLabel value="No" control={<Radio />} label="No"
+                  />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
@@ -345,6 +457,7 @@ function AdverseEventsDetails() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Event occur start date *"
+                    value={formData?.event_start_date ? dayjs(formData?.event_start_date) : null}
                     onChange={(newValue) =>
                       setFormData({
                         ...formData,
@@ -370,6 +483,8 @@ function AdverseEventsDetails() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Event occur end date *"
+                    value={formData.event_end_date ? dayjs(formData.event_end_date) : null}
+
                     onChange={(newValue) =>
                       setFormData({
                         ...formData,
@@ -395,6 +510,8 @@ function AdverseEventsDetails() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="When did you become aware of this event *"
+                    value={formData.event_aware_date ? dayjs(formData.event_aware_date) : null}
+
                     onChange={(newValue) =>
                       setFormData({
                         ...formData,
@@ -420,6 +537,8 @@ function AdverseEventsDetails() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Date of report to IRB *"
+                    value={formData.irb_report_date ? dayjs(formData.irb_report_date) : null}
+
                     onChange={(newValue) =>
                       setFormData({
                         ...formData,
@@ -453,6 +572,7 @@ function AdverseEventsDetails() {
                   onChange={(event) =>
                     handleSeverityLevel(event, "severity_level")
                   }
+                  value={formData.severity_level}
                 >
                   <FormControlLabel
                     value="Mild (asymptomatic or mild symptoms not requiring intervention, clinical or diagnostic observations only)"
@@ -498,6 +618,7 @@ function AdverseEventsDetails() {
                   onChange={(event) =>
                     handleUnexpectedEvent(event, "unexpected_event")
                   }
+                  value={formData.unexpected_event}
                 >
                   <FormControlLabel
                     value="Yes"
@@ -524,7 +645,7 @@ function AdverseEventsDetails() {
                     rows={3}
                     multiline
                     onChange={handleChange}
-                    value={formData.unexpected_event_explain}
+                    value={formData?.unexpected_event_explain}
                   />
                 </Box>
                 {errors.unexpected_event_explain && (
@@ -545,6 +666,7 @@ function AdverseEventsDetails() {
                 <RadioGroup
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="event_nature"
+                  value={formData.event_nature}
                   onChange={(event) => handleEventNature(event, "event_nature")}
                 >
                   <FormControlLabel
@@ -611,6 +733,7 @@ function AdverseEventsDetails() {
                           date_of_death: dayjs(newValue).format("YYYY-MM-DD"),
                         })
                       }
+                      value={formData.date_of_death ? dayjs(formData.date_of_death) : null}
                       renderInput={(params) => <TextField {...params} />}
                       sx={{ width: "50%" }}
                     />
@@ -682,6 +805,7 @@ function AdverseEventsDetails() {
                   Relationship of event to study
                 </FormLabel>
                 <RadioGroup
+                  value={formData.event_study_relationship}
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="event_study_relationship"
                   onChange={(event) =>
@@ -732,6 +856,7 @@ function AdverseEventsDetails() {
                   onChange={(event) =>
                     handleStudyDiscontinued(event, "study_discontinued")
                   }
+                  value={formData.study_discontinued}
                 >
                   <FormControlLabel
                     value="Yes"

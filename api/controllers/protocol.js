@@ -329,7 +329,7 @@ export const createProtocol = async (req, res) => {
     bodyHtml += `<p>Please save the protocol ID.</p>`
     bodyHtml += `<p>You have 6 months to complete the protocol. All the incomplete protocol after 6 months are automatically deleted from the file and database.</p>`
     bodyHtml += `If you have any questions or concern please email to us.</p>`
-    bodyHtml += `<p>Help.irbhub@gmail.com</p>`
+    bodyHtml += `<p>help.irbhub@gmail.com</p>`
     const emailHtml = `
       <div>
         ${grettingHtml}

@@ -70,3 +70,20 @@ export const createProtocolAmendmentRequest = createAsyncThunk(
     }
   }
 );
+
+export const fetchEventAndRequestById = createAsyncThunk(
+  "EventAndRequest/fetchEventAndRequestById",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await ApiCall({
+        method: "POST",
+        url: `${baseURL}/eventAndRequest/fetchEventAndRequestById`,
+        data,
+        // headers: { withCredentials: true },
+      });
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

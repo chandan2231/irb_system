@@ -14,11 +14,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createPromptlyReportableEvent } from "../../services/EventAndRequest/EventAndRequestService";
+import {
+  createPromptlyReportableEvent,
+  fetchEventAndRequestById,
+} from "../../services/EventAndRequest/EventAndRequestService";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import Loader from "../../components/Loader";
 
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
@@ -53,11 +56,11 @@ function PromptlyReportableEventDetails() {
   const location = useLocation();
   const protocolDetails = location.state.details;
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  const [
-    showOtherCategoryAdditionTextArea,
-    setShowOtherCategoryAdditionTextArea,
-  ] = React.useState(false);
-  const [termsSelected, setTermsSelected] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [showOtherCategoryAdditionTextArea, setShowOtherCategoryAdditionTextArea] =
+    useState(false);
+  const [termsSelected, setTermsSelected] = useState(false);
   const [formData, setFormData] = useState({
     submitter_type: "",
     irb_protocol_number: "",
@@ -84,102 +87,161 @@ function PromptlyReportableEventDetails() {
   });
   const [errors, setErrors] = useState({});
 
+  // Fetch details on component mount
+  useEffect(() => {
+    const data = {
+      protocol_id: protocolDetails.protocolId,
+      type: "reportable",
+    };
+    dispatch(fetchEventAndRequestById(data));
+  }, [dispatch, protocolDetails.protocolId, userDetails.id]);
+
+  const { promptlyReportableEventDetails, loading, error } = useSelector(
+    (state) => ({
+      error: state.eventAndRequest.error,
+      promptlyReportableEventDetails: state.eventAndRequest.eventAndRequestDetails,
+      loading: state.eventAndRequest.loading,
+    })
+  );
+
+  console.log("promptlyReportableEventDetails", promptlyReportableEventDetails);
+
+  // Prefill formData from fetched details
+  useEffect(() => {
+    if (
+      promptlyReportableEventDetails &&
+      promptlyReportableEventDetails.data &&
+      promptlyReportableEventDetails.data.data &&
+      promptlyReportableEventDetails.data.data.length > 0
+    ) {
+      const fetchedData = promptlyReportableEventDetails.data.data[0];
+
+      setFormData((prevData) => ({
+        ...prevData,
+        submitter_type: fetchedData?.submitter_type || "",
+        irb_protocol_number: fetchedData?.irb_protocol_number || "",
+        sponsor_name: fetchedData?.sponsor_name || "",
+        described_category: fetchedData?.described_category || "",
+        described_category_explain: fetchedData?.described_category_explain || "",
+        involved_subject: fetchedData?.involved_subject || "",
+        date_problem_discovered: fetchedData?.date_problem_discovered
+          ? dayjs(fetchedData.date_problem_discovered).format("YYYY-MM-DD")
+          : "",
+        date_of_occurrence: fetchedData?.date_of_occurrence
+          ? dayjs(fetchedData.date_of_occurrence).format("YYYY-MM-DD")
+          : "",
+        date_reported_to_sponsor: fetchedData?.date_reported_to_sponsor
+          ? dayjs(fetchedData.date_reported_to_sponsor).format("YYYY-MM-DD")
+          : "",
+        describe_problem: fetchedData?.describe_problem || "",
+        action_taken: fetchedData?.action_taken || "",
+        plan_action_taken: fetchedData?.plan_action_taken || "",
+        subject_harmed: fetchedData?.subject_harmed || "",
+        protocol_change: fetchedData?.protocol_change || "",
+        question_not_covered: fetchedData?.question_not_covered || "",
+        person_name: fetchedData?.person_name || "",
+        email: fetchedData?.email || "",
+        phone: fetchedData?.phone || "",
+        your_name: fetchedData?.your_name || "",
+      }));
+
+      // Set flag if described_category is Other
+      if (fetchedData?.described_category === "Other") {
+        setShowOtherCategoryAdditionTextArea(true);
+      } else {
+        setShowOtherCategoryAdditionTextArea(false);
+      }
+    }
+  }, [promptlyReportableEventDetails]);
+
   const handleSubmitterType = (event, radio_name) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleDescribedCategory = (event, radio_name) => {
     if (radio_name === "described_category" && event.target.value === "Other") {
       setShowOtherCategoryAdditionTextArea(true);
-    } else if (
-      radio_name === "described_category" &&
-      event.target.value !== "Other"
-    ) {
+    } else if (radio_name === "described_category" && event.target.value !== "Other") {
       setShowOtherCategoryAdditionTextArea(false);
     }
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleInvolvedSubject = (event, radio_name) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubjectHarmed = (event, radio_name) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleProtocolChange = (event, radio_name) => {
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFinalSubmissionTearmChecked = (event) => {
     const { checked } = event.target;
-    if (checked === true) {
-      setTermsSelected(true);
-    } else if (checked === false) {
-      setTermsSelected(false);
-    }
+    setTermsSelected(checked);
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
-      // if (formData.date_problem_discovered === '') {
-      //     return setErrors({ ...errors, ['date_problem_discovered']: 'This is required' });
-      // }
-      // if (formData.date_of_occurrence === '') {
-      //     return setErrors({ ...errors, ['date_of_occurrence']: 'This is required' });
-      // }
-      const getValidatedform = await promptlyReportableSchema.validate(
-        formData,
-        { abortEarly: false }
-      );
-      const isValid = await promptlyReportableSchema.isValid(getValidatedform);
-      // const isValid = true
+      setIsLoading(true)
+      const validatedForm = await promptlyReportableSchema.validate(formData, {
+        abortEarly: false,
+      });
+      const isValid = await promptlyReportableSchema.isValid(validatedForm);
       if (isValid === true) {
-        dispatch(createPromptlyReportableEvent({ ...formData })).then(
-          (data) => {
-            if (data.payload.status === 200) {
-              toast.success(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-              setFormData({});
-            } else {
-              toast.error(data.payload.data.msg, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-              });
-            }
+        dispatch(createPromptlyReportableEvent({ ...formData })).then((data) => {
+          if (data.payload.status === 200) {
+            toast.success(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+            // Refetch details after successful submission
+            const payload = {
+              protocol_id: protocolDetails.protocolId,
+              type: "reportable",
+            };
+            setIsLoading(false)
+            dispatch(fetchEventAndRequestById(payload));
+          } else {
+            setIsLoading(false)
+            toast.error(data.payload.data.msg, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
           }
-        );
+        });
       }
-    } catch (error) {
+    } catch (err) {
+      setIsLoading(false)
       const newErrors = {};
-      error.inner.forEach((err) => {
-        newErrors[err.path] = err.message;
+      err.inner.forEach((errorItem) => {
+        newErrors[errorItem.path] = errorItem.message;
       });
       setErrors(newErrors);
       if (Object.keys(newErrors).length > 0) {
@@ -195,6 +257,11 @@ function PromptlyReportableEventDetails() {
       }
     }
   };
+
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">
@@ -205,19 +272,15 @@ function PromptlyReportableEventDetails() {
           border: "1px solid #d3d3d3",
           backgroundColor: "#ffffff",
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          flexDirection: { xs: "column", sm: "row" },
           gap: 1,
-          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
-          flexWrap: "wrap", // Allow wrapping for smaller screens
+          justifyContent: { xs: "center", sm: "flex-start" },
+          flexWrap: "wrap",
           margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
-          overflow: "hidden", // Prevent any overflow from buttons
+          overflow: "hidden",
         }}
       >
-        <Box
-          sx={{
-            padding: "25px",
-          }}
-        >
+        <Box sx={{ padding: "25px" }}>
           <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -242,6 +305,7 @@ function PromptlyReportableEventDetails() {
                   onChange={(event) =>
                     handleSubmitterType(event, "submitter_type")
                   }
+                  value={formData.submitter_type}
                 >
                   <FormControlLabel
                     value="Sponsor or CRO (Contract Research Organization)"
@@ -262,11 +326,7 @@ function PromptlyReportableEventDetails() {
               </FormControl>
             </Form.Group>
             <h4>PROTOCOL INFORMATION:</h4>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik06"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik06" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -281,11 +341,7 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.irb_protocol_number}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik07"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik07" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -311,6 +367,7 @@ function PromptlyReportableEventDetails() {
                   onChange={(event) =>
                     handleDescribedCategory(event, "described_category")
                   }
+                  value={formData.described_category}
                 >
                   <FormControlLabel
                     value="Audit, Inspection, or inquiry by a federal agency"
@@ -397,20 +454,12 @@ function PromptlyReportableEventDetails() {
                     control={<Radio />}
                     label="Sponsor/CRO/monitor requests report to IRB"
                   />
-                  <FormControlLabel
-                    value="Other"
-                    control={<Radio />}
-                    label="Other"
-                  />
+                  <FormControlLabel value="Other" control={<Radio />} label="Other" />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
-            {showOtherCategoryAdditionTextArea === true && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-20"
-              >
+            {showOtherCategoryAdditionTextArea && (
+              <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
                 <Box sx={{ width: "100%", maxWidth: "100%" }}>
                   <TextField
                     variant="outlined"
@@ -425,17 +474,11 @@ function PromptlyReportableEventDetails() {
                   />
                 </Box>
                 {errors.described_category_explain && (
-                  <div className="error">
-                    {errors.described_category_explain}
-                  </div>
+                  <div className="error">{errors.described_category_explain}</div>
                 )}
               </Form.Group>
             )}
-            <Form.Group
-              as={Col}
-              controlId="validationFormik02"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik02" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Does this report involve one or more subjects
@@ -447,34 +490,27 @@ function PromptlyReportableEventDetails() {
                   onChange={(event) =>
                     handleInvolvedSubject(event, "involved_subject")
                   }
+                  value={formData.involved_subject}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Date problem discovered *"
                     onChange={(newValue) =>
-                      setFormData({
-                        ...formData,
-                        date_problem_discovered:
-                          dayjs(newValue).format("YYYY-MM-DD"),
-                      })
+                      setFormData((prev) => ({
+                        ...prev,
+                        date_problem_discovered: dayjs(newValue).format("YYYY-MM-DD"),
+                      }))
                     }
                     renderInput={(params) => <TextField {...params} />}
                     sx={{ width: "50%" }}
+                    value={formData.date_problem_discovered ? dayjs(formData.date_problem_discovered) : null}
                   />
                 </LocalizationProvider>
               </Box>
@@ -482,25 +518,20 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.date_problem_discovered}</div>
               )}
             </Form.Group>
-
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Date of occurrence *"
                     onChange={(newValue) =>
-                      setFormData({
-                        ...formData,
-                        date_of_occurrence:
-                          dayjs(newValue).format("YYYY-MM-DD"),
-                      })
+                      setFormData((prev) => ({
+                        ...prev,
+                        date_of_occurrence: dayjs(newValue).format("YYYY-MM-DD"),
+                      }))
                     }
                     renderInput={(params) => <TextField {...params} />}
                     sx={{ width: "50%" }}
+                    value={formData.date_of_occurrence ? dayjs(formData.date_of_occurrence) : null}
                   />
                 </LocalizationProvider>
               </Box>
@@ -508,24 +539,20 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.date_of_occurrence}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Date reported to sponsor (if applicable)"
                     onChange={(newValue) =>
-                      setFormData({
-                        ...formData,
-                        date_reported_to_sponsor:
-                          dayjs(newValue).format("YYYY-MM-DD"),
-                      })
+                      setFormData((prev) => ({
+                        ...prev,
+                        date_reported_to_sponsor: dayjs(newValue).format("YYYY-MM-DD"),
+                      }))
                     }
                     renderInput={(params) => <TextField {...params} />}
                     sx={{ width: "50%" }}
+                    value={formData.date_reported_to_sponsor ? dayjs(formData.date_reported_to_sponsor) : null}
                   />
                 </LocalizationProvider>
               </Box>
@@ -533,11 +560,7 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.date_reported_to_sponsor}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik03"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Describe the problem *
@@ -558,11 +581,7 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.describe_problem}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik03"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Describe the actions already taken to correct the problem *
@@ -583,15 +602,10 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.action_taken}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik03"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <FormLabel id="demo-row-radio-buttons-group-label">
-                  Describe the actions you plan to take to correct the problem
-                  and prevent recurrence *
+                  Describe the actions you plan to take to correct the problem and prevent recurrence *
                 </FormLabel>
                 <TextField
                   variant="outlined"
@@ -609,12 +623,7 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.plan_action_taken}</div>
               )}
             </Form.Group>
-
-            <Form.Group
-              as={Col}
-              controlId="validationFormik02"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik02" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Were subject(s) harmed because of this problem
@@ -626,21 +635,14 @@ function PromptlyReportableEventDetails() {
                   onChange={(event) =>
                     handleSubjectHarmed(event, "subject_harmed")
                   }
+                  value={formData.subject_harmed}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik02"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik02" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Will the protocol be changed because of this problem?
@@ -652,25 +654,17 @@ function PromptlyReportableEventDetails() {
                   onChange={(event) =>
                     handleProtocolChange(event, "protocol_change")
                   }
+                  value={formData.protocol_change}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik03"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <FormLabel id="demo-row-radio-buttons-group-label">
-                  Provide any additional relevant information that was not
-                  covered by the above questions *
+                  Provide any additional relevant information that was not covered by the above questions *
                 </FormLabel>
                 <TextField
                   variant="outlined"
@@ -688,11 +682,7 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.question_not_covered}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -707,11 +697,7 @@ function PromptlyReportableEventDetails() {
                 <div className="error">{errors.person_name}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -724,11 +710,7 @@ function PromptlyReportableEventDetails() {
               </Box>
               {errors.email && <div className="error">{errors.email}</div>}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -742,16 +724,11 @@ function PromptlyReportableEventDetails() {
               {errors.phone && <div className="error">{errors.phone}</div>}
             </Form.Group>
             <h3>Acknowledgement</h3>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormGroup>
                   <FormLabel>
-                    - By submitting this form you confirm the following is true
-                    and accurate to the best of your knowledge:
+                    - By submitting this form you confirm the following is true and accurate to the best of your knowledge:
                   </FormLabel>
                   <FormLabel>
                     - The information in this form is accurate and complete
@@ -760,17 +737,12 @@ function PromptlyReportableEventDetails() {
                     - You are an authorized designee to submit this information
                   </FormLabel>
                   <FormLabel>
-                    - The principal investigator has full awareness of the
-                    information submitted within this form
+                    - The principal investigator has full awareness of the information submitted within this form
                   </FormLabel>
                 </FormGroup>
               </FormControl>
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik06"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik06" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -782,21 +754,13 @@ function PromptlyReportableEventDetails() {
                 />
               </Box>
               <div className="highlight-text">
-                Note: Your name above is the equivalent of a hand-written
-                signature and is legally binding. Your signature confirms that
-                you are authorized to submit this document and you acknowledge
-                that it is accurate.
+                Note: Your name above is the equivalent of a hand-written signature and is legally binding. Your signature confirms that you are authorized to submit this document and you acknowledge that it is accurate.
               </div>
               {errors.your_name && (
                 <div className="error">{errors.your_name}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
+            <Form.Group as={Col} controlId="validationFormik010" className="mt-mb-20" style={{ textAlign: "right" }}>
               <Button variant="contained" color="primary" type="Submit">
                 SUBMIT
               </Button>
