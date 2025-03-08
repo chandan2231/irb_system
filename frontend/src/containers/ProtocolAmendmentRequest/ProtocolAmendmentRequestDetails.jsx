@@ -259,6 +259,15 @@ function ProtocolAmendmentRequestDetails() {
         // created_by: fetchedData?.created_by,
       }));
 
+      // other boolean states
+      if (fetchedData?.amend_document?.includes("4")) {
+        setShowAdditionalQuestionAmendType(true);
+      }
+
+      if (fetchedData?.amend_document?.includes("4") && !fetchedData?.amend_document_explain) {
+        setExplainAmendDocumentErrors("This is required");
+      }
+
     }
   }, [protocolAmendmentDetails]);
 

@@ -847,6 +847,7 @@ function AdverseEventsDetails() {
                   onChange={(event) =>
                     handleStudyDiscontinued(event, "study_discontinued")
                   }
+                  value={formData.study_discontinued}
                 >
                   <FormControlLabel
                     value="Yes"
