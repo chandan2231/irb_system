@@ -47,7 +47,7 @@ export const CustomFileUploadWrapper = ({
             // Validate file format using MIME type
             if (allowedTypes.length && !allowedTypes.includes(file.type)) {
                 toast.error(
-                    `Unsupported file format. Allowed format${allowedTypes.length > 1 ? "s" : ""}: ${allowedTypes.join(", ")}`,
+                    `Unsupported file format.`,
                     {
                         position: "top-right",
                         autoClose: 5000,
