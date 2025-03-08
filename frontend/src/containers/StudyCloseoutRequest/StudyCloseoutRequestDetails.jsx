@@ -20,7 +20,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
@@ -31,7 +30,7 @@ const studyCloseSchema = yup.object().shape({
   pi_name: yup.string().required("This is required"),
   study_closeout_reason: yup.string().required("This is required"),
   study_closeout_reason_other: yup.string().when("study_closeout_reason", {
-    is: "other",
+    is: "Other",
     then: (schema) => schema.required("This is required"),
     otherwise: (schema) => schema,
   }),
@@ -41,13 +40,11 @@ const studyCloseSchema = yup.object().shape({
   subject_fails: yup.string().required("This is required"),
   subject_lost_followup: yup.string().required("This is required"),
   subject_completed: yup.string().required("This is required"),
-  subject_complaints_review_explain: yup
-    .string()
-    .when("subject_complaints_review", {
-      is: "Yes",
-      then: (schema) => schema.required("This is required"),
-      otherwise: (schema) => schema,
-    }),
+  subject_complaints_review_explain: yup.string().when("subject_complaints_review", {
+    is: "Yes",
+    then: (schema) => schema.required("This is required"),
+    otherwise: (schema) => schema,
+  }),
   not_reported_irb_explain: yup.string().when("not_reported_irb", {
     is: "Yes",
     then: (schema) => schema.required("This is required"),
@@ -64,26 +61,16 @@ function StudyCloseoutRequestDetails() {
   const location = useLocation();
   const protocolDetails = location.state.details;
   const userDetails = JSON.parse(localStorage.getItem("user"));
-  const [value, setValue] = React.useState(null);
-  const [showStudyCloseoutReason, setShowStudyCloseoutReason] =
-    React.useState(false);
-  const [
-    showSubjectComplaintsReviewTextbox,
-    setShowSubjectComplaintsReviewTextbox,
-  ] = React.useState(false);
-  const [
-    showChangesNotReportedToIRBTextbox,
-    setShowChangesNotReportedToIRBTextbox,
-  ] = React.useState(false);
-  const [
-    showErrorMsgPromptlyReportableNotSubmitted,
-    setShowErrorMsgPromptlyReportableNotSubmitted,
-  ] = React.useState("");
-  const [
-    showErrorMsgAdverseEventNotSubmitted,
-    setShowErrorMsgAdverseEventNotSubmitted,
-  ] = React.useState("");
-  const [termsSelected, setTermsSelected] = React.useState(false);
+
+  // Local state for extra UI flags
+  const [showStudyCloseoutReason, setShowStudyCloseoutReason] = useState(false);
+  const [showSubjectComplaintsReviewTextbox, setShowSubjectComplaintsReviewTextbox] = useState(false);
+  const [showChangesNotReportedToIRBTextbox, setShowChangesNotReportedToIRBTextbox] = useState(false);
+  const [showErrorMsgPromptlyReportableNotSubmitted, setShowErrorMsgPromptlyReportableNotSubmitted] = useState("");
+  const [showErrorMsgAdverseEventNotSubmitted, setShowErrorMsgAdverseEventNotSubmitted] = useState("");
+  const [termsSelected, setTermsSelected] = useState(false);
+
+  // Initial form state
   const [formData, setFormData] = useState({
     protocol_number: "",
     pi_name: "",
@@ -109,110 +96,121 @@ function StudyCloseoutRequestDetails() {
   });
   const [errors, setErrors] = useState({});
 
-  React.useEffect(() => {
-    let data = {
+  // Fetch study closeout details on mount
+  useEffect(() => {
+    const data = {
       protocol_id: protocolDetails.protocolId,
       type: "closeout",
     };
     dispatch(fetchEventAndRequestById(data));
-  }, [dispatch, userDetails.id]);
+  }, [dispatch, protocolDetails.protocolId, userDetails.id]);
 
-  const { studyCloseoutRequestDetails, loading, error } = useSelector(
-    (state) => ({
-      error: state.eventAndRequest.error,
-      studyCloseoutRequestDetails: state.eventAndRequest.eventAndRequestDetails,
-      loading: state.eventAndRequest.loading,
-    })
-  );
+  const { studyCloseoutRequestDetails, loading, error } = useSelector((state) => ({
+    error: state.eventAndRequest.error,
+    studyCloseoutRequestDetails: state.eventAndRequest.eventAndRequestDetails,
+    loading: state.eventAndRequest.loading,
+  }));
 
   console.log("studyCloseoutRequestDetails", studyCloseoutRequestDetails);
 
-  const handleStudyCloseoutReason = (event, radio_name) => {
+  // Prefill the form when fetched details are available
+  useEffect(() => {
     if (
-      radio_name === "study_closeout_reason" &&
-      event.target.value === "Other"
+      studyCloseoutRequestDetails &&
+      studyCloseoutRequestDetails.data &&
+      studyCloseoutRequestDetails.data.data &&
+      studyCloseoutRequestDetails.data.data.length > 0
     ) {
+      const fetchedData = studyCloseoutRequestDetails.data.data[0];
+      setFormData((prev) => ({
+        ...prev,
+        protocol_number: fetchedData?.protocol_number || "",
+        pi_name: fetchedData?.pi_name || "",
+        study_completion_date: fetchedData?.study_completion_date
+          ? dayjs(fetchedData.study_completion_date).format("YYYY-MM-DD")
+          : null,
+        study_closeout_reason: fetchedData?.study_closeout_reason || "",
+        study_closeout_reason_other: fetchedData?.study_closeout_reason_other || "",
+        subject_enrolled_number: fetchedData?.subject_enrolled_number || "",
+        subject_withdrew_number: fetchedData?.subject_withdrew_number || "",
+        subject_withdrew_by_other: fetchedData?.subject_withdrew_by_other || "",
+        subject_fails: fetchedData?.subject_fails || "",
+        subject_lost_followup: fetchedData?.subject_lost_followup || "",
+        subject_completed: fetchedData?.subject_completed || "",
+        subject_complaints_review: fetchedData?.subject_complaints_review || "",
+        subject_complaints_review_explain: fetchedData?.subject_complaints_review_explain || "",
+        not_reported_irb: fetchedData?.not_reported_irb || "",
+        not_reported_irb_explain: fetchedData?.not_reported_irb_explain || "",
+        promptly_reportable_info: fetchedData?.promptly_reportable_info || "",
+        adverse_event_info: fetchedData?.adverse_event_info || "",
+        your_name: fetchedData?.your_name || "",
+      }));
+
+      // Set flags based on fetched values
+      setShowStudyCloseoutReason(fetchedData?.study_closeout_reason === "Other");
+      setShowSubjectComplaintsReviewTextbox(fetchedData?.subject_complaints_review === "Yes");
+      setShowChangesNotReportedToIRBTextbox(fetchedData?.not_reported_irb === "Yes");
+    }
+  }, [studyCloseoutRequestDetails]);
+
+  // Handlers for updating state
+  const handleStudyCloseoutReason = (event, radio_name) => {
+    if (radio_name === "study_closeout_reason" && event.target.value === "Other") {
       setShowStudyCloseoutReason(true);
-    } else if (
-      radio_name === "study_closeout_reason" &&
-      event.target.value !== "Other"
-    ) {
+    } else if (radio_name === "study_closeout_reason" && event.target.value !== "Other") {
       setShowStudyCloseoutReason(false);
     }
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSubjectComplainsReview = (event, radio_name) => {
-    if (
-      radio_name === "subject_complaints_review" &&
-      event.target.value === "Yes"
-    ) {
+    if (radio_name === "subject_complaints_review" && event.target.value === "Yes") {
       setShowSubjectComplaintsReviewTextbox(true);
-    } else if (
-      radio_name === "subject_complaints_review" &&
-      event.target.value === "No"
-    ) {
+    } else if (radio_name === "subject_complaints_review" && event.target.value === "No") {
       setShowSubjectComplaintsReviewTextbox(false);
     }
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleChangesNotReportedToIRB = (event, radio_name) => {
     if (radio_name === "not_reported_irb" && event.target.value === "Yes") {
       setShowChangesNotReportedToIRBTextbox(true);
-    } else if (
-      radio_name === "not_reported_irb" &&
-      event.target.value === "No"
-    ) {
+    } else if (radio_name === "not_reported_irb" && event.target.value === "No") {
       setShowChangesNotReportedToIRBTextbox(false);
     }
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handlePromptlyReportableInfo = (event, radio_name) => {
-    if (
-      radio_name === "promptly_reportable_info" &&
-      event.target.value === "Yes"
-    ) {
+    if (radio_name === "promptly_reportable_info" && event.target.value === "Yes") {
       setShowErrorMsgPromptlyReportableNotSubmitted(
-        "you must complete a Promptly Reportable Information submission"
+        "You must complete a Promptly Reportable Information submission"
       );
-    } else if (
-      radio_name === "promptly_reportable_info" &&
-      event.target.value === "No"
-    ) {
+    } else if (radio_name === "promptly_reportable_info" && event.target.value === "No") {
       setShowErrorMsgPromptlyReportableNotSubmitted("");
     }
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleAdverseEventInfo = (event, radio_name) => {
     if (radio_name === "adverse_event_info" && event.target.value === "Yes") {
       setShowErrorMsgAdverseEventNotSubmitted(
-        "you must complete and submit an Adverse Event report"
+        "You must complete and submit an Adverse Event report"
       );
-    } else if (
-      radio_name === "adverse_event_info" &&
-      event.target.value === "No"
-    ) {
+    } else if (radio_name === "adverse_event_info" && event.target.value === "No") {
       setShowErrorMsgAdverseEventNotSubmitted("");
     }
     const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  // const handleFinalSubmissionTearmChecked = (event) => {
-  //     const {checked} = event.target
-  //     if(checked === true){
-  //         setTermsSelected(true)
-  //     } else if (checked === false){
-  //         setTermsSelected(false)
-  //     }
-  // }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmitData = async (e) => {
@@ -224,12 +222,10 @@ function StudyCloseoutRequestDetails() {
           ["study_completion_date"]: "This is required",
         });
       }
-      const getValidatedform = await studyCloseSchema.validate(formData, {
+      const validatedForm = await studyCloseSchema.validate(formData, {
         abortEarly: false,
       });
-      const isValid = await studyCloseSchema.isValid(getValidatedform);
-      console.log("formData", formData);
-      //return
+      const isValid = await studyCloseSchema.isValid(validatedForm);
       if (isValid === true) {
         dispatch(createStudyCloseoutRequest({ ...formData })).then((data) => {
           if (data.payload.status === 200) {
@@ -243,7 +239,13 @@ function StudyCloseoutRequestDetails() {
               progress: undefined,
               theme: "dark",
             });
-            setFormData({});
+            // Optionally clear the form (or keep the data) and refetch the details
+            // Here we refetch to update with the latest data
+            const payload = {
+              protocol_id: protocolDetails.protocolId,
+              type: "closeout",
+            };
+            dispatch(fetchEventAndRequestById(payload));
           } else {
             toast.error(data.payload.data.msg, {
               position: "top-right",
@@ -277,10 +279,7 @@ function StudyCloseoutRequestDetails() {
       }
     }
   };
-  // const handleDateChange = (newValue) => {
-  //     console.log(dayjs(newValue).format('YYYY-MM-DD'))
-  //     setFormData({ ...formData, study_completion_date: dayjs(newValue).format('YYYY-MM-DD')});
-  // };
+
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
       <h2 className="ml-20">
@@ -291,19 +290,15 @@ function StudyCloseoutRequestDetails() {
           border: "1px solid #d3d3d3",
           backgroundColor: "#ffffff",
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" }, // Stack on smaller screens
+          flexDirection: { xs: "column", sm: "row" },
           gap: 1,
-          justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
-          flexWrap: "wrap", // Allow wrapping for smaller screens
+          justifyContent: { xs: "center", sm: "flex-start" },
+          flexWrap: "wrap",
           margin: { xs: "0 8px", sm: "0 24px", md: "0 24px" },
-          overflow: "hidden", // Prevent any overflow from buttons
+          overflow: "hidden",
         }}
       >
-        <Box
-          sx={{
-            padding: "25px",
-          }}
-        >
+        <Box sx={{ padding: "25px" }}>
           <ToastContainer
             position="top-right"
             autoClose={5000}
@@ -317,11 +312,7 @@ function StudyCloseoutRequestDetails() {
             theme="dark"
           />
           <form onSubmit={handleSubmitData} id="protocol_information">
-            <Form.Group
-              as={Col}
-              controlId="validationFormik06"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik06" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -336,11 +327,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.protocol_number}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik07"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik07" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -353,24 +340,24 @@ function StudyCloseoutRequestDetails() {
               </Box>
               {errors.pi_name && <div className="error">{errors.pi_name}</div>}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Date of Study Completion *"
                     onChange={(newValue) =>
-                      setFormData({
-                        ...formData,
-                        study_completion_date:
-                          dayjs(newValue).format("YYYY-MM-DD"),
-                      })
+                      setFormData((prev) => ({
+                        ...prev,
+                        study_completion_date: dayjs(newValue).format("YYYY-MM-DD"),
+                      }))
                     }
                     renderInput={(params) => <TextField {...params} />}
                     sx={{ width: "50%" }}
+                    value={
+                      formData.study_completion_date
+                        ? dayjs(formData.study_completion_date)
+                        : null
+                    }
                   />
                 </LocalizationProvider>
               </Box>
@@ -378,11 +365,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.study_completion_date}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
                   Reason for Study Closeout *
@@ -393,6 +376,7 @@ function StudyCloseoutRequestDetails() {
                   onChange={(event) =>
                     handleStudyCloseoutReason(event, "study_closeout_reason")
                   }
+                  value={formData.study_closeout_reason}
                 >
                   <FormControlLabel
                     value="Completed study per protocol including completing enrollment and collection/analysis of all data"
@@ -420,19 +404,15 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.study_closeout_reason}</div>
               )}
             </Form.Group>
-            {showStudyCloseoutReason === true && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-20"
-              >
+            {showStudyCloseoutReason && (
+              <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
                 <Box sx={{ width: "100%", maxWidth: "100%" }}>
                   <TextField
                     variant="outlined"
                     placeholder="Explain *"
                     name="study_closeout_reason_other"
                     fullWidth
-                    id="explain"
+                    id="study_closeout_reason_other"
                     rows={3}
                     multiline
                     onChange={handleChange}
@@ -440,17 +420,11 @@ function StudyCloseoutRequestDetails() {
                   />
                 </Box>
                 {errors.study_closeout_reason_other && (
-                  <div className="error">
-                    {errors.study_closeout_reason_other}
-                  </div>
+                  <div className="error">{errors.study_closeout_reason_other}</div>
                 )}
               </Form.Group>
             )}
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -465,11 +439,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.subject_enrolled_number}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -484,11 +454,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.subject_withdrew_number}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -503,11 +469,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.subject_withdrew_by_other}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -522,11 +484,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.subject_fails}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -541,11 +499,7 @@ function StudyCloseoutRequestDetails() {
                 <div className="error">{errors.subject_lost_followup}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik08"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik08" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -557,48 +511,33 @@ function StudyCloseoutRequestDetails() {
                 />
               </Box>
               <div className="highlight-text">
-                Note: There should be no remaining subjects in order to close
-                the study
+                Note: There should be no remaining subjects in order to close the study
               </div>
               {errors.subject_completed && (
                 <div className="error">{errors.subject_completed}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
-                  Have you received any subject complaints since last review
+                  Have you received any subject complaints since last review?
                 </FormLabel>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="subject_complaints_review"
                   onChange={(event) =>
-                    handleSubjectComplainsReview(
-                      event,
-                      "subject_complaints_review"
-                    )
+                    handleSubjectComplainsReview(event, "subject_complaints_review")
                   }
+                  value={formData.subject_complaints_review}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
-            {showSubjectComplaintsReviewTextbox === true && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-20"
-              >
+            {showSubjectComplaintsReviewTextbox && (
+              <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
                 <Box sx={{ width: "100%", maxWidth: "100%" }}>
                   <TextField
                     variant="outlined"
@@ -613,21 +552,14 @@ function StudyCloseoutRequestDetails() {
                   />
                 </Box>
                 {errors.subject_complaints_review_explain && (
-                  <div className="error">
-                    {errors.subject_complaints_review_explain}
-                  </div>
+                  <div className="error">{errors.subject_complaints_review_explain}</div>
                 )}
               </Form.Group>
             )}
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
-                  Were there any changes to the protocol, consent form, or other
-                  subject materials not yet reported to IRB?{" "}
+                  Were there any changes to the protocol, consent form, or other subject materials not yet reported to IRB?
                 </FormLabel>
                 <RadioGroup
                   row
@@ -636,27 +568,18 @@ function StudyCloseoutRequestDetails() {
                   onChange={(event) =>
                     handleChangesNotReportedToIRB(event, "not_reported_irb")
                   }
+                  value={formData.not_reported_irb}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </Form.Group>
-            {showChangesNotReportedToIRBTextbox === true && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-20"
-              >
+            {showChangesNotReportedToIRBTextbox && (
+              <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
                 <Box sx={{ width: "100%", maxWidth: "100%" }}>
                   <FormLabel id="demo-row-radio-buttons-group-label">
-                    Please explain the changes, what document(s) were changed,
-                    the reason for the change(s), and why they were not reported
-                    to the IRB *
+                    Please explain the changes, what document(s) were changed, the reason for the change(s), and why they were not reported to the IRB *
                   </FormLabel>
                   <TextField
                     variant="outlined"
@@ -675,32 +598,21 @@ function StudyCloseoutRequestDetails() {
                 )}
               </Form.Group>
             )}
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
-                  Is there any promptly reportable information that has not been
-                  reported to the IRB?
+                  Is there any promptly reportable information that has not been reported to the IRB?
                 </FormLabel>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="promptly_reportable_info"
                   onChange={(event) =>
-                    handlePromptlyReportableInfo(
-                      event,
-                      "promptly_reportable_info"
-                    )
+                    handlePromptlyReportableInfo(event, "promptly_reportable_info")
                   }
+                  value={formData.promptly_reportable_info}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
                 {errors.promptly_reportable_info && (
@@ -709,31 +621,18 @@ function StudyCloseoutRequestDetails() {
               </FormControl>
             </Form.Group>
             {showErrorMsgPromptlyReportableNotSubmitted !== "" && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-20"
-              >
+              <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
                 <Box sx={{ width: "100%", maxWidth: "100%" }}>
                   <FormLabel id="demo-row-radio-buttons-group-label">
-                    {showErrorMsgPromptlyReportableNotSubmitted !== "" && (
-                      <div className="error">
-                        {showErrorMsgPromptlyReportableNotSubmitted}
-                      </div>
-                    )}
+                    <div className="error">{showErrorMsgPromptlyReportableNotSubmitted}</div>
                   </FormLabel>
                 </Box>
               </Form.Group>
             )}
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormLabel id="demo-row-radio-buttons-group-label">
-                  Is there any adverse events that have not been reported to the
-                  IRB?
+                  Is there any adverse events that have not been reported to the IRB?
                 </FormLabel>
                 <RadioGroup
                   row
@@ -742,12 +641,9 @@ function StudyCloseoutRequestDetails() {
                   onChange={(event) =>
                     handleAdverseEventInfo(event, "adverse_event_info")
                   }
+                  value={formData.adverse_event_info}
                 >
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
+                  <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                   <FormControlLabel value="No" control={<Radio />} label="No" />
                 </RadioGroup>
                 {errors.adverse_event_info && (
@@ -756,52 +652,31 @@ function StudyCloseoutRequestDetails() {
               </FormControl>
             </Form.Group>
             {showErrorMsgAdverseEventNotSubmitted !== "" && (
-              <Form.Group
-                as={Col}
-                controlId="validationFormik03"
-                className="mt-mb-20"
-              >
+              <Form.Group as={Col} controlId="validationFormik03" className="mt-mb-20">
                 <Box sx={{ width: "100%", maxWidth: "100%" }}>
                   <FormLabel id="demo-row-radio-buttons-group-label">
-                    {showErrorMsgAdverseEventNotSubmitted !== "" && (
-                      <div className="error">
-                        {showErrorMsgAdverseEventNotSubmitted}
-                      </div>
-                    )}
+                    <div className="error">{showErrorMsgAdverseEventNotSubmitted}</div>
                   </FormLabel>
                 </Box>
               </Form.Group>
             )}
             <h3>Acknowledgement</h3>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik01"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik01" className="mt-mb-20">
               <FormControl>
                 <FormGroup>
                   <FormLabel>
-                    - By submitting this form, you guarantee that all research
-                    has completed and no new study procedures or enrollments
-                    will occur.
+                    - By submitting this form, you guarantee that all research has completed and no new study procedures or enrollments will occur.
                   </FormLabel>
                   <FormLabel>
-                    - You certify that all data collection has completed and no
-                    new data will be collected.
+                    - You certify that all data collection has completed and no new data will be collected.
                   </FormLabel>
                   <FormLabel>
-                    - You also certify that any biological samples related to
-                    the study have been destroyed and no new samples will be
-                    collected.
+                    - You also certify that any biological samples related to the study have been destroyed and no new samples will be collected.
                   </FormLabel>
                 </FormGroup>
               </FormControl>
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik06"
-              className="mt-mb-20"
-            >
+            <Form.Group as={Col} controlId="validationFormik06" className="mt-mb-20">
               <Box sx={{ width: "100%", maxWidth: "100%" }}>
                 <TextField
                   fullWidth
@@ -813,21 +688,13 @@ function StudyCloseoutRequestDetails() {
                 />
               </Box>
               <div className="highlight-text">
-                Note: Your name above is the equivalent of a hand-written
-                signature and is legally binding. Your signature confirms that
-                you are authorized to submit this document and you acknowledge
-                that it is accurate.
+                Note: Your name above is the equivalent of a hand-written signature and is legally binding. Your signature confirms that you are authorized to submit this document and you acknowledge that it is accurate.
               </div>
               {errors.your_name && (
                 <div className="error">{errors.your_name}</div>
               )}
             </Form.Group>
-            <Form.Group
-              as={Col}
-              controlId="validationFormik010"
-              className="mt-mb-20"
-              style={{ textAlign: "right" }}
-            >
+            <Form.Group as={Col} controlId="validationFormik010" className="mt-mb-20" style={{ textAlign: "right" }}>
               <Button variant="contained" color="primary" type="Submit">
                 SUBMIT
               </Button>
