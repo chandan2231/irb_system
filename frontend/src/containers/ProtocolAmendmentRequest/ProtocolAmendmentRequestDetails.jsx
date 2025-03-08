@@ -25,6 +25,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/Loader";
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
+import { CustomFileUploadWrapper } from "../../components/Mui/CustomFileInput"
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -410,7 +411,7 @@ function ProtocolAmendmentRequestDetails() {
                 <InputLabel id="demo-simple-select-autowidth-label">
                   Upload redlined document(s) here *
                 </InputLabel>
-                <Button
+                {/* <Button
                   component="label"
                   role={undefined}
                   variant="contained"
@@ -430,7 +431,21 @@ function ProtocolAmendmentRequestDetails() {
                       }
                     }}
                   />
-                </Button>
+                </Button> */}
+
+                <CustomFileUploadWrapper
+                  onFileSelect={(e) => {
+                    if (e.target.files && e.target.files.length) {
+                      setFormData({
+                        ...formData,
+                        redlined_document: e.target.files,
+                      });
+                    }
+                  }}
+                  buttonText="Upload File"
+                  name="redlined_document" // any additional props you need
+                />
+
                 {errors.redlined_document && (
                   <div className="error">{errors.redlined_document}</div>
                 )}
