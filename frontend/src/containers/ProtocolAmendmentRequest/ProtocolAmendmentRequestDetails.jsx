@@ -443,6 +443,7 @@ function ProtocolAmendmentRequestDetails() {
                     }
                   }}
                   buttonText="Upload File"
+                  multiple
                   name="redlined_document" // any additional props you need
                 />
 
