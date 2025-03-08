@@ -35,7 +35,7 @@ export const CustomFileUploadWrapper = ({
   maxSize = DEFAULT_MAX_SIZE,
   onFileSelect,
   buttonText = "Upload file",
-  multiple = false,
+  multiple = true,
   // By default, single file upload; pass multiple={true} to allow multi-select
   ...rest
 }) => {
@@ -151,6 +151,7 @@ export const CustomFileUploadWrapper = ({
     <>
       <HiddenInput
         type="file"
+        multiple={multiple}
         ref={inputRef}
         onChange={handleChange}
         {...rest}
