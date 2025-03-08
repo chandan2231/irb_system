@@ -442,8 +442,8 @@ function ProtocolAmendmentRequestDetails() {
                       });
                     }
                   }}
+                  multiple={false}
                   buttonText="Upload File"
-                  multiple
                   name="redlined_document" // any additional props you need
                 />
 
