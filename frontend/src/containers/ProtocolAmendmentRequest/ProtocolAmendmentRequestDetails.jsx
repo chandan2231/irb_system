@@ -22,6 +22,7 @@ import { useLocation } from "react-router-dom";
 import { uploadFile } from "../../services/UserManagement/UserService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Loader from "../../components/Loader";
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
 
@@ -63,6 +64,8 @@ function ProtocolAmendmentRequestDetails() {
     React.useState(false);
   const [explainEnrolledTypeErrors, setExplainAmendDocumentErrors] =
     React.useState();
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const [formData, setFormData] = useState({
     protocol_number: "",
@@ -112,6 +115,7 @@ function ProtocolAmendmentRequestDetails() {
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true)
       if (
         formData.amend_document.includes("4") &&
         formData.amend_document_explain === ""
@@ -171,9 +175,10 @@ function ProtocolAmendmentRequestDetails() {
                 protocol_id: protocolDetails.protocolId,
                 type: "amendment",
               };
+              setIsLoading(false)
               dispatch(fetchEventAndRequestById(payload));
-
             } else {
+              setIsLoading(false)
               toast.error(data.payload.data.msg, {
                 position: "top-right",
                 autoClose: 5000,
@@ -189,6 +194,7 @@ function ProtocolAmendmentRequestDetails() {
         );
       }
     } catch (error) {
+      setIsLoading(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -274,6 +280,10 @@ function ProtocolAmendmentRequestDetails() {
   useEffect(() => {
     console.log("formData", formData);
   }, [formData]);
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
@@ -382,6 +392,7 @@ function ProtocolAmendmentRequestDetails() {
                     rows={3}
                     multiline
                     onChange={handleChange}
+                    value={formData?.amend_document_explain}
                   />
                 </Box>
                 {explainEnrolledTypeErrors && (

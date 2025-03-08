@@ -21,6 +21,7 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
+import Loader from "../../components/Loader";
 
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
@@ -55,6 +56,8 @@ function PromptlyReportableEventDetails() {
   const location = useLocation();
   const protocolDetails = location.state.details;
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const [isLoading, setIsLoading] = useState(false)
+
   const [showOtherCategoryAdditionTextArea, setShowOtherCategoryAdditionTextArea] =
     useState(false);
   const [termsSelected, setTermsSelected] = useState(false);
@@ -194,6 +197,7 @@ function PromptlyReportableEventDetails() {
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true)
       const validatedForm = await promptlyReportableSchema.validate(formData, {
         abortEarly: false,
       });
@@ -216,8 +220,10 @@ function PromptlyReportableEventDetails() {
               protocol_id: protocolDetails.protocolId,
               type: "reportable",
             };
+            setIsLoading(false)
             dispatch(fetchEventAndRequestById(payload));
           } else {
+            setIsLoading(false)
             toast.error(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -232,6 +238,7 @@ function PromptlyReportableEventDetails() {
         });
       }
     } catch (err) {
+      setIsLoading(false)
       const newErrors = {};
       err.inner.forEach((errorItem) => {
         newErrors[errorItem.path] = errorItem.message;
@@ -250,6 +257,10 @@ function PromptlyReportableEventDetails() {
       }
     }
   };
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>

@@ -21,11 +21,11 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Loader from "../../components/Loader";
 import dayjs from "dayjs";
 import { CustomMUIFormLabel as FormLabel } from "../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../components/Mui/CustomTextField";
 import { CustomDatePickerWrapper as DatePicker } from "../../components/Mui/CustomDatePickerWrapper";
-
 
 const adverseEventSchema = yup.object().shape({
   protocol_number: yup.string().required("This is required"),
@@ -67,6 +67,8 @@ function AdverseEventsDetails() {
   const location = useLocation();
   const protocolDetails = location.state.details;
   const userDetails = JSON.parse(localStorage.getItem("user"));
+  const [isLoading, setIsLoading] = useState(false)
+
   const [showUnexpectedEventTextArea, setShowUnexpectedEventTextArea] =
     React.useState(false);
   const [showEventNatureDateOfDeath, setShowEventNatureDateOfDeath] =
@@ -184,6 +186,7 @@ function AdverseEventsDetails() {
   const handleSubmitData = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true)
       const getValidatedform = await adverseEventSchema.validate(formData, {
         abortEarly: false,
       });
@@ -207,9 +210,10 @@ function AdverseEventsDetails() {
               protocol_id: protocolDetails.protocolId,
               type: "adverse",
             };
+            setIsLoading(false)
             dispatch(fetchEventAndRequestById(payload));
-
           } else {
+            setIsLoading(false)
             toast.error(data.payload.data.msg, {
               position: "top-right",
               autoClose: 5000,
@@ -224,6 +228,7 @@ function AdverseEventsDetails() {
         });
       }
     } catch (error) {
+      setIsLoading(false)
       const newErrors = {};
       error.inner.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -315,6 +320,10 @@ function AdverseEventsDetails() {
   useEffect(() => {
     console.log(formData)
   }, [formData])
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <Box sx={{ width: "100%" }} style={{ padding: "1rem" }}>
