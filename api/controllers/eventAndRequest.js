@@ -233,45 +233,128 @@ export const saveProtocolAmendmentRequest = (req, res) => {
 
 export const savePromptlyReportableEvent = (req, res) => {
   var datetime = new Date()
-  const que =
-    'insert into promptly_reportable_event (`protocol_id`, `protocol_type`, `submitter_type`, `irb_protocol_number`, `sponsor_name`, `described_category`, `described_category_explain`, `involved_subject`, `date_problem_discovered`,`date_of_occurrence`, `date_reported_to_sponsor`, `describe_problem`, `action_taken`, `plan_action_taken`, `subject_harmed`, `protocol_change`,`question_not_covered`,`person_name`,`email`,`phone`,`your_name`,`created_by`, `created_at`, `updated_at`) value (?)'
-  const values = [
-    req.body.protocol_id,
-    req.body.protocol_type,
-    req.body.submitter_type,
-    req.body.irb_protocol_number,
-    req.body.sponsor_name,
-    req.body.described_category,
-    req.body.described_category_explain,
-    req.body.involved_subject,
-    req.body.date_problem_discovered,
-    req.body.date_of_occurrence,
-    req.body.date_reported_to_sponsor,
-    req.body.describe_problem,
-    req.body.action_taken,
-    req.body.plan_action_taken,
-    req.body.subject_harmed,
-    req.body.protocol_change,
-    req.body.question_not_covered,
-    req.body.person_name,
-    req.body.email,
-    req.body.phone,
-    req.body.your_name,
-    req.user.userId,
-    datetime.toISOString().slice(0, 10),
-    datetime.toISOString().slice(0, 10)
-  ]
-  db.query(que, [values], (err, data) => {
+
+  // Check if the protocol_id already exists in the table
+  const checkQuery =
+    'SELECT * FROM promptly_reportable_event WHERE protocol_id = ?'
+
+  db.query(checkQuery, [req.body.protocol_id], (err, data) => {
     if (err) {
-      let result = {}
-      result.status = 500
-      result.msg = err
-      return res.json(result)
+      return res.status(500).json({ status: 500, msg: err })
     } else {
-      let result = {}
-      result.status = 200
-      result.msg = 'Protocol Reportable Event has been saved successfully'
-      return res.json(result)
+      // If the record exists, update it
+      if (data.length > 0) {
+        const updateQuery = `
+          UPDATE promptly_reportable_event
+          SET 
+            protocol_type = ?,
+            submitter_type = ?,
+            irb_protocol_number = ?,
+            sponsor_name = ?,
+            described_category = ?,
+            described_category_explain = ?,
+            involved_subject = ?,
+            date_problem_discovered = ?,
+            date_of_occurrence = ?,
+            date_reported_to_sponsor = ?,
+            describe_problem = ?,
+            action_taken = ?,
+            plan_action_taken = ?,
+            subject_harmed = ?,
+            protocol_change = ?,
+            question_not_covered = ?,
+            person_name = ?,
+            email = ?,
+            phone = ?,
+            your_name = ?,
+            created_by = ?,
+            updated_at = ?
+          WHERE protocol_id = ?`
+
+        const updateValues = [
+          req.body.protocol_type,
+          req.body.submitter_type,
+          req.body.irb_protocol_number,
+          req.body.sponsor_name,
+          req.body.described_category,
+          req.body.described_category_explain,
+          req.body.involved_subject,
+          req.body.date_problem_discovered,
+          req.body.date_of_occurrence,
+          req.body.date_reported_to_sponsor,
+          req.body.describe_problem,
+          req.body.action_taken,
+          req.body.plan_action_taken,
+          req.body.subject_harmed,
+          req.body.protocol_change,
+          req.body.question_not_covered,
+          req.body.person_name,
+          req.body.email,
+          req.body.phone,
+          req.body.your_name,
+          req.user.userId,
+          datetime.toISOString().slice(0, 10),
+          req.body.protocol_id
+        ]
+
+        db.query(updateQuery, updateValues, (err, data) => {
+          if (err) {
+            return res.status(500).json({ status: 500, msg: err })
+          } else {
+            return res.json({
+              status: 200,
+              msg: 'Protocol Reportable Event has been updated successfully'
+            })
+          }
+        })
+      } else {
+        // If the record does not exist, insert a new one
+        const insertQuery = `
+          INSERT INTO promptly_reportable_event 
+          (protocol_id, protocol_type, submitter_type, irb_protocol_number, sponsor_name, described_category, 
+          described_category_explain, involved_subject, date_problem_discovered, date_of_occurrence, 
+          date_reported_to_sponsor, describe_problem, action_taken, plan_action_taken, subject_harmed, 
+          protocol_change, question_not_covered, person_name, email, phone, your_name, created_by, created_at, updated_at) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+        const insertValues = [
+          req.body.protocol_id,
+          req.body.protocol_type,
+          req.body.submitter_type,
+          req.body.irb_protocol_number,
+          req.body.sponsor_name,
+          req.body.described_category,
+          req.body.described_category_explain,
+          req.body.involved_subject,
+          req.body.date_problem_discovered,
+          req.body.date_of_occurrence,
+          req.body.date_reported_to_sponsor,
+          req.body.describe_problem,
+          req.body.action_taken,
+          req.body.plan_action_taken,
+          req.body.subject_harmed,
+          req.body.protocol_change,
+          req.body.question_not_covered,
+          req.body.person_name,
+          req.body.email,
+          req.body.phone,
+          req.body.your_name,
+          req.user.userId,
+          datetime.toISOString().slice(0, 10),
+          datetime.toISOString().slice(0, 10)
+        ]
+
+        db.query(insertQuery, [insertValues], (err, data) => {
+          if (err) {
+            return res.status(500).json({ status: 500, msg: err })
+          } else {
+            return res.json({
+              status: 200,
+              msg: 'Protocol Reportable Event has been saved successfully'
+            })
+          }
+        })
+      }
     }
   })
 }
