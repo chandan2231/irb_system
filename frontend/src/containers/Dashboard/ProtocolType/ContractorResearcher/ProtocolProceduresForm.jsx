@@ -24,6 +24,7 @@ import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolLis
 import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -1048,7 +1049,7 @@ function ProtocolProceduresForm({
             <InputLabel id="demo-simple-select-autowidth-label">
               Upload all recruitment and subject-facing materials *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -1070,7 +1071,19 @@ function ProtocolProceduresForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="facing_materials" // any additional props you need
+            />
             {formData?.facing_materials !== undefined &&
               Array.from(formData?.facing_materials)?.map((file, i) => {
                 return file?.file_url ? <div>

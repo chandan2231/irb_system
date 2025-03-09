@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import { uploadFile } from "../../services/UserManagement/UserService";
+import { CustomFileUploadWrapper } from "../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -241,7 +242,7 @@ const UploadDocument = () => {
                     <InputLabel>Upload Document</InputLabel>
                   </Grid>
                   <Grid item xs={10}>
-                    <Button
+                    {/* <Button
                       component="label"
                       variant="outlined"
                       startIcon={<CloudUploadIcon />}
@@ -260,7 +261,19 @@ const UploadDocument = () => {
                         }}
                         multiple
                       />
-                    </Button>
+                    </Button> */}
+                    <CustomFileUploadWrapper
+                      onFileSelect={(e) => {
+                        if (e.target.files && e.target.files.length) {
+                          setFormData({
+                            ...formData,
+                            attachments_file: e.target.files,
+                          });
+                        }
+                      }}
+                      buttonText="Upload File"
+                      name="attachments_file" // any additional props you need
+                    />
                     {errors.attachments_file && (
                       <div className="error">{errors.attachments_file}</div>
                     )}

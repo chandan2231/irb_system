@@ -23,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
 import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
+import { CustomFileUploadWrapper } from "../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -678,7 +679,7 @@ function InvestigatorInstitutionInfo({
             >
               Upload supporting documents here *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -698,7 +699,20 @@ function InvestigatorInstitutionInfo({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="q1_supporting_documents" // any additional props you need
+            />
             {formData?.q1_supporting_documents !== undefined &&
               Array.from(formData?.q1_supporting_documents)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>
@@ -763,7 +777,7 @@ function InvestigatorInstitutionInfo({
             >
               Upload supporting documents here *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -783,7 +797,20 @@ function InvestigatorInstitutionInfo({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="q2_supporting_documents" // any additional props you need
+            />
             {formData?.q2_supporting_documents !== undefined &&
               Array.from(formData?.q2_supporting_documents)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>
@@ -916,7 +943,7 @@ function InvestigatorInstitutionInfo({
               reflect facility changes, updated delegation of authority log,
               etc.)
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -936,7 +963,20 @@ function InvestigatorInstitutionInfo({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="q3_supporting_documents" // any additional props you need
+            />
             {formData?.q3_supporting_documents !== undefined &&
               Array.from(formData?.q3_supporting_documents)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>
@@ -1051,7 +1091,7 @@ function InvestigatorInstitutionInfo({
             >
               Upload supporting documents here *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -1071,7 +1111,20 @@ function InvestigatorInstitutionInfo({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="q4_supporting_documents" // any additional props you need
+            />
             {formData?.q4_supporting_documents !== undefined &&
               Array.from(formData?.q4_supporting_documents)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>

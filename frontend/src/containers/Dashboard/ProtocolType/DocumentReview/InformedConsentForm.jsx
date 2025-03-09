@@ -25,6 +25,7 @@ import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolLis
 import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -592,7 +593,7 @@ function InformedConsentForm({
               Upload the original approved protocol associated with the document
               to be reviewed *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -614,7 +615,19 @@ function InformedConsentForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="consent_file" // any additional props you need
+            />
             {formData?.consent_file !== undefined &&
               Array.from(formData?.consent_file)?.map((file, i) => {
                 return file?.file_url ? <div>

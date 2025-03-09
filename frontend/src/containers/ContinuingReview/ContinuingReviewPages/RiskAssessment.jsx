@@ -21,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
 import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
+import { CustomFileUploadWrapper } from "../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -318,7 +319,7 @@ function RiskAssessment({
             >
               Upload supporting documents *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -338,7 +339,20 @@ function RiskAssessment({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="q1_supporting_documents" // any additional props you need
+            />
             {formData?.q1_supporting_documents !== undefined &&
               Array.from(formData?.q1_supporting_documents)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>

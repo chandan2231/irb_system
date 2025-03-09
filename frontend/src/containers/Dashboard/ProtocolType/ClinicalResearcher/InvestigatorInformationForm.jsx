@@ -26,6 +26,7 @@ import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolLis
 import { CustomMUITextFieldWrapper } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel } from "../../../../components/Mui/CustomInputLabel";
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -1778,7 +1779,7 @@ function InvestigatorInformationForm({
             <CustomInputLabel id="demo-simple-select-autowidth-label">
               Upload investigator and sub-investigator (if applicable) CV here *
             </CustomInputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -1800,7 +1801,19 @@ function InvestigatorInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: Array.from(e.target.files),
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="cv_files" // any additional props you need
+            />
             {formData?.cv_files !== undefined &&
               Array.from(formData?.cv_files)?.map((file, i) => {
                 return file?.file_url ? <div>
@@ -1823,7 +1836,7 @@ function InvestigatorInformationForm({
             <CustomInputLabel id="demo-simple-select-autowidth-label">
               Upload copy of medical license (if applicable) here{" "}
             </CustomInputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -1845,7 +1858,19 @@ function InvestigatorInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="medical_license" // any additional props you need
+            />
             {formData?.medical_license !== undefined &&
               Array.from(formData?.medical_license)?.map((file, i) => {
                 return file?.file_url ? <div>
@@ -1870,7 +1895,7 @@ function InvestigatorInformationForm({
             <CustomInputLabel id="demo-simple-select-autowidth-label">
               Upload copies of training certificates (if applicable) here{" "}
             </CustomInputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -1892,7 +1917,19 @@ function InvestigatorInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="training_certificates" // any additional props you need
+            />
             {formData?.training_certificates !== undefined &&
               Array.from(formData?.training_certificates)?.map((file, i) => {
                 return file?.file_url ? <div>

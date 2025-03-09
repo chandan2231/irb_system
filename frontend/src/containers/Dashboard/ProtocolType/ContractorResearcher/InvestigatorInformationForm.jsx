@@ -24,6 +24,7 @@ import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolLis
 import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -483,7 +484,7 @@ function InvestigatorInformationForm({
                 name="investigator_name"
                 value={formData.investigator_name || ""}
                 onChange={handleChange}
-                
+
 
               />
             </Box>
@@ -504,7 +505,7 @@ function InvestigatorInformationForm({
                 name="investigator_email"
                 value={formData.investigator_email || ""}
                 onChange={handleChange}
-                
+
 
               />
             </Box>
@@ -615,7 +616,7 @@ function InvestigatorInformationForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
-                  
+
 
                 />
               </Box>
@@ -780,7 +781,7 @@ function InvestigatorInformationForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
-                  
+
 
                 />
               </Box>
@@ -850,7 +851,7 @@ function InvestigatorInformationForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
-                  
+
 
                 />
               </Box>
@@ -893,7 +894,7 @@ function InvestigatorInformationForm({
                   name="fwa_number"
                   value={formData.fwa_number || ""}
                   onChange={handleChange}
-                  
+
 
                 />
               </Box>
@@ -911,7 +912,7 @@ function InvestigatorInformationForm({
             <InputLabel id="demo-simple-select-autowidth-label">
               Upload investigator and sub-investigator CV here *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -933,7 +934,19 @@ function InvestigatorInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="cv_files" // any additional props you need
+            />
             {formData?.cv_files !== undefined &&
               Array.from(formData?.cv_files)?.map((file, i) => {
                 return file?.file_url ? <div>
@@ -957,7 +970,7 @@ function InvestigatorInformationForm({
             <InputLabel id="demo-simple-select-autowidth-label">
               Upload copy of medical license (if applicable) here
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -979,7 +992,19 @@ function InvestigatorInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="medical_license" // any additional props you need
+            />
             {formData?.medical_license !== undefined &&
               Array.from(formData?.medical_license)?.map((file, i) => {
                 return file?.file_url ? <div>
@@ -1005,7 +1030,7 @@ function InvestigatorInformationForm({
             <InputLabel id="demo-simple-select-autowidth-label">
               Upload copies of training certificates (if applicable) here
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -1027,7 +1052,19 @@ function InvestigatorInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="training_certificates" // any additional props you need
+            />
             {formData?.training_certificates !== undefined &&
               Array.from(formData?.training_certificates)?.map((file, i) => {
                 return file?.file_url ? <div>

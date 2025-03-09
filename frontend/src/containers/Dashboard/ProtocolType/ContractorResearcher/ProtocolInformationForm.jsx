@@ -26,6 +26,7 @@ import { CustomMUITextFieldWrapper as TextField } from "../../../../components/M
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 import { CustomMUISelectWrapper as Select } from "../../../../components/Mui/CustomSelectWrapper"
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -609,7 +610,7 @@ function ProtocolInformationForm({
                   </InputLabel>
                 </Grid>
                 <Grid item xs={10}>
-                  <Button
+                  {/* <Button
                     component="label"
                     role={undefined}
                     variant="outlined"
@@ -630,7 +631,20 @@ function ProtocolInformationForm({
                         }
                       }}
                     />
-                  </Button>
+                  </Button> */}
+                  <CustomFileUploadWrapper
+                    onFileSelect={(e) => {
+                      if (e.target.files && e.target.files.length) {
+                        setFormData({
+                          ...formData,
+                          protocol_file: e.target.files,
+                        });
+                      }
+                    }}
+                    multiple={false}
+                    buttonText="Upload File"
+                    name="protocol_file" // any additional props you need
+                  />
                   {errors.protocol_file && (
                     <div className="error">{errors.protocol_file}</div>
                   )}

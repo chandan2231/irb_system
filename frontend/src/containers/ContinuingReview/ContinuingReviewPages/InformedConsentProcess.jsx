@@ -21,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { CustomMUIFormLabel as FormLabel } from "../../../components/Mui/CustomFormLabel";
 import { CustomMUITextFieldWrapper as TextField } from "../../../components/Mui/CustomTextField";
 import { fetchContinuinReviewDetailsById } from "../../../services/Admin/ContinuinReviewListService";
+import { CustomFileUploadWrapper } from "../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -375,7 +376,7 @@ function InformedConsentProcess({
             >
               Upload the most recent ICF *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -395,7 +396,24 @@ function InformedConsentProcess({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+
+
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="icf_file" // any additional props you need
+            />
+
+
             {formData?.icf_file !== undefined &&
               Array.from(formData?.icf_file)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>
@@ -529,7 +547,7 @@ function InformedConsentProcess({
             >
               Upload new informed consent form here *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -549,7 +567,21 @@ function InformedConsentProcess({
                   }
                 }}
               />
-            </Button>
+            </Button> */}
+
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              multiple={false}
+              buttonText="Upload File"
+              name="consent_form" // any additional props you need
+            />
             {formData?.consent_form !== undefined &&
               Array.from(formData?.consent_form)?.map((file, i) => (
                 <div key={i}>{file?.name}</div>

@@ -23,6 +23,7 @@ import { CustomMUITextFieldWrapper as TextField } from "../../../../components/M
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
 import { CustomMUISelectWrapper as Select } from "../../../../components/Mui/CustomSelectWrapper"
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -302,7 +303,7 @@ function StudyInformationForm({
               Upload drug/biologic profile, device profile, food/dietary
               supplement ingredient list, or cosmetic ingredient list
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -324,7 +325,19 @@ function StudyInformationForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="ingredient_list" // any additional props you need
+            />
             {formData?.ingredient_list !== undefined &&
               Array.from(formData?.ingredient_list)?.map((file, i) => {
                 return file?.file_url ? <div>

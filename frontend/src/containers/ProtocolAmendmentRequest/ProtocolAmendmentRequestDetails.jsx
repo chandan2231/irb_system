@@ -411,6 +411,7 @@ function ProtocolAmendmentRequestDetails() {
                 <InputLabel id="demo-simple-select-autowidth-label">
                   Upload redlined document(s) here *
                 </InputLabel>
+                
                 {/* <Button
                   component="label"
                   role={undefined}

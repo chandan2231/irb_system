@@ -19,6 +19,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { CustomFileUploadWrapper } from "../../components/Mui/CustomFileInput";
 
 const defaultInputValues = {
   research_type_id: "",
@@ -161,7 +162,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
             </InputLabel>
           </Grid>
           <Grid item xs={12} sm={12} md={6} lg={6}>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="contained"
@@ -183,7 +184,20 @@ const AddResearch = ({ open, onClose, addNewData }) => {
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setValues({
+                    ...values,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              {...register("attachments_file")} // Register input for React Hook Form
+              name="attachments_file" // any additional props you need
+            />
           </Grid>
         </Grid>
         {values.attachments_file &&
@@ -340,7 +354,7 @@ const AddResearch = ({ open, onClose, addNewData }) => {
           onClose();
           isHaveProtocolIdChecked
             ? setIsHaveProtocolIdChecked(false)
-            : () => {};
+            : () => { };
         }}
         title="Start a New Research Protocol"
         subTitle=""

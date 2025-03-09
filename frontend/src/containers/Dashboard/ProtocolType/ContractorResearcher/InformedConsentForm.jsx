@@ -24,6 +24,7 @@ import { fetchProtocolDetailsById } from "../../../../services/Admin/ProtocolLis
 import { CustomMUITextFieldWrapper as TextField } from "../../../../components/Mui/CustomTextField";
 import { CustomMUIFormLabel as FormLabel } from "../../../../components/Mui/CustomFormLabel";
 import { CustomInputLabel as InputLabel } from "../../../../components/Mui/CustomInputLabel";
+import { CustomFileUploadWrapper } from "../../../../components/Mui/CustomFileInput";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -432,7 +433,7 @@ function InformedConsentForm({
                   multiline
                   onChange={handleChange}
                   value={formData.no_consent_explain}
-                  
+
                 />
               </Box>
               {/* {explainNoConsentErrors && <div className="error">{explainNoConsentErrors}</div>} */}
@@ -561,7 +562,7 @@ function InformedConsentForm({
                   rows={3}
                   multiline
                   onChange={handleChange}
-                  
+
                 />
               </Box>
               {/* {explainTranslatorErrors && <div className="error">{explainTranslatorErrors}</div>} */}
@@ -582,7 +583,7 @@ function InformedConsentForm({
               applicable <br /> (if applying for waiver of consent, document
               explaining reasoning must be uploaded) *
             </InputLabel>
-            <Button
+            {/* <Button
               component="label"
               role={undefined}
               variant="outlined"
@@ -604,7 +605,19 @@ function InformedConsentForm({
                 }}
                 multiple
               />
-            </Button>
+            </Button> */}
+            <CustomFileUploadWrapper
+              onFileSelect={(e) => {
+                if (e.target.files && e.target.files.length) {
+                  setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.files,
+                  });
+                }
+              }}
+              buttonText="Upload File"
+              name="consent_file" // any additional props you need
+            />
             {formData?.consent_file !== undefined &&
               Array.from(formData?.consent_file)?.map((file, i) => {
                 return file?.file_url ? <div>
